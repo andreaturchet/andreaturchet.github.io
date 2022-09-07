@@ -1,0 +1,258 @@
+/*
+Theme: projectred
+*/
+
+@font-face {
+	font-family: 'courier-prime.regular';
+	src: url('../assets/fonts/courier-prime.regular.eot');
+	src: local('☺'), url('../assets/fonts/courier-prime.regular.woff') format('woff'), url('../assets/fonts/courier-prime.regular.ttf') format('truetype'), url('../assets/fonts/courier-prime.regular.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+html{
+    overflow: auto;
+}
+body {
+    font-family: 'courier-prime.regular';
+/*    font-family: sans-serif;*/
+	font-size: 13px;
+    line-height: 1.25em;
+    overflow: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+body, select, input, textarea {
+    color: #fff;
+    background-color: #000;
+}
+
+a {color: #fff; text-decoration: none;}
+a:hover {color: #fff;}
+
+/* Custom text-selection colors (remove any text shadows: http://twitter.com/miketaylr/status/12228805301) */
+::-moz-selection{background: #fff; color: #000; text-shadow: none;}
+::selection {background: #fff; color: #000; text-shadow: none;}
+
+/*	j.mp/webkit-tap-highlight-color */
+a:link {-webkit-tap-highlight-color: #fff; color: #fff;}
+
+ins {background-color: #000; color: #fff; text-decoration: none;}
+mark {background-color: #000; color: #fff; font-style: italic; font-weight: bold;}
+
+/* Mozilla dosen't style place holders by default */
+input:-moz-placeholder { color:#a9a9a9; }
+textarea:-moz-placeholder { color:#a9a9a9; }
+
+.clearafter:after{
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+.underline-mouseover:hover{
+    text-decoration: underline;
+}
+
+.font-title{
+    display: block;
+    font-weight: 700;
+    font-family: sans-serif;
+    font-size: 3vw;
+    line-height: 1em;
+    margin-bottom: 10px;
+}
+
+
+span.no-break {
+    font-weight: inherit;
+    display: inline-block;
+}
+
+.display-inlineblock{
+    display: inline-block;
+}
+
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+
+.blink {
+    animation: blink 2s infinite;
+}
+@keyframes blink {
+  0%   { opacity: 0; }
+  50%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/*
+-------------------------------------------------------------------------------*/
+
+
+
+header{
+    padding: 10px;
+}
+
+.logo{
+    float: left;
+    width: 200px;
+    height: 200px;
+    filter: invert(1);
+    animation: slide-slow 3s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+
+.bio {
+    padding: 0;
+    margin-bottom: 40px;
+}
+
+
+/* PROJECT RED
+-------------------------------------------------------------------------------*/
+
+.project-red {
+    background-color: #f00;
+    color: #000;
+}
+
+.project-red .logo {
+    filter: invert(0);
+    mix-blend-mode: multiply;
+}
+
+
+/* 
+-------------------------------------------------------------------------------*/
+
+
+footer{
+    padding: 10px;
+}
+
+
+/****/
+
+
+
+.col-md-2{
+    width: 16.66%;
+    float: left;
+}
+.col-md-3{
+    width: 25%;
+    float: left;
+}
+.col-md-4{
+    width: 33.33%;
+    float: left;
+}
+.col-md-6{
+    width: 50%;
+    float: left;
+}
+.col-md-8{
+    width: 66.66%;
+    float: left;
+}
+.col-md-9{
+    width: 75%;
+    float: left;
+}
+.col-md-10{
+    width: 83.33%;
+    float: left;
+}
+.col-md-12{
+    width: 100%;
+    float: left;
+}
+    .col-sm-50{
+        width: 50%;
+        float: left;
+    }
+    .col-sm-100{
+        width: 100%;
+        float: left;
+    }
+
+.mobile{display: none;}
+
+
+
+@media screen and (max-width: 1600px) {
+    .timeline-content {
+        height: 44vw;
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    .timeline-content-wrapper {
+        top: -3vw;
+    }
+    .timeline-content {
+        width: 660vw;
+        height: 55vw;
+    }
+}
+
+
+@media screen and (max-width: 960px) {
+    
+    .desktop{display: none;}
+	.mobile{display: block;}
+    
+    body{
+        font-size: 3vw;
+    }
+    
+    .font-title{
+        font-size: 10vw;
+        margin-bottom: 0;
+    }
+
+    
+    
+    header {
+        padding: 10px;
+        padding-bottom: 10px;
+    }
+    
+    .logo {
+        width:140px;
+        height:100px;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+    
+    .bio{
+        margin-bottom:0px;
+    }
+    
+        
+    .project-red .bg{
+    font-size: 20vw;
+    line-height: 1em;
+    font-weight: 700;
+    letter-spacing: -0.4vw;
+    }
+    
+.col-md-6{
+    width: 50%;
+    float: left;
+    padding-left:10px;
+}
+
+}
+
+
+        
+
+
