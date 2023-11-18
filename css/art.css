@@ -221,8 +221,8 @@
 }
 
 .fashion-box .window-content img {
-    width:400px;
-  height: 200px;
+    width:300px;
+  height: 300px;
   display: flex;
     background-position: center;
     background-repeat: no-repeat;
@@ -270,6 +270,88 @@
  display: none;
 }
 
+
+/****/
+.fashion-nox .canary-title{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.fashion-nox {
+
+    position: absolute;
+    top: 35vw;
+    background-color: #fff;
+    right: 48vw;
+    text-align: center;
+    border: 4px ridge;
+}
+
+.fashion-nox .link-wrapper {
+    padding: 0 10px;
+    padding-top: 0;
+    text-align: center;
+}
+
+.project-red .fashion-nox .content-title {
+    padding-top: 5px;
+}
+
+.project-red .fashion-nox .link-wrapper a {
+    color: blue;
+    text-decoration: underline;
+}
+
+.fashion-nox .window-content img {
+    width:300px;
+  height: 300px;
+  display: flex;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+ .close-canary {
+    position: absolute;
+    margin-left: 245px;
+    text-align: right;
+    margin-top: -21px;
+    cursor: pointer;
+}
+
+/**/
+.fashion-nox.resize {
+ height: 100vh;
+ width: 50vw;
+ top: 0;
+ left: 0;
+ overflow: hidden;
+}
+
+.fashion-nox.resize .window-content {
+ width: 100% !important;
+}
+
+.fashion-nox.iconize {
+ height: inherit;
+}
+
+.fashion-nox.iconize.image-v {
+ width: 438px;
+}
+
+.fashion-nox.iconize.image-h {
+ width: 558px;
+}
+
+.fashion-nox.iconize .window-content {
+ display: none;
+}
+
+.fashion-nox.iconize .canary-title {
+ display: none;
+}
+
 /****/
 .dog .canary-title{
  margin-top: 5px;
@@ -302,7 +384,7 @@
 
 .dog .window-content img {
  width:300px;
- height: 150px;
+ height: 300px;
  display: flex;
  background-position: center;
  background-repeat: no-repeat;
@@ -528,6 +610,26 @@
 }
 
 .fashion-box .window-content  img{
+  width:100%;
+  display: block;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.fashion-nox{
+  position: inherit !important;
+  display: block;
+  padding-top: 0;
+  padding-bottom: 0;
+  text-align: center;
+  background-color: #fff;
+  margin-left: 20px;
+  margin-right:20px;
+  margin-bottom: 20px;
+}
+
+.fashion-nox .window-content  img{
   width:100%;
   display: block;
   background-position: center;
