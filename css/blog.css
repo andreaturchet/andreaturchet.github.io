@@ -1,0 +1,652 @@
+/*
+  BLOG STYLES - Postmodern Readability
+  Maintains red/black brutalist aesthetic while optimizing for lecture notes
+-------------------------------------------------------------------------------*/
+
+/* ============================================================================
+   BLOG INDEX PAGE STYLES
+   ============================================================================ */
+
+.blog-index-header {
+    padding: 20px 15px 60px;
+    text-align: left;
+}
+
+.blog-index-header .blog-main-title {
+    font-size: 12vw;
+    font-weight: 700;
+    font-family: sans-serif;
+    line-height: 0.9em;
+    letter-spacing: -0.5vw;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.blog-index-header .blog-subtitle {
+    font-family: 'courier-prime.regular', monospace;
+    font-size: 1.1em;
+    line-height: 1.5em;
+    max-width: 600px;
+}
+
+/* Article List */
+.article-list {
+    padding: 0 15px;
+}
+
+.article-card {
+    border-top: 3px solid #000;
+    padding: 30px 0;
+    display: block;
+    text-decoration: none;
+    color: #000;
+    transition: background-color 0.15s ease;
+}
+
+.article-card:hover {
+    background-color: rgba(0, 0, 0, 0.08);
+    padding-left: 15px;
+    margin-left: -15px;
+    padding-right: 15px;
+    margin-right: -15px;
+}
+
+.article-card:last-child {
+    border-bottom: 3px solid #000;
+}
+
+.article-card .article-number {
+    font-family: sans-serif;
+    font-size: 1.5em;
+    font-weight: 700;
+    display: inline-block;
+    width: 60px;
+    vertical-align: top;
+}
+
+.article-card .article-info {
+    display: inline-block;
+    width: calc(100% - 70px);
+    vertical-align: top;
+}
+
+.article-card .article-meta {
+    font-family: 'courier-prime.regular', monospace;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.7;
+}
+
+.article-card .article-title {
+    font-family: sans-serif;
+    font-size: 2em;
+    font-weight: 700;
+    line-height: 1.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.article-card .article-excerpt {
+    font-family: 'courier-prime.regular', monospace;
+    font-size: 0.95em;
+    line-height: 1.5em;
+}
+
+.article-card .read-more {
+    display: inline-block;
+    margin-top: 15px;
+    font-family: sans-serif;
+    font-weight: 700;
+    font-size: 0.9em;
+    border-bottom: 2px dashed #000;
+    text-transform: uppercase;
+}
+
+/* Category Filter */
+.category-filter {
+    padding: 20px 15px;
+    margin-bottom: 20px;
+}
+
+.category-filter span {
+    font-family: 'courier-prime.regular', monospace;
+    font-size: 0.9em;
+    margin-right: 15px;
+    cursor: pointer;
+    text-transform: uppercase;
+    opacity: 0.5;
+    transition: opacity 0.15s ease;
+}
+
+.category-filter span:hover,
+.category-filter span.active {
+    opacity: 1;
+    border-bottom: 2px solid #000;
+}
+
+
+/* ============================================================================
+   ARTICLE PAGE STYLES - Optimized for Lecture Notes
+   ============================================================================ */
+
+.article-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-bottom: 60px;
+}
+
+/* Article Header */
+.article-header {
+    margin-bottom: 50px;
+    padding-bottom: 30px;
+    border-bottom: 5px solid #000;
+}
+
+.article-header .article-meta {
+    font-family: 'courier-prime.regular', monospace;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    letter-spacing: 0.05em;
+}
+
+.article-header .article-category {
+    display: inline-block;
+    background-color: #000;
+    color: #f00;
+    padding: 3px 10px;
+    margin-right: 10px;
+    font-weight: 700;
+}
+
+.article-header h1 {
+    font-family: sans-serif;
+    font-size: 3.5em;
+    font-weight: 700;
+    line-height: 1em;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+}
+
+.article-header .article-abstract {
+    font-family: 'courier-prime.regular', monospace;
+    font-size: 1.1em;
+    line-height: 1.6em;
+    border-left: 5px solid #000;
+    padding-left: 20px;
+    font-style: italic;
+}
+
+/* Article Content - Typography for Reading */
+.article-content {
+    font-family: 'courier-prime.regular', monospace;
+    font-size: 1.05em;
+    line-height: 1.8em;
+    color: #000;
+}
+
+.article-content p {
+    margin-bottom: 1.6em;
+    text-align: justify;
+    hyphens: auto;
+}
+
+/* Headings */
+.article-content h2 {
+    font-family: sans-serif;
+    font-size: 2em;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    padding-left: 20px;
+    border-left: 8px solid #000;
+    line-height: 1.2em;
+}
+
+.article-content h3 {
+    font-family: sans-serif;
+    font-size: 1.4em;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 2em;
+    margin-bottom: 0.8em;
+    position: relative;
+}
+
+.article-content h3::before {
+    content: "//";
+    margin-right: 10px;
+    opacity: 0.5;
+}
+
+.article-content h4 {
+    font-family: sans-serif;
+    font-size: 1.1em;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    text-underline-offset: 4px;
+}
+
+/* Lists */
+.article-content ul,
+.article-content ol {
+    margin-bottom: 1.6em;
+    padding-left: 30px;
+}
+
+.article-content li {
+    margin-bottom: 0.6em;
+    line-height: 1.6em;
+}
+
+.article-content ul li {
+    list-style-type: none;
+    position: relative;
+}
+
+.article-content ul li::before {
+    content: "→";
+    position: absolute;
+    left: -25px;
+    font-weight: bold;
+}
+
+.article-content ol {
+    counter-reset: item;
+}
+
+.article-content ol li {
+    list-style-type: none;
+    counter-increment: item;
+    position: relative;
+}
+
+.article-content ol li::before {
+    content: counter(item) ".";
+    position: absolute;
+    left: -30px;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+/* Code Blocks - Terminal Aesthetic */
+.article-content pre {
+    background-color: #000;
+    color: #0f0;
+    padding: 25px;
+    margin: 2em 0;
+    overflow-x: auto;
+    border: none;
+    font-family: 'courier-prime.regular', Consolas, monospace;
+    font-size: 0.9em;
+    line-height: 1.5em;
+    position: relative;
+}
+
+.article-content pre::before {
+    content: "$ CODE";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #0f0;
+    color: #000;
+    padding: 2px 10px;
+    font-size: 0.75em;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+.article-content code {
+    font-family: 'courier-prime.regular', Consolas, monospace;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 2px 6px;
+}
+
+.article-content pre code {
+    background: none;
+    padding: 0;
+}
+
+/* Blockquotes */
+.article-content blockquote {
+    background-color: #000;
+    color: #f00;
+    padding: 25px 30px;
+    margin: 2em 0;
+    font-style: italic;
+    font-size: 1.1em;
+    line-height: 1.6em;
+    position: relative;
+}
+
+.article-content blockquote::before {
+    content: """;
+    font-size: 4em;
+    font-family: sans-serif;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    opacity: 0.3;
+    line-height: 1;
+}
+
+.article-content blockquote p {
+    margin-bottom: 0;
+}
+
+.article-content blockquote cite {
+    display: block;
+    margin-top: 15px;
+    font-size: 0.85em;
+    font-style: normal;
+    text-align: right;
+}
+
+/* Math (MathJax) */
+.article-content .math-block {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    margin: 2em 0;
+    overflow-x: auto;
+    border-left: 5px solid #000;
+}
+
+/* Tables */
+.article-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2em 0;
+    font-size: 0.95em;
+}
+
+.article-content th,
+.article-content td {
+    border: 2px solid #000;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.article-content th {
+    background-color: #000;
+    color: #f00;
+    font-family: sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.article-content tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Images */
+.article-content img {
+    max-width: 100%;
+    height: auto;
+    margin: 2em 0;
+    border: 5px solid #000;
+}
+
+.article-content figure {
+    margin: 2em 0;
+}
+
+.article-content figcaption {
+    font-size: 0.85em;
+    font-style: italic;
+    margin-top: 10px;
+    padding-left: 15px;
+    border-left: 3px solid #000;
+}
+
+/* Definition/Term Blocks */
+.article-content .definition {
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 2px solid #000;
+    padding: 20px;
+    margin: 2em 0;
+}
+
+.article-content .definition-term {
+    font-family: sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+/* Note/Warning Boxes */
+.article-content .note {
+    background-color: rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    margin: 2em 0;
+    border-left: 5px solid #000;
+}
+
+.article-content .note::before {
+    content: "NOTE:";
+    font-family: sans-serif;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.article-content .warning {
+    background-color: #000;
+    color: #f00;
+    padding: 20px;
+    margin: 2em 0;
+}
+
+.article-content .warning::before {
+    content: "⚠ WARNING:";
+    font-family: sans-serif;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* Links */
+.article-content a {
+    color: #000;
+    text-decoration: none;
+    border-bottom: 2px dashed #000;
+    transition: background-color 0.15s ease;
+}
+
+.article-content a:hover {
+    background-color: #000;
+    color: #f00;
+}
+
+/* Horizontal Rule */
+.article-content hr {
+    border: none;
+    height: 3px;
+    background-color: #000;
+    margin: 3em 0;
+}
+
+/* Table of Contents */
+.toc {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 25px;
+    margin-bottom: 40px;
+    border: 2px solid #000;
+}
+
+.toc-title {
+    font-family: sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.toc ol {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.toc li {
+    margin-bottom: 8px;
+}
+
+.toc a {
+    color: #000;
+    text-decoration: none;
+    border-bottom: 1px dashed #000;
+}
+
+.toc a:hover {
+    background-color: #000;
+    color: #f00;
+}
+
+/* Article Footer */
+.article-footer {
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 3px dashed #000;
+}
+
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.article-nav a {
+    font-family: sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #000;
+    text-decoration: none;
+    border-bottom: 3px solid #000;
+    padding-bottom: 5px;
+    transition: background-color 0.15s ease;
+}
+
+.article-nav a:hover {
+    background-color: #000;
+    color: #f00;
+}
+
+.article-nav .nav-prev::before {
+    content: "← ";
+}
+
+.article-nav .nav-next::after {
+    content: " →";
+}
+
+/* Tags */
+.article-tags {
+    margin-top: 30px;
+}
+
+.article-tags span {
+    display: inline-block;
+    background-color: #000;
+    color: #f00;
+    padding: 5px 12px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    font-family: 'courier-prime.regular', monospace;
+    font-size: 0.85em;
+    text-transform: uppercase;
+}
+
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+
+@media screen and (max-width: 768px) {
+    
+    .blog-index-header .blog-main-title {
+        font-size: 15vw;
+    }
+    
+    .article-card .article-number {
+        display: block;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .article-card .article-info {
+        display: block;
+        width: 100%;
+    }
+    
+    .article-card .article-title {
+        font-size: 1.5em;
+    }
+    
+    .article-container {
+        padding: 15px;
+    }
+    
+    .article-header h1 {
+        font-size: 2.2em;
+    }
+    
+    .article-content {
+        font-size: 1em;
+        line-height: 1.7em;
+    }
+    
+    .article-content h2 {
+        font-size: 1.5em;
+    }
+    
+    .article-content h3 {
+        font-size: 1.2em;
+    }
+    
+    .article-content pre {
+        padding: 20px 15px;
+        padding-top: 35px;
+        font-size: 0.85em;
+    }
+    
+    .article-content blockquote {
+        padding: 20px;
+        padding-left: 25px;
+    }
+    
+    .article-nav {
+        flex-direction: column;
+    }
+    
+    .article-nav a {
+        text-align: center;
+        display: block;
+        padding: 15px;
+        border: 2px solid #000;
+        border-bottom: 3px solid #000;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    
+    .article-header h1 {
+        font-size: 1.8em;
+    }
+    
+    .article-header .article-abstract {
+        font-size: 1em;
+    }
+    
+    .article-content p {
+        text-align: left;
+    }
+}

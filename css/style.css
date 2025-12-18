@@ -46,10 +46,13 @@ mark {background-color: #000; color: #fff; font-style: italic; font-weight: bold
 input:-moz-placeholder { color:#a9a9a9; }
 textarea:-moz-placeholder { color:#a9a9a9; }
 
-.clearafter:after{
-    content: '';
-    display: block;
-    clear: both;
+.clearafter {
+    display: flex;
+    flex-wrap: wrap;
+}
+/* Legacy support or specific clear needs if mixed with floats */
+.clearafter:after {
+    display: none;
 }
 
 .cursor-pointer{
@@ -142,46 +145,21 @@ footer{
 
 
 
-.col-md-2{
-    width: 16.66%;
-    float: left;
+
+.col-md-2{ width: 16.66%; }
+.col-md-3{ width: 25%; }
+.col-md-4{ width: 33.33%; }
+.col-md-6{ width: 50%; }
+.col-md-8{ width: 66.66%; }
+.col-md-9{ width: 75%; }
+.col-md-10{ width: 83.33%; }
+.col-md-12{ width: 100%; }
+
+@media screen and (max-width: 960px) {
+    .col-sm-50{ width: 50%; }
+    .col-sm-100{ width: 100%; }
 }
-.col-md-3{
-    width: 25%;
-    float: left;
-}
-.col-md-4{
-    width: 33.33%;
-    float: left;
-}
-.col-md-6{
-    width: 50%;
-    float: left;
-}
-.col-md-8{
-    width: 66.66%;
-    float: left;
-}
-.col-md-9{
-    width: 75%;
-    float: left;
-}
-.col-md-10{
-    width: 83.33%;
-    float: left;
-}
-.col-md-12{
-    width: 100%;
-    float: left;
-}
-    .col-sm-50{
-        width: 50%;
-        float: left;
-    }
-    .col-sm-100{
-        width: 100%;
-        float: left;
-    }
+
 
 .mobile{display: none;}
 
@@ -210,7 +188,7 @@ footer{
 	.mobile{display: block;}
     
     body{
-        font-size: 3vw;
+        font-size: max(14px, 3vw);
     }
     
     .font-title{
@@ -246,7 +224,6 @@ footer{
     
 .col-md-6{
     width: 50%;
-    float: left;
     padding-left:10px;
 }
 

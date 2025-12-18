@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LECTURE: Understanding Machine Learning Lifecycle — Andrea Turchet</title>
+
+    <meta name="title" content="Understanding Machine Learning Lifecycle">
+    <meta name="description" content="A comprehensive guide to the ML lifecycle, from problem formulation to monitoring and maintenance, contrasting it with traditional SDLC." />
+    <meta name="Copyright" content="Copyright © Andrea Turchet 2024. All Rights Reserved.">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/img/favicon-red.ico"/>
+
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <link rel="stylesheet" href="../css/reset.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/style-project-red.css" />
+    <link rel="stylesheet" href="../css/blog.css" />
+
+    <!-- MathJax for LaTeX support -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body class="home">
+    
+    <header class="clearafter">
+        <div class="col-md-12 col-sm-100">
+            <div class="bio">
+                <a href="index.html" style="color: #000;">&larr; BACK TO INDEX</a>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-100">
+           <a href="../index.html"><img class="logo" src="../assets/images/img/x.gif"></a>
+        </div>
+    </header>
+    
+    <div class="project-red">
+        
+        <div class="article-container">
+            
+            <!-- Article Header -->
+            <header class="article-header">
+                <div class="article-meta">
+                    <span class="article-category">MLOps</span>
+                    2024.12.18
+                </div>
+                <h1>Understanding Machine Learning Lifecycle</h1>
+                <p class="article-abstract">
+                    This chapter explores the machine learning lifecycle, contrasting it with traditional software development methodologies. It navigates the limitations posed by rigid software development practices in the context of machine learning projects. Understanding the iterative nature of the machine learning lifecycle is pivotal for successful ML projects.
+                </p>
+            </header>
+
+            <!-- Table of Contents -->
+            <nav class="toc">
+                <div class="toc-title">Contents</div>
+                <ol>
+                    <li><a href="#intro">Introduction</a></li>
+                    <li><a href="#sdlc">Software Development Lifecycle (SDLC)</a></li>
+                    <li><a href="#limitations">Limitations of SDLC for ML</a></li>
+                    <li><a href="#ml-lifecycle">Machine Learning Lifecycle</a></li>
+                    <li><a href="#case-study">Case Study: Customer Churn Prediction</a></li>
+                    <li><a href="#conclusion">Conclusion</a></li>
+                </ol>
+            </nav>
+
+            <!-- Article Content -->
+            <article class="article-content">
+                
+                <h2 id="intro">1. Introduction</h2>
+                <p>
+                    Understanding the iterative nature of the machine learning lifecycle is pivotal for successful ML projects, ensuring systematic data preparation, model development, deployment, monitoring, and continuous improvement. Unveiling its stages through a real-world case study in customer churn prediction, this chapter showcases practical implications.
+                </p>
+
+                <h2 id="sdlc">2. Software Development Lifecycle (SDLC)</h2>
+                <p>
+                    The traditional software development lifecycle (SDLC) refers to a structured approach to building software systems. It emphasizes a well-defined sequence of phases, each with specific goals and deliverables, that guides the development process from initial planning to final deployment and maintenance.
+                </p>
+
+                <h3>SDLC Phases</h3>
+                <ol>
+                    <li>
+                        <strong>Planning and Requirement Analysis:</strong> Identifying project scope, goals, and stakeholders’ needs.
+                    </li>
+                    <li>
+                        <strong>Defining Requirements:</strong> Documenting specific and detailed requirements (RSD/SRS).
+                    </li>
+                    <li>
+                        <strong>Designing the Product Architecture:</strong> Creating high-level and low-level designs, defining system components and database structure.
+                    </li>
+                    <li>
+                        <strong>Building or Developing the Product:</strong> Actual coding and software component creation.
+                    </li>
+                    <li>
+                        <strong>Product Testing and Integration:</strong> Rigorous testing (unit, integration, system, UAT) to ensure quality.
+                    </li>
+                    <li>
+                        <strong>Deployment and Maintenance:</strong> Deploying to production and ongoing monitoring/bug fixing.
+                    </li>
+                </ol>
+
+                <div class="note">
+                    The Software Development Lifecycle is iterative, and feedback from each stage often feeds back into earlier stages for continuous improvement.
+                </div>
+
+                <h3>SDLC Models</h3>
+                <ul>
+                    <li><strong>Waterfall Model:</strong> Sequential and linear approach.</li>
+                    <li><strong>Agile Model:</strong> Flexible, iterative, focuses on collaboration (sprints, scrums).</li>
+                    <li><strong>V-Model:</strong> Structured model where each development stage has a corresponding testing phase.</li>
+                    <li><strong>Spiral Model:</strong> Combination of waterfall and agile with a focus on risk management.</li>
+                    <li><strong>Prototype Model:</strong> Creating rough versions and refining based on feedback.</li>
+                </ul>
+
+                <h2 id="limitations">3. Limitations of Traditional SDLC for ML</h2>
+                <p>
+                    While traditional methodologies serve well for standard software, they face limitations in ML projects due to the unique nature of ML development:
+                </p>
+
+                <div class="definition">
+                    <div class="definition-term">Rigid Sequential Phases</div>
+                    Traditional phases don't align with the iterative, experimental nature of ML (data collection, training, evaluation cycles).
+                </div>
+
+                <div class="definition">
+                    <div class="definition-term">Changing Requirements</div>
+                    ML projects often have evolving requirements as data quality changes or new insights emerge.
+                </div>
+
+                <div class="definition">
+                    <div class="definition-term">Limited Flexibility</div>
+                    SDLC lacks the flexibility needed for experimenting with various algorithms and feature engineering techniques.
+                </div>
+
+                <div class="definition">
+                    <div class="definition-term">Complexity of Model Validation</div>
+                    ML validation involves not just code but data quality, model accuracy, and performance against diverse datasets.
+                </div>
+
+                <p>
+                    <strong>Example:</strong> In a healthcare predictive model project, a traditional approach might fail if new data reveals insights not captured in original requirements. Iterative improvements would require revisiting earlier stages, causing delays. An agile/iterative ML lifecycle allows for continuous refinement.
+                </p>
+
+                <h2 id="ml-lifecycle">4. Machine Learning Lifecycle</h2>
+                <p>
+                    A successful ML project requires a comprehensive understanding of business objectives, data collection, analysis, model development, and ongoing evaluation. The ML lifecycle is a structured approach helping companies allocate resources efficiently.
+                </p>
+
+                <h3>Step 1: Problem Formulation</h3>
+                <p>
+                    <strong>Identifying the Need:</strong> What are we achieving? Who are we helping? <br>
+                    <strong>Scoping the Problem:</strong> Constraints, limitations, benefits, and risks (ROI). <br>
+                    <strong>Defining the Problem Statement:</strong> What do we want to predict/classify? <br>
+                    <strong>Gather Context:</strong> Research similar projects and talk to domain experts.
+                </p>
+
+                <h3>Step 2: Data Collection</h3>
+                <p>
+                    Involves gathering, acquiring, and preparing relevant datasets. Steps include identifying sources, assessing quality/relevance, ensuring legal compliance, and establishing storage systems.
+                </p>
+
+                <h3>Step 3: Data Preparation</h3>
+                <p>
+                    Cleaning, preprocessing, and transforming raw data.
+                </p>
+                <ul>
+                    <li><strong>Data Analysis and Cleaning:</strong> EDA, handling missing values/outliers.</li>
+                    <li><strong>Data Transformation:</strong> Encoding categorical variables (One-Hot, Label Encoding).</li>
+                    <li><strong>Feature Scaling:</strong> Normalization or Standardization.</li>
+                    <li><strong>Handling Imbalanced Data:</strong> SMOTE, oversampling, undersampling.</li>
+                    <li><strong>Feature Engineering:</strong> Creating new features to enhance predictive power.</li>
+                    <li><strong>Data Splitting:</strong> Train/Validation/Test sets.</li>
+                </ul>
+
+                <h3>Step 4: Model Building</h3>
+                <p>
+                    Selecting algorithms, training models, and optimizing performance.
+                </p>
+                <ul>
+                    <li><strong>Algorithm Selection:</strong> Based on problem type (classification, regression, etc.).</li>
+                    <li><strong>Model Training:</strong> Learning patterns from training data.</li>
+                    <li><strong>Hyperparameter Tuning:</strong> Grid search, random search to optimize parameters.</li>
+                    <li><strong>Cross-Validation:</strong> Assessing robustness (k-fold).</li>
+                </ul>
+
+                <h3>Step 5: Model Evaluation</h3>
+                <p>
+                    Assessing performance using metrics like Accuracy, Precision, Recall, F1-score (Classification) or MAE, MSE, RMSE (Regression). Checks for overfitting/underfitting and benchmarking against baselines.
+                </p>
+
+                <h3>Step 6: Model Deployment</h3>
+                <p>
+                    Integrating models into production. Involves environment setup (Docker, Cloud), API creation, scalability planning, and security implementation.
+                </p>
+
+                <h3>Step 7: Model Monitoring and Maintenance</h3>
+                <p>
+                    Continuous oversight in production.
+                </p>
+                <ul>
+                    <li><strong>Real-Time Monitoring:</strong> Tracking accuracy, latency, drift.</li>
+                    <li><strong>Data/Model Drift Detection:</strong> Detecting shifts in input data or model performance.</li>
+                    <li><strong>Retraining:</strong> Scheduled updates with new data.</li>
+                </ul>
+
+              
+                <h2 id="conclusion">6. Conclusion</h2>
+                <p>
+                    The ML lifecycle is dynamic and distinct from traditional software development. It requires a comprehensive approach covering problem formulation, data handling, modeling, and continuous maintenance. The iterative nature ensures models remain effective in evolving real-world scenarios.
+                </p>
+
+            </article>
+
+            <!-- Article Footer -->
+            <footer class="article-footer">
+                
+                <div class="article-tags">
+                    <span>MLOps</span>
+                    <span>Machine Learning</span>
+                    <span>Lifecycle</span>
+                    <span>SDLC</span>
+                    <span>Data Science</span>
+                </div>
+
+                <nav class="article-nav">
+                    <a href="index.html" class="nav-prev">Back to Index</a>
+                </nav>
+
+            </footer>
+
+        </div>
+
+        <!-- Page Footer -->
+        <div class="asterisk clearafter">
+            <div class="col-md-6 col-sm-100 text-center">*Copyright 2024 Andrea Turchet</div>
+        </div>
+        
+    </div>
+
+</body>
+</html>
