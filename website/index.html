@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Papel — The Social Network for Researchers</title>
+  <meta name="description"
+    content="Discover, read, and engage with academic papers. AI-powered summaries, quizzes, and a community of researchers — all in one beautiful app.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="assets/papel-logo.png" type="image/png">
+</head>
+
+<body>
+
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav glass-panel" id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <img src="assets/papel-logo.png" alt="Papel" class="nav-logo-img" width="36" height="36" decoding="async" />
+        <span class="logo-text">Papel</span>
+      </a>
+      <div class="nav-links">
+        <a href="../index.html" class="nav-home-link">← Home</a>
+        <a href="#features">Features</a>
+      </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="../index.html">← Home</a>
+      <a href="#features">Features</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="hero-line">Research papers.</span>
+        <span class="hero-line accent">Made social.</span>
+        <span class="hero-line">Made <em>beautiful.</em></span>
+      </h1>
+      <p class="hero-subtitle">Discover the right papers, understand them faster, and stay close to the conversations
+        shaping your field.</p>
+      <div class="hero-ctas">
+        <a href="#features" class="btn btn-primary btn-lg">
+          See Features
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M7 17l9.2-9.2M17 17V7H7" />
+          </svg>
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">2M+</span><span class="stat-label">Papers indexed</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">100%</span><span class="stat-label">On-device AI</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">Free</span><span class="stat-label">No subscriptions</span></div>
+      </div>
+    </div>
+    <div class="hero-phone-wrap">
+      <div class="phone-device phone-device--real-screenshot" id="heroPhone">
+        <div class="phone-screen phone-screen--screenshot">
+          <img src="assets/screenshot-feed.png" alt="Papel feed showing a paper card" class="phone-screenshot"
+            width="1179" height="2556" decoding="async" fetchpriority="high" />
+        </div>
+      </div>
+      <div class="phone-glow"></div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="section-header">
+      <span class="section-tag glass-pill">FEATURES</span>
+      <h2 class="section-title">Everything you need to<br><span class="accent">stay on the cutting edge</span></h2>
+      <p class="section-desc">From personalized discovery to AI-powered understanding &mdash; Papel transforms how you
+        interact with academic research.</p>
+    </div>
+
+    <div class="feature-grid">
+      <!-- Feature 1: Feed -->
+      <div class="feature-card glass-card reveal">
+        <div class="feature-card-inner">
+          <div class="feature-info">
+            <span class="feature-tag">DISCOVERY</span>
+            <h3>A feed that knows<br>what you're researching</h3>
+            <p>Papers ranked by your interests, trending topics, freshness, and community engagement. Choose a feed mode
+              in Settings when you want Latest instead of recommendations.</p>
+            <ul class="feature-list">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>Vector-similarity powered recommendations</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>Full-screen immersive paper cards</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>Never see the same paper twice</li>
+            </ul>
+          </div>
+          <div class="feature-visual">
+            <div class="mini-phone mini-phone--shot">
+              <div class="mini-phone-screen mini-phone-screen--shot">
+                <img src="assets/screenshot-feed.png" alt="Papel feed" class="mini-shot-img mini-shot-img--feed"
+                  width="400" height="867" loading="lazy" decoding="async" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 2: AI Chat -->
+      <div class="feature-card glass-card reveal">
+        <div class="feature-card-inner">
+          <div class="feature-info">
+            <span class="feature-tag">AI CHAT</span>
+            <h3>Talk to any paper.<br>Get instant answers.</h3>
+            <p>Ask questions about any paper and get grounded answers from the full PDF &mdash; powered entirely
+              on-device using Apple Intelligence or local MLX models.</p>
+            <ul class="feature-list">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>RAG pipeline over full PDF text</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>100% on-device — your data never leaves</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>Apple Intelligence or local MLX backend</li>
+            </ul>
+          </div>
+          <div class="feature-visual">
+            <div class="mini-phone mini-phone--shot">
+              <div class="mini-phone-screen mini-phone-screen--shot">
+                <img src="assets/screenshot-chat-paper.png" alt="Chatting with a paper in Papel"
+                  class="mini-shot-img mini-shot-img--chat" width="472" height="1024" loading="lazy" decoding="async" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 3: Quiz -->
+      <div class="feature-card glass-card reveal">
+        <div class="feature-card-inner">
+          <div class="feature-info">
+            <span class="feature-tag">GAMIFICATION</span>
+            <h3>Test your knowledge.<br>Earn XP. Level up.</h3>
+            <p>AI-generated quizzes on every paper. Score perfectly to earn +50 XP, maintain streaks, and climb the
+              academic ranks from Undergrad to Nobel Laureate.</p>
+            <ul class="feature-list">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>3-question quizzes per paper</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>XP, streaks & academic ranks</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>Master papers to track expertise</li>
+            </ul>
+          </div>
+          <div class="feature-visual">
+            <div class="mini-phone mini-phone--shot">
+              <div class="mini-phone-screen mini-phone-screen--shot">
+                <img src="assets/screenshot-quiz-paper.png" alt="Knowledge quiz in Papel"
+                  class="mini-shot-img mini-shot-img--quiz" width="472" height="1024" loading="lazy" decoding="async" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 4: Social -->
+      <div class="feature-card glass-card reveal">
+        <div class="feature-card-inner">
+          <div class="feature-info">
+            <span class="feature-tag">COMMUNITY</span>
+            <h3>Connect with<br>fellow researchers</h3>
+            <p>Like and comment on papers, share discoveries with colleagues via direct messages, and build your
+              academic profile in a community that values knowledge.</p>
+            <ul class="feature-list">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>Likes, comments & shares</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>Direct messages between researchers</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>Academic profile & rank badges</li>
+            </ul>
+          </div>
+          <div class="feature-visual">
+            <div class="mini-phone mini-phone--shot">
+              <div class="mini-phone-screen mini-phone-screen--shot">
+                <img src="assets/screenshot-comments.png" alt="Comments in Papel"
+                  class="mini-shot-img mini-shot-img--social" width="400" height="867" loading="lazy"
+                  decoding="async" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><a href="#" class="nav-logo"><img src="assets/papel-logo.png" alt="Papel"
+            class="nav-logo-img" width="36" height="36" decoding="async" /><span class="logo-text">Papel</span></a>
+        <p>The social network for researchers. Discover, learn, and connect &mdash; all in one beautiful app.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Product</h4><a href="#features">Features</a>
+        </div>
+        <div class="footer-col">
+          <h4>Andrea Turchet</h4><a href="../index.html">Personal Website</a><a
+            href="https://www.linkedin.com/in/andrea-turchet-90a303229/" target="_blank">LinkedIn</a>
+        </div>
+        <div class="footer-col">
+          <h4>Community</h4><a href="https://mobile.twitter.com/ciwrl99" target="_blank">Twitter / X</a><a
+            href="https://github.com/andreaturchet" target="_blank">GitHub</a><a href="https://www.instagram.com/ciwrl/"
+            target="_blank">Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Papel. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
