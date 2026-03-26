@@ -9,7 +9,7 @@
   --papel-coral: #ED4540;
   --papel-burgundy: #4D0D1F;
   --papel-burgundy-light: #8C1F26;
-  --device-shot-ratio: 1179 / 2556;
+  --device-shot-ratio: 472 / 1024;
 
   --glass-bg: rgba(255, 255, 255, 0.06);
   --glass-border: rgba(255, 255, 255, 0.12);
@@ -370,6 +370,13 @@ ul {
   display: flex;
 }
 
+.nav:has(.mobile-menu.open) {
+  border-radius: var(--radius-lg);
+  background: rgba(10, 6, 16, 0.85);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+}
+
 .mobile-menu a {
   font-size: 0.95rem;
   font-weight: 500;
@@ -498,7 +505,6 @@ ul {
 .phone-device {
   position: relative;
   width: 300px;
-  aspect-ratio: var(--device-shot-ratio);
   padding: 9px;
   background:
     linear-gradient(180deg, #3b3b43 0%, #17171c 20%, #0b0b0f 50%, #18181d 100%);
@@ -553,7 +559,6 @@ ul {
 .phone-screen {
   position: relative;
   width: 100%;
-  height: 100%;
   border-radius: 43px;
   overflow: hidden;
   box-shadow:
@@ -571,9 +576,7 @@ ul {
 
 .phone-screenshot {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top center;
+  height: auto;
   display: block;
 }
 
@@ -604,36 +607,9 @@ ul {
 }
 
 .mini-shot-img {
-  --shot-focus-x: 50%;
-  --shot-focus-y: 0%;
-  --shot-scale: 1;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: var(--shot-focus-x) var(--shot-focus-y);
+  height: auto;
   display: block;
-  transform: scale(var(--shot-scale));
-  transform-origin: var(--shot-focus-x) var(--shot-focus-y);
-}
-
-.mini-shot-img--feed {
-  --shot-focus-y: 0%;
-  --shot-scale: 1;
-}
-
-.mini-shot-img--chat {
-  --shot-focus-y: 0%;
-  --shot-scale: 1;
-}
-
-.mini-shot-img--quiz {
-  --shot-focus-y: 0%;
-  --shot-scale: 1;
-}
-
-.mini-shot-img--social {
-  --shot-focus-y: 0%;
-  --shot-scale: 1;
 }
 
 .mini-phone--shot::before {
@@ -1221,7 +1197,6 @@ button.glass-circle-btn {
 
 .mini-phone {
   width: 212px;
-  aspect-ratio: var(--device-shot-ratio);
   padding: 7px;
   background: linear-gradient(180deg, #34343b 0%, #141419 30%, #0a0a0d 100%);
   border-radius: 38px;
@@ -1251,7 +1226,6 @@ button.glass-circle-btn {
 }
 
 .mini-phone-screen {
-  height: 100%;
   border-radius: 31px;
   overflow: hidden;
 }
