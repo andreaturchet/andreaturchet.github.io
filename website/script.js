@@ -125,4 +125,161 @@
     requestAnimationFrame(tick);
   }
 
+  // ---- Waitlist (Supabase RPC with anti-spam) ----
+
+  const SUPABASE_URL = 'https://sbjagbilaweoimgnmlje.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiamFnYmlsYXdlb2ltZ25tbGplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNjUxMDQsImV4cCI6MjA3Nzg0MTEwNH0.URPSiuvygUmpoN6OMVYKoAqCFnZ8rWXJWc_EhYF0oQ4';
+
+  const waitlistForm = document.getElementById('waitlistForm');
+  const waitlistEmail = document.getElementById('waitlistEmail');
+  const waitlistMsg = document.getElementById('waitlistMsg');
+  const waitlistBtn = document.getElementById('waitlistBtn');
+  const waitlistHp = document.getElementById('waitlistHp');
+  let waitlistCooldown = 0;
+
+  waitlistForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = waitlistEmail.value.trim();
+    if (!email) return;
+
+    if (waitlistCooldown > Date.now()) {
+      waitlistMsg.textContent = 'Please wait a moment before trying again.';
+      waitlistMsg.className = 'waitlist-msg error';
+      return;
+    }
+
+    waitlistBtn.disabled = true;
+    waitlistBtn.textContent = 'Joining\u2026';
+    waitlistMsg.textContent = '';
+    waitlistMsg.className = 'waitlist-msg';
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/join_waitlist`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({
+          p_email: email,
+          p_hp: waitlistHp?.value || ''
+        })
+      });
+
+      if (!res.ok) throw new Error(res.statusText);
+
+      const data = await res.json();
+
+      if (data.ok) {
+        waitlistMsg.textContent = data.existing
+          ? "You\u2019re already on the waitlist!"
+          : "You\u2019re on the list! We\u2019ll email you on launch day.";
+        waitlistMsg.className = 'waitlist-msg success';
+        waitlistEmail.value = '';
+        waitlistCooldown = Date.now() + 30000;
+      } else if (data.error === 'rate_limit') {
+        waitlistMsg.textContent = 'Too many signups right now. Please try again in a few minutes.';
+        waitlistMsg.className = 'waitlist-msg error';
+        waitlistCooldown = Date.now() + 60000;
+      } else if (data.error === 'disposable_email') {
+        waitlistMsg.textContent = 'Please use a non-disposable email address.';
+        waitlistMsg.className = 'waitlist-msg error';
+      } else if (data.error === 'invalid_email') {
+        waitlistMsg.textContent = 'Please enter a valid email address.';
+        waitlistMsg.className = 'waitlist-msg error';
+      } else {
+        throw new Error('unexpected');
+      }
+    } catch {
+      waitlistMsg.textContent = 'Something went wrong. Please try again.';
+      waitlistMsg.className = 'waitlist-msg error';
+    } finally {
+      waitlistBtn.disabled = false;
+      waitlistBtn.textContent = 'Join Waitlist';
+    }
+  });
+
+  // ---- Analytics (under the hood) ----
+
+  function trackEvent(event, meta = {}) {
+    const payload = {
+      event,
+      meta,
+      path: location.pathname + location.hash,
+      referrer: document.referrer || null,
+      screen: `${screen.width}x${screen.height}`
+    };
+    fetch(`${SUPABASE_URL}/rest/v1/site_events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(() => {});
+  }
+
+  trackEvent('page_view', {
+    ua: navigator.userAgent,
+    lang: navigator.language
+  });
+
+  const sections = document.querySelectorAll('section[id]');
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        trackEvent('section_view', { section: entry.target.id });
+        sectionObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  sections.forEach(s => sectionObserver.observe(s));
+
+  document.querySelectorAll('.btn, .app-store-btn, .testflight-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      trackEvent('cta_click', {
+        text: btn.textContent.trim().substring(0, 60),
+        href: btn.getAttribute('href') || null
+      });
+    });
+  });
+
+  const scrollMarks = new Set();
+  window.addEventListener('scroll', () => {
+    const scrollPct = Math.round(
+      (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100
+    );
+    [25, 50, 75, 100].forEach(mark => {
+      if (scrollPct >= mark && !scrollMarks.has(mark)) {
+        scrollMarks.add(mark);
+        trackEvent('scroll_depth', { depth: mark });
+      }
+    });
+  }, { passive: true });
+
+  const timeMarks = [10, 30, 60, 120];
+  let timeIdx = 0;
+  const pageStart = Date.now();
+  const timeInterval = setInterval(() => {
+    if (timeIdx >= timeMarks.length) { clearInterval(timeInterval); return; }
+    const elapsed = Math.round((Date.now() - pageStart) / 1000);
+    if (elapsed >= timeMarks[timeIdx]) {
+      trackEvent('time_on_page', { seconds: timeMarks[timeIdx] });
+      timeIdx++;
+    }
+  }, 5000);
+
+  let exitTracked = false;
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden' && !exitTracked) {
+      exitTracked = true;
+      const totalSeconds = Math.round((Date.now() - pageStart) / 1000);
+      trackEvent('page_exit', { total_seconds: totalSeconds });
+    }
+  });
+
 })();

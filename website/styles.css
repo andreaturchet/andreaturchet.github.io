@@ -2795,46 +2795,95 @@ button.glass-circle-btn {
   color: var(--text-tertiary);
 }
 
-/* ---- Coming Soon Section ---- */
+/* ---- Waitlist Section ---- */
 
-.coming-soon {
+.waitlist {
   position: relative;
   z-index: 1;
   padding: 40px 40px 80px;
+  display: flex;
+  justify-content: center;
 }
 
-.coming-soon-card {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 64px 48px;
+.waitlist-inner {
+  max-width: 600px;
+  width: 100%;
   text-align: center;
+  padding: 56px 48px;
   position: relative;
-  overflow: hidden;
 }
 
-.coming-soon-title {
+.waitlist-title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
   line-height: 1.15;
-  font-weight: 400;
   margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
-.coming-soon-title .accent {
+.waitlist-title .accent {
   background: linear-gradient(135deg, var(--papel-lilac), var(--papel-coral));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.coming-soon-desc {
-  font-size: 1.1rem;
+.waitlist-desc {
+  font-size: 1rem;
   color: var(--text-secondary);
   line-height: 1.7;
+  margin-bottom: 32px;
   max-width: 540px;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+.waitlist-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.waitlist-input-wrap {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 460px;
+}
+
+.waitlist-input-wrap input {
+  flex: 1;
+  padding: 14px 20px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: white;
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.waitlist-input-wrap input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.waitlist-input-wrap input:focus {
+  border-color: var(--papel-lilac);
+}
+
+.waitlist-msg {
+  font-size: 0.85rem;
+  min-height: 1.2em;
+  color: var(--text-secondary);
+  transition: color 0.3s;
+}
+
+.waitlist-msg.success { color: #2ecc71; }
+.waitlist-msg.error { color: #e74c3c; }
 
 /* ---- Hero Scroll Arrow ---- */
 
@@ -3062,6 +3111,8 @@ button.glass-circle-btn {
     gap: 32px;
   }
 
+  .waitlist { padding: 40px 20px 80px; }
+
   .mission-quote {
     padding: 28px;
   }
@@ -3101,4 +3152,7 @@ button.glass-circle-btn {
   .values-grid {
     grid-template-columns: 1fr;
   }
+
+  .waitlist-inner { padding: 40px 24px; }
+  .waitlist-input-wrap { flex-direction: column; }
 }

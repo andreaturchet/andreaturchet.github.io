@@ -33,16 +33,19 @@
         <span class="logo-text">Papel</span>
       </a>
       <div class="nav-links">
-        <a href="../index.html" class="nav-home-link">← Home</a>
+        <a href="../index.html" class="nav-home-link">&larr; Home</a>
         <a href="#features">Features</a>
+        <a href="#waitlist">Waitlist</a>
       </div>
+      <a href="#waitlist" class="btn btn-primary btn-sm">Join Waitlist</a>
       <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
-      <a href="../index.html">← Home</a>
+      <a href="../index.html">&larr; Home</a>
       <a href="#features">Features</a>
+      <a href="#waitlist" class="btn btn-primary">Join Waitlist</a>
     </div>
   </nav>
 
@@ -227,12 +230,20 @@
 
 
 
-  <!-- Coming Soon -->
-  <section class="coming-soon" id="coming-soon">
-    <div class="coming-soon-card glass-card reveal">
+  <!-- Waitlist -->
+  <section class="waitlist" id="waitlist">
+    <div class="waitlist-inner glass-card reveal">
       <span class="section-tag glass-pill">COMING SOON</span>
-      <h2 class="coming-soon-title">Launching in <span class="accent">2026</span></h2>
-      <p class="coming-soon-desc">Papel is currently in development. Stay tuned for the official release &mdash; the future of academic research starts here.</p>
+      <h2 class="waitlist-title">Launching in <span class="accent">2026</span></h2>
+      <p class="waitlist-desc">Be the first to know when Papel hits the App Store. Drop your email and we'll notify you on launch day.</p>
+      <form class="waitlist-form" id="waitlistForm">
+        <div class="waitlist-input-wrap">
+          <input type="email" id="waitlistEmail" placeholder="you@mail.com" required autocomplete="email" />
+          <button type="submit" class="btn btn-primary btn-lg" id="waitlistBtn">Join Waitlist</button>
+        </div>
+        <input type="text" name="company_url" id="waitlistHp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;overflow:hidden;" />
+        <p class="waitlist-msg" id="waitlistMsg"></p>
+      </form>
     </div>
   </section>
 
