@@ -240,14 +240,14 @@
       <h2 class="waitlist-title">Launching in <span class="accent">2026</span></h2>
       <p class="waitlist-desc">Be the first to know when Papel hits the App Store. Drop your email and we'll notify you on launch day.</p>
       <form class="waitlist-form" id="waitlistForm">
-        <div class="waitlist-stage is-success" id="waitlistStage">
-          <div class="waitlist-active" id="waitlistActive" aria-hidden="true" style="display:none;">
+        <div class="waitlist-stage" id="waitlistStage">
+          <div class="waitlist-active" id="waitlistActive" aria-hidden="false">
             <div class="waitlist-input-wrap">
               <input type="email" id="waitlistEmail" placeholder="you@mail.com" required autocomplete="email" />
               <button type="submit" class="btn btn-primary btn-lg" id="waitlistBtn">Join Waitlist</button>
             </div>
           </div>
-          <div class="waitlist-done" id="waitlistDone" style="display:flex; opacity:1; transform:scale(1) translateY(0); filter:blur(0); pointer-events:auto; visibility:visible;">
+          <div class="waitlist-done" id="waitlistDone" hidden aria-hidden="true">
             <div class="waitlist-thanks-pillow btn btn-primary btn-lg" id="waitlistThanksPillow">
               <span class="waitlist-thanks-text">Thanks! 🎮 Play</span>
             </div>
