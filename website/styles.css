@@ -3675,3 +3675,35 @@ button.glass-circle-btn {
     font-size: 2.5rem;
   }
 }
+
+.game-credits {
+  padding: 12px 24px;
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center;
+}
+
+.game-credits p {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0;
+}
+
+.game-credits a {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.game-credits a:hover {
+  color: #fff;
+}
+
+@media (max-width: 480px) {
+  .game-credits {
+    padding: 10px 16px;
+  }
+  .game-credits p {
+    font-size: 0.7rem;
+  }
+}

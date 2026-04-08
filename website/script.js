@@ -44,9 +44,19 @@
     }
 
     // 3D scroll animation on hero phone — one-shot, locks at end state
-    if (heroPhone && !heroAnimDone) {
-      const scrollRange = window.innerHeight * 0.6;
-      const progress = Math.min(Math.max(sy / scrollRange, 0), 1);
+    if (heroPhone && !heroAnimDone && heroPhoneWrap) {
+      const rect = heroPhoneWrap.getBoundingClientRect();
+      const winH = window.innerHeight;
+      
+      // Start animating when the phone's top is at 80% of viewport
+      // End when the phone's center reaches the middle of the viewport
+      const startTrigger = winH * 0.85;
+      const endTrigger = winH * 0.35;
+      
+      let progress = 0;
+      if (rect.top <= startTrigger) {
+        progress = Math.min(Math.max((startTrigger - rect.top) / (startTrigger - endTrigger), 0), 1);
+      }
 
       const rotateX = 20 * (1 - progress);
       // On mobile skip scale animation — phone should fill the glass wrapper
