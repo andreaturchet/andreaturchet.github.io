@@ -3383,3 +3383,295 @@ button.glass-circle-btn {
   .waitlist-input-wrap { flex-direction: column; }
   .waitlist-thanks-pillow { width: 100%; min-width: 0; }
 }
+
+/* ============================================
+   ACADEMIC BIRD GAME
+   ============================================ */
+
+.game-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.game-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.game-modal[hidden] {
+  display: none;
+}
+
+.game-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 6, 16, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.game-container {
+  position: relative;
+  z-index: 1;
+  width: 90%;
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.game-header {
+  padding: 20px 24px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+}
+
+.game-header h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.8rem;
+  color: #fff;
+  margin: 0 0 4px;
+}
+
+.game-subtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.game-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.game-close-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.game-canvas-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  max-height: 70vh;
+  background: linear-gradient(180deg, #1a1428 0%, #0d0a12 100%);
+}
+
+#gameCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.game-start-screen,
+.game-over-screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  background: rgba(10, 6, 16, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: opacity 0.3s ease;
+}
+
+.game-start-screen[hidden],
+.game-over-screen[hidden] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.game-bird-preview {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: birdFloat 2s ease-in-out infinite;
+}
+
+.game-bird-preview-img {
+  width: min(112px, 70vw);
+  height: auto;
+  border-radius: 10px;
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
+  object-fit: cover;
+}
+
+@keyframes birdFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.game-start-screen h4,
+.game-over-screen h4 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.6rem;
+  color: #fff;
+  margin: 0 0 12px;
+}
+
+.game-start-screen p {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.game-score {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Instrument Serif', serif;
+  font-size: 3rem;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.game-score.visible {
+  opacity: 1;
+}
+
+.game-final-score,
+.game-best-score {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 8px 0;
+}
+
+.game-best-score {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1rem;
+}
+
+.game-final-score span,
+.game-best-score span {
+  font-weight: 700;
+  color: #667eea;
+}
+
+.game-over-screen .btn {
+  margin-top: 16px;
+}
+
+/* Waitlist thanks pillow - make it clickable (overrides pointer-events: none above) */
+.waitlist-thanks-pillow {
+  cursor: pointer;
+  position: relative;
+  pointer-events: auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.waitlist-thanks-pillow:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+}
+
+.waitlist-thanks-pillow::after {
+  content: '🎮 Click to play!';
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.waitlist-stage.is-success .waitlist-thanks-pillow:hover::after {
+  opacity: 1;
+}
+
+/* Responsive adjustments for game */
+@media (max-width: 768px) {
+  .game-container {
+    width: 95%;
+    max-width: none;
+  }
+
+  .game-header h3 {
+    font-size: 1.5rem;
+  }
+
+  .game-start-screen h4,
+  .game-over-screen h4 {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-header {
+    padding: 16px 20px;
+  }
+
+  .game-header h3 {
+    font-size: 1.3rem;
+  }
+
+  .game-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .game-close-btn {
+    width: 32px;
+    height: 32px;
+    top: 12px;
+    right: 12px;
+  }
+
+  .game-start-screen,
+  .game-over-screen {
+    padding: 20px;
+  }
+
+  .game-start-screen h4,
+  .game-over-screen h4 {
+    font-size: 1.2rem;
+  }
+
+  .game-start-screen p {
+    font-size: 0.85rem;
+  }
+
+  .game-score {
+    font-size: 2.5rem;
+  }
+}

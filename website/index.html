@@ -240,16 +240,16 @@
       <h2 class="waitlist-title">Launching in <span class="accent">2026</span></h2>
       <p class="waitlist-desc">Be the first to know when Papel hits the App Store. Drop your email and we'll notify you on launch day.</p>
       <form class="waitlist-form" id="waitlistForm">
-        <div class="waitlist-stage" id="waitlistStage">
-          <div class="waitlist-active" id="waitlistActive">
+        <div class="waitlist-stage is-success" id="waitlistStage">
+          <div class="waitlist-active" id="waitlistActive" aria-hidden="true" style="display:none;">
             <div class="waitlist-input-wrap">
               <input type="email" id="waitlistEmail" placeholder="you@mail.com" required autocomplete="email" />
               <button type="submit" class="btn btn-primary btn-lg" id="waitlistBtn">Join Waitlist</button>
             </div>
           </div>
-          <div class="waitlist-done" id="waitlistDone" hidden aria-hidden="true">
+          <div class="waitlist-done" id="waitlistDone" style="display:flex; opacity:1; transform:scale(1) translateY(0); filter:blur(0); pointer-events:auto; visibility:visible;">
             <div class="waitlist-thanks-pillow btn btn-primary btn-lg" id="waitlistThanksPillow">
-              <span class="waitlist-thanks-text">Thanks!</span>
+              <span class="waitlist-thanks-text">Thanks! 🎮 Play</span>
             </div>
           </div>
         </div>
@@ -258,6 +258,36 @@
       </form>
     </div>
   </section>
+
+  <!-- Academic Bird Game Modal -->
+  <div class="game-modal" id="gameModal" hidden aria-hidden="true">
+    <div class="game-overlay" id="gameOverlay"></div>
+    <div class="game-container">
+      <div class="game-header">
+        <h3>📄 Attention Bird</h3>
+        <p class="game-subtitle">Navigate through research papers!</p>
+        <button class="game-close-btn" id="gameCloseBtn" aria-label="Close game">✕</button>
+      </div>
+      <div class="game-canvas-wrap">
+        <canvas id="gameCanvas"></canvas>
+        <div class="game-start-screen" id="gameStartScreen">
+          <div class="game-bird-preview">
+            <img src="assets/game/bird-attention.png" alt="" class="game-bird-preview-img" width="96" height="72" decoding="async" />
+          </div>
+          <h4>Attention Is All You Need</h4>
+          <p>Dodge real paper thumbnails &mdash; tap, click, or Space!</p>
+          <button class="btn btn-primary btn-lg" id="gameStartBtn">Start Game</button>
+        </div>
+        <div class="game-score" id="gameScore">0</div>
+        <div class="game-over-screen" id="gameOverScreen" hidden>
+          <h4>Game Over!</h4>
+          <p class="game-final-score">Score: <span id="finalScore">0</span></p>
+          <p class="game-best-score">Best: <span id="bestScore">0</span></p>
+          <button class="btn btn-primary btn-lg" id="gameRestartBtn">Play Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="footer">
