@@ -78,6 +78,9 @@
     <div class="hero-phone-wrap">
       <div class="phone-device phone-device--real-screenshot" id="heroPhone">
         <div class="phone-screen phone-screen--screenshot">
+          <div class="phone-splash" id="phoneSplash">
+            <img src="assets/papel-logo.png" alt="Papel" class="phone-splash-logo" />
+          </div>
           <img src="assets/screenshot-feed.png" alt="Papel feed showing a paper card" class="phone-screenshot"
             width="1179" height="2556" decoding="async" fetchpriority="high" />
         </div>
@@ -237,12 +240,21 @@
       <h2 class="waitlist-title">Launching in <span class="accent">2026</span></h2>
       <p class="waitlist-desc">Be the first to know when Papel hits the App Store. Drop your email and we'll notify you on launch day.</p>
       <form class="waitlist-form" id="waitlistForm">
-        <div class="waitlist-input-wrap">
-          <input type="email" id="waitlistEmail" placeholder="you@mail.com" required autocomplete="email" />
-          <button type="submit" class="btn btn-primary btn-lg" id="waitlistBtn">Join Waitlist</button>
+        <div class="waitlist-stage" id="waitlistStage">
+          <div class="waitlist-active" id="waitlistActive">
+            <div class="waitlist-input-wrap">
+              <input type="email" id="waitlistEmail" placeholder="you@mail.com" required autocomplete="email" />
+              <button type="submit" class="btn btn-primary btn-lg" id="waitlistBtn">Join Waitlist</button>
+            </div>
+          </div>
+          <div class="waitlist-done" id="waitlistDone" hidden aria-hidden="true">
+            <div class="waitlist-thanks-pillow btn btn-primary btn-lg" id="waitlistThanksPillow">
+              <span class="waitlist-thanks-text">Thanks!</span>
+            </div>
+          </div>
         </div>
         <input type="text" name="company_url" id="waitlistHp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;overflow:hidden;" />
-        <p class="waitlist-msg" id="waitlistMsg"></p>
+        <p class="waitlist-msg" id="waitlistMsg" aria-live="polite"></p>
       </form>
     </div>
   </section>

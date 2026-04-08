@@ -11,7 +11,11 @@
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   const mobileMenu = document.getElementById('mobileMenu');
   const heroPhoneWrap = document.querySelector('.hero-phone-wrap');
-  const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+  const heroPhone = heroPhoneWrap?.querySelector('.phone-device');
+  const phoneSplash = document.getElementById('phoneSplash');
+  let isMobile = window.innerWidth <= 768;
+  let heroAnimDone = false;
+  window.addEventListener('resize', () => { isMobile = window.innerWidth <= 768; });
 
   // ---- Mobile menu ----
 
@@ -39,13 +43,26 @@
       nav.style.borderColor = '';
     }
 
-    // Parallax on hero phone (desktop only)
-    if (heroPhoneWrap && isDesktop) {
-      const rect = heroPhoneWrap.getBoundingClientRect();
-      const centerY = rect.top + rect.height / 2;
-      const viewCenter = window.innerHeight / 2;
-      const offset = (centerY - viewCenter) * 0.06;
-      heroPhoneWrap.style.transform = `translateY(${offset}px)`;
+    // 3D scroll animation on hero phone — one-shot, locks at end state
+    if (heroPhone && !heroAnimDone) {
+      const scrollRange = window.innerHeight * 0.6;
+      const progress = Math.min(Math.max(sy / scrollRange, 0), 1);
+
+      const rotateX = 20 * (1 - progress);
+      // On mobile skip scale animation — phone should fill the glass wrapper
+      const scaleFrom = isMobile ? 1 : 1.05;
+      const scaleTo = isMobile ? 1 : 1;
+      const scale = scaleFrom + (scaleTo - scaleFrom) * progress;
+
+      heroPhone.style.transform =
+        `rotateX(${rotateX}deg) scale(${scale})`;
+
+      // Fade out splash and lock final state once animation completes
+      if (progress >= 1) {
+        heroAnimDone = true;
+        heroPhone.style.transform = `rotateX(0deg) scale(${scaleTo})`;
+        if (phoneSplash) phoneSplash.classList.add('fade-out');
+      }
     }
 
     ticking = false;
@@ -131,6 +148,9 @@
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNiamFnYmlsYXdlb2ltZ25tbGplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNjUxMDQsImV4cCI6MjA3Nzg0MTEwNH0.URPSiuvygUmpoN6OMVYKoAqCFnZ8rWXJWc_EhYF0oQ4';
 
   const waitlistForm = document.getElementById('waitlistForm');
+  const waitlistStage = document.getElementById('waitlistStage');
+  const waitlistActive = document.getElementById('waitlistActive');
+  const waitlistDone = document.getElementById('waitlistDone');
   const waitlistEmail = document.getElementById('waitlistEmail');
   const waitlistMsg = document.getElementById('waitlistMsg');
   const waitlistBtn = document.getElementById('waitlistBtn');
@@ -153,6 +173,8 @@
     waitlistMsg.textContent = '';
     waitlistMsg.className = 'waitlist-msg';
 
+    let submitSucceeded = false;
+
     try {
       const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/join_waitlist`, {
         method: 'POST',
@@ -172,10 +194,18 @@
       const data = await res.json();
 
       if (data.ok) {
+        submitSucceeded = true;
+        waitlistStage?.classList.add('is-success');
+        if (waitlistDone) {
+          waitlistDone.hidden = false;
+          waitlistDone.setAttribute('aria-hidden', 'false');
+        }
+        waitlistActive?.setAttribute('aria-hidden', 'true');
+
         waitlistMsg.textContent = data.existing
           ? "You\u2019re already on the waitlist!"
           : "You\u2019re on the list! We\u2019ll email you on launch day.";
-        waitlistMsg.className = 'waitlist-msg success';
+        waitlistMsg.className = 'waitlist-msg success waitlist-msg--enter';
         waitlistEmail.value = '';
         waitlistCooldown = Date.now() + 30000;
       } else if (data.error === 'rate_limit') {
@@ -195,8 +225,10 @@
       waitlistMsg.textContent = 'Something went wrong. Please try again.';
       waitlistMsg.className = 'waitlist-msg error';
     } finally {
-      waitlistBtn.disabled = false;
-      waitlistBtn.textContent = 'Join Waitlist';
+      if (!submitSucceeded) {
+        waitlistBtn.disabled = false;
+        waitlistBtn.textContent = 'Join Waitlist';
+      }
     }
   });
 
