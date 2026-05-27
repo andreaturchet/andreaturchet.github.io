@@ -1,3 +1,7 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
 <title>ANDREA TURCHET</title>
 
 	<meta name="title" content="Andrea Turchet">
@@ -12,9 +16,9 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0' />
 	<link rel="stylesheet" href="css/reset.css" />
 	<link rel="stylesheet" href="css/style.css" />
-	<link rel="stylesheet" href="css/style-project-red.css?v=202605262236" />
+	<link rel="stylesheet" href="css/style-project-red.css?v=202605271125" />
 
-    <meta property="og:title" content="Andrea Turchet />
+    <meta property="og:title" content="Andrea Turchet" />
     <meta property="og:url" content="https://andreaturchet.github.io"/>
     <meta property="og:image" content="assets/images/bio.png"/>
 
@@ -39,13 +43,13 @@
     </header>
     
     <div class="project-red">
-              <div class="tpace" >"It has become appallingly obvious that our technology<br>&nbsp;&nbsp;has exceeded our humanity."&nbsp;---->A.Einstein
+              <div class="tpace" >"It has become appallingly<br class="mobile"> obvious that our technology<br>&nbsp;&nbsp;has exceeded our humanity."<br class="mobile">&nbsp;---->A.Einstein
             </div>
             <div class="med-p">WELCOME IN MY WORLD
             </div>
          <div class="ae"><img  src="assets/images/img/a.gif"></div>
         <div class="claim text-center">
-            <div class="bg">ART STORE
+            <div class="bg">ART <br class="mobile">STORE
             </div>
             </div>
             
@@ -57,12 +61,16 @@
         
         <div class="dollars-wrapper clearafter">
             <div class="text-center donate-cta"><a href="assets/crypto/c.html" >OPEN ART STORE</a><br></div>
-            
+
         </div>
         
          <div class="project-red">
-             <div class="sf">PAPEL — THE SOCIAL NETWORK FOR RESEARCHERS</div>
+             <div class="sf">PAPEL — THE SOCIAL <br class="mobile">NETWORK <br class="mobile">FOR RESEARCHERS</div>
             </div>
+        <div class="project-meta">
+            <span>Independent AI product</span>
+            <span>On-device AI</span>
+        </div>
         <div class="description">
             Papel is a social network for researchers. Discover, read, and engage with academic papers through AI-powered summaries, 
             quizzes, and a community of researchers — all in one beautiful app. Built with on-device AI for complete privacy.
@@ -74,6 +82,10 @@
         <div class="project-red">
              <div class="sf">BLOG</div>
         </div>
+        <div class="project-meta">
+            <span>Independent writing</span>
+            <span>Research notes</span>
+        </div>
         <div class="description">
             A space for my thoughts, research notes, and articles about technology, art, and everything in between.
         </div>
@@ -82,8 +94,33 @@
         </div>
 
         <div class="project-red">
+             <div class="sf">AUTOMATED REASONING</div>
+            </div>
+        <div class="project-meta">
+            <span>University of Udine</span>
+            <span>ASP</span>
+            <span>MiniZinc</span>
+            <span>Clingo</span>
+        </div>
+        <div class="description">
+            This project studies the "Seats in Room" problem as a declarative optimization task, where students must be partitioned into groups and assigned to seats under social, spatial, and relaxable constraints.
+            I modeled the problem with Answer Set Programming using Clingo and Constraint Programming using MiniZinc/Gecode, precomputing Euclidean seat distances to avoid non-linear solver overhead during search.
+            The report compares optimization hierarchies, search heuristics, timeout behavior, and solution quality, showing how conflict-driven ASP solving scales better on tightly constrained logical instances while lightweight CP heuristics remain useful as a reproducible baseline.
+            </div>
+              <div class="project-actions clearafter">
+            <div class="text-center"><a class="project-link" href="assets/pdf/automated-reasoning-seats-in-room.pdf" target="_blank">Technical report PDF</a><br></div>
+
+        </div>
+
+        <div class="project-red">
              <div class="sf">FEW-SHOT SEMANTIC SEGMENTATION</div>
             </div>
+        <div class="project-meta">
+            <span>University of Klagenfurt</span>
+            <span>Computer Vision</span>
+            <span>SegGPT</span>
+            <span>SAM2</span>
+        </div>
         <div class="description">
             This project investigates few-shot semantic segmentation for industrial visual inspection, focusing on semiconductor wafer defect images where labeled masks are scarce and domain expertise is costly.
             The work combines a technical literature review of conditional networks, prototype-based methods, latent-space optimization, contrastive learning, and vision foundation models with the implementation of a generalist Transformer-based segmentation pipeline.
@@ -97,6 +134,11 @@
          <div class="project-red">
              <div class="sf">COMPUTER VISION</div>
             </div>
+        <div class="project-meta">
+            <span>University of Klagenfurt</span>
+            <span>VLM survey</span>
+            <span>Multimodal AI</span>
+        </div>
         <div class="description">
            This research provides a small but complete (at least, I tried) overview and analysis of the rapidly evolving field of Visual Language Models (VLMs). 
           It’s hard to miss the exponential growth in Vision-Language Models (VLMs) since Radford et al. dropped CLIP back in 2021 (you can literally see it in Figure 1 of the paper).
@@ -112,6 +154,11 @@
         <div class="project-red">
              <div class="sf">ADVANCED DATA SCIENCE</div>
             </div>
+        <div class="project-meta">
+            <span>University of Udine</span>
+            <span>Energy data</span>
+            <span>Data science</span>
+        </div>
         <div class="description">
             Nuclear energy emerged out of atomic science advancements during WWII and enjoyed several decades of significant expansion to address industrializing nations’ energy demands. Over many years, 
             nuclear energy saw significant growth worldwide; countries invested heavily in nuclear infrastructure, using its power to drive advancements in cities, medicine, and industry.
@@ -127,6 +174,11 @@
         <div class="project-red">
              <div class="sf">BACHELOR DEGREE RESEARCH THESIS</div>
             </div>
+        <div class="project-meta">
+            <span>Universitat Politècnica de València</span>
+            <span>University of Udine</span>
+            <span>Deep Learning</span>
+        </div>
         <div class="description">
             During 10 months spent in Spain for the Erasmus experience I worked on a research project with the title 'Predicting the reactivity pulse values of a TRIGA nuclear reactor, a neural networks 
             approach'. This research aims to develop and apply a neural network in the field of nuclear engineering; using Deep Learning algorithms it is possible to increase 
@@ -141,6 +193,11 @@
         <div class="project-red">
              <div class="sf">DATA SCIENCE</div>
             </div>
+        <div class="project-meta">
+            <span>University of Udine</span>
+            <span>Statistical analysis</span>
+            <span>COVID-19</span>
+        </div>
         <div class="description">
             Data science is an exciting discipline that allows you to turn raw data into understanding, insight, and knowledge. **Hadley Wickham**</br>
             In june 2021 I shared my data science project concerning the psychological effects of the covid-19 pandemic throughout a specific lockdown period, entitled 'covidstress-project'.
@@ -154,6 +211,11 @@
         <div class="project-red">
              <div class="sf">MACHINE LEARNING</div>
             </div>
+        <div class="project-meta">
+            <span>University of Udine</span>
+            <span>Supervised learning</span>
+            <span>Classification</span>
+        </div>
         <div class="description">
             Between May and June 2022 I participated in a team competition proposed by the machine learning course teacher in which the goal was to use machine learning techniques 
             and models to seek a solution to the problem of Income Prediction. My team won the competition, achieving an accuracy value of 0.87 using supervised learning techniques.
@@ -172,6 +234,12 @@
          <div class="project-red">
              <div class="sf">STUDIES IN THE ROBOTIC FIELD</div>
             </div>
+        <div class="project-meta">
+            <span>Universitat Politècnica de València</span>
+            <span>Robotics</span>
+            <span>Kalman filters</span>
+            <span>PID control</span>
+        </div>
         <div class="description">
             In Erasmus I took a university course in autonomous robotic in which as a final exam with my team we presented a project entitled "Development of a Robot for Hazardous Environment Tasks";
             within the course we completed several tasks including the development of Kalman and particle
