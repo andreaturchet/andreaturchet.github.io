@@ -352,23 +352,25 @@ padding-bottom: 40px;
     }
 
     .project-red .ae{
-        display:none;
-        height:0;
-        width:0;
+        display:block;
+        height:auto;
+        width:min(34vw, 132px);
         padding:0;
-        margin:0;
+        margin:0 0 48px calc(100vw - min(34vw, 132px) - 22px);
         float:none;
+        mix-blend-mode: normal;
     }
     
     .project-red .tpace{
-        padding:10px;
+        padding:0 16px 0 70px;
         float:none;
         display:block;
-        font-size:3.5vw;
-        margin:20px 0 100px;
-        width: 100%;
-        max-width: 100%;
-        text-align:center;
+        font-size:clamp(13px, 3.45vw, 16px);
+        line-height:1.05em;
+        margin:4px 0 12px;
+        width: 100vw;
+        max-width: none;
+        text-align:right;
         overflow-wrap: anywhere;
     }
     
@@ -378,7 +380,7 @@ padding-bottom: 40px;
        font-weight: 700;
        font-family: sans-serif;
        padding-left: 10px;   
-       padding-bottom: 10vw;
+       padding-bottom: 6vw;
 }
 
     .project-red .row{
