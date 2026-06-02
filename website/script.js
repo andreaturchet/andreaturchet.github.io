@@ -13,10 +13,35 @@
   const heroPhoneWrap = document.querySelector('.hero-phone-wrap');
   const heroPhone = heroPhoneWrap?.querySelector('.phone-device');
   const phoneSplash = document.getElementById('phoneSplash');
-  let isMobile = window.innerWidth <= 768;
+  const mobileQuery = window.matchMedia('(max-width: 768px)');
+  const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let isMobile = mobileQuery.matches;
+  let prefersReducedMotion = reducedMotionQuery.matches;
   let heroAnimDone = false;
-  window.addEventListener('resize', () => { isMobile = window.innerWidth <= 768; });
   const clamp01 = (value) => Math.min(Math.max(value, 0), 1);
+  const runWhenIdle = (fn, timeout = 2500) => {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(fn, { timeout });
+    } else {
+      window.setTimeout(fn, Math.min(timeout, 1000));
+    }
+  };
+
+  function syncMediaFlags() {
+    isMobile = mobileQuery.matches;
+    prefersReducedMotion = reducedMotionQuery.matches;
+  }
+
+  function bindMediaQuery(query) {
+    if (query.addEventListener) {
+      query.addEventListener('change', syncMediaFlags);
+    } else if (query.addListener) {
+      query.addListener(syncMediaFlags);
+    }
+  }
+
+  bindMediaQuery(mobileQuery);
+  bindMediaQuery(reducedMotionQuery);
 
   // ---- Mobile menu ----
 
@@ -36,16 +61,16 @@
     const sy = window.scrollY;
 
     // Nav background
-    if (sy > 80) {
+    if (nav && sy > 80) {
       nav.style.background = 'rgba(10, 6, 16, 0.75)';
       nav.style.borderColor = 'rgba(255,255,255,0.08)';
-    } else {
+    } else if (nav) {
       nav.style.background = '';
       nav.style.borderColor = '';
     }
 
     // 3D scroll animation on hero phone — tied to phone viewport entry.
-    if (heroPhone && !heroAnimDone) {
+    if (heroPhone && !heroAnimDone && !prefersReducedMotion) {
       const wrapRect = heroPhoneWrap?.getBoundingClientRect();
       const viewportH = window.innerHeight || document.documentElement.clientHeight;
 
@@ -56,9 +81,9 @@
       const progress = clamp01((startLine - phoneTop) / (startLine - endLine));
 
       const rotateX = 20 * (1 - progress);
-      // On mobile skip scale animation — phone should fill the glass wrapper
+      // On mobile skip scale animation — phone should fill the glass wrapper.
       const scaleFrom = isMobile ? 1 : 1.05;
-      const scaleTo = isMobile ? 1 : 1;
+      const scaleTo = 1;
       const scale = scaleFrom + (scaleTo - scaleFrom) * progress;
 
       heroPhone.style.transform =
@@ -77,6 +102,9 @@
     ticking = false;
   }
 
+  syncMediaFlags();
+  onScroll();
+
   window.addEventListener('scroll', () => {
     if (!ticking) {
       requestAnimationFrame(onScroll);
@@ -87,16 +115,20 @@
   // ---- Scroll Reveal ----
 
   const revealEls = document.querySelectorAll('.reveal');
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  if ('IntersectionObserver' in window && !prefersReducedMotion) {
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
 
-  revealEls.forEach(el => revealObserver.observe(el));
+    revealEls.forEach(el => revealObserver.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('visible'));
+  }
 
   // ---- Smooth Nav Links ----
 
@@ -108,7 +140,7 @@
       if (target) {
         e.preventDefault();
         const y = target.getBoundingClientRect().top + window.scrollY - 80;
-        window.scrollTo({ top: y, behavior: 'smooth' });
+        window.scrollTo({ top: y, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
         history.pushState(null, '', href);
       }
     });
@@ -117,26 +149,28 @@
   // ---- Animated Counter for Hero Stats ----
 
   const statNums = document.querySelectorAll('.stat-num');
-  const statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        const text = el.textContent;
-        if (text.includes('+')) {
-          const num = parseInt(text);
-          animateCounter(el, 0, num, 1500, '+');
-        } else if (text.includes('%')) {
-          const num = parseInt(text);
-          animateCounter(el, 0, num, 1500, '%');
+  if ('IntersectionObserver' in window && !prefersReducedMotion) {
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const text = el.textContent;
+          if (text.includes('+')) {
+            const num = parseInt(text);
+            animateCounter(el, 0, num, 1500, '+');
+          } else if (text.includes('%')) {
+            const num = parseInt(text);
+            animateCounter(el, 0, num, 1500, '%');
+          }
+          statsObserver.unobserve(el);
         }
-        statsObserver.unobserve(el);
-      }
-    });
-  }, { threshold: 0.5 });
+      });
+    }, { threshold: 0.5 });
 
-  statNums.forEach(el => {
-    if (el.textContent !== 'Free') statsObserver.observe(el);
-  });
+    statNums.forEach(el => {
+      if (el.textContent !== 'Free') statsObserver.observe(el);
+    });
+  }
 
   function animateCounter(el, start, end, duration, suffix) {
     const startTime = performance.now();
@@ -164,29 +198,92 @@
   const waitlistMsg = document.getElementById('waitlistMsg');
   const waitlistBtn = document.getElementById('waitlistBtn');
   const waitlistHp = document.getElementById('waitlistHp');
+  const WAITLIST_TIMEOUT_MS = 10000;
+  const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   let waitlistCooldown = 0;
 
-  waitlistForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = waitlistEmail.value.trim();
-    if (!email) return;
+  function setWaitlistMessage(text, state = '') {
+    if (!waitlistMsg) return;
+    waitlistMsg.textContent = text;
+    waitlistMsg.className = state ? `waitlist-msg ${state}` : 'waitlist-msg';
+  }
 
-    if (waitlistCooldown > Date.now()) {
-      waitlistMsg.textContent = 'Please wait a moment before trying again.';
-      waitlistMsg.className = 'waitlist-msg error';
+  function setWaitlistLoading(isLoading) {
+    if (!waitlistBtn) return;
+    waitlistBtn.disabled = isLoading;
+    waitlistBtn.setAttribute('aria-busy', isLoading ? 'true' : 'false');
+    waitlistBtn.textContent = isLoading ? 'Joining\u2026' : 'Join Waitlist';
+  }
+
+  function showWaitlistError(error) {
+    if (error === 'rate_limit') {
+      setWaitlistMessage('Too many signups right now. Please try again in a few minutes.', 'error');
+      waitlistCooldown = Date.now() + 60000;
       return;
     }
 
-    waitlistBtn.disabled = true;
-    waitlistBtn.textContent = 'Joining\u2026';
-    waitlistMsg.textContent = '';
-    waitlistMsg.className = 'waitlist-msg';
+    if (error === 'disposable_email') {
+      setWaitlistMessage('Please use a non-disposable email address.', 'error');
+      return;
+    }
+
+    if (error === 'invalid_email') {
+      setWaitlistMessage('Please enter a valid email address.', 'error');
+      return;
+    }
+
+    setWaitlistMessage('Something went wrong. Please try again.', 'error');
+  }
+
+  async function fetchWithTimeout(url, options, timeoutMs) {
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+      window.clearTimeout(timeoutId);
+    }
+  }
+
+  async function readJsonSafe(response) {
+    try {
+      return await response.json();
+    } catch {
+      return null;
+    }
+  }
+
+  waitlistForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = waitlistEmail.value.trim().toLowerCase();
+
+    if (!email) {
+      waitlistEmail.focus();
+      return;
+    }
+
+    if (email.length > 254 || !EMAIL_PATTERN.test(email) || !waitlistEmail.checkValidity()) {
+      showWaitlistError('invalid_email');
+      waitlistEmail.focus();
+      return;
+    }
+
+    if (waitlistCooldown > Date.now()) {
+      setWaitlistMessage('Please wait a moment before trying again.', 'error');
+      return;
+    }
+
+    setWaitlistLoading(true);
+    setWaitlistMessage('');
 
     let submitSucceeded = false;
 
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/join_waitlist`, {
+      const res = await fetchWithTimeout(`${SUPABASE_URL}/rest/v1/rpc/join_waitlist`, {
         method: 'POST',
+        cache: 'no-store',
+        credentials: 'omit',
         headers: {
           'Content-Type': 'application/json',
           'apikey': SUPABASE_ANON_KEY,
@@ -196,14 +293,22 @@
           p_email: email,
           p_hp: waitlistHp?.value || ''
         })
-      });
+      }, WAITLIST_TIMEOUT_MS);
 
-      if (!res.ok) throw new Error(res.statusText);
+      const data = await readJsonSafe(res);
 
-      const data = await res.json();
+      if (!res.ok) {
+        const error = data?.error || (res.status === 429 ? 'rate_limit' : res.status === 400 ? 'invalid_email' : null);
+        if (error) {
+          showWaitlistError(error);
+          return;
+        }
+        throw new Error(`waitlist_http_${res.status}`);
+      }
 
-      if (data.ok) {
+      if (data?.ok) {
         submitSucceeded = true;
+        setWaitlistLoading(false);
         waitlistStage?.classList.add('is-success');
         if (waitlistDone) {
           waitlistDone.hidden = false;
@@ -211,39 +316,30 @@
         }
         waitlistActive?.setAttribute('aria-hidden', 'true');
 
-        waitlistMsg.textContent = data.existing
+        setWaitlistMessage(data.existing
           ? "You\u2019re already on the waitlist!"
-          : "You\u2019re on the list! We\u2019ll email you on launch day.";
-        waitlistMsg.className = 'waitlist-msg success waitlist-msg--enter';
+          : "You\u2019re on the list! We\u2019ll email you on launch day.", 'success waitlist-msg--enter');
         waitlistEmail.value = '';
         waitlistCooldown = Date.now() + 30000;
-      } else if (data.error === 'rate_limit') {
-        waitlistMsg.textContent = 'Too many signups right now. Please try again in a few minutes.';
-        waitlistMsg.className = 'waitlist-msg error';
-        waitlistCooldown = Date.now() + 60000;
-      } else if (data.error === 'disposable_email') {
-        waitlistMsg.textContent = 'Please use a non-disposable email address.';
-        waitlistMsg.className = 'waitlist-msg error';
-      } else if (data.error === 'invalid_email') {
-        waitlistMsg.textContent = 'Please enter a valid email address.';
-        waitlistMsg.className = 'waitlist-msg error';
       } else {
-        throw new Error('unexpected');
+        showWaitlistError(data?.error || 'unexpected');
       }
-    } catch {
-      waitlistMsg.textContent = 'Something went wrong. Please try again.';
-      waitlistMsg.className = 'waitlist-msg error';
+    } catch (error) {
+      const isTimeout = error?.name === 'AbortError';
+      setWaitlistMessage(
+        isTimeout ? 'The connection is taking too long. Please try again.' : 'Something went wrong. Please try again.',
+        'error'
+      );
     } finally {
       if (!submitSucceeded) {
-        waitlistBtn.disabled = false;
-        waitlistBtn.textContent = 'Join Waitlist';
+        setWaitlistLoading(false);
       }
     }
   });
 
   // ---- Analytics (under the hood) ----
 
-  function trackEvent(event, meta = {}) {
+  function trackEvent(event, meta = {}, options = {}) {
     const payload = {
       event,
       meta,
@@ -251,34 +347,48 @@
       referrer: document.referrer || null,
       screen: `${screen.width}x${screen.height}`
     };
-    fetch(`${SUPABASE_URL}/rest/v1/site_events`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify(payload),
-      keepalive: true
-    }).catch(() => {});
+
+    const send = () => {
+      if (!navigator.onLine) return;
+
+      fetch(`${SUPABASE_URL}/rest/v1/site_events`, {
+        method: 'POST',
+        cache: 'no-store',
+        credentials: 'omit',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(payload),
+        keepalive: true
+      }).catch(() => {});
+    };
+
+    if (options.immediate) {
+      send();
+    } else {
+      runWhenIdle(send);
+    }
   }
 
   trackEvent('page_view', {
-    ua: navigator.userAgent,
     lang: navigator.language
   });
 
   const sections = document.querySelectorAll('section[id]');
-  const sectionObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        trackEvent('section_view', { section: entry.target.id });
-        sectionObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.3 });
-  sections.forEach(s => sectionObserver.observe(s));
+  if ('IntersectionObserver' in window) {
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          trackEvent('section_view', { section: entry.target.id });
+          sectionObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    sections.forEach(s => sectionObserver.observe(s));
+  }
 
   document.querySelectorAll('.btn, .app-store-btn, .testflight-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -309,18 +419,19 @@
 
   const GAME_ASSET_BASE = 'assets/game/';
   const birdPageImg = new Image();
+  birdPageImg.decoding = 'async';
   const obstaclePages = [
     { img: new Image(), file: 'covers/bert.png', name: 'BERT' },
     { img: new Image(), file: 'covers/resnet.png', name: 'ResNet' },
     { img: new Image(), file: 'covers/gpt3.png', name: 'GPT-3' }
   ];
-  birdPageImg.src = GAME_ASSET_BASE + 'bird-attention.png';
-  obstaclePages.forEach((o) => { o.img.src = GAME_ASSET_BASE + o.file; });
+  obstaclePages.forEach((o) => { o.img.decoding = 'async'; });
+  let gameAssetsStarted = false;
 
   let gameCtx = null;
   let gameRunning = false;
   let gameScore = 0;
-  let bestScore = parseInt(localStorage.getItem('academicBirdBest') || '0');
+  let bestScore = readBestScore();
   let animationId = null;
 
   const GRAVITY = 0.5;
@@ -342,8 +453,32 @@
     return img && img.complete && img.naturalWidth > 0;
   }
 
+  function readBestScore() {
+    try {
+      return parseInt(localStorage.getItem('academicBirdBest') || '0', 10);
+    } catch {
+      return 0;
+    }
+  }
+
+  function writeBestScore(score) {
+    try {
+      localStorage.setItem('academicBirdBest', score.toString());
+    } catch {
+      // Storage can be unavailable in private browsing; the game still works.
+    }
+  }
+
+  function loadGameAssets() {
+    if (gameAssetsStarted) return;
+    gameAssetsStarted = true;
+    birdPageImg.src = GAME_ASSET_BASE + 'bird-attention.png';
+    obstaclePages.forEach((o) => { o.img.src = GAME_ASSET_BASE + o.file; });
+  }
+
   function openGame() {
     if (!gameModal) return;
+    loadGameAssets();
     gameModal.hidden = false;
     gameModal.classList.add('active');
     gameModal.setAttribute('aria-hidden', 'false');
@@ -370,7 +505,7 @@
   function resizeCanvas() {
     if (!gameCanvas || !gameCtx) return;
     const rect = gameCanvas.parentElement.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const w = Math.max(1, rect.width);
     const h = Math.max(1, rect.height);
     gameCanvas.width = Math.floor(w * dpr);
@@ -407,6 +542,7 @@
   }
 
   function startGame() {
+    loadGameAssets();
     if (gameStartScreen) gameStartScreen.hidden = true;
     if (gameOverScreen) gameOverScreen.hidden = true;
     if (gameScoreEl) gameScoreEl.classList.add('visible');
@@ -510,7 +646,7 @@
 
     if (gameScore > bestScore) {
       bestScore = gameScore;
-      localStorage.setItem('academicBirdBest', bestScore.toString());
+      writeBestScore(bestScore);
     }
 
     if (finalScoreEl) finalScoreEl.textContent = gameScore;
@@ -692,15 +828,22 @@
   });
 
   const scrollMarks = new Set();
+  let scrollDepthTicking = false;
   window.addEventListener('scroll', () => {
-    const scrollPct = Math.round(
-      (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100
-    );
-    [25, 50, 75, 100].forEach(mark => {
-      if (scrollPct >= mark && !scrollMarks.has(mark)) {
-        scrollMarks.add(mark);
-        trackEvent('scroll_depth', { depth: mark });
-      }
+    if (scrollDepthTicking) return;
+    scrollDepthTicking = true;
+
+    requestAnimationFrame(() => {
+      const scrollPct = Math.round(
+        (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100
+      );
+      [25, 50, 75, 100].forEach(mark => {
+        if (scrollPct >= mark && !scrollMarks.has(mark)) {
+          scrollMarks.add(mark);
+          trackEvent('scroll_depth', { depth: mark });
+        }
+      });
+      scrollDepthTicking = false;
     });
   }, { passive: true });
 
@@ -721,7 +864,7 @@
     if (document.visibilityState === 'hidden' && !exitTracked) {
       exitTracked = true;
       const totalSeconds = Math.round((Date.now() - pageStart) / 1000);
-      trackEvent('page_exit', { total_seconds: totalSeconds });
+      trackEvent('page_exit', { total_seconds: totalSeconds }, { immediate: true });
     }
   });
 

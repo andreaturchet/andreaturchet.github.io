@@ -83,6 +83,18 @@ ul {
   list-style: none;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---- Background Orbs ---- */
 
 .bg-orbs {
@@ -1118,6 +1130,8 @@ button.glass-circle-btn {
   position: relative;
   z-index: 1;
   padding: 120px 40px;
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 1800px;
 }
 
 .section-header {
@@ -1167,6 +1181,8 @@ button.glass-circle-btn {
 .feature-card {
   padding: 48px;
   transition: transform 0.6s var(--ease-out-expo), opacity 0.6s var(--ease-out-expo);
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 620px;
 }
 
 .feature-card-inner {
@@ -2777,6 +2793,8 @@ button.glass-circle-btn {
   z-index: 1;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   padding: 60px 40px 0;
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 320px;
 }
 
 .footer-inner {
@@ -2843,6 +2861,8 @@ button.glass-circle-btn {
   padding: 40px 40px 80px;
   display: flex;
   justify-content: center;
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 520px;
 }
 
 .waitlist-inner {
@@ -3705,5 +3725,38 @@ button.glass-circle-btn {
   }
   .game-credits p {
     font-size: 0.7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .orb,
+  .phone-glow,
+  .hero-scroll-arrow {
+    animation: none !important;
+  }
+
+  .reveal,
+  .hero-badges,
+  .hero-title,
+  .hero-subtitle,
+  .hero-ctas,
+  .hero-stats,
+  .hero-phone-wrap {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .hero-phone-wrap .phone-device {
+    transform: none !important;
+    will-change: auto;
   }
 }
