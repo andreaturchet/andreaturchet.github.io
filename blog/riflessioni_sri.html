@@ -214,7 +214,7 @@
 <p>During the nuclear race, the danger of the bomb was evident, but each actor feared that the other might get there first. In such a context, prudence becomes vulnerability. Stopping can seem morally right and strategically suicidal at the same time. It is this tension that makes many calls for a technological pause fragile: they presuppose a level of mutual trust that competition continually tends to erode.</p>
 <p>With artificial intelligence this dynamic could be even more complex, because the actors are not only states. There are private companies, research laboratories, military apparatuses, universities, investors, open-source communities, democratic governments and authoritarian governments. Each moves with different incentives, but almost all share a similar pressure: not to fall behind. Whoever develops better models can obtain economic advantage. Whoever automates research can accelerate innovation. Whoever integrates artificial systems into infrastructures can increase productivity, surveillance, military capacity, geopolitical influence.</p>
 <p>In this context, the question "can we stop?" becomes less simple than it seems. The recognition of risk by some is not enough, just as the isolated decision of a single laboratory to slow down is not enough. If others continue, the slowing of one becomes the advantage of another. For this reason, global pauses, while rational on the abstract level, become extremely difficult on the practical one: they require verification, trust, international coordination, credible sanctions, and a shared definition of what must be slowed down.</p>
-<p>I do not want to surrender to cynicism. It would be too easy, in fact, to say that man is competitive and therefore every attempt at governance is useless. Institutions exist precisely to contain impulses, coordinate interests, create constraints where individual will alone is not enough. But it would be naive to think that the safety of artificial intelligence can depend only on the goodwill of those who develop it. When a technology becomes an infrastructure of power, morality must reckon with incentive.</p>
+<p>I do not want to surrender to cynicism. It would be too easy, in fact, to say that humans are competitive and therefore every attempt at governance is useless. Institutions exist precisely to contain impulses, coordinate interests, create constraints where individual will alone is not enough. But it would be naive to think that the safety of artificial intelligence can depend only on the goodwill of those who develop it. When a technology becomes an infrastructure of power, morality must reckon with incentive.</p>
 <p>And here the thread of the whole argument returns. Artificial intelligence could accelerate thought, compress the time of research, modify the economic value of human labor, and produce a growing quantity of possibilities before societies are ready to absorb them. But our way of deciding remains slow, conflictual, political. We have machines that could run faster and faster, and institutions that move with the uncertain step of human negotiation.</p>
 <p>This is the part I find most unsettling. We might understand the risk, discuss it, describe it precisely, write regulations, propose pauses, imagine treaties. But understanding a risk does not automatically mean having the political strength to escape the dynamic that produces it.</p>
 
@@ -309,6 +309,20 @@
                 }
             };
 
+            function getLanguageFromUrl() {
+                var query = /[?&]lang=(en|it)\b/i.exec(window.location.search);
+                if (query) {
+                    return query[1].toLowerCase();
+                }
+
+                var hash = (window.location.hash || '').replace('#', '').toLowerCase();
+                if (hash === 'en' || hash === 'it') {
+                    return hash;
+                }
+
+                return null;
+            }
+
             try {
                 window.localStorage.setItem('blog-upvote-storage-test', '1');
                 window.localStorage.removeItem('blog-upvote-storage-test');
@@ -316,6 +330,11 @@
                 currentTheme = window.localStorage.getItem(themeKey) || currentTheme;
             } catch (error) {
                 storageAvailable = false;
+            }
+
+            var urlLanguage = getLanguageFromUrl();
+            if (urlLanguage) {
+                currentLanguage = urlLanguage;
             }
 
             function readNumber(key) {
