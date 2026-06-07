@@ -565,6 +565,291 @@
     text-transform: uppercase;
 }
 
+/* Philosophical essay layout */
+.article-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.language-switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: 2px solid #000;
+    font-family: 'courier-prime.regular', monospace;
+}
+
+.language-option {
+    min-width: 38px;
+    min-height: 30px;
+    border: 0;
+    border-right: 2px solid #000;
+    background: transparent;
+    color: #000;
+    font-family: 'courier-prime.regular', monospace;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.language-option:last-child {
+    border-right: 0;
+}
+
+.language-option:hover,
+.language-option.is-active {
+    background: #000;
+    color: #f00;
+}
+
+/* Theme switcher — sits beside the language switcher, mirrors its styling */
+.theme-switcher {
+    display: inline-flex;
+    align-items: center;
+    border: 2px solid #000;
+}
+
+.theme-option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    min-height: 30px;
+    padding: 0 7px;
+    border: 0;
+    border-right: 2px solid #000;
+    background: transparent;
+    cursor: pointer;
+}
+
+.theme-option:last-child {
+    border-right: 0;
+}
+
+.theme-swatch {
+    display: block;
+    width: 15px;
+    height: 15px;
+    border: 2px solid #000;
+}
+
+.theme-option-red .theme-swatch {
+    background: #f00;
+}
+
+.theme-option-light .theme-swatch {
+    background: #f4f1ea;
+}
+
+.theme-option:hover,
+.theme-option.is-active {
+    background: #000;
+}
+
+.theme-option:hover .theme-swatch,
+.theme-option.is-active .theme-swatch {
+    border-color: #f00;
+}
+
+/* Show only the active language panel. The panels are <article> elements,
+   and reset.css sets `article { display: block }`, which (being an author
+   rule) overrides the browser's default `[hidden] { display: none }`. This
+   higher-specificity rule restores the hidden behaviour, so switching to EN
+   leaves only the EN version on the page. */
+.language-panel[hidden] {
+    display: none;
+}
+
+.thought-article {
+    max-width: 920px;
+    padding-top: 10px;
+}
+
+.thought-header {
+    border-bottom: none;
+    margin-bottom: 28px;
+    padding-bottom: 0;
+}
+
+.thought-header h1 {
+    font-size: clamp(3.6rem, 8.5vw, 7.8rem);
+    line-height: 0.9;
+    max-width: 900px;
+    margin-bottom: 26px;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.thought-header .article-abstract {
+    max-width: 720px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.22rem;
+    line-height: 1.55;
+    font-style: normal;
+    border-left: 4px solid #000;
+}
+
+.article-hero-media {
+    margin: 12px 0 58px;
+}
+
+.article-hero-media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 0;
+    filter: grayscale(0.15) contrast(1.05);
+}
+
+.article-hero-media figcaption {
+    max-width: 680px;
+    margin-top: 12px;
+    font-family: 'courier-prime.regular', monospace;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    opacity: 0.78;
+    border-left: 3px solid #000;
+    padding-left: 12px;
+}
+
+.thought-content {
+    max-width: 760px;
+    margin: 0 auto;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.08rem;
+    line-height: 1.78;
+}
+
+.thought-content p {
+    text-align: left;
+    margin-bottom: 1.45em;
+}
+
+.thought-content h2 {
+    margin-top: 3.2em;
+    margin-bottom: 1.15em;
+    padding-left: 0;
+    border-left: 0;
+    font-size: 1.25rem;
+    line-height: 1.15;
+    letter-spacing: 0.08em;
+}
+
+.thought-content h2:first-child {
+    margin-top: 0;
+}
+
+.thought-content blockquote {
+    background-color: transparent;
+    color: #000;
+    border-left: 4px solid #000;
+    padding: 2px 0 2px 22px;
+    margin: 2.2em 0;
+    font-family: 'courier-prime.regular', monospace;
+    font-size: 0.98rem;
+}
+
+.thought-content blockquote::before {
+    content: none;
+}
+
+.thought-content .footnotes {
+    margin-top: 4em;
+    font-family: 'courier-prime.regular', monospace;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+
+.thought-content .footnotes hr {
+    height: 2px;
+    margin-bottom: 2em;
+}
+
+.thought-content .footnotes ol {
+    padding-left: 24px;
+}
+
+.thought-content .footnotes li {
+    list-style-type: decimal;
+    margin-bottom: 1em;
+}
+
+.thought-content .footnotes ol li::before {
+    content: none;
+}
+
+.thought-content .footnote-ref {
+    border-bottom: 0;
+    font-family: 'courier-prime.regular', monospace;
+}
+
+.thought-content .footnote-back {
+    border-bottom: 0;
+    margin-left: 6px;
+}
+
+.thought-footer {
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.upvote-panel {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 22px 0 30px;
+    margin-bottom: 28px;
+    border-bottom: 3px solid #000;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.upvote-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 8px 14px;
+    border: 2px solid #000;
+    background: transparent;
+    color: #000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.upvote-button:hover,
+.upvote-button.has-voted {
+    background: #000;
+    color: #f00;
+}
+
+.upvote-button:disabled {
+    cursor: default;
+}
+
+.upvote-mark {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.upvote-count {
+    min-width: 2ch;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 2.1rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.upvote-copy {
+    font-family: 'courier-prime.regular', monospace;
+    font-size: 0.86rem;
+}
+
 
 /* ============================================================================
    RESPONSIVE DESIGN
@@ -617,10 +902,33 @@
         padding-top: 35px;
         font-size: 0.85em;
     }
+
+    .thought-header h1 {
+        font-size: clamp(3rem, 14vw, 5rem);
+    }
+
+    .article-hero-media {
+        margin-bottom: 42px;
+    }
+
+    .thought-content {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .upvote-panel {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
     
     .article-content blockquote {
         padding: 20px;
         padding-left: 25px;
+    }
+
+    .thought-content blockquote {
+        padding: 2px 0 2px 18px;
     }
     
     .article-nav {
@@ -649,4 +957,17 @@
     .article-content p {
         text-align: left;
     }
+}
+
+
+/* ============================================================================
+   LIGHT / PAPER THEME — toggled beside the language switcher.
+   Swaps the saturated red field for a paper background (much higher contrast
+   and easier to read for long essays), while keeping the black structure and
+   red accents so the site keeps its brutalist identity.
+   ============================================================================ */
+body.theme-light,
+body.theme-light header,
+body.theme-light .project-red {
+    background-color: #f4f1ea;
 }
