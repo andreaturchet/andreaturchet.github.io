@@ -13,6 +13,7 @@
   const heroPhoneWrap = document.querySelector('.hero-phone-wrap');
   const heroPhone = heroPhoneWrap?.querySelector('.phone-device');
   const phoneSplash = document.getElementById('phoneSplash');
+  const dotField = document.getElementById('dotField');
   const mobileQuery = window.matchMedia('(max-width: 768px)');
   const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   let isMobile = mobileQuery.matches;
@@ -43,6 +44,82 @@
   bindMediaQuery(mobileQuery);
   bindMediaQuery(reducedMotionQuery);
 
+  // ---- Ambient dot field ----
+
+  function initDotField() {
+    if (!dotField) return;
+
+    const ctx = dotField.getContext('2d', { alpha: true });
+    if (!ctx) return;
+
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let animationId = 0;
+    const pointer = { x: 0.5, y: 0.5, active: false };
+
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = Math.max(1, window.innerWidth);
+      height = Math.max(1, window.innerHeight);
+      dotField.width = Math.floor(width * dpr);
+      dotField.height = Math.floor(height * dpr);
+      dotField.style.width = `${width}px`;
+      dotField.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function draw(now = 0) {
+      ctx.clearRect(0, 0, width, height);
+
+      const time = now * 0.00035;
+      const step = width < 640 ? 24 : 30;
+      const driftX = (pointer.x - 0.5) * 18;
+      const driftY = (pointer.y - 0.5) * 18;
+
+      for (let y = -step; y < height + step; y += step) {
+        for (let x = -step; x < width + step; x += step) {
+          const nx = x + Math.sin(y * 0.018 + time) * 3 + driftX * 0.08;
+          const ny = y + Math.cos(x * 0.015 + time) * 3 + driftY * 0.08;
+          const dx = nx / width - pointer.x;
+          const dy = ny / height - pointer.y;
+          const proximity = pointer.active ? Math.max(0, 1 - Math.hypot(dx, dy) * 2.8) : 0;
+          const breath = prefersReducedMotion ? 0.5 : (Math.sin(time + x * 0.006 + y * 0.004) + 1) * 0.5;
+          const alpha = 0.055 + breath * 0.035 + proximity * 0.12;
+          const radius = 0.75 + proximity * 0.8;
+
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(10, 10, 10, ${alpha})`;
+          ctx.arc(nx, ny, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      if (!prefersReducedMotion) {
+        animationId = requestAnimationFrame(draw);
+      }
+    }
+
+    resize();
+    draw();
+
+    window.addEventListener('resize', () => {
+      resize();
+      if (prefersReducedMotion) draw();
+    }, { passive: true });
+
+    window.addEventListener('pointermove', (e) => {
+      pointer.x = e.clientX / Math.max(1, width);
+      pointer.y = e.clientY / Math.max(1, height);
+      pointer.active = true;
+      if (prefersReducedMotion) draw();
+    }, { passive: true });
+
+    window.addEventListener('pagehide', () => {
+      if (animationId) cancelAnimationFrame(animationId);
+    });
+  }
+
   // ---- Mobile menu ----
 
   mobileMenuBtn?.addEventListener('click', () => {
@@ -62,8 +139,8 @@
 
     // Nav background
     if (nav && sy > 80) {
-      nav.style.background = 'rgba(10, 6, 16, 0.75)';
-      nav.style.borderColor = 'rgba(255,255,255,0.08)';
+      nav.style.background = 'rgba(255, 255, 255, 0.92)';
+      nav.style.borderColor = 'rgba(10, 10, 10, 0.14)';
     } else if (nav) {
       nav.style.background = '';
       nav.style.borderColor = '';
@@ -103,6 +180,7 @@
   }
 
   syncMediaFlags();
+  initDotField();
   onScroll();
 
   window.addEventListener('scroll', () => {
@@ -339,6 +417,37 @@
 
   // ---- Analytics (under the hood) ----
 
+  const analyticsQueue = [];
+  let analyticsFlushTimer = 0;
+
+  function sendAnalytics(payload) {
+    if (!navigator.onLine) return;
+
+    fetch(`${SUPABASE_URL}/rest/v1/site_events`, {
+      method: 'POST',
+      cache: 'no-store',
+      credentials: 'omit',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(() => {});
+  }
+
+  function flushAnalyticsQueue() {
+    analyticsFlushTimer = 0;
+    if (!analyticsQueue.length) return;
+
+    const batch = analyticsQueue.splice(0);
+    runWhenIdle(() => {
+      sendAnalytics(batch.length === 1 ? batch[0] : batch);
+    }, 5000);
+  }
+
   function trackEvent(event, meta = {}, options = {}) {
     const payload = {
       event,
@@ -348,28 +457,13 @@
       screen: `${screen.width}x${screen.height}`
     };
 
-    const send = () => {
-      if (!navigator.onLine) return;
-
-      fetch(`${SUPABASE_URL}/rest/v1/site_events`, {
-        method: 'POST',
-        cache: 'no-store',
-        credentials: 'omit',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify(payload),
-        keepalive: true
-      }).catch(() => {});
-    };
-
     if (options.immediate) {
-      send();
+      sendAnalytics(payload);
     } else {
-      runWhenIdle(send);
+      analyticsQueue.push(payload);
+      if (!analyticsFlushTimer) {
+        analyticsFlushTimer = window.setTimeout(flushAnalyticsQueue, options.delay || 6000);
+      }
     }
   }
 
@@ -382,7 +476,7 @@
     const sectionObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          trackEvent('section_view', { section: entry.target.id });
+          trackEvent('section_view', { section: entry.target.id }, { delay: 7000 });
           sectionObserver.unobserve(entry.target);
         }
       });
@@ -525,9 +619,9 @@
 
   function drawIdleBackground() {
     if (!gameCtx || !canvasWidth) return;
-    gameCtx.fillStyle = '#1a1428';
+    gameCtx.fillStyle = '#f7f7f2';
     gameCtx.fillRect(0, 0, canvasWidth, canvasHeight);
-    gameCtx.globalAlpha = 0.2;
+    gameCtx.globalAlpha = 0.22;
     for (let i = 0; i < 5; i++) {
       const x = (canvasWidth / 6) * (i + 1);
       const y = canvasHeight * 0.3 + Math.sin(Date.now() / 1000 + i) * 30;
@@ -535,7 +629,7 @@
         const s = 36;
         gameCtx.drawImage(birdPageImg, x - s / 2, y - s * 0.35, s, s * 0.75);
       } else {
-        drawPaperIcon(x, y, 40, '#667eea');
+        drawPaperIcon(x, y, 40, '#0a0a0a');
       }
     }
     gameCtx.globalAlpha = 1;
@@ -667,10 +761,10 @@
   function draw() {
     if (!gameCtx || !canvasWidth) return;
 
-    gameCtx.fillStyle = '#1a1428';
+    gameCtx.fillStyle = '#f7f7f2';
     gameCtx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    gameCtx.strokeStyle = 'rgba(102, 126, 234, 0.06)';
+    gameCtx.strokeStyle = 'rgba(10, 10, 10, 0.08)';
     gameCtx.lineWidth = 1;
     for (let x = 0; x < canvasWidth; x += 40) {
       gameCtx.beginPath();
@@ -700,7 +794,7 @@
 
     if (imgReady(img)) {
       gameCtx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, x, y, w, h);
-      gameCtx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      gameCtx.strokeStyle = 'rgba(10, 10, 10, 0.35)';
       gameCtx.lineWidth = 2;
       gameCtx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
     } else {
@@ -710,15 +804,15 @@
 
   function drawObstacleFallback(x, y, w, h, title, isTop) {
     const g = gameCtx.createLinearGradient(x, y, x + w, y + h);
-    g.addColorStop(0, '#4a5568');
-    g.addColorStop(1, '#2d3748');
+    g.addColorStop(0, '#ffffff');
+    g.addColorStop(1, '#d8d8d2');
     gameCtx.fillStyle = g;
     gameCtx.fillRect(x, y, w, h);
-    gameCtx.strokeStyle = '#667eea';
+    gameCtx.strokeStyle = '#0a0a0a';
     gameCtx.lineWidth = 2;
     gameCtx.strokeRect(x, y, w, h);
     gameCtx.save();
-    gameCtx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+    gameCtx.fillStyle = 'rgba(10, 10, 10, 0.65)';
     gameCtx.font = 'bold 11px "DM Sans", sans-serif';
     gameCtx.textAlign = 'center';
     if (isTop) {
@@ -746,18 +840,18 @@
       gameCtx.shadowOffsetY = 3;
       gameCtx.drawImage(birdPageImg, -BIRD_W / 2, -BIRD_H / 2, BIRD_W, BIRD_H);
       gameCtx.shadowBlur = 0;
-      gameCtx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+      gameCtx.strokeStyle = 'rgba(10, 10, 10, 0.35)';
       gameCtx.lineWidth = 1.5;
       gameCtx.strokeRect(-BIRD_W / 2, -BIRD_H / 2, BIRD_W, BIRD_H);
     } else {
-      gameCtx.fillStyle = 'rgba(102, 126, 234, 0.35)';
+      gameCtx.fillStyle = 'rgba(10, 10, 10, 0.12)';
       gameCtx.fillRect(-BIRD_W / 2 + 2, -BIRD_H / 2 + 2, BIRD_W, BIRD_H);
-      gameCtx.fillStyle = '#667eea';
+      gameCtx.fillStyle = '#ffffff';
       gameCtx.fillRect(-BIRD_W / 2, -BIRD_H / 2, BIRD_W, BIRD_H);
-      gameCtx.strokeStyle = '#764ba2';
+      gameCtx.strokeStyle = '#0a0a0a';
       gameCtx.lineWidth = 2;
       gameCtx.strokeRect(-BIRD_W / 2, -BIRD_H / 2, BIRD_W, BIRD_H);
-      gameCtx.fillStyle = '#ffffff';
+      gameCtx.fillStyle = '#0a0a0a';
       gameCtx.font = 'bold 7px "DM Sans", sans-serif';
       gameCtx.textAlign = 'center';
       gameCtx.textBaseline = 'middle';
@@ -772,7 +866,7 @@
   function drawPaperIcon(cx, cy, size, color) {
     gameCtx.fillStyle = color;
     gameCtx.fillRect(cx - size / 2, cy - size / 2, size, size);
-    gameCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    gameCtx.strokeStyle = 'rgba(10, 10, 10, 0.3)';
     gameCtx.lineWidth = 1;
     gameCtx.strokeRect(cx - size / 2, cy - size / 2, size, size);
   }
@@ -840,7 +934,7 @@
       [25, 50, 75, 100].forEach(mark => {
         if (scrollPct >= mark && !scrollMarks.has(mark)) {
           scrollMarks.add(mark);
-          trackEvent('scroll_depth', { depth: mark });
+          trackEvent('scroll_depth', { depth: mark }, { delay: 7000 });
         }
       });
       scrollDepthTicking = false;

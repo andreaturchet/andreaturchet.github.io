@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Papel — The Social Network for Researchers</title>
   <meta name="description"
-    content="Discover, read, and engage with academic papers. AI-powered summaries, quizzes, and a community of researchers — all in one beautiful app.">
+    content="Papel is a black-and-white research app for discovering papers, reading with on-device AI, and discussing work with other researchers.">
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#4D0D1F">
+  <meta name="theme-color" content="#F7F7F2">
   <meta name="apple-mobile-web-app-title" content="Papel">
   <link rel="canonical" href="https://andreaturchet.github.io/website/">
 
@@ -16,44 +16,39 @@
   <meta property="og:site_name" content="Papel">
   <meta property="og:title" content="Papel — The Social Network for Researchers">
   <meta property="og:description"
-    content="Discover the right papers, understand them faster, and stay close to the conversations shaping your field.">
+    content="A quiet, black-and-white research feed with on-device AI, quizzes, and discussion around academic papers.">
   <meta property="og:url" content="https://andreaturchet.github.io/website/">
-  <meta property="og:image" content="https://andreaturchet.github.io/website/assets/papel-og.jpg">
-  <meta property="og:image:type" content="image/jpeg">
-  <meta property="og:image:width" content="1024">
-  <meta property="og:image:height" content="1024">
+  <meta property="og:image" content="https://andreaturchet.github.io/assets/images/img/appicon.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1254">
+  <meta property="og:image:height" content="1254">
   <meta property="og:image:alt" content="Papel app logo">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Papel — The Social Network for Researchers">
   <meta name="twitter:description"
-    content="Discover, read, and engage with academic papers in one beautiful research app.">
-  <meta name="twitter:image" content="https://andreaturchet.github.io/website/assets/papel-og.jpg">
+    content="Discover, read, and engage with academic papers in one quiet research app.">
+  <meta name="twitter:image" content="https://andreaturchet.github.io/assets/images/img/appicon.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="image" href="assets/hero-lab.webp" fetchpriority="high">
   <link rel="preload" as="image" href="assets/screenshot-feed.png" fetchpriority="high">
+  <link rel="preload" as="image" href="../assets/images/img/appicon.png">
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&amp;family=Instrument+Serif:ital@0;1&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&amp;display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;0,900;1,500&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&amp;display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="assets/papel-logo-64.png" type="image/png">
-  <link rel="apple-touch-icon" href="assets/papel-logo-180.png">
+  <link rel="stylesheet" href="styles.css?v=papel-bw-20260617">
+  <link rel="icon" href="../assets/images/img/appicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/images/img/appicon.png">
 </head>
 
 <body>
-
-  <div class="bg-orbs" aria-hidden="true">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-    <div class="orb orb-4"></div>
-  </div>
 
   <!-- Navigation -->
   <nav class="nav glass-panel" id="nav">
     <div class="nav-inner">
       <a href="#" class="nav-logo">
-        <img src="assets/papel-logo-64.png" alt="Papel" class="nav-logo-img" width="36" height="36" decoding="async" />
+        <img src="../assets/images/img/appicon.png" alt="Papel" class="nav-logo-img" width="36" height="36" decoding="async" />
         <span class="logo-text">Papel</span>
       </a>
       <div class="nav-links">
@@ -61,7 +56,7 @@
         <a href="#features">Features</a>
         <a href="#waitlist">Waitlist</a>
       </div>
-      <a href="#waitlist" class="btn btn-primary btn-sm">Join Waitlist</a>
+      <a href="#waitlist" class="btn btn-primary btn-sm">Join waitlist</a>
       <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
@@ -69,48 +64,54 @@
     <div class="mobile-menu" id="mobileMenu">
       <a href="../index.html">&larr; Home</a>
       <a href="#features">Features</a>
-      <a href="#waitlist" class="btn btn-primary">Join Waitlist</a>
+      <a href="#waitlist" class="btn btn-primary">Join waitlist</a>
     </div>
   </nav>
 
-  <!-- Hero -->
-  <section class="hero" id="hero">
-    <div class="hero-content">
-      <h1 class="hero-title">
-        <span class="hero-line">Research papers.</span>
-        <span class="hero-line accent">Made social.</span>
-        <span class="hero-line">Made <em>beautiful.</em></span>
-      </h1>
-      <p class="hero-subtitle">Discover the right papers, understand them faster, and stay close to the conversations
-        shaping your field.</p>
-      <div class="hero-ctas">
-        <a href="#features" class="btn btn-primary btn-lg">
-          See Features
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+  <!-- Hero (editorial) -->
+  <section class="ed-hero" id="hero">
+    <div class="ed-hero-bg" aria-hidden="true">
+      <!-- Optional video layer: drop a clip at assets/hero-bg.mp4 and uncomment.
+      <video class="ed-video" autoplay muted loop playsinline preload="none"
+        poster="assets/screenshot-feed.png">
+        <source src="assets/hero-bg.mp4" type="video/mp4">
+      </video>
+      -->
+      <div class="ed-photo"></div>
+      <div class="ed-mesh">
+        <span class="ed-blob ed-blob-1"></span>
+        <span class="ed-blob ed-blob-2"></span>
+        <span class="ed-blob ed-blob-3"></span>
+        <span class="ed-blob ed-blob-4"></span>
+      </div>
+      <div class="ed-sheen"></div>
+      <div class="ed-lighten"></div>
+    </div>
+
+    <span class="ed-mark ed-mark--platform" aria-hidden="true">Papel / iOS</span>
+    <span class="ed-mark ed-mark--year" aria-hidden="true">&copy; 2026</span>
+
+    <div class="ed-hero-inner">
+      <p class="ed-lede">
+        Find papers. Ask questions. Join the discussion.
+      </p>
+
+      <div class="ed-ctas">
+        <a href="#features" class="ed-link">
+          Explore the app
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M7 17l9.2-9.2M17 17V7H7" />
           </svg>
         </a>
+        <a href="#waitlist" class="ed-link ed-link--muted">Join waitlist</a>
       </div>
-      <div class="hero-stats">
-        <div class="stat"><span class="stat-num">2M+</span><span class="stat-label">Papers indexed</span></div>
-        <div class="stat-divider"></div>
-        <div class="stat"><span class="stat-num">100%</span><span class="stat-label">On-device AI</span></div>
-        <div class="stat-divider"></div>
-        <div class="stat"><span class="stat-num">Free</span><span class="stat-label">No subscriptions</span></div>
+
+      <div class="ed-hero-foot">
+        <span class="ed-eyebrow">The social network for researchers</span>
+        <h1 class="ed-wordmark">Papel</h1>
       </div>
     </div>
-    <div class="hero-phone-wrap">
-      <div class="phone-device phone-device--real-screenshot" id="heroPhone">
-        <div class="phone-screen phone-screen--screenshot">
-          <div class="phone-splash" id="phoneSplash">
-            <img src="assets/papel-logo-180.png" alt="Papel" class="phone-splash-logo" width="80" height="80" decoding="async" />
-          </div>
-          <img src="assets/screenshot-feed.png" alt="Papel feed showing a paper card" class="phone-screenshot"
-            width="1179" height="2556" decoding="async" fetchpriority="high" />
-        </div>
-      </div>
-      <div class="phone-glow"></div>
-    </div>
+
     <a href="#features" class="hero-scroll-arrow" aria-label="Scroll to features">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M7 10l5 5 5-5" />
@@ -121,10 +122,9 @@
   <!-- Features -->
   <section class="features" id="features">
     <div class="section-header">
-      <span class="section-tag glass-pill">FEATURES</span>
-      <h2 class="section-title">Everything you need to<br><span class="accent">stay on the cutting edge</span></h2>
-      <p class="section-desc">From personalized discovery to AI-powered understanding &mdash; Papel transforms how you
-        interact with academic research.</p>
+      <span class="section-tag glass-pill">SIGNAL OVER NOISE</span>
+      <h2 class="section-title">From discovery<br><span class="accent">to discussion</span></h2>
+      <p class="section-desc">Discover papers, ask questions, test your understanding, and follow the people moving your field forward.</p>
     </div>
 
     <div class="feature-grid">
@@ -132,10 +132,9 @@
       <div class="feature-card glass-card reveal">
         <div class="feature-card-inner">
           <div class="feature-info">
-            <span class="feature-tag">DISCOVERY</span>
+            <span class="feature-tag">DISCOVER</span>
             <h3>A feed that knows<br>what you're researching</h3>
-            <p>Papers ranked by your interests, trending topics, freshness, and community engagement. Choose a feed mode
-              in Settings when you want Latest instead of recommendations.</p>
+            <p>Papers ranked by your interests, trending topics, freshness, and community engagement. Switch to Latest when you want a chronological scan.</p>
             <ul class="feature-list">
               <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <polyline points="20 6 9 17 4 12" />
@@ -163,7 +162,7 @@
       <div class="feature-card glass-card reveal">
         <div class="feature-card-inner">
           <div class="feature-info">
-            <span class="feature-tag">AI CHAT</span>
+            <span class="feature-tag">ASK</span>
             <h3>Talk to any paper.<br>Get instant answers.</h3>
             <p>Ask questions about any paper and get grounded answers from the full PDF &mdash; powered entirely
               on-device using Apple Intelligence or local MLX models.</p>
@@ -194,10 +193,9 @@
       <div class="feature-card glass-card reveal">
         <div class="feature-card-inner">
           <div class="feature-info">
-            <span class="feature-tag">GAMIFICATION</span>
+            <span class="feature-tag">LEARN</span>
             <h3>Test your knowledge.<br>Earn XP. Level up.</h3>
-            <p>AI-generated quizzes on every paper. Score perfectly to earn +50 XP, maintain streaks, and climb the
-              academic ranks from Undergrad to Nobel Laureate.</p>
+            <p>AI-generated quizzes on every paper. Score perfectly to earn +50 XP, maintain streaks, and build a visible map of what you understand.</p>
             <ul class="feature-list">
               <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <polyline points="20 6 9 17 4 12" />
@@ -225,7 +223,7 @@
       <div class="feature-card glass-card reveal">
         <div class="feature-card-inner">
           <div class="feature-info">
-            <span class="feature-tag">COMMUNITY</span>
+            <span class="feature-tag">DISCUSS</span>
             <h3>Connect with<br>fellow researchers</h3>
             <p>Like and comment on papers, share discoveries with colleagues via direct messages, and build your
               academic profile in a community that values knowledge.</p>
@@ -246,6 +244,68 @@
               <div class="mini-phone-screen mini-phone-screen--shot">
                 <img src="assets/screenshot-comments.png" alt="Comments in Papel"
                   class="mini-shot-img mini-shot-img--social" width="400" height="867" loading="lazy"
+                  decoding="async" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 5: Profile -->
+      <div class="feature-card glass-card reveal">
+        <div class="feature-card-inner">
+          <div class="feature-info">
+            <span class="feature-tag">PROFILE</span>
+            <h3>Level, followers, and saved papers</h3>
+            <p>Your profile shows research progress at a glance: level, followers, saved papers, and the signals that make your academic identity visible.</p>
+            <ul class="feature-list">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>Level and XP progress</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>Followers and following counts</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>Saved papers in one place</li>
+            </ul>
+          </div>
+          <div class="feature-visual">
+            <div class="mini-phone mini-phone--shot">
+              <div class="mini-phone-screen mini-phone-screen--shot">
+                <img src="assets/profile.png" alt="Papel profile showing level, followers, and saved papers"
+                  class="mini-shot-img mini-shot-img--profile" width="1125" height="2436" loading="lazy"
+                  decoding="async" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 6: Private Chat -->
+      <div class="feature-card glass-card reveal">
+        <div class="feature-card-inner">
+          <div class="feature-info">
+            <span class="feature-tag">CHAT</span>
+            <h3>Private chats for research threads</h3>
+            <p>Move from a paper to a focused conversation with other researchers. Keep context, shared papers, and follow-up questions close.</p>
+            <ul class="feature-list">
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>Direct messages between researchers</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>Share papers from the feed</li>
+              <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>Keep collaboration in context</li>
+            </ul>
+          </div>
+          <div class="feature-visual">
+            <div class="mini-phone mini-phone--shot">
+              <div class="mini-phone-screen mini-phone-screen--shot">
+                <img src="assets/screenshot-chat.png" alt="Papel private chat between researchers"
+                  class="mini-shot-img mini-shot-img--dm" width="1125" height="2436" loading="lazy"
                   decoding="async" />
               </div>
             </div>
@@ -328,7 +388,7 @@
     <div class="footer-inner">
       <div class="footer-brand">
         <a href="#" class="nav-logo">
-          <img src="assets/papel-logo-64.png" alt="Papel" class="nav-logo-img" width="36" height="36"
+          <img src="../assets/images/img/appicon.png" alt="Papel" class="nav-logo-img" width="36" height="36"
             decoding="async" />
           <span class="logo-text">Papel</span>
         </a>
@@ -349,7 +409,8 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=papel-bw-20260615"></script>
+  <script src="nav-glass.js?v=papel-bw-20260615"></script>
 </body>
 
 </html>
