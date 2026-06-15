@@ -4650,6 +4650,7 @@ body {
 .ed-hero-foot {
   position: relative;
   z-index: 1;
+  --wordmark-ink-inset: clamp(14px, 0.9vw, 18px);
 }
 
 .ed-eyebrow {
@@ -4660,6 +4661,7 @@ body {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: rgba(10, 10, 10, 0.62);
+  transform: translateX(var(--wordmark-ink-inset));
 }
 
 .ed-wordmark {
@@ -4752,6 +4754,7 @@ body {
   .ed-eyebrow {
     font-size: 0.7rem;
     letter-spacing: 0.14em;
+    transform: translateX(clamp(6px, 1.5vw, 10px));
   }
 
   /* Wordmark fills the width edge-to-edge on phones */
