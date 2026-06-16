@@ -4591,6 +4591,7 @@ body {
   position: relative;
   z-index: 1;
   width: 100%;
+  --wordmark-ink-inset: clamp(14px, 0.9vw, 18px);
 }
 
 .ed-lede {
@@ -4608,6 +4609,7 @@ body {
   align-items: center;
   gap: 28px;
   margin-bottom: clamp(40px, 7vh, 84px);
+  transform: translateX(var(--wordmark-ink-inset));
 }
 
 .ed-link {
@@ -4650,7 +4652,6 @@ body {
 .ed-hero-foot {
   position: relative;
   z-index: 1;
-  --wordmark-ink-inset: clamp(14px, 0.9vw, 18px);
 }
 
 .ed-eyebrow {
@@ -4723,6 +4724,10 @@ body {
     min-height: 88svh;
   }
 
+  .ed-hero-inner {
+    --wordmark-ink-inset: clamp(6px, 1.5vw, 10px);
+  }
+
   /* Keep the photo readable behind full-width text on phones */
   .ed-photo {
     background-position: 62% center;
@@ -4754,7 +4759,6 @@ body {
   .ed-eyebrow {
     font-size: 0.7rem;
     letter-spacing: 0.14em;
-    transform: translateX(clamp(6px, 1.5vw, 10px));
   }
 
   /* Wordmark fills the width edge-to-edge on phones */
