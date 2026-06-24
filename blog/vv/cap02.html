@@ -559,750 +559,763 @@ $$</p>
 </tr>
 </tbody>
 </table>
-<p>Esempio: per $(a\cup b)^\ast ab`, costruisci prima l'automa per `a`, quello per `b`, poi l'unione, poi la stella, poi concateni con `a` e `b`. Il risultato riconosce tutte le parole che finiscono con `ab`.
-
-### Da DFA a espressione regolare
-
-Metodo Montanari/Kleene con $R_{i,j}^k$:
-
-- $R_{i,j}^k$ e' il linguaggio delle parole che portano da $q_i$ a $q_j$ usando come stati intermedi solo stati con indice al massimo $k$.
-- Se $k=0$, non posso usare stati intermedi.
-- Se aumento da $k-1$ a $k$, i percorsi o non passano per $q_k$, oppure passano per $q_k$ e possono fare loop su $q_k$.
-
-Caso base, come negli appunti del docente:
-
-$$
+<p>Esempio: per $(a\cup b)^\ast ab$, costruisci prima l'automa per <code>a</code>, quello per <code>b</code>, poi l'unione, poi la stella, poi concateni con <code>a</code> e <code>b</code>. Il risultato riconosce tutte le parole che finiscono con <code>ab</code>.</p>
+<h3>Da DFA a espressione regolare</h3>
+<p>Metodo Montanari/Kleene con $R_{i,j}^k$:</p>
+<ul>
+<li>$R_{i,j}^k$ e' il linguaggio delle parole che portano da $q_i$ a $q_j$ usando come stati intermedi solo stati con indice al massimo $k$.</li>
+<li>Se $k=0$, non posso usare stati intermedi.</li>
+<li>Se aumento da $k-1$ a $k$, i percorsi o non passano per $q_k$, oppure passano per $q_k$ e possono fare loop su $q_k$.</li>
+</ul>
+<p>Caso base, come negli appunti del docente:</p>
+<p>$$
 R_{i,j}^0 =
 \lbrace a\in\Sigma \mid \delta(q_i,a)=q_j\rbrace
 \quad\text{se } i\neq j
-$$
-
-$$
+$$</p>
+<p>$$
 R_{i,i}^0 =
 \lbrace a\in\Sigma \mid \delta(q_i,a)=q_i\rbrace
 \cup
 \lbrace\varepsilon\rbrace
-$$
-
-L'idea e' che, senza stati intermedi, posso usare solo transizioni dirette. Se parto e arrivo nello stesso stato, devo includere anche $\varepsilon$, perche il cammino vuoto porta uno stato in se stesso.
-
-Formula:
-
-$$
+$$</p>
+<p>L'idea e' che, senza stati intermedi, posso usare solo transizioni dirette. Se parto e arrivo nello stesso stato, devo includere anche $\varepsilon$, perche il cammino vuoto porta uno stato in se stesso.</p>
+<p>Formula:</p>
+<p>$$
 R_{i,j}^k =
 R_{i,j}^{k-1}
 \cup
 R_{i,k}^{k-1}(R_{k,k}^{k-1})^\ast R_{k,j}^{k-1}
-$$
-
-L'espressione finale del linguaggio e':
-
-$$
+$$</p>
+<p>L'espressione finale del linguaggio e':</p>
+<p>$$
 \bigcup_{f\in F} R_{q_0,f}^{n}
-$$
-
-### Esempio minuscolo da DFA a regex
-
-DFA per parole che terminano con `a`:
-
-| Stato | `a` | `b` | Finale? |
-| --- | --- | --- | --- |
-| `N` | `A` | `N` | no |
-| `A` | `A` | `N` | si |
-
-Senza fare tutta la matrice $R_{i,j}^k$, puoi ragionare semanticamente: prima posso leggere qualunque parola su `a` e `b`, poi l'ultimo simbolo deve essere `a`.
-
-Regex:
-
-$$
+$$</p>
+<h3>Esempio minuscolo da DFA a regex</h3>
+<p>DFA per parole che terminano con <code>a</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Stato</th>
+<th><code>a</code></th>
+<th><code>b</code></th>
+<th>Finale?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>N</code></td>
+<td><code>A</code></td>
+<td><code>N</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>A</code></td>
+<td><code>A</code></td>
+<td><code>N</code></td>
+<td>si</td>
+</tr>
+</tbody>
+</table>
+<p>Senza fare tutta la matrice $R_{i,j}^k$, puoi ragionare semanticamente: prima posso leggere qualunque parola su <code>a</code> e <code>b</code>, poi l'ultimo simbolo deve essere <code>a</code>.</p>
+<p>Regex:</p>
+<p>$$
 (a\cup b)^\ast a
-$$
-
-Questo esempio non sostituisce la dimostrazione generale, ma aiuta a capire cosa la costruzione produce.
-
-### Espressioni regolari ristrette e generali
-
-Negli appunti compare anche il corollario:
-
-&gt; le espressioni regolari ristrette sono espressive quanto le espressioni regolari generali, e viceversa.
-
-Il punto e' questo. Le espressioni regolari "generali" possono usare direttamente operazioni booleane come complemento e intersezione. Le espressioni regolari "ristrette" usano solo gli operatori costruttivi base, tipicamente unione, concatenazione e stella.
-
-Perche hanno la stessa espressivita?
-
-1. Ogni espressione ristretta e' ovviamente anche una espressione regolare generale.
-2. Se hai una espressione generale con booleani, puoi:
-   - trasformarla in un automa usando le proprieta di chiusura;
-   - poi trasformare quell'automa in una espressione regolare ristretta con il teorema DFA $\rightarrow$ regex.
-
-Quindi gli operatori booleani sono comodi come abbreviazioni, ma non aumentano la classe dei linguaggi descrivibili: resti sempre nei linguaggi regolari.
-
-### La terza classe: espressioni star-free
-
-Negli appunti compaiono in realta' tre classi di espressioni regolari:
-
-| Classe | Operatori | Espressivita' |
-| --- | --- | --- |
-| Ristrette | $\cup$, $\cdot$, $^\ast$ | linguaggi regolari |
-| Generali | $\cup$, $\cdot$, $^\ast$, $\cap$, $\neg$ | linguaggi regolari (stesse delle ristrette) |
-| Star-free | $\cup$, $\cdot$, $\cap$, $\neg$ ma **senza** $^\ast$ | strettamente meno espressive |
-
-Le star-free tengono i booleani ma rinunciano alla stella di Kleene, e questa
+$$</p>
+<p>Questo esempio non sostituisce la dimostrazione generale, ma aiuta a capire cosa la costruzione produce.</p>
+<h3>Espressioni regolari ristrette e generali</h3>
+<p>Negli appunti compare anche il corollario:</p>
+<blockquote>
+<p>le espressioni regolari ristrette sono espressive quanto le espressioni regolari generali, e viceversa.</p>
+</blockquote>
+<p>Il punto e' questo. Le espressioni regolari "generali" possono usare direttamente operazioni booleane come complemento e intersezione. Le espressioni regolari "ristrette" usano solo gli operatori costruttivi base, tipicamente unione, concatenazione e stella.</p>
+<p>Perche hanno la stessa espressivita?</p>
+<ol>
+<li>Ogni espressione ristretta e' ovviamente anche una espressione regolare generale.</li>
+<li>Se hai una espressione generale con booleani, puoi:</li>
+<li>trasformarla in un automa usando le proprieta di chiusura;</li>
+<li>poi trasformare quell'automa in una espressione regolare ristretta con il teorema DFA $\rightarrow$ regex.</li>
+</ol>
+<p>Quindi gli operatori booleani sono comodi come abbreviazioni, ma non aumentano la classe dei linguaggi descrivibili: resti sempre nei linguaggi regolari.</p>
+<h3>La terza classe: espressioni star-free</h3>
+<p>Negli appunti compaiono in realta' tre classi di espressioni regolari:</p>
+<table>
+<thead>
+<tr>
+<th>Classe</th>
+<th>Operatori</th>
+<th>Espressivita'</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ristrette</td>
+<td>$\cup$, $\cdot$, $^\ast$</td>
+<td>linguaggi regolari</td>
+</tr>
+<tr>
+<td>Generali</td>
+<td>$\cup$, $\cdot$, $^\ast$, $\cap$, $\neg$</td>
+<td>linguaggi regolari (stesse delle ristrette)</td>
+</tr>
+<tr>
+<td>Star-free</td>
+<td>$\cup$, $\cdot$, $\cap$, $\neg$ ma <strong>senza</strong> $^\ast$</td>
+<td>strettamente meno espressive</td>
+</tr>
+</tbody>
+</table>
+<p>Le star-free tengono i booleani ma rinunciano alla stella di Kleene, e questa
 volta l'espressivita' cala davvero: definiscono una sottoclasse propria dei
-regolari. L'osservazione degli appunti da ricordare e':
-
-&gt; la presenza o assenza della stella ti colloca rispettivamente al livello del
-&gt; secondo ordine o del primo ordine.
-
-Cioe': con la stella (piu' i booleani che essa permette di ricostruire) si
+regolari. L'osservazione degli appunti da ricordare e':</p>
+<blockquote>
+<p>la presenza o assenza della stella ti colloca rispettivamente al livello del
+secondo ordine o del primo ordine.</p>
+</blockquote>
+<p>Cioe': con la stella (piu' i booleani che essa permette di ricostruire) si
 raggiunge il potere della logica monadica del secondo ordine, senza stella si
 resta al potere della logica del primo ordine. Questa corrispondenza
 linguaggi star-free $=$ linguaggi FO-definibili viene ripresa e dimostrata nel
-Capitolo 6 con S1S e il teorema di Büchi.
-
----
-
-## 6. Proprieta di chiusura dei linguaggi regolari
-
-I linguaggi regolari sono chiusi per molte operazioni. "Chiusi" significa: se parto da linguaggi regolari, il risultato resta regolare.
-
-| Operazione | Costruzione |
-| --- | --- |
-| Unione | epsilon-NFA con scelta iniziale, oppure prodotto con finali `F1 or F2` |
-| Intersezione | prodotto con finali `F1 and F2` |
-| Complemento | DFA completo, poi scambio finali/non finali |
-| Differenza | $L_1\setminus L_2 = L_1\cap \overline{L_2}$ |
-| Concatenazione | epsilon dai finali del primo all'iniziale del secondo |
-| Stella | epsilon per saltare o ripetere il blocco |
-
-### Complemento: perche il DFA deve essere completo
-
-Se una transizione manca, alcune parole non arrivano in nessuno stato. Ma nel complemento ogni parola deve essere classificata come accettata o rifiutata. Per questo si aggiunge uno stato pozzo.
-
-Esempio: DFA parziale che accetta solo `a` su alfabeto $\lbrace a,b\rbrace$:
-
-- `q0 --a--&gt; q1`;
-- `q1` finale;
-- mancano le transizioni su `b` e dopo `q1`.
-
-Prima di complementare bisogna completarlo:
-
-- ogni transizione mancante va allo stato pozzo `sink`;
-- `sink` cicla su `a` e `b`.
-
-Poi si scambiano finali e non finali. Nel complemento, `sink` diventa finale, perche rappresenta tutte le parole che il vecchio automa non accettava.
-
-### Prodotto: esempio concreto
-
-Siano:
-
-- $L_1$: parole che terminano con `a`;
-- $L_2$: parole con numero pari di `a`.
-
-L'intersezione $L_1\cap L_2$ contiene parole che terminano con `a` e hanno un numero pari di `a`.
-
-Il prodotto combina le memorie:
-
-- memoria 1: ultimo simbolo e' `a` oppure no;
-- memoria 2: parita del numero di `a`.
-
-Gli stati sono coppie:
-
-$$
+Capitolo 6 con S1S e il teorema di Büchi.</p>
+<hr>
+<h2>6. Proprieta di chiusura dei linguaggi regolari</h2>
+<p>I linguaggi regolari sono chiusi per molte operazioni. "Chiusi" significa: se parto da linguaggi regolari, il risultato resta regolare.</p>
+<table>
+<thead>
+<tr>
+<th>Operazione</th>
+<th>Costruzione</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unione</td>
+<td>epsilon-NFA con scelta iniziale, oppure prodotto con finali <code>F1 or F2</code></td>
+</tr>
+<tr>
+<td>Intersezione</td>
+<td>prodotto con finali <code>F1 and F2</code></td>
+</tr>
+<tr>
+<td>Complemento</td>
+<td>DFA completo, poi scambio finali/non finali</td>
+</tr>
+<tr>
+<td>Differenza</td>
+<td>$L_1\setminus L_2 = L_1\cap \overline{L_2}$</td>
+</tr>
+<tr>
+<td>Concatenazione</td>
+<td>epsilon dai finali del primo all'iniziale del secondo</td>
+</tr>
+<tr>
+<td>Stella</td>
+<td>epsilon per saltare o ripetere il blocco</td>
+</tr>
+</tbody>
+</table>
+<h3>Complemento: perche il DFA deve essere completo</h3>
+<p>Se una transizione manca, alcune parole non arrivano in nessuno stato. Ma nel complemento ogni parola deve essere classificata come accettata o rifiutata. Per questo si aggiunge uno stato pozzo.</p>
+<p>Esempio: DFA parziale che accetta solo <code>a</code> su alfabeto $\lbrace a,b\rbrace$:</p>
+<ul>
+<li><code>q0 --a--&gt; q1</code>;</li>
+<li><code>q1</code> finale;</li>
+<li>mancano le transizioni su <code>b</code> e dopo <code>q1</code>.</li>
+</ul>
+<p>Prima di complementare bisogna completarlo:</p>
+<ul>
+<li>ogni transizione mancante va allo stato pozzo <code>sink</code>;</li>
+<li><code>sink</code> cicla su <code>a</code> e <code>b</code>.</li>
+</ul>
+<p>Poi si scambiano finali e non finali. Nel complemento, <code>sink</code> diventa finale, perche rappresenta tutte le parole che il vecchio automa non accettava.</p>
+<h3>Prodotto: esempio concreto</h3>
+<p>Siano:</p>
+<ul>
+<li>$L_1$: parole che terminano con <code>a</code>;</li>
+<li>$L_2$: parole con numero pari di <code>a</code>.</li>
+</ul>
+<p>L'intersezione $L_1\cap L_2$ contiene parole che terminano con <code>a</code> e hanno un numero pari di <code>a</code>.</p>
+<p>Il prodotto combina le memorie:</p>
+<ul>
+<li>memoria 1: ultimo simbolo e' <code>a</code> oppure no;</li>
+<li>memoria 2: parita del numero di <code>a</code>.</li>
+</ul>
+<p>Gli stati sono coppie:</p>
+<p>$$
 (N,E), (N,O), (A,E), (A,O)
-$$
-
-Lo stato finale per l'intersezione e' solo $(A,E)$: devo soddisfare entrambe le proprieta. La parola `ba` arriva in $(A,O)$, quindi non e' accettata; la parola `aba` arriva in $(A,E)$, quindi e' accettata.
-
-### Avvertimento da orale: il prodotto non si generalizza alle parole infinite
-
-Negli appunti il docente segnala esplicitamente che questo punto viene usato
+$$</p>
+<p>Lo stato finale per l'intersezione e' solo $(A,E)$: devo soddisfare entrambe le proprieta. La parola <code>ba</code> arriva in $(A,O)$, quindi non e' accettata; la parola <code>aba</code> arriva in $(A,E)$, quindi e' accettata.</p>
+<h3>Avvertimento da orale: il prodotto non si generalizza alle parole infinite</h3>
+<p>Negli appunti il docente segnala esplicitamente che questo punto viene usato
 per aprire gli orali. La costruzione prodotto con $F_1\times F_2$ funziona
-sulle parole finite perche' la condizione di accettazione si controlla **alla
-fine**: quando la parola termina, entrambe le componenti devono trovarsi in uno
-stato finale, nello stesso istante.
-
-Sulle parole infinite la condizione di accettazione diventa "passare
+sulle parole finite perche' la condizione di accettazione si controlla <strong>alla
+fine</strong>: quando la parola termina, entrambe le componenti devono trovarsi in uno
+stato finale, nello stesso istante.</p>
+<p>Sulle parole infinite la condizione di accettazione diventa "passare
 infinitamente spesso per stati finali" (Büchi, Capitolo 5). E qui il prodotto
 ingenuo fallisce: puo' succedere che la prima componente passi infinitamente
-spesso per $F_1$ e la seconda per $F_2$, ma **mai nello stesso momento**. La
+spesso per $F_1$ e la seconda per $F_2$, ma <strong>mai nello stesso momento</strong>. La
 parola apparterrebbe all'intersezione, ma nessuno stato di $F_1\times F_2$
-viene visitato infinitamente spesso: l'automa prodotto la rifiuta.
-
-La soluzione richiede di rinunciare alla sincronizzazione: si aspetta prima una
+viene visitato infinitamente spesso: l'automa prodotto la rifiuta.</p>
+<p>La soluzione richiede di rinunciare alla sincronizzazione: si aspetta prima una
 visita a $F_1$, poi una a $F_2$, poi di nuovo $F_1$, alternando con un
 contatore a due fasi. E' la costruzione dell'intersezione per automi di Büchi
 (e la generalizzazione GNBA), trattata nel Capitolo 5 e nella pagina delle
-dimostrazioni.
-
----
-
-## 7. Problemi decisionali sugli automi
-
-Gli automi finiti sono utili in verifica perche molti problemi diventano visite su grafi finiti.
-
-### Vuotezza
-
-Domanda:
-
-$$
+dimostrazioni.</p>
+<hr>
+<h2>7. Problemi decisionali sugli automi</h2>
+<p>Gli automi finiti sono utili in verifica perche molti problemi diventano visite su grafi finiti.</p>
+<h3>Vuotezza</h3>
+<p>Domanda:</p>
+<p>$$
 L(\mathcal{A})=\emptyset?
-$$
-
-Algoritmo: fai una DFS/BFS dallo stato iniziale e controlla se raggiungi uno stato finale.
-
-Esempio:
-
-- se nessun finale e' raggiungibile, il linguaggio e' vuoto;
-- se trovi anche un solo cammino verso un finale, hai una parola accettata.
-
-### Universalita
-
-Domanda:
-
-$$
+$$</p>
+<p>Algoritmo: fai una DFS/BFS dallo stato iniziale e controlla se raggiungi uno stato finale.</p>
+<p>Esempio:</p>
+<ul>
+<li>se nessun finale e' raggiungibile, il linguaggio e' vuoto;</li>
+<li>se trovi anche un solo cammino verso un finale, hai una parola accettata.</li>
+</ul>
+<h3>Universalita</h3>
+<p>Domanda:</p>
+<p>$$
 L(\mathcal{A})=\Sigma^\ast?
-$$
-
-Algoritmo:
-
-1. rendi il DFA completo;
-2. complementa;
-3. controlla se il complemento e' vuoto.
-
-Se il complemento e' vuoto, non esiste nessuna parola rifiutata dall'automa originale.
-
-### Inclusione
-
-Domanda:
-
-$$
+$$</p>
+<p>Algoritmo:</p>
+<ol>
+<li>rendi il DFA completo;</li>
+<li>complementa;</li>
+<li>controlla se il complemento e' vuoto.</li>
+</ol>
+<p>Se il complemento e' vuoto, non esiste nessuna parola rifiutata dall'automa originale.</p>
+<h3>Inclusione</h3>
+<p>Domanda:</p>
+<p>$$
 L(\mathcal{A})\subseteq L(\mathcal{B})?
-$$
-
-Idea:
-
-$$
+$$</p>
+<p>Idea:</p>
+<p>$$
 L(\mathcal{A})\subseteq L(\mathcal{B})
 \iff
 L(\mathcal{A})\cap \overline{L(\mathcal{B})}=\emptyset
-$$
-
-Traduzione intuitiva:
-
-&gt; cerco una parola accettata da $\mathcal{A}$ ma rifiutata da $\mathcal{B}$.
-
-Se non esiste, allora ogni comportamento di $\mathcal{A}$ e' ammesso da $\mathcal{B}$. Questa e' la stessa forma mentale del model checking: cerco un comportamento del sistema che violi la specifica.
-
-### Equivalenza
-
-Domanda:
-
-$$
+$$</p>
+<p>Traduzione intuitiva:</p>
+<blockquote>
+<p>cerco una parola accettata da $\mathcal{A}$ ma rifiutata da $\mathcal{B}$.</p>
+</blockquote>
+<p>Se non esiste, allora ogni comportamento di $\mathcal{A}$ e' ammesso da $\mathcal{B}$. Questa e' la stessa forma mentale del model checking: cerco un comportamento del sistema che violi la specifica.</p>
+<h3>Equivalenza</h3>
+<p>Domanda:</p>
+<p>$$
 L(\mathcal{A})=L(\mathcal{B})?
-$$
-
-Puoi verificarla con doppia inclusione, oppure cercando la differenza simmetrica:
-
-$$
+$$</p>
+<p>Puoi verificarla con doppia inclusione, oppure cercando la differenza simmetrica:</p>
+<p>$$
 (L(\mathcal{A})\cap \overline{L(\mathcal{B})})
 \cup
 (\overline{L(\mathcal{A})}\cap L(\mathcal{B}))
-$$
-
-Se questa e' vuota, non esiste una parola su cui i due automi differiscono.
-
-Inclusione ed equivalenza sono anche **inter-riducibili** tra loro, come negli
-appunti:
-
-$$L(\mathcal{A}_1)\subseteq L(\mathcal{A}_2)
+$$</p>
+<p>Se questa e' vuota, non esiste una parola su cui i due automi differiscono.</p>
+<p>Inclusione ed equivalenza sono anche <strong>inter-riducibili</strong> tra loro, come negli
+appunti:</p>
+<p>$$L(\mathcal{A}_1)\subseteq L(\mathcal{A}_2)
 \quad\Longleftrightarrow\quad
-L(\mathcal{A}_1) = L(\mathcal{A}_1)\cap L(\mathcal{A}_2)$$
-
-(la direzione inclusione $\to$ equivalenza usa la chiusura per intersezione; il
-viceversa e' la doppia inclusione).
-
-### Quanto costano questi problemi
-
-Gli appunti annotano con cura le complessita', e la chiave e' sempre la stessa:
-quali passaggi richiedono di **complementare**, perche' complementare un NFA
+L(\mathcal{A}_1) = L(\mathcal{A}_1)\cap L(\mathcal{A}_2)$$</p>
+<p>(la direzione inclusione $\to$ equivalenza usa la chiusura per intersezione; il
+viceversa e' la doppia inclusione).</p>
+<h3>Quanto costano questi problemi</h3>
+<p>Gli appunti annotano con cura le complessita', e la chiave e' sempre la stessa:
+quali passaggi richiedono di <strong>complementare</strong>, perche' complementare un NFA
 costa la determinizzazione (esponenziale), mentre complementare un DFA e'
-lineare.
-
-| Problema | NFA | DFA |
-| --- | --- | --- |
-| (Non-)vuotezza | PTIME (NLOGSPACE-completo): basta una visita del grafo | uguale |
-| Universalita' | EXPTIME come algoritmo, PSPACE-completo | PTIME |
-| Inclusione $L(\mathcal{A}<em>1)\subseteq L(\mathcal{A}_2)$ | PSPACE-completo | PTIME |
-| Equivalenza | PSPACE-completo | PTIME |
-
-La vuotezza non complementa nulla: e' raggiungibilita' su grafo, lineare.
+lineare.</p>
+<table>
+<thead>
+<tr>
+<th>Problema</th>
+<th>NFA</th>
+<th>DFA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(Non-)vuotezza</td>
+<td>PTIME (NLOGSPACE-completo): basta una visita del grafo</td>
+<td>uguale</td>
+</tr>
+<tr>
+<td>Universalita'</td>
+<td>EXPTIME come algoritmo, PSPACE-completo</td>
+<td>PTIME</td>
+</tr>
+<tr>
+<td>Inclusione $L(\mathcal{A}_1)\subseteq L(\mathcal{A}_2)$</td>
+<td>PSPACE-completo</td>
+<td>PTIME</td>
+</tr>
+<tr>
+<td>Equivalenza</td>
+<td>PSPACE-completo</td>
+<td>PTIME</td>
+</tr>
+</tbody>
+</table>
+<p>La vuotezza non complementa nulla: e' raggiungibilita' su grafo, lineare.
 L'universalita' invece e' "la validita' degli automi": come la validita' si
 riduce all'insoddisfacibilita' della negazione, l'universalita' si riduce alla
-vuotezza del complemento, e il complemento dell'NFA costa esponenziale.
-
-C'e' un'asimmetria da non sbagliare all'orale: nell'inclusione
+vuotezza del complemento, e il complemento dell'NFA costa esponenziale.</p>
+<p>C'e' un'asimmetria da non sbagliare all'orale: nell'inclusione
 $L(\mathcal{A}_1)\cap\neg L(\mathcal{A}_2)=\emptyset$ si complementa solo
-$\mathcal{A}_2$. Quindi:
-
-- se $\mathcal{A}_2$ e' un DFA (e $\mathcal{A}_1$ anche NFA), il complemento e'
-  lineare, l'intersezione polinomiale: l'inclusione scende a **PTIME**;
-- se invece e' $\mathcal{A}_1$ a essere deterministico e $\mathcal{A}_2$ resta
+$\mathcal{A}_2$. Quindi:</p>
+<ul>
+<li>se $\mathcal{A}_2$ e' un DFA (e $\mathcal{A}_1$ anche NFA), il complemento e'
+  lineare, l'intersezione polinomiale: l'inclusione scende a <strong>PTIME</strong>;</li>
+<li>se invece e' $\mathcal{A}_1$ a essere deterministico e $\mathcal{A}_2$ resta
   NFA, non cambia nulla: resta PSPACE-completo. E' l'automa "contenitore"
-  che deve essere deterministico.
-
-### Infinitudine
-
-Domanda:
-
-$$
+  che deve essere deterministico.</li>
+</ul>
+<h3>Infinitudine</h3>
+<p>Domanda:</p>
+<p>$$
 L(\mathcal{A}) \text{ e' infinito?}
-$$
-
-Un DFA riconosce un linguaggio infinito se e solo se esiste un ciclo:
-
-1. raggiungibile dallo stato iniziale;
-2. da cui si puo raggiungere uno stato finale.
-
-Perche? Se posso entrare in un ciclo utile, posso ripeterlo quante volte voglio e ottenere infinite parole accettate.
-
-Esempio:
-
-- Il DFA per `(ab)^\ast` ha un ciclo utile e riconosce infinite parole: $\varepsilon, ab, abab,\dots$.
-- Un DFA che accetta solo `ab` non ha un ciclo utile verso un finale: il linguaggio e' finito.
-
-Versione "small model" usata spesso negli appunti:
-
-&gt; se un DFA con $n$ stati riconosce un linguaggio infinito, allora accetta una parola di lunghezza compresa tra $n$ e $2n$ circa; viceversa, se accetta una parola abbastanza lunga da forzare un ciclo utile, allora il linguaggio e' infinito.
-
-L'intuizione e' sempre la stessa: una parola lunga almeno $n$ attraversa piu stati di quanti ce ne siano disponibili, quindi ripete uno stato. Se la parola e' accettata e il ciclo sta su un cammino verso un finale, puoi pompare quel ciclo e ottenere infinite parole accettate.
-
----
-
-## 8. Small model theory e pumping
-
-Per la vuotezza vale un piccolo teorema molto utile:
-
-&gt; Se un DFA con $n$ stati accetta almeno una parola, allora accetta una parola di lunghezza minore di $n$.
-
-Perche? Prendi la parola accettata piu corta. Se avesse lunghezza almeno $n$, durante la lettura attraverserebbe almeno $n+1$ stati. Per il principio dei cassetti, uno stato si ripete. Quindi c'e' un ciclo. Rimuovendo il ciclo ottieni una parola piu corta ancora accettata: contraddizione.
-
-Questa e' la stessa intuizione del pumping lemma:
-
-- se una parola e' abbastanza lunga, in un automa finito deve ripetere uno stato;
-- ripetere uno stato significa avere un ciclo;
-- un ciclo puo essere pompato o rimosso.
-
-Attenzione: il pumping lemma serve spesso per dimostrare non regolarita, ma Myhill-Nerode e' piu preciso per capire il numero di stati necessari.
-
----
-
-## 9. Myhill-Nerode: la memoria minima di un linguaggio
-
-Per un linguaggio $L\subseteq\Sigma^\ast$, definisci:
-
-$$
+$$</p>
+<p>Un DFA riconosce un linguaggio infinito se e solo se esiste un ciclo:</p>
+<ol>
+<li>raggiungibile dallo stato iniziale;</li>
+<li>da cui si puo raggiungere uno stato finale.</li>
+</ol>
+<p>Perche? Se posso entrare in un ciclo utile, posso ripeterlo quante volte voglio e ottenere infinite parole accettate.</p>
+<p>Esempio:</p>
+<ul>
+<li>Il DFA per <code>(ab)^\ast</code> ha un ciclo utile e riconosce infinite parole: $\varepsilon, ab, abab,\dots$.</li>
+<li>Un DFA che accetta solo <code>ab</code> non ha un ciclo utile verso un finale: il linguaggio e' finito.</li>
+</ul>
+<p>Versione "small model" usata spesso negli appunti:</p>
+<blockquote>
+<p>se un DFA con $n$ stati riconosce un linguaggio infinito, allora accetta una parola di lunghezza compresa tra $n$ e $2n$ circa; viceversa, se accetta una parola abbastanza lunga da forzare un ciclo utile, allora il linguaggio e' infinito.</p>
+</blockquote>
+<p>L'intuizione e' sempre la stessa: una parola lunga almeno $n$ attraversa piu stati di quanti ce ne siano disponibili, quindi ripete uno stato. Se la parola e' accettata e il ciclo sta su un cammino verso un finale, puoi pompare quel ciclo e ottenere infinite parole accettate.</p>
+<hr>
+<h2>8. Small model theory e pumping</h2>
+<p>Per la vuotezza vale un piccolo teorema molto utile:</p>
+<blockquote>
+<p>Se un DFA con $n$ stati accetta almeno una parola, allora accetta una parola di lunghezza minore di $n$.</p>
+</blockquote>
+<p>Perche? Prendi la parola accettata piu corta. Se avesse lunghezza almeno $n$, durante la lettura attraverserebbe almeno $n+1$ stati. Per il principio dei cassetti, uno stato si ripete. Quindi c'e' un ciclo. Rimuovendo il ciclo ottieni una parola piu corta ancora accettata: contraddizione.</p>
+<p>Questa e' la stessa intuizione del pumping lemma:</p>
+<ul>
+<li>se una parola e' abbastanza lunga, in un automa finito deve ripetere uno stato;</li>
+<li>ripetere uno stato significa avere un ciclo;</li>
+<li>un ciclo puo essere pompato o rimosso.</li>
+</ul>
+<p>Attenzione: il pumping lemma serve spesso per dimostrare non regolarita, ma Myhill-Nerode e' piu preciso per capire il numero di stati necessari.</p>
+<hr>
+<h2>9. Myhill-Nerode: la memoria minima di un linguaggio</h2>
+<p>Per un linguaggio $L\subseteq\Sigma^\ast$, definisci:</p>
+<p>$$
 x\sim_L y
 \iff
 \forall z\in\Sigma^\ast,\ xz\in L \Leftrightarrow yz\in L
-$$
-
-Due prefissi sono equivalenti se nessun suffisso futuro li distingue.
-
-### Tre idee da tenere insieme
-
-| Oggetto | Cosa significa |
-| --- | --- |
-| Classe di $\sim_L$ | un tipo di passato con lo stesso comportamento futuro |
-| Stato del DFA minimo | una classe di $\sim_L$ |
-| Indice finito | numero finito di tipi di passato, quindi linguaggio regolare |
-
-Teorema:
-
-&gt; $L$ e' regolare se e solo se $\sim_L$ ha indice finito. Il numero di classi e' il numero di stati del DFA minimo.
-
-### Relazione dell'automa e relazione del linguaggio
-
-Per un DFA $\mathcal{A}$ puoi definire:
-
-$$
+$$</p>
+<p>Due prefissi sono equivalenti se nessun suffisso futuro li distingue.</p>
+<h3>Tre idee da tenere insieme</h3>
+<table>
+<thead>
+<tr>
+<th>Oggetto</th>
+<th>Cosa significa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Classe di $\sim_L$</td>
+<td>un tipo di passato con lo stesso comportamento futuro</td>
+</tr>
+<tr>
+<td>Stato del DFA minimo</td>
+<td>una classe di $\sim_L$</td>
+</tr>
+<tr>
+<td>Indice finito</td>
+<td>numero finito di tipi di passato, quindi linguaggio regolare</td>
+</tr>
+</tbody>
+</table>
+<p>Teorema:</p>
+<blockquote>
+<p>$L$ e' regolare se e solo se $\sim_L$ ha indice finito. Il numero di classi e' il numero di stati del DFA minimo.</p>
+</blockquote>
+<h3>Relazione dell'automa e relazione del linguaggio</h3>
+<p>Per un DFA $\mathcal{A}$ puoi definire:</p>
+<p>$$
 x\sim_\mathcal{A}y
 \iff
 \hat{\delta}(q_0,x)=\hat{\delta}(q_0,y)
-$$
-
-Questa relazione dice: due parole sono equivalenti se portano nello stesso stato dell'automa. Siccome gli stati sono finiti, le classi sono finite.
-
-La relazione $\sim_L$ e' piu canonica: non dipende da un automa scelto, ma solo dal linguaggio. Il DFA minimo e' proprio quello che identifica esattamente le classi di $\sim_L$.
-
-### Prova delle tre implicazioni, in forma orale
-
-Negli appunti il teorema viene presentato tramite tre affermazioni equivalenti:
-
-1. $L$ e' regolare.
-2. $L$ e' unione di classi di una relazione invariante a destra di indice finito.
-3. $\sim_L$ ha indice finito.
-
-**Da 1 a 2.** Se $L$ e' regolare, esiste un DFA $\mathcal{A}$ che lo riconosce. Definisci $\sim</em>\mathcal{A}$ dicendo che due parole sono equivalenti se portano dallo stato iniziale allo stesso stato. Questa relazione e' invariante a destra: se due parole arrivano nello stesso stato, aggiungere lo stesso suffisso le fara' muovere nello stesso modo. Ha indice finito perche il DFA ha finiti stati. Inoltre $L$ e' l'unione delle classi che portano a stati finali.
-
-**Da 2 a 3.** Se $L$ e' unione di classi di una relazione $\sim$ invariante a destra e di indice finito, allora $\sim$ e' un raffinamento sufficiente per distinguere appartenenza e non appartenenza a $L$. La relazione canonica $\sim_L$ puo solo fondere classi che hanno lo stesso comportamento rispetto a tutti i suffissi. Quindi $\sim_L$ non ha piu classi di $\sim$, e resta di indice finito.
-
-**Da 3 a 1.** Se $\sim_L$ ha indice finito, costruisci un DFA:
-
-- stati = classi di equivalenza di $\sim_L$;
-- stato iniziale = classe di $\varepsilon$;
-- transizione da $[x]$ con simbolo $a$ = classe di $xa$;
-- stati finali = classi $[x]$ tali che $x\in L$.
-
-La transizione e' ben definita proprio per l'invarianza a destra. Questo DFA riconosce $L$, quindi $L$ e' regolare.
-
-### Il punto delicato della prova 3 → 1: perche' $\delta$ e' ben definita
-
-Negli appunti questo passaggio occupa due pagine, perche' e' il punto che un
-esaminatore controlla. La definizione
-
-$$\delta([u]_{\sim_L}, a) := [u\cdot a]_{\sim_L}$$
-
-usa un **rappresentante** $u$ della classe. Ma una classe ha tanti
+$$</p>
+<p>Questa relazione dice: due parole sono equivalenti se portano nello stesso stato dell'automa. Siccome gli stati sono finiti, le classi sono finite.</p>
+<p>La relazione $\sim_L$ e' piu canonica: non dipende da un automa scelto, ma solo dal linguaggio. Il DFA minimo e' proprio quello che identifica esattamente le classi di $\sim_L$.</p>
+<h3>Prova delle tre implicazioni, in forma orale</h3>
+<p>Negli appunti il teorema viene presentato tramite tre affermazioni equivalenti:</p>
+<ol>
+<li>$L$ e' regolare.</li>
+<li>$L$ e' unione di classi di una relazione invariante a destra di indice finito.</li>
+<li>$\sim_L$ ha indice finito.</li>
+</ol>
+<p><strong>Da 1 a 2.</strong> Se $L$ e' regolare, esiste un DFA $\mathcal{A}$ che lo riconosce. Definisci $\sim_\mathcal{A}$ dicendo che due parole sono equivalenti se portano dallo stato iniziale allo stesso stato. Questa relazione e' invariante a destra: se due parole arrivano nello stesso stato, aggiungere lo stesso suffisso le fara' muovere nello stesso modo. Ha indice finito perche il DFA ha finiti stati. Inoltre $L$ e' l'unione delle classi che portano a stati finali.</p>
+<p><strong>Da 2 a 3.</strong> Se $L$ e' unione di classi di una relazione $\sim$ invariante a destra e di indice finito, allora $\sim$ e' un raffinamento sufficiente per distinguere appartenenza e non appartenenza a $L$. La relazione canonica $\sim_L$ puo solo fondere classi che hanno lo stesso comportamento rispetto a tutti i suffissi. Quindi $\sim_L$ non ha piu classi di $\sim$, e resta di indice finito.</p>
+<p><strong>Da 3 a 1.</strong> Se $\sim_L$ ha indice finito, costruisci un DFA:</p>
+<ul>
+<li>stati = classi di equivalenza di $\sim_L$;</li>
+<li>stato iniziale = classe di $\varepsilon$;</li>
+<li>transizione da $[x]$ con simbolo $a$ = classe di $xa$;</li>
+<li>stati finali = classi $[x]$ tali che $x\in L$.</li>
+</ul>
+<p>La transizione e' ben definita proprio per l'invarianza a destra. Questo DFA riconosce $L$, quindi $L$ e' regolare.</p>
+<h3>Il punto delicato della prova 3 → 1: perche' $\delta$ e' ben definita</h3>
+<p>Negli appunti questo passaggio occupa due pagine, perche' e' il punto che un
+esaminatore controlla. La definizione</p>
+<p>$$\delta([u]_{\sim_L}, a) := [u\cdot a]_{\sim_L}$$</p>
+<p>usa un <strong>rappresentante</strong> $u$ della classe. Ma una classe ha tanti
 rappresentanti: se $[u] = [v]$, chi garantisce che $[ua] = [va]$? Per
 un'equivalenza arbitraria potrebbe succedere che $u\sim v$ ma
 $ua\not\sim va$: allora $\delta(q,a)$ varrebbe contemporaneamente $q'$ e
-$q''$ diversi, e non sarebbe una funzione.
-
-La garanzia e' che $\sim_L$ e' **invariante a destra**, e questo va dimostrato
-(non e' nella definizione). Devo provare:
-
-$$u\sim_L v \implies \forall t',\ ut'\sim_L vt'.$$
-
-Spacchettando la definizione, $ut'\sim_L vt'$ significa: per ogni $t''$,
+$q''$ diversi, e non sarebbe una funzione.</p>
+<p>La garanzia e' che $\sim_L$ e' <strong>invariante a destra</strong>, e questo va dimostrato
+(non e' nella definizione). Devo provare:</p>
+<p>$$u\sim_L v \implies \forall t',\ ut'\sim_L vt'.$$</p>
+<p>Spacchettando la definizione, $ut'\sim_L vt'$ significa: per ogni $t''$,
 $ut't''\in L \iff vt't''\in L$. Il trucco degli appunti: dato un $t''$
-arbitrario, poni $t = t'\cdot t''$. Siccome $u\sim_L v$ vale **per ogni**
-suffisso $t$, vale in particolare per questo $t$ composto:
-
-$$ut = u t' t'' \in L \iff v t' t'' = vt \in L.$$
-
-Che e' esattamente cio' che serviva. Quindi $\sim_L$ e' invariante a destra,
-$\delta$ e' ben definita, e l'automa e' un DFA legittimo.
-
-### Esempio guidato dagli appunti: $L = (ab)^\ast$
-
-Verifichiamo le classi di $\sim_L$ come fa il docente.
-
-- $ab \sim_L abab$: per ogni $t$, $ab\cdot t\in L \iff t = abab\ldots ab \iff abab\cdot t\in L$.
-- $a \not\sim_L ab$: basta $t = b$, perche' $a\cdot b = ab \in L$ ma $ab\cdot b = abb \notin L$.
-- $aba \sim_L a$: entrambe richiedono $t$ della forma $b\cdot(ab)^\ast$. Nota
-  che i suffissi che funzionano **non appartengono** a $L$, e non e' un
+arbitrario, poni $t = t'\cdot t''$. Siccome $u\sim_L v$ vale <strong>per ogni</strong>
+suffisso $t$, vale in particolare per questo $t$ composto:</p>
+<p>$$ut = u t' t'' \in L \iff v t' t'' = vt \in L.$$</p>
+<p>Che e' esattamente cio' che serviva. Quindi $\sim_L$ e' invariante a destra,
+$\delta$ e' ben definita, e l'automa e' un DFA legittimo.</p>
+<h3>Esempio guidato dagli appunti: $L = (ab)^\ast$</h3>
+<p>Verifichiamo le classi di $\sim_L$ come fa il docente.</p>
+<ul>
+<li>$ab \sim_L abab$: per ogni $t$, $ab\cdot t\in L \iff t = abab\ldots ab \iff abab\cdot t\in L$.</li>
+<li>$a \not\sim_L ab$: basta $t = b$, perche' $a\cdot b = ab \in L$ ma $ab\cdot b = abb \notin L$.</li>
+<li>$aba \sim_L a$: entrambe richiedono $t$ della forma $b\cdot(ab)^\ast$. Nota
+  che i suffissi che funzionano <strong>non appartengono</strong> a $L$, e non e' un
   problema: la quantificazione e' su tutti i $t$, conta solo che le risposte
-  coincidano.
-
-Le classi sono tre:
-
-| Classe | Contenuto | Significato |
-| --- | --- | --- |
-| $[\varepsilon]$ | $\varepsilon, ab, abab, \ldots$ | prefisso "completo", sono in $L$ |
-| $[a]$ | $a, aba, ababa, \ldots$ | manca una `b` per chiudere il blocco |
-| $[b]$ | $b, ba, bb, aab, \ldots$ | parole "rovinate": nessun suffisso le salva |
-
-E $L$ e' unione di classi: $L = [\varepsilon]<em>{\sim_L}$. Osservazione in piu'
+  coincidano.</li>
+</ul>
+<p>Le classi sono tre:</p>
+<table>
+<thead>
+<tr>
+<th>Classe</th>
+<th>Contenuto</th>
+<th>Significato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$[\varepsilon]$</td>
+<td>$\varepsilon, ab, abab, \ldots$</td>
+<td>prefisso "completo", sono in $L$</td>
+</tr>
+<tr>
+<td>$[a]$</td>
+<td>$a, aba, ababa, \ldots$</td>
+<td>manca una <code>b</code> per chiudere il blocco</td>
+</tr>
+<tr>
+<td>$[b]$</td>
+<td>$b, ba, bb, aab, \ldots$</td>
+<td>parole "rovinate": nessun suffisso le salva</td>
+</tr>
+</tbody>
+</table>
+<p>E $L$ e' unione di classi: $L = [\varepsilon]_{\sim_L}$. Osservazione in piu'
 degli appunti: il linguaggio $L' = (ab)^\ast a \cup b(a+b)^\ast = [a]\cup[b]$
-induce **la stessa** relazione di equivalenza, $\sim_L = \sim</em>{L'}$. Linguaggi
+induce <strong>la stessa</strong> relazione di equivalenza, $\sim_L = \sim_{L'}$. Linguaggi
 diversi possono condividere la stessa partizione di $A^\ast$; cambiano solo le
-classi marcate come finali.
-
-### Esempio positivo: parole che terminano con `a`
-
-Linguaggio:
-
-$$
+classi marcate come finali.</p>
+<h3>Esempio positivo: parole che terminano con <code>a</code></h3>
+<p>Linguaggio:</p>
+<p>$$
 L=\lbrace w\in\lbrace a,b\rbrace^\ast \mid w \text{ termina con } a\rbrace
-$$
-
-Ci sono due classi:
-
-| Classe | Esempi | Perche |
-| --- | --- | --- |
-| `A` | `a`, `ba`, `abba` | il prefisso termina con `a` |
-| `N` | $\varepsilon$, `b`, `abb` | il prefisso non termina con `a` |
-
-Il suffisso vuoto $\varepsilon$ distingue le due classi: una parola in `A` e' gia nel linguaggio, una in `N` no.
-
-Non servono piu classi: se due parole terminano entrambe con `a`, qualsiasi suffisso comune fara' dipendere il risultato solo dal suffisso; lo stesso vale per due parole che non terminano con `a`.
-
-Conclusione: il DFA minimo ha due stati.
-
-### Esempio positivo: lunghezza multipla di 3
-
-Linguaggio:
-
-$$
+$$</p>
+<p>Ci sono due classi:</p>
+<table>
+<thead>
+<tr>
+<th>Classe</th>
+<th>Esempi</th>
+<th>Perche</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>A</code></td>
+<td><code>a</code>, <code>ba</code>, <code>abba</code></td>
+<td>il prefisso termina con <code>a</code></td>
+</tr>
+<tr>
+<td><code>N</code></td>
+<td>$\varepsilon$, <code>b</code>, <code>abb</code></td>
+<td>il prefisso non termina con <code>a</code></td>
+</tr>
+</tbody>
+</table>
+<p>Il suffisso vuoto $\varepsilon$ distingue le due classi: una parola in <code>A</code> e' gia nel linguaggio, una in <code>N</code> no.</p>
+<p>Non servono piu classi: se due parole terminano entrambe con <code>a</code>, qualsiasi suffisso comune fara' dipendere il risultato solo dal suffisso; lo stesso vale per due parole che non terminano con <code>a</code>.</p>
+<p>Conclusione: il DFA minimo ha due stati.</p>
+<h3>Esempio positivo: lunghezza multipla di 3</h3>
+<p>Linguaggio:</p>
+<p>$$
 L=\lbrace w\in\lbrace a,b\rbrace^\ast \mid |w| \equiv 0 \pmod 3\rbrace
-$$
-
-Le classi sono tre, in base alla lunghezza modulo 3:
-
-| Classe | Esempi | Finale? |
-| --- | --- | --- |
-| `0` | $\varepsilon$, `aaa`, `abb` | si |
-| `1` | `a`, `b`, `aaaa` | no |
-| `2` | `aa`, `ab`, `bb` | no |
-
-Per distinguere classe `0` e classe `1`, usa un suffisso di lunghezza 0 oppure 2 a seconda del confronto. In generale ogni resto modulo 3 ha un futuro diverso per tornare a lunghezza multipla di 3.
-
-Conclusione: il DFA minimo ha tre stati.
-
-### Esempio negativo: $a^n b^n$
-
-Linguaggio:
-
-$$
+$$</p>
+<p>Le classi sono tre, in base alla lunghezza modulo 3:</p>
+<table>
+<thead>
+<tr>
+<th>Classe</th>
+<th>Esempi</th>
+<th>Finale?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code></td>
+<td>$\varepsilon$, <code>aaa</code>, <code>abb</code></td>
+<td>si</td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td><code>a</code>, <code>b</code>, <code>aaaa</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>2</code></td>
+<td><code>aa</code>, <code>ab</code>, <code>bb</code></td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+<p>Per distinguere classe <code>0</code> e classe <code>1</code>, usa un suffisso di lunghezza 0 oppure 2 a seconda del confronto. In generale ogni resto modulo 3 ha un futuro diverso per tornare a lunghezza multipla di 3.</p>
+<p>Conclusione: il DFA minimo ha tre stati.</p>
+<h3>Esempio negativo: $a^n b^n$</h3>
+<p>Linguaggio:</p>
+<p>$$
 L=\lbrace a^n b^n \mid n\ge 0\rbrace
-$$
-
-Considera i prefissi:
-
-$$
+$$</p>
+<p>Considera i prefissi:</p>
+<p>$$
 \varepsilon, a, aa, aaa,\dots
-$$
-
-Sono tutti distinguibili. Se prendo $a^i$ e $a^j$ con $i&lt;j$, uso il suffisso $b^i$.
-
-Allora:
-
-$$
+$$</p>
+<p>Sono tutti distinguibili. Se prendo $a^i$ e $a^j$ con $i&lt;j$, uso il suffisso $b^i$.</p>
+<p>Allora:</p>
+<p>$$
 a^i b^i \in L
-$$
-
-ma:
-
-$$
+$$</p>
+<p>ma:</p>
+<p>$$
 a^j b^i \notin L
-$$
-
-Quindi $a^i$ e $a^j$ non sono equivalenti. Poiche ci sono infiniti prefissi distinguibili, $\sim_L$ ha indice infinito. Dunque il linguaggio non e' regolare.
-
-### Esempio negativo: palindromi
-
-Linguaggio:
-
-$$
+$$</p>
+<p>Quindi $a^i$ e $a^j$ non sono equivalenti. Poiche ci sono infiniti prefissi distinguibili, $\sim_L$ ha indice infinito. Dunque il linguaggio non e' regolare.</p>
+<h3>Esempio negativo: palindromi</h3>
+<p>Linguaggio:</p>
+<p>$$
 PAL=\lbrace w\in\lbrace a,b\rbrace^\ast \mid w=w^R\rbrace
-$$
-
-Considera i prefissi:
-
-$$
+$$</p>
+<p>Considera i prefissi:</p>
+<p>$$
 a,\ aa,\ aaa,\ aaaa,\dots
-$$
-
-Per distinguere $a^i$ e $a^j$ con $i&lt;j$, usa il suffisso $ba^i$.
-
-Allora:
-
-$$
+$$</p>
+<p>Per distinguere $a^i$ e $a^j$ con $i&lt;j$, usa il suffisso $ba^i$.</p>
+<p>Allora:</p>
+<p>$$
 a^i b a^i
-$$
-
-e' palindroma, mentre:
-
-$$
+$$</p>
+<p>e' palindroma, mentre:</p>
+<p>$$
 a^j b a^i
-$$
-
-non e' palindroma se $j\neq i$. Anche qui hai infinite classi distinguibili, quindi il linguaggio dei palindromi non e' regolare.
-
-### Metodo operativo per Myhill-Nerode
-
-Quando devi usare Myhill-Nerode all'orale:
-
-1. Scrivi la relazione: due prefissi sono uguali se tutti i suffissi futuri li trattano allo stesso modo.
-2. Per dimostrare regolarita, identifica un numero finito di classi.
-3. Dai il significato di ogni classe.
-4. Per dimostrare non regolarita, scegli una famiglia infinita di prefissi.
-5. Per ogni coppia diversa, trova un suffisso che accetta una parola e rifiuta l'altra.
-
-La frase chiave e':
-
-&gt; ho trovato infiniti prefissi a due a due distinguibili, quindi servirebbero infiniti stati, quindi il linguaggio non e' regolare.
-
----
-
-## 10. Collegamento con V&amp;V e model checking
-
-La forma dell'inclusione:
-
-$$
+$$</p>
+<p>non e' palindroma se $j\neq i$. Anche qui hai infinite classi distinguibili, quindi il linguaggio dei palindromi non e' regolare.</p>
+<h3>Metodo operativo per Myhill-Nerode</h3>
+<p>Quando devi usare Myhill-Nerode all'orale:</p>
+<ol>
+<li>Scrivi la relazione: due prefissi sono uguali se tutti i suffissi futuri li trattano allo stesso modo.</li>
+<li>Per dimostrare regolarita, identifica un numero finito di classi.</li>
+<li>Dai il significato di ogni classe.</li>
+<li>Per dimostrare non regolarita, scegli una famiglia infinita di prefissi.</li>
+<li>Per ogni coppia diversa, trova un suffisso che accetta una parola e rifiuta l'altra.</li>
+</ol>
+<p>La frase chiave e':</p>
+<blockquote>
+<p>ho trovato infiniti prefissi a due a due distinguibili, quindi servirebbero infiniti stati, quindi il linguaggio non e' regolare.</p>
+</blockquote>
+<hr>
+<h2>10. Collegamento con V&amp;V e model checking</h2>
+<p>La forma dell'inclusione:</p>
+<p>$$
 L(\text{sistema})\subseteq L(\text{specifica})
-$$
-
-e' gia' una versione astratta del model checking. Se voglio verificare che tutti i comportamenti del sistema rispettino una specifica, cerco:
-
-$$
+$$</p>
+<p>e' gia' una versione astratta del model checking. Se voglio verificare che tutti i comportamenti del sistema rispettino una specifica, cerco:</p>
+<p>$$
 L(\text{sistema})\cap \overline{L(\text{specifica})}
-$$
-
-Se l'intersezione e' vuota, non esiste un comportamento cattivo. Se non e' vuota, una parola accettata dall'intersezione e' un controesempio.
-
-Nel caso delle parole finite tutto si risolve con automi finiti classici. Piu avanti, per sistemi reattivi e comportamenti infiniti, la stessa idea ricompare con automi di Buchi, LTL e model checking automata-theoretic.
-
----
-
-## 11. Mini-esercizi svolti
-
-### Esercizio 1: complementa un DFA
-
-Linguaggio: parole su $\lbrace 0,1\rbrace$ con almeno un `1`.
-
-DFA:
-
-| Stato | `0` | `1` | Finale? |
-| --- | --- | --- | --- |
-| `q0` | `q0` | `q1` | no |
-| `q1` | `q1` | `q1` | si |
-
-E' gia completo. Complemento:
-
-| Stato | `0` | `1` | Finale nel complemento? |
-| --- | --- | --- | --- |
-| `q0` | `q0` | `q1` | si |
-| `q1` | `q1` | `q1` | no |
-
-Il complemento riconosce le parole con nessun `1`, cioe' $0^\ast$.
-
-### Esercizio 2: inclusione
-
-Sia:
-
-- $L_1 =$ parole che finiscono con `ab`;
-- $L_2 =$ parole che contengono `ab`.
-
-Vale $L_1\subseteq L_2$? Si. Ogni parola che finisce con `ab` contiene certamente `ab`.
-
-Come lo controlla l'automa? Cerca una parola in:
-
-$$
+$$</p>
+<p>Se l'intersezione e' vuota, non esiste un comportamento cattivo. Se non e' vuota, una parola accettata dall'intersezione e' un controesempio.</p>
+<p>Nel caso delle parole finite tutto si risolve con automi finiti classici. Piu avanti, per sistemi reattivi e comportamenti infiniti, la stessa idea ricompare con automi di Buchi, LTL e model checking automata-theoretic.</p>
+<hr>
+<h2>11. Mini-esercizi svolti</h2>
+<h3>Esercizio 1: complementa un DFA</h3>
+<p>Linguaggio: parole su $\lbrace 0,1\rbrace$ con almeno un <code>1</code>.</p>
+<p>DFA:</p>
+<table>
+<thead>
+<tr>
+<th>Stato</th>
+<th><code>0</code></th>
+<th><code>1</code></th>
+<th>Finale?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>q0</code></td>
+<td><code>q0</code></td>
+<td><code>q1</code></td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>q1</code></td>
+<td><code>q1</code></td>
+<td><code>q1</code></td>
+<td>si</td>
+</tr>
+</tbody>
+</table>
+<p>E' gia completo. Complemento:</p>
+<table>
+<thead>
+<tr>
+<th>Stato</th>
+<th><code>0</code></th>
+<th><code>1</code></th>
+<th>Finale nel complemento?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>q0</code></td>
+<td><code>q0</code></td>
+<td><code>q1</code></td>
+<td>si</td>
+</tr>
+<tr>
+<td><code>q1</code></td>
+<td><code>q1</code></td>
+<td><code>q1</code></td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+<p>Il complemento riconosce le parole con nessun <code>1</code>, cioe' $0^\ast$.</p>
+<h3>Esercizio 2: inclusione</h3>
+<p>Sia:</p>
+<ul>
+<li>$L_1 =$ parole che finiscono con <code>ab</code>;</li>
+<li>$L_2 =$ parole che contengono <code>ab</code>.</li>
+</ul>
+<p>Vale $L_1\subseteq L_2$? Si. Ogni parola che finisce con <code>ab</code> contiene certamente <code>ab</code>.</p>
+<p>Come lo controlla l'automa? Cerca una parola in:</p>
+<p>$$
 L_1\cap \overline{L_2}
-$$
-
-cioe' una parola che finisce con `ab` ma non contiene `ab`. Impossibile, quindi il linguaggio e' vuoto e l'inclusione vale.
-
-### Esercizio 3: distinguere due prefissi
-
-Linguaggio:
-
-$$
+$$</p>
+<p>cioe' una parola che finisce con <code>ab</code> ma non contiene <code>ab</code>. Impossibile, quindi il linguaggio e' vuoto e l'inclusione vale.</p>
+<h3>Esercizio 3: distinguere due prefissi</h3>
+<p>Linguaggio:</p>
+<p>$$
 L=\lbrace w \mid w \text{ contiene } 101\rbrace
-$$
-
-I prefissi `1` e `10` sono distinguibili? Si. Usa il suffisso `1`.
-
-- `1` + `1` = `11`, non contiene `101`;
-- `10` + `1` = `101`, contiene `101`.
-
-Quindi `1 \not\sim_L 10` e nel DFA minimo devono stare in stati diversi.
-
----
-
-## 12. Due richiami utili: lemma di Arden e minimizzazione
-
-Il capitolo e' gia' centrato su DFA, NFA, regex e Myhill-Nerode. Aggiungo due
-richiami che aiutano a collegare meglio gli esercizi.
-
-### Lemma di Arden
-
-Il **lemma di Arden** e' uno strumento per risolvere equazioni sui linguaggi.
-
-La forma tipica e':
-
-$$X = A X \cup B.$$
-
-Se $\varepsilon\notin A$, allora la soluzione minima e':
-
-$$X=A^\ast B.$$
-
-Intuizione:
-
-- per ottenere una parola in $X$, posso ripetere un blocco di $A$ zero o piu'
-  volte;
-- poi devo uscire con un blocco di $B$.
-
-Questo compare quando si trasforma un automa in espressione regolare tramite
+$$</p>
+<p>I prefissi <code>1</code> e <code>10</code> sono distinguibili? Si. Usa il suffisso <code>1</code>.</p>
+<ul>
+<li><code>1</code> + <code>1</code> = <code>11</code>, non contiene <code>101</code>;</li>
+<li><code>10</code> + <code>1</code> = <code>101</code>, contiene <code>101</code>.</li>
+</ul>
+<p>Quindi <code>1 \not\sim_L 10</code> e nel DFA minimo devono stare in stati diversi.</p>
+<hr>
+<h2>12. Due richiami utili: lemma di Arden e minimizzazione</h2>
+<p>Il capitolo e' gia' centrato su DFA, NFA, regex e Myhill-Nerode. Aggiungo due
+richiami che aiutano a collegare meglio gli esercizi.</p>
+<h3>Lemma di Arden</h3>
+<p>Il <strong>lemma di Arden</strong> e' uno strumento per risolvere equazioni sui linguaggi.</p>
+<p>La forma tipica e':</p>
+<p>$$X = A X \cup B.$$</p>
+<p>Se $\varepsilon\notin A$, allora la soluzione minima e':</p>
+<p>$$X=A^\ast B.$$</p>
+<p>Intuizione:</p>
+<ul>
+<li>per ottenere una parola in $X$, posso ripetere un blocco di $A$ zero o piu'
+  volte;</li>
+<li>poi devo uscire con un blocco di $B$.</li>
+</ul>
+<p>Questo compare quando si trasforma un automa in espressione regolare tramite
 sistemi di equazioni: ogni stato genera un'equazione per il linguaggio delle
-parole che portano da quello stato a un finale.
+parole che portano da quello stato a un finale.</p>
+<p>Esempio:</p>
+<p>$$X = aX \cup b.$$</p>
+<p>La soluzione e':</p>
+<p>$$X=a^\ast b.$$</p>
+<p>Perche' posso leggere zero o piu' <code>a</code> restando nel comportamento ricorsivo, e poi
+chiudere con <code>b</code>.</p>
+<h3>Minimizzazione del DFA</h3>
+<p>Myhill-Nerode dice che il DFA minimo ha uno stato per ogni classe della relazione:</p>
+<p>$$u\sim_L v \quad\Longleftrightarrow\quad
+\forall z,\ uz\in L\iff vz\in L.$$</p>
+<p>Questa e' la caratterizzazione teorica.</p>
+<p>Operativamente, la <strong>minimizzazione</strong> di un DFA parte da una partizione degli
+stati:</p>
+<ul>
+<li>finali;</li>
+<li>non finali.</li>
+</ul>
+<p>Poi raffina la partizione distinguendo stati che, leggendo una stessa lettera,
+vanno in blocchi diversi.</p>
+<p>Due stati possono essere fusi solo se nessun suffisso li distingue.</p>
+<p>Quindi:</p>
+<ul>
+<li>Myhill-Nerode ragiona sui prefissi/parole;</li>
+<li>la minimizzazione del DFA ragiona sugli stati;</li>
+<li>le due visioni coincidono per il DFA minimo.</li>
+</ul>
+<p>Questo richiamo e' importante anche per il capitolo 3: <code>L*</code> cerca di imparare
+proprio queste classi minime usando membership ed equivalence query.</p>
+<hr>
+<h2>13. Quiz interattivo per l'autovalutazione</h2>
+<div id="quiz-container-2" style="background:#f9f9f9; padding:20px; border-radius:8px; border: 1px solid #ddd; margin-top:2rem;">
+  <h3 style="margin-top:0;">Quiz Settimana 1 - Capitolo 2: Automi e Myhill-Nerode</h3>
 
-Esempio:
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>1. Nel passo induttivo $R_{i,j}^k$, perche compare $(R_{k,k}^{k-1})^\ast$?</strong></p>
+    <label><input type="radio" name="q2_1" value="A"> A) Perche il percorso deve passare per forza infinite volte da $q_k$.</label><br>
+    <label><input type="radio" name="q2_1" value="B"> B) Perche, una volta arrivato a $q_k$, puo fare zero o piu cicli su $q_k$ prima di uscire.</label><br>
+    <label><input type="radio" name="q2_1" value="C"> C) Perche ogni DFA contiene sempre un ciclo su ogni stato.</label><br>
+    <button onclick="checkAnswer('q2_1', 'B', 'Corretto: la stella rappresenta zero o piu ripetizioni dei percorsi da q_k a q_k.', 'Non proprio. La stella serve a modellare i loop facoltativi su q_k prima di proseguire verso q_j.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q2_1-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
 
-$$X = aX \cup b.$$
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>2. Quale condizione e' essenziale prima di complementare un automa scambiando finali e non finali?</strong></p>
+    <label><input type="radio" name="q2_2" value="A"> A) Deve essere un NFA senza epsilon-mosse.</label><br>
+    <label><input type="radio" name="q2_2" value="B"> B) Deve essere un DFA deterministico e completo.</label><br>
+    <label><input type="radio" name="q2_2" value="C"> C) Deve avere un solo stato finale.</label><br>
+    <button onclick="checkAnswer('q2_2', 'B', 'Esatto. Determinismo e completezza garantiscono che ogni parola abbia una e una sola computazione completa.', 'Sbagliato. Se e\' un NFA o se mancano transizioni, scambiare i finali non descrive correttamente il complemento.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q2_2-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
 
-La soluzione e':
-
-$$X=a^\ast b.$$
-
-Perche' posso leggere zero o piu' `a` restando nel comportamento ricorsivo, e poi
-chiudere con `b`.
-
-### Minimizzazione del DFA
-
-Myhill-Nerode dice che il DFA minimo ha uno stato per ogni classe della relazione:
-
-$$u\sim_L v \quad\Longleftrightarrow\quad
-\forall z,\ uz\in L\iff vz\in L.$$
-
-Questa e' la caratterizzazione teorica.
-
-Operativamente, la **minimizzazione** di un DFA parte da una partizione degli
-stati:
-
-- finali;
-- non finali.
-
-Poi raffina la partizione distinguendo stati che, leggendo una stessa lettera,
-vanno in blocchi diversi.
-
-Due stati possono essere fusi solo se nessun suffisso li distingue.
-
-Quindi:
-
-- Myhill-Nerode ragiona sui prefissi/parole;
-- la minimizzazione del DFA ragiona sugli stati;
-- le due visioni coincidono per il DFA minimo.
-
-Questo richiamo e' importante anche per il capitolo 3: `L*` cerca di imparare
-proprio queste classi minime usando membership ed equivalence query.
-
----
-
-## 13. Quiz interattivo per l'autovalutazione
-
-&lt;div id="quiz-container-2" style="background:#f9f9f9; padding:20px; border-radius:8px; border: 1px solid #ddd; margin-top:2rem;"&gt;
-  &lt;h3 style="margin-top:0;"&gt;Quiz Settimana 1 - Capitolo 2: Automi e Myhill-Nerode&lt;/h3&gt;
-
-  &lt;div class="quiz-question" style="margin-bottom: 20px;"&gt;
-    &lt;p&gt;&lt;strong&gt;1. Nel passo induttivo $R_{i,j}^k$, perche compare $(R_{k,k}^{k-1})^\ast$?&lt;/strong&gt;&lt;/p&gt;
-    &lt;label&gt;&lt;input type="radio" name="q2_1" value="A"&gt; A) Perche il percorso deve passare per forza infinite volte da $q_k$.&lt;/label&gt;&lt;br&gt;
-    &lt;label&gt;&lt;input type="radio" name="q2_1" value="B"&gt; B) Perche, una volta arrivato a $q_k$, puo fare zero o piu cicli su $q_k$ prima di uscire.&lt;/label&gt;&lt;br&gt;
-    &lt;label&gt;&lt;input type="radio" name="q2_1" value="C"&gt; C) Perche ogni DFA contiene sempre un ciclo su ogni stato.&lt;/label&gt;&lt;br&gt;
-    &lt;button onclick="checkAnswer('q2_1', 'B', 'Corretto: la stella rappresenta zero o piu ripetizioni dei percorsi da q_k a q_k.', 'Non proprio. La stella serve a modellare i loop facoltativi su q_k prima di proseguire verso q_j.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;"&gt;Verifica Risposta&lt;/button&gt;
-    &lt;p id="q2_1-feedback" style="display:none; font-weight:bold; margin-top:5px;"&gt;&lt;/p&gt;
-  &lt;/div&gt;
-
-  &lt;div class="quiz-question" style="margin-bottom: 20px;"&gt;
-    &lt;p&gt;&lt;strong&gt;2. Quale condizione e' essenziale prima di complementare un automa scambiando finali e non finali?&lt;/strong&gt;&lt;/p&gt;
-    &lt;label&gt;&lt;input type="radio" name="q2_2" value="A"&gt; A) Deve essere un NFA senza epsilon-mosse.&lt;/label&gt;&lt;br&gt;
-    &lt;label&gt;&lt;input type="radio" name="q2_2" value="B"&gt; B) Deve essere un DFA deterministico e completo.&lt;/label&gt;&lt;br&gt;
-    &lt;label&gt;&lt;input type="radio" name="q2_2" value="C"&gt; C) Deve avere un solo stato finale.&lt;/label&gt;&lt;br&gt;
-    &lt;button onclick="checkAnswer('q2_2', 'B', 'Esatto. Determinismo e completezza garantiscono che ogni parola abbia una e una sola computazione completa.', 'Sbagliato. Se e\' un NFA o se mancano transizioni, scambiare i finali non descrive correttamente il complemento.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;"&gt;Verifica Risposta&lt;/button&gt;
-    &lt;p id="q2_2-feedback" style="display:none; font-weight:bold; margin-top:5px;"&gt;&lt;/p&gt;
-  &lt;/div&gt;
-
-  &lt;div class="quiz-question" style="margin-bottom: 20px;"&gt;
-    &lt;p&gt;&lt;strong&gt;3. A cosa si riduce operativamente l'inclusione $L(\mathcal{A}) \subseteq L(\mathcal{B})$?&lt;/strong&gt;&lt;/p&gt;
-    &lt;label&gt;&lt;input type="radio" name="q2_3" value="A"&gt; A) A controllare se $L(\mathcal{A}) \cap L(\mathcal{B})$ e' vuoto.&lt;/label&gt;&lt;br&gt;
-    &lt;label&gt;&lt;input type="radio" name="q2_3" value="B"&gt; B) A controllare se $L(\mathcal{A}) \cap \overline{L(\mathcal{B})}$ e' vuoto.</label><br>
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>3. A cosa si riduce operativamente l'inclusione $L(\mathcal{A}) \subseteq L(\mathcal{B})$?</strong></p>
+    <label><input type="radio" name="q2_3" value="A"> A) A controllare se $L(\mathcal{A}) \cap L(\mathcal{B})$ e' vuoto.</label><br>
+    <label><input type="radio" name="q2_3" value="B"> B) A controllare se $L(\mathcal{A}) \cap \overline{L(\mathcal{B})}$ e' vuoto.</label><br>
     <label><input type="radio" name="q2_3" value="C"> C) A confrontare solo il numero di stati dei due automi.</label><br>
     <button onclick="checkAnswer('q2_3', 'B', 'Corretto. Cerchi una parola accettata da A ma rifiutata da B; se non esiste, l\'inclusione vale.', 'Non basta. Devi cercare un controesempio: una parola in A e fuori da B.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
     <p id="q2_3-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
-  </div></p>
-<div class="quiz-question" style="margin-bottom: 20px;">
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
     <p><strong>4. In Myhill-Nerode, cosa dimostra una famiglia infinita di prefissi a due a due distinguibili?</strong></p>
     <label><input type="radio" name="q2_4" value="A"> A) Che il linguaggio richiede infiniti stati, quindi non e' regolare.</label><br>
     <label><input type="radio" name="q2_4" value="B"> B) Che il linguaggio e' sempre vuoto.</label><br>
@@ -1311,6 +1324,7 @@ proprio queste classi minime usando membership ed equivalence query.
     <p id="q2_4-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
   </div>
 </div>
+
 <script>
 function checkAnswer(qName, correctVal, correctMsg, wrongMsg) {
   var selected = document.querySelector('input[name="' + qName + '"]:checked');
