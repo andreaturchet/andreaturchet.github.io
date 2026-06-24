@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Guida agli automi visti a lezione</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/chat.css" />
+  
+</head>
+<body>
+
+<header class="site-header">
+  <h1>Guida agli automi visti a lezione</h1>
+  <p class="subtitle">Definizioni, prove essenziali, usi e criteri di scelta</p>
+  <div class="ornament">✦</div>
+</header>
+<div class="wrap">
+  <div class="nav-row"><a href="index.html">← Indice</a></div>
+  <article class="prose"><h1>Guida agli automi visti a lezione</h1>
+<p>Questa pagina raccoglie gli automi comparsi negli appunti e li mette a confronto per uso pratico: definizione, condizione di accettazione, risultati dimostrativi essenziali e criterio per scegliere un modello invece di un altro.</p>
+<p>Le fonti principali sono i capitoli gia' estratti nella knowledge base, <code>raw/notes.pdf</code>, e le anteprime OCR di <code>raw/Riassunti si o.pdf</code>. In particolare, nel riassunto manoscritto ho usato le pagine 42-48 per Büchi e chiusure, 67-75 per DBA/Muller/WS1S, 78-84 per learning automata, 85 per transduttori sequenziali e 88-96 per alberi/tree automata/Rabin.</p>
+<h2>Mappa rapida</h2>
+<table>
+<thead>
+<tr>
+<th>Modello</th>
+<th>Input</th>
+<th>Accettazione</th>
+<th>Potere espressivo</th>
+<th>Quando usarlo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DFA</td>
+<td>parole finite</td>
+<td>unica run, stato finale alla fine</td>
+<td>linguaggi regolari</td>
+<td>complemento, equivalenza, minimizzazione, monitor deterministici</td>
+</tr>
+<tr>
+<td>NFA</td>
+<td>parole finite</td>
+<td>esiste una run che finisce in finale</td>
+<td>come DFA</td>
+<td>costruzioni compatte, unione, regex, ragionamenti esistenziali</td>
+</tr>
+<tr>
+<td>epsilon-NFA</td>
+<td>parole finite con mosse silenziose</td>
+<td>come NFA, ma con epsilon-closure</td>
+<td>come DFA/NFA</td>
+<td>concatenazione, stella di Kleene, costruzioni da espressioni regolari</td>
+</tr>
+<tr>
+<td>FTS / Kripke structure</td>
+<td>tracce di stati</td>
+<td>non e' un accettore di proprieta', genera comportamenti</td>
+<td>modello del sistema</td>
+<td>rappresentare programmi reattivi e fare model checking</td>
+</tr>
+<tr>
+<td>NBA, automa di Büchi non deterministico</td>
+<td>parole infinite</td>
+<td>esiste una run che visita $F$ infinitamente spesso</td>
+<td>omega-regolari</td>
+<td>liveness, fairness, LTL, controesempi infiniti</td>
+</tr>
+<tr>
+<td>DBA, automa di Büchi deterministico</td>
+<td>parole infinite</td>
+<td>run unica che visita $F$ infinitamente spesso</td>
+<td>sottoinsieme degli omega-regolari</td>
+<td>quando basta un monitor deterministico di tipo $\overrightarrow{W}$</td>
+</tr>
+<tr>
+<td>GNBA</td>
+<td>parole infinite</td>
+<td>visita ogni insieme $F_i$ infinitamente spesso</td>
+<td>come NBA</td>
+<td>intersezione di proprieta' Büchi, obblighi multipli di fairness</td>
+</tr>
+<tr>
+<td>Muller deterministico / non deterministico</td>
+<td>parole infinite</td>
+<td>$Inf(\rho)\in\mathcal{F}$</td>
+<td>omega-regolari; deterministico pienamente espressivo</td>
+<td>complemento semplice, operazioni booleane, sintesi</td>
+</tr>
+<tr>
+<td>Rabin automata</td>
+<td>alberi infiniti, e in generale condizioni omega ricche</td>
+<td>per ogni ramo: qualche coppia $(L_i,U_i)$ con $L_i$ finito e $U_i$ infinito</td>
+<td>piu' adatto dei Büchi tree automata per S2S</td>
+<td>proprieta' ramificate su tutti i rami di un albero</td>
+</tr>
+<tr>
+<td>Tree automata</td>
+<td>alberi finiti o infiniti</td>
+<td>run assegna stati ai nodi; sui rami serve una condizione omega</td>
+<td>linguaggi regolari di alberi</td>
+<td>ragionare su computazioni ramificate e S2S</td>
+</tr>
+<tr>
+<td>Sequential transducer</td>
+<td>parole finite in input e output</td>
+<td>non ha finali: calcola una funzione</td>
+<td>funzioni regolari su parole</td>
+<td>modellare trasformazioni e macchine con output</td>
+</tr>
+<tr>
+<td>Mealy automata</td>
+<td>interazioni input/output</td>
+<td>produce output a ogni passo</td>
+<td>strategie a memoria finita</td>
+<td>sintesi di controllori, problema di Church</td>
+</tr>
+<tr>
+<td>DFA appreso con L*</td>
+<td>parole finite osservate tramite query</td>
+<td>come DFA</td>
+<td>linguaggio regolare target</td>
+<td>model learning di sistemi black-box</td>
+</tr>
+</tbody>
+</table>
+<h2>Come scegliere l'automa</h2>
+<p>Se l'input e' una parola finita, parti da DFA/NFA/epsilon-NFA. Il DFA e' la scelta migliore quando devi complementare, decidere equivalenza o avere una sola computazione. L'NFA e' migliore quando stai costruendo automi a blocchi, perche' il non determinismo rende naturali unione, scelta e composizione. L'epsilon-NFA e' ancora piu' comodo nelle dimostrazioni da regex ad automi, perche' una epsilon-mossa collega componenti senza consumare input.</p>
+<p>Se il sistema non termina e devi leggere parole infinite, il DFA/NFA finito non basta: non c'e' un "ultimo stato" su cui decidere. Qui entrano gli automi di Büchi. Un NBA e' il modello standard per omega-regolari, LTL e model checking automata-theoretic. Un DBA e' piu' facile da eseguire, ma e' meno espressivo: usarlo solo quando la proprieta' ha la forma "infiniti prefissi appartengono a un certo regolare $W$".</p>
+<p>Se hai piu' obblighi "da vedere infinitamente spesso", usa GNBA come passaggio intermedio: e' esattamente l'oggetto giusto per l'intersezione di automi Büchi. Poi, se serve, lo riconverti in NBA con un contatore finito.</p>
+<p>Se vuoi determinismo pieno su parole infinite, non affidarti ai DBA: passa a condizioni piu' ricche, come Muller, Rabin o parity. Nei tuoi appunti Muller serve a recuperare determinismo e chiusura booleana; Rabin serve soprattutto per alberi infiniti e S2S.</p>
+<p>Se devi rappresentare un controllore o una strategia, non vuoi solo accettare/rifiutare parole: vuoi produrre azioni. Usa Mealy o un transduttore sequenziale. Se invece il sistema e' black-box e vuoi ricostruirne un modello, usa apprendimento di automi: l'output dell'algoritmo L* e' un DFA ipotesi.</p>
+<h2>Automi finiti deterministici (DFA)</h2>
+<p>Un DFA e' una tupla:</p>
+<p>$$
+\mathcal{A}=(Q,\Sigma,\delta,q_0,F)
+$$</p>
+<p>dove $Q$ e' finito, $\Sigma$ e' l'alfabeto, $\delta:Q\times\Sigma\to Q$ e' la funzione di transizione, $q_0$ e' lo stato iniziale e $F\subseteq Q$ sono gli stati finali. La parola $w$ e' accettata se:</p>
+<p>$$
+\hat{\delta}(q_0,w)\in F.
+$$</p>
+<p>Il punto centrale e' l'unicita' della run: fissati stato e simbolo, il prossimo stato e' determinato.</p>
+<h3>Perche' si usa</h3>
+<p>Il DFA e' lo strumento piu' pulito per decidere problemi su linguaggi regolari finiti. La determinazione rende semplice il complemento: prima completi la funzione di transizione, poi scambi finali e non finali. Rende anche chiara l'equivalenza tra linguaggi: puoi costruire prodotti e cercare stati che distinguono i due automi.</p>
+<h3>Perche' usarlo rispetto a NFA</h3>
+<p>Usa DFA quando ti serve una risposta operativa deterministica o quando vuoi complementare. Usa NFA quando ti serve una costruzione compatta. La differenza non e' nel potere espressivo, perche' su parole finite DFA e NFA riconoscono esattamente i linguaggi regolari; la differenza e' nel costo e nella comodita' delle costruzioni.</p>
+<h2>Automi finiti non deterministici (NFA)</h2>
+<p>Un NFA ha la stessa struttura del DFA, ma la transizione e':</p>
+<p>$$
+\Delta:Q\times\Sigma\to 2^Q.
+$$</p>
+<p>Una parola e' accettata se esiste almeno una run che, dopo aver letto tutta la parola, termina in uno stato finale:</p>
+<p>$$
+\hat{\Delta}(q_0,w)\cap F\neq\emptyset.
+$$</p>
+<h3>Dimostrazione: subset construction</h3>
+<p>Per ogni NFA $\mathcal{N}=(Q,\Sigma,\Delta,q_0,F)$ costruisci un DFA:</p>
+<p>$$
+\mathcal{D}=(2^Q,\Sigma,\delta^D,\{q_0\},F^D)
+$$</p>
+<p>con:</p>
+<p>$$
+\begin{aligned}
+\delta^D(S,a)&amp;=\bigcup_{q\in S}\Delta(q,a),\\
+F^D&amp;=\{S\subseteq Q\mid S\cap F\neq\emptyset\}.
+\end{aligned}
+$$</p>
+<p>L'invariante e': dopo aver letto $w$, lo stato-sottoinsieme del DFA e' esattamente l'insieme degli stati raggiungibili dall'NFA leggendo $w$. Si dimostra per induzione su $|w|$. Da questo segue che il DFA accetta $w$ se e solo se l'NFA ha almeno una run accettante su $w$.</p>
+<h3>Perche' si usa</h3>
+<p>L'NFA rende naturali le costruzioni esistenziali. Per l'unione basta scegliere quale automa simulare; per costruire automi da espressioni regolari e' molto piu' semplice passare da NFA/epsilon-NFA che forzare subito una macchina deterministica.</p>
+<h3>Costo della scelta</h3>
+<p>La subset construction puo' produrre fino a $2^{|Q|}$ stati. Quindi l'NFA puo' essere molto piu' compatto, ma se ti serve determinismo devi pagare una possibile esplosione esponenziale.</p>
+<h2>Epsilon-NFA</h2>
+<p>Un epsilon-NFA permette transizioni che non consumano simboli:</p>
+<p>$$
+\Delta:Q\times(\Sigma\cup\{\varepsilon\})\to 2^Q.
+$$</p>
+<p>La nozione chiave e' l'epsilon-closure $E(S)$: tutti gli stati raggiungibili da $S$ usando solo mosse $\varepsilon$.</p>
+<h3>Dimostrazione: eliminare le epsilon-mosse</h3>
+<p>Dato un epsilon-NFA, costruisci un NFA senza epsilon-mosse usando:</p>
+<p>$$
+\Delta'(q,a)=E\left(\bigcup_{p\in E(q)}\Delta(p,a)\right).
+$$</p>
+<p>Questa transizione comprime in un solo passo il blocco:</p>
+<p>$$
+\varepsilon^\ast a\varepsilon^\ast.
+$$</p>
+<p>Gli stati finali diventano:</p>
+<p>$$
+F'=\{q\in Q\mid E(q)\cap F\neq\emptyset\}.
+$$</p>
+<p>Quindi una parola accettata tramite mosse silenziose prima, durante o dopo la lettura viene accettata anche dal nuovo NFA.</p>
+<h3>Perche' si usa</h3>
+<p>L'epsilon-NFA non aggiunge potere espressivo, ma aggiunge modularita'. E' la scelta giusta per dimostrare regex -&gt; automa: unione, concatenazione e stella si costruiscono collegando pezzi con epsilon-mosse.</p>
+<h2>Espressioni regolari e automi finiti</h2>
+<p>Le espressioni regolari non sono automi, ma negli appunti sono il linguaggio descrittivo equivalente a DFA/NFA/epsilon-NFA.</p>
+<h3>Risultato</h3>
+<p>Per parole finite, queste classi descrivono gli stessi linguaggi:</p>
+<ul>
+<li>DFA;</li>
+<li>NFA;</li>
+<li>epsilon-NFA;</li>
+<li>espressioni regolari ristrette.</li>
+</ul>
+<h3>Idea della dimostrazione</h3>
+<p>Regex -&gt; automa: per induzione sulla struttura dell'espressione. I casi base sono $\emptyset$, $\varepsilon$ e una lettera $a$. Unione, concatenazione e stella si implementano con epsilon-mosse.</p>
+<p>Automa -&gt; regex: per un DFA con stati $q_1,\ldots,q_n$, definisci $R_{i,j}^k$ come il linguaggio delle parole che portano da $q_i$ a $q_j$ usando solo stati intermedi con indice al massimo $k$. La ricorrenza e':</p>
+<p>$$
+R_{i,j}^k
+=
+R_{i,j}^{k-1}
+\cup
+R_{i,k}^{k-1}(R_{k,k}^{k-1})^\ast R_{k,j}^{k-1}.
+$$</p>
+<p>Alla fine:</p>
+<p>$$
+L(\mathcal{A})=\bigcup_{q_j\in F}R_{1,j}^n.
+$$</p>
+<h2>FTS e strutture di Kripke</h2>
+<p>Un Fair Transition System o una struttura di Kripke non e' un automa di specifica nel senso stretto "accetta/rifiuta una parola". E' il modello del sistema: genera tracce, cammini o computazioni. Negli appunti viene osservato che un FTS puo' essere visto come una forma di automa non deterministico, ma il suo ruolo nel model checking e' diverso: produce comportamenti, mentre l'automa della proprieta' riconosce comportamenti buoni o cattivi.</p>
+<h3>Perche' si usa</h3>
+<p>Lo usi quando devi modellare il programma, il protocollo o il sistema reattivo. Poi lo combini con una formula o con un automa della negazione della specifica. L'idea automata-theoretic del model checking e':</p>
+<p>$$
+\begin{aligned}
+Lang(S)&amp;\subseteq Lang(\varphi)\\
+&amp;\Longleftrightarrow Lang(S)\cap Lang(\neg\varphi)=\emptyset.
+\end{aligned}
+$$</p>
+<p>Il prodotto con l'automa della violazione trasforma la verifica in un problema di vuotezza.</p>
+<h2>Automi di Büchi non deterministici (NBA)</h2>
+<p>Un automa di Büchi legge parole infinite:</p>
+<p>$$
+\mathcal{A}=(Q,\Sigma,\Delta,q_0,F)
+$$</p>
+<p>con $\Delta\subseteq Q\times\Sigma\times Q$. Una run $\rho$ su una parola infinita $\alpha$ e' accettante se:</p>
+<p>$$
+Inf(\rho)\cap F\neq\emptyset.
+$$</p>
+<p>Cioe': almeno uno stato finale viene visitato infinitamente spesso. La parola e' accettata se esiste una run accettante.</p>
+<h3>Perche' si usa</h3>
+<p>I sistemi reattivi non terminano: server, protocolli, controller e agenti continuano a produrre eventi. Su parole infinite non puoi aspettare "la fine" per decidere. Büchi sostituisce lo stato finale raggiunto alla fine con uno stato finale visto infinite volte.</p>
+<p>Gli NBA riconoscono esattamente i linguaggi omega-regolari e sono il ponte standard tra logica temporale, S1S e model checking.</p>
+<h3>Dimostrazione: emptiness Büchi</h3>
+<p>Un NBA ha linguaggio non vuoto se e solo se esiste uno stato finale $f\in F$ raggiungibile da $q_0$ e da cui si puo' tornare a $f$ con un cammino non vuoto. In termini di grafo: serve una componente fortemente connessa raggiungibile che contenga un finale.</p>
+<p>Se una run accettante esiste, qualche finale compare infinite volte; tra due occorrenze dello stesso finale c'e' un ciclo. Viceversa, se hai un cammino $u$ fino a $f$ e un ciclo $v$ da $f$ a $f$, allora $uv^\omega$ e' accettata.</p>
+<h3>Chiusure importanti</h3>
+<p>Se $V\subseteq\Sigma^\ast$ e' regolare, allora $V^\omega$ e' omega-regolare. L'automa di Büchi riconosce un blocco di $V$, torna all'iniziale e ripete infinite volte.</p>
+<p>Se $V$ e' regolare e $L$ e' omega-regolare, allora $V\cdot L$ e' omega-regolare: prima simuli l'automa finito per $V$, poi passi all'automa Büchi per $L$.</p>
+<p>Unione e intersezione sono chiuse. L'unione usa il non determinismo; l'intersezione richiede piu' attenzione e passa naturalmente da GNBA.</p>
+<h2>Automi di Büchi generalizzati (GNBA)</h2>
+<p>Un GNBA ha una famiglia di insiemi di accettazione:</p>
+<p>$$
+\mathcal{F}=\{F_1,\ldots,F_k\}.
+$$</p>
+<p>Una run e' accettante se visita infinitamente spesso almeno uno stato di ciascun $F_i$.</p>
+<h3>Perche' si usa</h3>
+<p>Il GNBA e' lo strumento giusto quando hai piu' obblighi di liveness. Nell'intersezione di due NBA non puoi pretendere che i finali vengano visti nello stesso istante: una run puo' visitare finali del primo automa ai tempi pari e finali del secondo ai tempi dispari. Il GNBA dice invece: visita infinite volte i finali del primo e visita infinite volte i finali del secondo.</p>
+<h3>Dimostrazione: intersezione di NBA</h3>
+<p>Dati $\mathcal{A}_1$ e $\mathcal{A}_2$, costruisci il prodotto sincrono sugli stati $Q_1\times Q_2$ e usa:</p>
+<p>$$
+\mathcal{F}=\{F_1\times Q_2,\; Q_1\times F_2\}.
+$$</p>
+<p>La run prodotto e' accettante se la prima proiezione visita $F_1$ infinite volte e la seconda proiezione visita $F_2$ infinite volte.</p>
+<h3>Dimostrazione: GNBA -&gt; NBA</h3>
+<p>Costruisci $k$ copie dell'automa, una per ogni obbligo. Uno stato diventa $(q,i)$, dove $i$ significa "sto aspettando di soddisfare $F_i$". Quando raggiungi uno stato in $F_i$, passi all'obbligo successivo. Se completi il giro $F_1,\ldots,F_k$ infinite volte, allora tutti gli obblighi vengono soddisfatti infinite volte. Il numero di stati cresce di un fattore $k$.</p>
+<h2>DBA: Büchi deterministici</h2>
+<p>Un DBA ha la stessa accettazione di Büchi, ma la transizione e' deterministica:</p>
+<p>$$
+\delta:Q\times\Sigma\to Q.
+$$</p>
+<p>La run su ogni parola infinita e' unica.</p>
+<h3>Caratterizzazione</h3>
+<p>Un linguaggio $L\subseteq\Sigma^\omega$ e' riconosciuto da un DBA se e solo se:</p>
+<p>$$
+L=\overrightarrow{W}
+$$</p>
+<p>per qualche regolare $W\subseteq\Sigma^\ast$, dove:</p>
+<p>$$
+\overrightarrow{W}
+=
+\{\alpha\in\Sigma^\omega\mid \exists^\omega n,\; \alpha(0,n)\in W\}.
+$$</p>
+<p>In parole: una parola infinita e' accettata se ha infiniti prefissi appartenenti a un linguaggio regolare $W$.</p>
+<h3>Perche' non basta sempre</h3>
+<p>I DBA sono strettamente meno espressivi degli NBA. Il linguaggio:</p>
+<p>$$
+\begin{aligned}
+L_{fin}=\{\alpha\in\{a,b\}^\omega\mid{}&amp;
+\alpha \text{ contiene}\\
+&amp;\text{solo finitemente molte } a\}.
+\end{aligned}
+$$</p>
+<p>e' riconoscibile da un NBA: l'automa indovina il punto dopo l'ultima $a$ e poi accetta solo se vede soltanto $b$. Un DBA non puo' "indovinare" l'ultima $a$, perche' ha una sola run.</p>
+<h3>Quando usarlo</h3>
+<p>Usa DBA quando la proprieta' e' naturalmente deterministica e descrivibile come "infiniti prefissi buoni". Non usarlo come sostituto generale degli NBA: perderesti linguaggi omega-regolari.</p>
+<h2>Automi di Muller</h2>
+<p>Un automa di Muller usa l'insieme degli stati visti infinitamente spesso. Nel caso deterministico:</p>
+<p>$$
+\mathcal{M}=(Q,\Sigma,\delta,q_0,\mathcal{F})
+$$</p>
+<p>dove $\mathcal{F}\subseteq 2^Q$. Una run $\rho$ accetta se:</p>
+<p>$$
+Inf(\rho)\in\mathcal{F}.
+$$</p>
+<h3>Perche' si usa</h3>
+<p>Muller e' piu' flessibile di Büchi: non guarda solo "vedo almeno un finale infinite volte", ma esattamente quale insieme di stati ricorre all'infinito. Questo permette agli automi di Muller deterministici di riconoscere tutti gli omega-regolari, cosa che i DBA non fanno.</p>
+<h3>DBA come caso di Muller</h3>
+<p>Ogni DBA e' un DMA. Se il DBA ha finali $F$, scegli:</p>
+<p>$$
+\mathcal{F}=\{P\subseteq Q\mid P\cap F\neq\emptyset\}.
+$$</p>
+<p>Allora $Inf(\rho)\in\mathcal{F}$ se e solo se la run visita qualche stato finale infinite volte.</p>
+<h3>Complemento semplice, ma solo deterministico</h3>
+<p>Se $\mathcal{M}=(Q,\Sigma,\delta,q_0,\mathcal{F})$ e' deterministico, il complemento e':</p>
+<p>$$
+\overline{\mathcal{M}}=(Q,\Sigma,\delta,q_0,2^Q\setminus\mathcal{F}).
+$$</p>
+<p>Funziona perche' la run e' unica. Nel non deterministico l'accettazione e' esistenziale: complementare $\mathcal{F}$ non scambia correttamente "esiste una run accettante" con "tutte le run non accettano".</p>
+<h3>NMA e NBA</h3>
+<p>Gli automi di Muller non deterministici hanno lo stesso potere espressivo degli NBA. Una direzione e' immediata usando la famiglia $\mathcal{F}=\{P\mid P\cap F\neq\emptyset\}$. L'altra puo' passare da S1S: si formalizza "gli stati visti infinitamente spesso sono esattamente $P$" con:</p>
+<p>$$
+Exact_P(Y_0,\ldots,Y_m)
+=
+\bigwedge_{q_i\in P}Inf_i(Y_i)
+\wedge
+\bigwedge_{q_i\notin P}Fin_i(Y_i),
+$$</p>
+<p>poi si fa la disgiunzione su tutti i $P\in\mathcal{F}$.</p>
+<h2>Automi di Rabin</h2>
+<p>Una condizione di Rabin e' una famiglia finita di coppie:</p>
+<p>$$
+\Omega=\{(L_1,U_1),\ldots,(L_n,U_n)\}.
+$$</p>
+<p>Intuitivamente, per accettare deve esistere una coppia tale che gli stati in $L_i$ compaiano solo finitemente spesso e almeno uno stato in $U_i$ compaia infinitamente spesso:</p>
+<p>$$
+Inf(\rho)\cap L_i=\emptyset
+\quad\text{e}\quad
+Inf(\rho)\cap U_i\neq\emptyset.
+$$</p>
+<p>Negli automi di Rabin su alberi, questa condizione va verificata lungo ogni ramo infinito.</p>
+<h3>Perche' si usa</h3>
+<p>Rabin e' utile quando Büchi e' troppo debole, soprattutto sugli alberi infiniti. Un vincolo Büchi dice "vedi $F$ infinitamente spesso"; Rabin puo' dire insieme "da un certo punto in poi evita $L_i$" e "continua a vedere $U_i$". Questa combinazione e' adatta a proprieta' ramificate e al teorema di Rabin per S2S.</p>
+<h3>Perche' non basta Büchi sugli alberi</h3>
+<p>Nel riassunto manoscritto compare esplicitamente il punto: per un Rabin automaton non sempre esiste un Büchi automaton equivalente. La ragione concettuale e' che su alberi devi soddisfare la condizione su tutti i rami, e la sola richiesta Büchi puo' non esprimere vincoli "finitamente spesso / infinitamente spesso" abbastanza ricchi.</p>
+<h2>Tree automata</h2>
+<p>Un tree automaton legge alberi invece di parole. Per alberi binari una forma tipica e':</p>
+<p>$$
+\mathcal{A}=(Q,A,\Delta,q_0,\mathcal{C})
+$$</p>
+<p>con:</p>
+<p>$$
+\Delta\subseteq Q\times A\times Q\times Q.
+$$</p>
+<p>Se un nodo ha stato $q$ ed etichetta $a$, una transizione assegna stati ai due figli. Una run non e' piu' una sequenza lineare: assegna uno stato a ogni nodo dell'albero.</p>
+<h3>Alberi finiti</h3>
+<p>Per alberi finiti, l'emptiness dei tree automata e' decidibile in tempo polinomiale negli appunti. L'automa puo' essere visto top-down: riceve un simbolo e produce due stati per i figli.</p>
+<h3>Alberi infiniti</h3>
+<p>Per alberi infiniti ogni ramo e' una parola infinita. Serve quindi una condizione omega lungo i rami: Büchi, Muller, Rabin o parity. Il ruolo principale e' collegare alberi infiniti e logiche ramificate, in particolare S2S.</p>
+<h3>Quando usarli</h3>
+<p>Usa tree automata quando devi parlare di tutte le computazioni possibili nello stesso oggetto. Un albero rappresenta naturalmente il non determinismo: la radice e' lo stato iniziale, i rami sono computazioni.</p>
+<h2>Transduttori sequenziali</h2>
+<p>Un transduttore sequenziale e' un automa con output:</p>
+<p>$$
+\mathcal{T}=(\Sigma,\Gamma,Q,q_0,\delta)
+$$</p>
+<p>dove:</p>
+<p>$$
+\delta:Q\times\Sigma\to Q\times\Gamma^\ast.
+$$</p>
+<p>Non ha stati finali nel senso classico: a ogni transizione produce una porzione di output. Calcola una funzione:</p>
+<p>$$
+f:\Sigma^\ast\to\Gamma^\ast.
+$$</p>
+<h3>Perche' si usa</h3>
+<p>Serve quando non vuoi riconoscere un linguaggio, ma trasformare input in output. Negli appunti e' collegato anche al learning: invece di imparare una funzione caratteristica $f:\Sigma^\ast\to\{0,1\}$, puoi imparare una funzione su parole.</p>
+<h3>Limite importante</h3>
+<p>I transduttori sequenziali calcolano funzioni totali e monotone rispetto al prefisso: se $w$ e' prefisso di $w'$, allora $f(w)$ e' prefisso di $f(w')$. Questo deriva dal fatto che l'output viene prodotto online mentre l'input viene letto.</p>
+<h2>Automi di Mealy</h2>
+<p>Un automa di Mealy e' una macchina a stati finiti con output immediato. A ogni passo legge un input dell'ambiente e produce un output del sistema. E' quindi piu' vicino a una strategia che a un riconoscitore.</p>
+<h3>Perche' si usa</h3>
+<p>Nel problema di Church e nella sintesi, la soluzione non e' "accetto o rifiuto una parola", ma "dato cio' che fa l'ambiente, quale azione devo produrre?". Se esiste una strategia vincente a memoria finita, la puoi rappresentare come automa di Mealy.</p>
+<h3>Perche' usarlo rispetto a Büchi/Muller</h3>
+<p>Büchi e Muller specificano insiemi di comportamenti. Mealy implementa un comportamento: e' un controller. In una pipeline di sintesi, la specifica puo' essere trasformata in un gioco omega-regolare; la strategia vincente estratta diventa una macchina di Mealy.</p>
+<h2>Apprendimento di automi e algoritmo L*</h2>
+<p>L'apprendimento di automi non e' una nuova condizione di accettazione. E' un modo per ottenere un DFA che modella un linguaggio regolare sconosciuto.</p>
+<p>Nel modello MAT, il Teacher conosce un linguaggio regolare segreto $L_0$, rappresentabile da un DFA. Il Learner puo' fare:</p>
+<ul>
+<li>membership query: "la parola $w$ appartiene a $L_0$?";</li>
+<li>equivalence query: "il mio DFA $\mathcal{A}$ riconosce $L_0$?".</li>
+</ul>
+<p>Se l'equivalence query fallisce, il Teacher restituisce un controesempio:</p>
+<p>$$
+w\in (L_0-L(\mathcal{A}))\cup(L(\mathcal{A})-L_0).
+$$</p>
+<h3>Perche' si usa</h3>
+<p>Serve nella verifica black-box: non conosci la struttura interna del sistema, ma puoi interrogarlo. Costruisci un modello finito appreso e poi applichi tecniche di verifica.</p>
+<h3>Perche' servono entrambe le query</h3>
+<p>Solo membership query non bastano a garantire identificazione certa dopo un numero finito di esempi: restano infiniti linguaggi compatibili. Solo equivalence query bastano enumerando tutti gli automi, ma e' brute force. L* combina membership ed equivalence query e sfrutta Myhill-Nerode per arrivare in tempo polinomiale nella dimensione del DFA target, nel modello ideale.</p>
+<h3>Idea della costruzione</h3>
+<p>La tabella di osservazione usa prefissi $S$ e suffissi test $T$. Ogni riga rappresenta il comportamento di un prefisso rispetto ai suffissi. Quando la tabella e' chiusa/T-completa e consistente/T-minimale, le righe diventano stati del DFA ipotesi. Il controesempio di una equivalence query raffina $T$ e costringe la tabella a distinguere stati che prima sembravano uguali.</p>
+<h2>Secondo teorema di Büchi: ponte S1S e automi</h2>
+<p>Il risultato fondamentale degli appunti e':</p>
+<p>$$
+\begin{aligned}
+L\subseteq A^\omega\text{ e' omega-regolare}
+&amp;\Longleftrightarrow\\
+L\text{ e' definibile in S1S}.
+\end{aligned}
+$$</p>
+<h3>Da automa a S1S</h3>
+<p>Dato un NBA, introduci variabili monadiche $Y_i$ per dire "alla posizione $x$ la run e' nello stato $q_i$". La formula impone:</p>
+<ol>
+<li>stato iniziale;</li>
+<li>esattamente uno stato in ogni posizione;</li>
+<li>rispetto delle transizioni;</li>
+<li>qualche finale visitato infinitamente spesso.</li>
+</ol>
+<p>L'esistenziale sugli insiemi $Y_i$ rappresenta il non determinismo: esiste una run accettante.</p>
+<h3>Da S1S ad automa</h3>
+<p>Si procede per induzione sulla formula. Le formule atomiche hanno automi. I connettivi usano chiusure booleane. L'esistenziale $\exists X$ diventa proiezione: l'automa non legge piu' la componente $X$, ma la indovina nondeterministicamente. L'universale si riduce a negazione ed esistenziale.</p>
+<h3>Perche' e' importante</h3>
+<p>Questo teorema giustifica il passaggio continuo tra formule logiche e automi. Una formula temporale/logica puo' essere compilata in automa; poi il problema logico diventa un problema su automi, spesso emptiness.</p>
+<h2>Mini-lista da orale</h2>
+<ol>
+<li>DFA/NFA/epsilon-NFA sono equivalenti su parole finite; la prova chiave e' subset construction ed epsilon-closure.</li>
+<li>Il complemento di un linguaggio regolare finito si fa facilmente su DFA completi, non direttamente su NFA.</li>
+<li>Su parole infinite non c'e' stato finale "alla fine"; Büchi richiede finali visitati infinitamente spesso.</li>
+<li>Per l'intersezione di NBA non basta $F_1\times F_2$; serve GNBA o un contatore.</li>
+<li>Emptiness Büchi equivale a cercare un finale raggiungibile su un ciclo.</li>
+<li>Gli NBA sono piu' espressivi dei DBA; "finitamente molte $a$" e' l'esempio da ricordare.</li>
+<li>Muller deterministico recupera espressivita' omega-regolare e rende il complemento semplice.</li>
+<li>Rabin serve per condizioni piu' ricche, specialmente su alberi infiniti e S2S.</li>
+<li>Mealy/transduttori producono output: non sono solo riconoscitori.</li>
+<li>L* usa Myhill-Nerode in forma algoritmica: le righe della tabella diventano stati del DFA minimo.</li>
+</ol>
+<h2>Fonti locali usate</h2>
+<ul>
+<li><code>sources/Automi_stati_finiti_parole_finite_Summary.md</code></li>
+<li><code>sources/Automi_stati_finiti_parole_infinite_Summary.md</code></li>
+<li><code>sources/Learning_Automata_Summary.md</code></li>
+<li><code>concepts/Deterministic_Finite_Automata.md</code></li>
+<li><code>concepts/Non_Deterministic_Finite_Automata.md</code></li>
+<li><code>concepts/Büchi_Automata.md</code></li>
+<li><code>concepts/Generalized_Büchi_Automata.md</code></li>
+<li><code>concepts/Muller_Automata.md</code></li>
+<li><code>concepts/Rabin_Automata.md</code></li>
+<li><code>concepts/Tree_Automata.md</code></li>
+<li><code>concepts/Sequential_Transducers.md</code></li>
+<li><code>concepts/Mealy_Automata.md</code></li>
+<li><code>formal_proofs.md</code></li>
+<li>OCR/anteprime da <code>raw/Riassunti si o.pdf</code>, pagine 42-48, 67-75, 78-85, 88-96.</li>
+<li>Testo estratto da <code>raw/notes.pdf</code> tramite i file <code>work/cap02_notes.txt</code>, <code>work/cap03_notes.txt</code>, <code>work/cap05_notes.txt</code>, <code>work/cap06_notes.txt</code>.</li>
+</ul></article>
+  <div class="nav-row"><a href="index.html">← Indice</a></div>
+</div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script defer src="assets/chat.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

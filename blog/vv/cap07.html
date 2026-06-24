@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capitolo 7 — Logiche temporali</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/chat.css" />
+  
+</head>
+<body>
+
+<header class="site-header">
+  <h1>V&amp;V in AI — Appunti</h1>
+  <p class="subtitle">Settimana 4</p>
+  <div class="ornament">✦</div>
+</header>
+<div class="wrap">
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap06.html">← Precedente</a></span><span><a href="cap08.html">Successivo →</a></span></div>
+  
+<div class="chapter-opener">
+  <div class="label">Capitolo 7</div>
+  <h1>Capitolo 7 — Logiche temporali</h1>
+  <p class="focus">LTL, CTL, CTL*; incomparabilità LTL/CTL.</p>
+</div>
+
+  <article class="prose"><h1>Logica temporale lineare - Riassunto</h1>
+<h2>Punti chiave</h2>
+<ul>
+<li><strong>LTL</strong> descrive proprieta su una singola sequenza lineare infinita di stati.</li>
+<li>La sintassi combina lettere proposizionali, connettivi booleani e operatori temporali come $X$, $F$, $G$ e $U$.</li>
+<li>Esistono varianti dell'Until: forte, debole, stretto e non stretto.</li>
+<li>La soddisfacibilita LTL puo essere decisa tramite tableau costruiti su atomi della formula e sottografi fortemente connessi realizzanti.</li>
+<li>Le formule LTL possono essere tradotte in automi di Buchi, rendendo possibile il model checking automata-theoretic.</li>
+</ul>
+<h2>Argomento centrale</h2>
+<p>Tradurre LTL in automi consente di ridurre la verifica di proprieta temporali a problemi su linguaggi e prodotti di automi.</p>
+<h2>Rilevanza per V&amp;V in AI</h2>
+<p>LTL e' adatta a specificare safety, liveness e fairness di agenti e sistemi reattivi.</p>
+<hr />
+
+<h1>Logica ad albero computazionale (CTL) - Riassunto</h1>
+<h2>Punti chiave</h2>
+<ul>
+<li><strong>CTL</strong> e' una logica temporale branching-time: valuta proprieta su alberi di computazioni possibili.</li>
+<li>A differenza di LTL, CTL usa quantificatori di cammino: $A$ per tutti i cammini ed $E$ per almeno un cammino.</li>
+<li>CTL distingue formule di stato e formule di cammino: gli operatori temporali devono essere combinati con un quantificatore di cammino.</li>
+<li>Gli operatori principali sono $X$, $F$, $G$ e $U$, sempre nella forma quantificata, ad esempio $EF p$ o $AG p$.</li>
+<li>CTL e LTL sono incomparabili: CTL esprime bene proprieta di possibilita, LTL esprime naturalmente molte proprieta di fairness.</li>
+</ul>
+<h2>Argomento centrale</h2>
+<p>CTL e' adatta al model checking efficiente perche le formule possono essere valutate localmente sugli stati, spesso tramite algoritmi di labeling e punti fissi.</p>
+<h2>Rilevanza per V&amp;V in AI</h2>
+<p>CTL permette di specificare proprieta su sistemi non deterministici, ad esempio: da ogni stato deve restare possibile raggiungere una condizione sicura.</p>
+<hr />
+
+<h1>Logica temporale lineare (LTL)</h1>
+<p>LTL e' una logica temporale lineare: interpreta le formule su singole sequenze infinite di stati.</p>
+<h2>Sintassi</h2>
+<p>Sia $AP$ l'insieme delle proposizioni atomiche, come <code>request</code>, <code>grant</code>, <code>safe</code> o <code>error</code>.</p>
+<p>La grammatica base e':
+$$\varphi ::= p \mid \neg\varphi \mid \varphi\land\psi \mid X\varphi \mid \varphi U \psi$$</p>
+<p>dove $p\in AP$.</p>
+<p>Significa che:
+- una proposizione atomica e' una formula;
+- se $\varphi$ e' una formula, allora anche $\neg\varphi$, $X\varphi$, $F\varphi$ e $G\varphi$ sono formule;
+- se $\varphi$ e $\psi$ sono formule, allora anche $\varphi\land\psi$, $\varphi\lor\psi$, $\varphi\to\psi$ e $\varphi U \psi$ sono formule.</p>
+<p>$F$ e $G$ sono abbreviazioni utili:
+$$F\varphi := true\ U\ \varphi$$
+$$G\varphi := \neg F\neg\varphi$$</p>
+<p>Le parentesi contano. $G(request\to F grant)$ significa che ogni richiesta, in qualunque istante, verra' prima o poi servita. Senza il $G$ esterno, $request\to F grant$ controlla solo la posizione corrente.</p>
+<h2>Operatori principali</h2>
+<ul>
+<li>$X\varphi$: $\varphi$ vale nel prossimo stato;</li>
+<li>$F\varphi$: $\varphi$ vale prima o poi;</li>
+<li>$G\varphi$: $\varphi$ vale sempre;</li>
+<li>$\varphi U \psi$: $\varphi$ vale fino al momento in cui vale $\psi$.</li>
+</ul>
+<h2>Uso nel model checking</h2>
+<p>Una specifica LTL descrive comportamenti ammessi o vietati lungo le computazioni. Spesso si traduce la negazione della formula in un automa di Buchi e si cerca un controesempio nel prodotto con il sistema.</p>
+<h2>Esempi</h2>
+<ul>
+<li>Safety: $G\neg bad$.</li>
+<li>Response: $G(req \rightarrow F ack)$.</li>
+<li>Fairness: $GF enabled \rightarrow GF taken$.</li>
+</ul>
+<h2>Collegamenti</h2>
+<ul>
+<li>Automi di Büchi</li>
+<li>Model checking</li>
+<li>Logica ad albero computazionale (CTL)</li>
+</ul>
+<hr />
+
+<h1>Logica ad albero computazionale (CTL)</h1>
+<p>CTL e' una logica temporale branching-time usata per specificare proprieta su sistemi con piu futuri possibili.</p>
+<h2>Concetti principali</h2>
+<ul>
+<li><strong>Tempo ramificato</strong>: da uno stato possono partire piu cammini.</li>
+<li><strong>Quantificatori di cammino</strong>: $A$ significa tutti i cammini, $E$ significa almeno un cammino.</li>
+<li><strong>Operatori temporali</strong>: $X$, $F$, $G$, $U$.</li>
+<li><strong>Formule di stato</strong>: in CTL gli operatori temporali sono combinati con quantificatori, ad esempio $AF p$, $EG p$, $E[p U q]$.</li>
+</ul>
+<h2>CTL vs LTL</h2>
+<p>CTL puo esprimere proprieta di possibilita, ad esempio $AGEF p$: da ogni stato e' sempre possibile tornare a uno stato con $p$. LTL esprime invece in modo naturale proprieta lungo cammini lineari e molte condizioni di fairness.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Logica temporale lineare (LTL)</li>
+<li>Model checking</li>
+<li>Modello di Kripke</li>
+</ul>
+<hr />
+
+<h1>Approfondimento completo settimana 4 - Logiche temporali</h1>
+<p>Questo documento espande il Capitolo 7. L'obiettivo e' capire davvero LTL, CTL e CTL-star: non solo ricordare le sigle, ma saper tradurre requisiti naturali, valutare formule su computazioni e spiegare perche' linear time e branching time non sono la stessa cosa.</p>
+<p>Il capitolo 8 entrera' piu a fondo nelle procedure di model checking. Qui pero' anticipiamo i richiami essenziali, perche' all'orale le domande su LTL e CTL quasi sempre scivolano verso:</p>
+<ul>
+<li>semantica precisa degli operatori;</li>
+<li>differenza tra una singola computazione e l'albero di tutte le computazioni;</li>
+<li>esempi di traduzione;</li>
+<li>incomparabilita' tra LTL e CTL;</li>
+<li>collegamento con automi di Buchi e model checking.</li>
+</ul>
+<hr>
+<h2>0. Idea guida: perche' servono logiche temporali?</h2>
+<p>La logica proposizionale dice che cosa vale in un singolo istante:</p>
+<p>$$
+safe,\quad request,\quad grant,\quad error.
+$$</p>
+<p>Per i sistemi reattivi questo non basta. Un sistema reattivo non produce un risultato e poi termina: continua a interagire con l'ambiente. Quindi le proprieta' importanti non parlano solo dello stato corrente, ma dell'evoluzione nel tempo.</p>
+<p>Esempi tipici:</p>
+<ul>
+<li>"non si raggiunge mai uno stato cattivo";</li>
+<li>"ogni richiesta viene prima o poi servita";</li>
+<li>"se una transizione resta abilitata, prima o poi viene eseguita";</li>
+<li>"da ogni stato deve restare possibile tornare a una configurazione sicura";</li>
+<li>"esiste almeno una strategia che porta al goal".</li>
+</ul>
+<p>Queste frasi hanno due dimensioni:</p>
+<ol>
+<li>una dimensione temporale: adesso, prossimo stato, prima o poi, sempre, fino a;</li>
+<li>una dimensione di scelta: guardo una sola computazione oppure tutti i futuri possibili?</li>
+</ol>
+<p>LTL e CTL rispondono in modo diverso:</p>
+<ul>
+<li><strong>LTL</strong> guarda una computazione lineare alla volta;</li>
+<li><strong>CTL</strong> guarda l'albero ramificato delle computazioni possibili;</li>
+<li><strong>CTL-star</strong> generalizza entrambe.</li>
+</ul>
+<hr>
+<h2>1. Richiami dai capitoli precedenti</h2>
+<h3>Da FTS e Kripke ai cammini</h3>
+<p>Nei capitoli su FTS e SPL hai visto che un sistema puo' essere rappresentato come stati e transizioni. Per le logiche temporali useremo spesso una struttura di Kripke:</p>
+<p>$$
+M=(S,R,L).
+$$</p>
+<p>Dove:</p>
+<ul>
+<li>$S$ e' un insieme di stati;</li>
+<li>$R$ e' una relazione di transizione tra stati;</li>
+<li>$L$ assegna a ogni stato l'insieme delle proposizioni atomiche vere in quello stato.</li>
+</ul>
+<p>Se in uno stato $s$ vale:</p>
+<p>$$
+L(s)=\{request,ready\},
+$$</p>
+<p>allora in quello stato sono vere le proposizioni <code>request</code> e <code>ready</code>, mentre sono false le proposizioni non contenute in $L(s)$.</p>
+<p>Di solito si assume che la relazione di transizione sia <strong>totale</strong>: ogni stato ha almeno un successore. Questo evita cammini finiti. Le logiche temporali del corso sono pensate per computazioni infinite.</p>
+<p>Un cammino e' una sequenza infinita:</p>
+<p>$$
+\pi=s0,s1,s2,\ldots
+$$</p>
+<p>tale che per ogni posizione vale:</p>
+<p>$$
+R(si,s(i+1)).
+$$</p>
+<p>La traccia associata al cammino e' la parola infinita:</p>
+<p>$$
+L(s0),L(s1),L(s2),\ldots
+$$</p>
+<p>Questa e' la connessione con gli automi di Buchi: un comportamento del sistema e' una parola infinita su alfabeto $2^{AP}$.</p>
+<h3>Da Buchi a LTL</h3>
+<p>Nel capitolo 5 hai visto gli automi di Buchi, che riconoscono parole infinite. LTL puo' essere vista come un linguaggio piu comodo per descrivere insiemi di parole infinite.</p>
+<p>Una formula come:</p>
+<p>$$
+G(request \to F grant)
+$$</p>
+<p>descrive il linguaggio di tutte le computazioni in cui ogni richiesta viene prima o poi seguita da un grant.</p>
+<p>Poi, per fare model checking, si puo' tradurre la formula LTL in un automa di Buchi.</p>
+<h3>Da S1S a LTL</h3>
+<p>Nel capitolo 6 hai visto S1S, che parla di posizioni naturali e insiemi di posizioni. LTL e' meno espressiva di S1S piena, ma molto naturale per specificare proprieta' temporali.</p>
+<p>Il teorema di Kamp collega LTL al frammento del primo ordine su ordini lineari discreti. A livello orale basta ricordare questo:</p>
+<ul>
+<li>S1S e automi di Buchi catturano gli omega-regolari;</li>
+<li>LTL cattura un frammento importante e molto usato;</li>
+<li>aggiungere operatori al passato a LTL non aumenta il potere espressivo su tempo lineare discreto, ma puo' rendere le formule piu corte.</li>
+</ul>
+<h3>La cornice modale: da dove vengono ♢ e ◻</h3>
+<p>Negli appunti le logiche temporali vengono introdotte come caso particolare
+della <strong>logica modale</strong>. L'idea: la logica classica valuta una formula in un
+unico "mondo"; la logica modale considera un <strong>insieme di mondi</strong> collegati da
+una <strong>relazione di accessibilita'</strong> (un grafo: i nodi sono mondi/stati, gli
+archi dicono quali mondi sono raggiungibili). Una formula puo' essere
+vera in un mondo e falsa in un altro. I due operatori classici:</p>
+<ul>
+<li><strong>possibilita'</strong> $\Diamond p$: esiste un mondo accessibile dal corrente in
+  cui $p$ e' vera (un $\exists$ sugli archi uscenti);</li>
+<li><strong>necessita'</strong> $\Box p$: in tutti i mondi accessibili $p$ e' vera (un
+  $\forall$). Nota: in logica modale "possibilmente vero" non implica "anche
+  falso da qualche parte", a differenza dell'uso in linguaggio naturale.</li>
+</ul>
+<p>La logica <strong>temporale</strong> e' il caso in cui i mondi sono <strong>istanti di tempo</strong> e
+l'accessibilita' e' l'ordinamento temporale: $\Diamond$ diventa F (sometime in
+the future), $\Box$ diventa G (always in the future). Ma attenzione: in LTL
+l'operatore <strong>di base</strong> non e' F/G bensi' l'<strong>until</strong> — F e G si derivano da
+U, non viceversa.</p>
+<h3>I parametri di progetto di una logica temporale</h3>
+<p>Gli appunti elencano le scelte che definiscono una logica temporale; il corso
+prende sempre la prima opzione di ogni coppia:</p>
+<table>
+<thead>
+<tr>
+<th>Parametro</th>
+<th>Scelta del corso</th>
+<th>Alternativa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base logica</td>
+<td>proposizionale</td>
+<td>primo ordine</td>
+</tr>
+<tr>
+<td>Clock</td>
+<td>globale (un tempo universale)</td>
+<td>composizionale (un clock per componente)</td>
+</tr>
+<tr>
+<td>Struttura del tempo</td>
+<td>lineare (ℕ) — per LTL</td>
+<td>ramificato (alberi) — CTL</td>
+</tr>
+<tr>
+<td>Entita' temporali</td>
+<td>punti</td>
+<td>intervalli (interval temporal logics, possibile seminario)</td>
+</tr>
+<tr>
+<td>Tempo</td>
+<td>discreto (ogni istante ha un successore)</td>
+<td>denso/continuo (ℚ, ℝ)</td>
+</tr>
+<tr>
+<td>Direzione</td>
+<td>solo futuro</td>
+<td>anche passato</td>
+</tr>
+</tbody>
+</table>
+<p>Quindi PLTL = proposizionale + clock globale + tempo lineare discreto a punti
+con istante iniziale (ℕ) + solo futuro: esattamente la forma delle
+computazioni dei sistemi visti finora.</p>
+<hr>
+<h2>2. LTL: Linear Temporal Logic</h2>
+<h3>Intuizione</h3>
+<p>LTL interpreta le formule su una singola sequenza infinita:</p>
+<p>$$
+\sigma=s0,s1,s2,\ldots
+$$</p>
+<p>oppure, equivalentemente, sulla traccia:</p>
+<p>$$
+L(s0),L(s1),L(s2),\ldots
+$$</p>
+<p>Quando scrivo:</p>
+<p>$$
+\sigma,i\models \varphi,
+$$</p>
+<p>intendo:</p>
+<blockquote>
+<p>la formula $\varphi$ e' vera lungo la computazione $\sigma$ alla posizione $i$.</p>
+</blockquote>
+<p>Quando l'indice non e' scritto, di solito si intende la posizione iniziale:</p>
+<p>$$
+\sigma\models\varphi
+$$</p>
+<p>cioe':</p>
+<p>$$
+\sigma,0\models\varphi.
+$$</p>
+<h3>Sintassi base</h3>
+<p>Sia $AP$ un insieme finito di proposizioni atomiche. Una proposizione atomica e'
+un nome che puo' essere vero o falso in uno stato del sistema, per esempio:</p>
+<p>$$
+request,\quad grant,\quad error,\quad safe,\quad critical.
+$$</p>
+<p>Attenzione: una proposizione atomica non e' una variabile numerica e non e'
+un'azione. E' un predicato osservabile sullo stato corrente. Se nello stato
+$s_i$ vale <code>request</code>, allora la traccia in posizione $i$ contiene la
+proposizione <code>request</code>.</p>
+<p>Le formule LTL sono generate da:</p>
+<p>$$
+\varphi ::= p \mid \neg\varphi \mid \varphi\land\psi \mid X\varphi \mid \varphi U \psi
+$$</p>
+<p>dove $p\in AP$.</p>
+<p>Questa riga e' una <strong>grammatica induttiva</strong>. Significa:</p>
+<ol>
+<li>ogni proposizione atomica $p$ e' gia' una formula;</li>
+<li>se $\varphi$ e' una formula, allora anche $\neg\varphi$ e' una formula;</li>
+<li>se $\varphi$ e $\psi$ sono formule, allora $\varphi\land\psi$ e' una formula;</li>
+<li>se $\varphi$ e' una formula, allora $X\varphi$ e' una formula;</li>
+<li>se $\varphi$ e $\psi$ sono formule, allora $\varphi U \psi$ e' una formula.</li>
+</ol>
+<p>Tutte le formule LTL si costruiscono ripetendo queste regole un numero finito di
+volte. Questa e' la cosa importante: una formula LTL e' un oggetto finito che
+descrive proprieta' di computazioni infinite.</p>
+<h3>Formule atomiche e formule composte</h3>
+<p>Le formule piu semplici sono le proposizioni atomiche:</p>
+<p>$$
+request,\quad grant,\quad safe.
+$$</p>
+<p>Da queste si costruiscono formule piu grandi:</p>
+<p>$$
+\neg error
+$$</p>
+<p>$$
+request\land \neg grant
+$$</p>
+<p>$$
+X grant
+$$</p>
+<p>$$
+request\ U\ grant.
+$$</p>
+<p>LTL distingue due tipi di operatori:</p>
+<ul>
+<li>operatori <strong>booleani</strong>, come $\neg,\land,\lor,\to$;</li>
+<li>operatori <strong>temporali</strong>, come $X,F,G,U$.</li>
+</ul>
+<p>Gli operatori booleani combinano verita' nello stesso istante. Gli operatori
+temporali spostano lo sguardo lungo la computazione.</p>
+<h3>Operatori unari e binari</h3>
+<p>Alcuni operatori prendono una sola formula:</p>
+<p>$$
+\neg\varphi,\quad X\varphi,\quad F\varphi,\quad G\varphi.
+$$</p>
+<p>Questi sono operatori <strong>unari</strong>.</p>
+<p>Altri operatori prendono due formule:</p>
+<p>$$
+\varphi\land\psi,\quad \varphi\lor\psi,\quad \varphi\to\psi,\quad \varphi U \psi.
+$$</p>
+<p>Questi sono operatori <strong>binari</strong>.</p>
+<p>In breve: gli operatori unari si mettono davanti a una formula; gli operatori binari collegano due formule gia' ben formate.</p>
+<p>Questa distinzione evita molti errori sintattici. Ad esempio:</p>
+<ul>
+<li>$G$ da solo non e' una formula;</li>
+<li>$U p$ non e' una formula, perche' $U$ ha bisogno di una formula a sinistra e
+  una a destra;</li>
+<li>$F(p\land q)$ e' una formula;</li>
+<li>$(F p)\land q$ e' una formula diversa.</li>
+</ul>
+<h3>Parentesi e precedenza</h3>
+<p>Quando una formula e' lunga, le parentesi servono a dire come deve essere
+letta. Per evitare ambiguita', puoi usare questa precedenza pratica:</p>
+<ol>
+<li>operatori unari: $\neg$, $X$, $F$, $G$;</li>
+<li>operatori temporali binari: $U$, $W$, $R$;</li>
+<li>congiunzione $\land$;</li>
+<li>disgiunzione $\lor$;</li>
+<li>implicazione $\to$.</li>
+</ol>
+<p>Quindi:</p>
+<p>$$
+G request \to F grant
+$$</p>
+<p>si legge normalmente come:</p>
+<p>$$
+(G request)\to(F grant).
+$$</p>
+<p>Ma spesso quello che si vuole dire e':</p>
+<p>$$
+G(request\to F grant).
+$$</p>
+<p>Le due formule sono molto diverse.</p>
+<h3>Perche $G(request\to F grant)$ non e' uguale a $request\to F grant$</h3>
+<p>La formula:</p>
+<p>$$
+request\to F grant
+$$</p>
+<p>controlla solo la posizione corrente. Dice: se <code>request</code> vale adesso, allora da
+adesso in poi prima o poi arrivera' <code>grant</code>.</p>
+<p>La formula:</p>
+<p>$$
+G(request\to F grant)
+$$</p>
+<p>controlla ogni posizione della computazione. Dice: in ogni istante, se c'e' una
+richiesta, allora da quell'istante in poi arrivera' un grant.</p>
+<p>Questa e' la formula corretta per "ogni richiesta viene prima o poi servita".
+Il $G$ esterno e' necessario perche' la proprieta' deve essere controllata in
+tutti gli istanti, non solo all'inizio.</p>
+<h3>Come leggere formule annidate</h3>
+<p>Gli operatori temporali possono essere annidati.</p>
+<p>$$
+GF p
+$$</p>
+<p>si legge come:</p>
+<p>$$
+G(Fp).
+$$</p>
+<p>Significa: in ogni posizione futura, esiste una posizione ancora piu futura in
+cui vale $p$. In altre parole, $p$ accade infinitamente spesso.</p>
+<p>Invece:</p>
+<p>$$
+FG p
+$$</p>
+<p>si legge come:</p>
+<p>$$
+F(Gp).
+$$</p>
+<p>Significa: prima o poi si raggiunge un punto dopo il quale $p$ vale sempre.</p>
+<p>Quindi $GFp$ e $FGp$ non sono intercambiabili:</p>
+<ul>
+<li>$GFp$: $p$ torna infinite volte;</li>
+<li>$FGp$: da un certo momento in poi $p$ resta sempre vero.</li>
+</ul>
+<h3>Formule ben formate e formule non ben formate</h3>
+<p>Esempi di formule LTL ben formate:</p>
+<p>$$
+G\neg error
+$$</p>
+<p>$$
+G(request\to F grant)
+$$</p>
+<p>$$
+GF enabled \to GF taken
+$$</p>
+<p>$$
+G(reset\to XG safe)
+$$</p>
+<p>$$
+\neg grant\ U\ request.
+$$</p>
+<p>Esempi da non scrivere:</p>
+<ul>
+<li>$G\to p$, perche' $G$ deve applicarsi a una formula;</li>
+<li>$p U$, perche' manca la formula a destra di $U$;</li>
+<li>$X U p$, perche' $X$ deve essere seguito da una formula e $U$ deve avere due
+  argomenti;</li>
+<li>$p q$, perche' due proposizioni vicine non formano una formula senza un
+  connettivo.</li>
+</ul>
+<h3>Sintassi minimale e abbreviazioni</h3>
+<p>La grammatica base usa solo:</p>
+<p>$$
+p,\quad \neg,\quad \land,\quad X,\quad U.
+$$</p>
+<p>Questo non significa che in LTL si possano usare solo questi simboli. Significa
+che gli altri operatori possono essere definiti a partire da questi.</p>
+<p>Gli altri connettivi si definiscono come abbreviazioni:</p>
+<p>$$
+\varphi\lor\psi := \neg(\neg\varphi\land\neg\psi)
+$$</p>
+<p>$$
+\varphi\to\psi := \neg\varphi\lor\psi
+$$</p>
+<p>Operatori temporali derivati:</p>
+<p>$$
+F\varphi := true\;U\;\varphi
+$$</p>
+<p>$$
+G\varphi := \neg F\neg\varphi
+$$</p>
+<p>Quindi $F$ e $G$ non sono indispensabili dal punto di vista teorico, ma sono
+indispensabili dal punto di vista pratico: rendono le specifiche leggibili.</p>
+<h3>Perche $F$ si definisce con $U$</h3>
+<p>La definizione:</p>
+<p>$$
+F\varphi := true\;U\;\varphi
+$$</p>
+<p>dice: "true vale fino al momento in cui arriva $\varphi$". Poiche' <code>true</code> vale
+sempre, l'unico vincolo reale e' che $\varphi$ arrivi prima o poi.</p>
+<p>Quindi $F\varphi$ significa:</p>
+<blockquote>
+<p>prima o poi $\varphi$.</p>
+</blockquote>
+<h3>Perche $G$ si definisce con $F$</h3>
+<p>La definizione:</p>
+<p>$$
+G\varphi := \neg F\neg\varphi
+$$</p>
+<p>dice: "non accade mai che prima o poi arrivi una violazione di $\varphi$".</p>
+<p>Se non esiste nessun futuro in cui $\varphi$ e' falsa, allora $\varphi$ vale
+sempre.</p>
+<p>Quindi $G\varphi$ significa:</p>
+<blockquote>
+<p>da ora in poi, sempre $\varphi$.</p>
+</blockquote>
+<p>Lettura:</p>
+<ul>
+<li>$X\varphi$: nel prossimo stato vale $\varphi$;</li>
+<li>$F\varphi$: prima o poi vale $\varphi$;</li>
+<li>$G\varphi$: da ora in poi vale sempre $\varphi$;</li>
+<li>$\varphi U \psi$: $\varphi$ vale fino al primo momento in cui vale $\psi$, e $\psi$ deve arrivare.</li>
+</ul>
+<h3>Metodo pratico per scrivere una formula LTL</h3>
+<p>Quando devi tradurre una frase naturale in LTL, procedi cosi':</p>
+<ol>
+<li>individua le proposizioni atomiche;</li>
+<li>chiediti se la proprieta' deve valere solo ora o in ogni istante;</li>
+<li>scegli l'operatore temporale principale;</li>
+<li>metti le parentesi prima di semplificare;</li>
+<li>controlla se stai parlando di un evento singolo, di una risposta, di una
+   permanenza o di ricorrenza.</li>
+</ol>
+<p>Esempio:</p>
+<p>Frase:</p>
+<blockquote>
+<p>ogni richiesta viene prima o poi servita.</p>
+</blockquote>
+<p>Proposizioni:</p>
+<p>$$
+request,\quad grant.
+$$</p>
+<p>Evento locale:</p>
+<p>$$
+request\to F grant.
+$$</p>
+<p>Deve valere in ogni istante:</p>
+<p>$$
+G(request\to F grant).
+$$</p>
+<p>Questa costruzione e' piu sicura che provare a scrivere subito la formula
+finale.</p>
+<h3>Semantica precisa</h3>
+<p>Sia $\sigma=s0,s1,s2,\ldots$ un cammino e sia $i$ una posizione.</p>
+<p>Per le proposizioni:</p>
+<p>$$
+\sigma,i\models p
+$$</p>
+<p>se e solo se:</p>
+<p>$$
+p\in L(si).
+$$</p>
+<p>Per i booleani:</p>
+<p>$$
+\sigma,i\models \neg\varphi
+$$</p>
+<p>se e solo se:</p>
+<p>$$
+\sigma,i\not\models \varphi.
+$$</p>
+<p>$$
+\sigma,i\models \varphi\land\psi
+$$</p>
+<p>se e solo se:</p>
+<p>$$
+\sigma,i\models\varphi
+\quad\text{e}\quad
+\sigma,i\models\psi.
+$$</p>
+<p>Per il prossimo stato:</p>
+<p>$$
+\sigma,i\models X\varphi
+$$</p>
+<p>se e solo se:</p>
+<p>$$
+\sigma,i+1\models\varphi.
+$$</p>
+<p>Per until:</p>
+<p>$$
+\sigma,i\models \varphi U \psi
+$$</p>
+<p>se e solo se esiste una posizione $j\ge i$ tale che:</p>
+<p>$$
+\sigma,j\models \psi
+$$</p>
+<p>e per ogni $k$ con $i\le k&lt;j$ vale:</p>
+<p>$$
+\sigma,k\models\varphi.
+$$</p>
+<p>Quindi $U$ e' <strong>strong</strong>: la seconda formula deve accadere davvero. Ed e' <strong>non-strict</strong>: puo' accadere gia' nella posizione corrente.</p>
+<h3>Espansioni fondamentali</h3>
+<p>Queste equivalenze sono essenziali per tableau e per ragionare oralmente:</p>
+<p>$$
+F\varphi \equiv \varphi \lor X F\varphi
+$$</p>
+<p>Lettura: prima o poi $\varphi$ vale significa che o vale ora, oppure prima o poi varra' dal prossimo stato.</p>
+<p>$$
+G\varphi \equiv \varphi \land X G\varphi
+$$</p>
+<p>Lettura: sempre $\varphi$ significa che vale ora e continua a valere sempre dal prossimo stato.</p>
+<p>$$
+\varphi U \psi \equiv \psi \lor (\varphi\land X(\varphi U \psi)).
+$$</p>
+<p>Lettura: o $\psi$ vale ora, oppure $\varphi$ vale ora e l'obbligo di until viene rimandato al prossimo stato.</p>
+<hr>
+<h2>3. Varianti di Until e operatori utili</h2>
+<p>Negli appunti viene sottolineato che esistono piu versioni di until. La versione principale del corso e' strong non-strict.</p>
+<h3>Strong until</h3>
+<p>$$
+\varphi U \psi
+$$</p>
+<p>richiede che $\psi$ arrivi prima o poi.</p>
+<p>Esempio:</p>
+<p>$$
+busy\;U\;done
+$$</p>
+<p>significa: <code>busy</code> resta vero fino al momento in cui arriva <code>done</code>, e <code>done</code> deve arrivare.</p>
+<p>Se <code>done</code> non arriva mai, la formula e' falsa.</p>
+<h3>Weak until</h3>
+<p>Il weak until si indica spesso con:</p>
+<p>$$
+\varphi W \psi.
+$$</p>
+<p>Significa:</p>
+<blockquote>
+<p>$\varphi$ vale fino a $\psi$, ma $\psi$ potrebbe anche non arrivare mai.</p>
+</blockquote>
+<p>Si puo' definire con strong until:</p>
+<p>$$
+\varphi W \psi := (\varphi U \psi)\lor G\varphi.
+$$</p>
+<p>Esempio:</p>
+<p>$$
+error\;W\;reset
+$$</p>
+<p>significa: se siamo in errore, restiamo in errore fino al reset; se il reset non arriva mai, l'errore puo' restare per sempre.</p>
+<h3>Strict until</h3>
+<p>Nella versione strict, l'evento promesso deve accadere in un futuro proprio, non necessariamente ora.</p>
+<p>La differenza si vede su:</p>
+<p>$$
+p U q.
+$$</p>
+<p>Con until non-strict, se $q$ vale ora, la formula e' gia' vera.</p>
+<p>Con until strict, se $q$ vale solo ora e non piu in futuro, la formula non basta.</p>
+<h3>Release</h3>
+<p>Un operatore spesso usato nei manuali e':</p>
+<p>$$
+\varphi R \psi.
+$$</p>
+<p>Si legge "release" ed e' duale di until:</p>
+<p>$$
+\varphi R \psi := \neg(\neg\varphi U \neg\psi).
+$$</p>
+<p>Intuizione: $\psi$ deve restare vera almeno finche' $\varphi$ non la libera; se $\varphi$ non arriva mai, $\psi$ deve restare vera per sempre.</p>
+<p>Non e' indispensabile per il corso, ma aiuta a capire le traduzioni nei tool.</p>
+<h3>Il pattern "before": $P$ prima di $Q$</h3>
+<p>Pattern degli appunti, utile negli esercizi: "prima di ogni occorrenza di $Q$
+deve esserci un'occorrenza di $P$" ($P\ B\ Q$). Lo scenario da <strong>escludere</strong> e'
+"arrivo a $Q$ senza aver mai visto $P$", che e' esattamente $\neg P\ U\ Q$.
+Quindi:</p>
+<p>$$P\ B\ Q \equiv \neg(\neg P\ U\ Q).$$</p>
+<p>Tecnica generale: per le proprieta' "negative" spesso conviene scrivere la
+computazione vietata con un until e negare tutto.</p>
+<h3>Gli operatori del passato</h3>
+<p>Si puo' estendere PLTL con gli specchi dei quattro operatori:</p>
+<table>
+<thead>
+<tr>
+<th>Futuro</th>
+<th>Passato</th>
+<th>Lettura</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$X$ (next)</td>
+<td>$X^-$ (yesterday)</td>
+<td>nell'istante precedente</td>
+</tr>
+<tr>
+<td>$F$</td>
+<td>$F^-$ (P, "sometime in the past")</td>
+<td>in qualche istante passato</td>
+</tr>
+<tr>
+<td>$G$</td>
+<td>$G^-$ (H, "always in the past")</td>
+<td>in tutti gli istanti passati</td>
+</tr>
+<tr>
+<td>$U$</td>
+<td>$U^-$ (S, "since")</td>
+<td>$p\ S\ q$: in passato e' valso $q$, e da allora vale $p$</td>
+</tr>
+</tbody>
+</table>
+<p>Il punto delicato e' lo <strong>yesterday nel primo istante</strong>: su ℕ lo stato 0 non
+ha predecessore, quindi $X^- p$ in 0 e' problematica. Si distinguono due
+varianti:</p>
+<ul>
+<li><strong>debole</strong>: "se c'e' un predecessore, li' vale $p$" (vera in 0 — usa
+  l'implicazione $\to$);</li>
+<li><strong>forte</strong>: "esiste un predecessore e li' vale $p$" (falsa in 0 — usa la
+  congiunzione $\land$).</li>
+</ul>
+<p>Stessa coppia debole/forte gia' vista per l'until: il mnemonico degli appunti
+e' <em>debole va con $\to$, forte va con $\land$</em> (sugli interi il problema
+sparisce, non c'e' un primo istante).</p>
+<p>Risultato da ricordare: su tempo lineare discreto <strong>il passato non aggiunge
+potere espressivo</strong> a PLTL (ogni formula con passato ha un'equivalente solo
+futuro), ma aggiunge <strong>succintezza</strong>: certe proprieta' si scrivono in modo
+esponenzialmente piu' corto col passato. (Non e' un fatto scontato: in altre
+logiche temporali il passato aumenta davvero l'espressivita'.)</p>
+<h3>Il teorema di Kamp e il posto esatto di LTL</h3>
+<p>L'osservazione chiave degli appunti (p. 228 di notes.pdf): la <strong>semantica</strong> di
+ogni operatore LTL e' una formula <strong>del primo ordine</strong> sulle posizioni —</p>
+<p>$$x^i \models p\,U q \iff \exists j\ge i\,\big(x^j\models q \land \forall k\,(i\le k&lt;j \to x^k\models p)\big)$$</p>
+<p>usa solo quantificazione su posizioni, l'ordine $&lt;$ e predicati unari (le
+lettere proposizionali = i $Q_a$ di S1S). Quindi LTL "vive" dentro il
+frammento del primo ordine di S1S. Kamp dice che lo riempie tutto:</p>
+<blockquote>
+<p><strong>Teorema (Kamp).</strong> La teoria monadica del primo ordine degli ordini lineari
+discreti con primo elemento e' espressivamente equivalente a PLTL (con
+strong strict until).</p>
+</blockquote>
+<p>Combinato con il capitolo 6 (FO-definibile = star-free), il quadro a tre piani
+da disegnare all'orale:</p>
+<p>$$\text{LTL} \;\equiv\; \text{FO[&lt;]} \;\equiv\; \text{star-free} \;\subsetneq\; \text{ω-regolari} \;\equiv\; \text{S1S} \;\equiv\; \text{Büchi}.$$</p>
+<h3>Quanto costa decidere LTL</h3>
+<p>Dagli appunti (rassegna sui tableau):</p>
+<ul>
+<li>soddisfacibilita' di LTL e PLTL: <strong>PSPACE-completa</strong>;</li>
+<li>frammento con soli $F$/$G$ al posto di $U$ (LTL[F]): <strong>NP-completa</strong>;</li>
+<li>PLTL su modelli limitati di lunghezza polinomiale: NP-completa;</li>
+<li>il metodo tableau dichiarativo di Wolper (esteso da Lichtenstein-Pnueli al
+  passato) e' esponenziale; esiste un metodo incrementale PSPACE (Kesten et
+  al.).</li>
+</ul>
+<p>Distinzioni di classificazione dei metodi (riprese nel Capitolo 8):
+<strong>impliciti</strong> vs espliciti (la relazione di accessibilita' e' incorporata
+nella struttura del tableau vs tracciata con etichette esterne) e
+<strong>dichiarativi</strong> vs incrementali (genera tutti i sottoinsiemi di sottoformule
+e poi elimina, vs genera solo quelli "sensati"). Il corso usa un metodo
+implicito e dichiarativo (Manna-Pnueli).</p>
+<hr>
+<h2>4. Pattern LTL da saper tradurre</h2>
+<p>Questa sezione e' molto importante per l'orale. Se ti danno una frase naturale, devi capire se e' safety, liveness, response, fairness, stabilizzazione, precedenza.</p>
+<h3>Safety: qualcosa di brutto non accade mai</h3>
+<p>Frase:</p>
+<blockquote>
+<p>non si entra mai in uno stato bad.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+G\neg bad.
+$$</p>
+<p>Se esiste un controesempio, lo vedi in un prefisso finito: appena appare <code>bad</code>, la proprieta' e' violata.</p>
+<h3>Reachability: qualcosa accade prima o poi</h3>
+<p>Frase:</p>
+<blockquote>
+<p>prima o poi si raggiunge goal.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+F goal.
+$$</p>
+<h3>Response: ogni richiesta viene servita</h3>
+<p>Frase:</p>
+<blockquote>
+<p>ogni request viene prima o poi seguita da grant.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+G(request\to F grant).
+$$</p>
+<p>Attenzione: questa formula non dice che il grant corrisponde a quella specifica request in un sistema con molte richieste pendenti; dice solo che dopo ogni posizione con request, in futuro comparira' un grant.</p>
+<h3>Persistence: da un certo punto in poi sempre</h3>
+<p>Frase:</p>
+<blockquote>
+<p>prima o poi il sistema diventa stabile e resta stabile.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+F G stable.
+$$</p>
+<h3>Recurrence: infinitamente spesso</h3>
+<p>Frase:</p>
+<blockquote>
+<p>il processo entra infinitamente spesso in sezione critica.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+G F critical.
+$$</p>
+<p>Lettura: da ogni posizione futura, esiste ancora piu avanti una posizione in cui vale <code>critical</code>.</p>
+<h3>Always eventually</h3>
+<p>Frase:</p>
+<blockquote>
+<p>il sistema torna sempre prima o poi pronto.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+G F ready.
+$$</p>
+<p>Questo non significa che <code>ready</code> sia sempre vero. Significa che non scompare definitivamente.</p>
+<h3>Eventually always</h3>
+<p>Frase:</p>
+<blockquote>
+<p>da un certo punto in poi il sistema e' sempre pronto.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+F G ready.
+$$</p>
+<p>Differenza fondamentale:</p>
+<ul>
+<li>$GF ready$: <code>ready</code> compare infinite volte;</li>
+<li>$FG ready$: dopo un certo punto <code>ready</code> vale sempre.</li>
+</ul>
+<p>Quindi:</p>
+<p>$$
+FG ready \Rightarrow GF ready
+$$</p>
+<p>ma non viceversa.</p>
+<h3>Fairness debole</h3>
+<p>Frase:</p>
+<blockquote>
+<p>se un'azione resta sempre abilitata da un certo punto in poi, allora viene eseguita infinite volte.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+F G enabled \to G F taken.
+$$</p>
+<p>Questa e' una forma di weak fairness.</p>
+<h3>Fairness forte</h3>
+<p>Frase:</p>
+<blockquote>
+<p>se un'azione e' abilitata infinite volte, allora viene eseguita infinite volte.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+G F enabled \to G F taken.
+$$</p>
+<p>Questa e' una forma di strong fairness.</p>
+<h3>Precedenza</h3>
+<p>Frase:</p>
+<blockquote>
+<p>grant non puo' accadere prima di request.</p>
+</blockquote>
+<p>Se voglio dire che non ci sono grant finche' non arriva una request, e request potrebbe anche non arrivare mai, uso weak until:</p>
+<p>$$
+\neg grant\;W\;request.
+$$</p>
+<p>Senza weak until:</p>
+<p>$$
+(\neg grant\;U\;request)\lor G\neg grant.
+$$</p>
+<p>Se invece voglio imporre anche che prima o poi arrivi una request, uso strong until:</p>
+<p>$$
+\neg grant\;U\;request.
+$$</p>
+<h3>Stabilizzazione dopo reset</h3>
+<p>Frase:</p>
+<blockquote>
+<p>se avviene reset, allora dal passo successivo il sistema resta safe.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+G(reset\to XG safe).
+$$</p>
+<p>Qui $X$ evita di imporre <code>safe</code> nello stesso istante del reset.</p>
+<hr>
+<h2>5. Valutare formule LTL su una computazione</h2>
+<p>Considera la computazione:</p>
+<p>$$
+\sigma=s0,s1,s2,s3,\ldots
+$$</p>
+<p>con labeling:</p>
+<ul>
+<li>in $s0$ vale <code>p</code>;</li>
+<li>in $s1$ vale <code>p</code>;</li>
+<li>in $s2$ vale <code>q</code>;</li>
+<li>da $s3$ in poi vale <code>p</code> a posizioni alterne.</li>
+</ul>
+<h3>Formula 1: $p U q$</h3>
+<p>Alla posizione 0:</p>
+<ul>
+<li>$q$ vale in posizione 2;</li>
+<li>$p$ vale nelle posizioni 0 e 1;</li>
+<li>quindi $p U q$ e' vera.</li>
+</ul>
+<p>Alla posizione 2:</p>
+<ul>
+<li>$q$ vale subito;</li>
+<li>siccome until e' non-strict, $p U q$ e' vera anche se $p$ non vale in posizione 2.</li>
+</ul>
+<h3>Formula 2: $G p$</h3>
+<p>Falsa alla posizione 0, perche' in posizione 2 non vale necessariamente $p$.</p>
+<h3>Formula 3: $F q$</h3>
+<p>Vera alla posizione 0, perche' $q$ compare in posizione 2.</p>
+<h3>Formula 4: $G F p$</h3>
+<p>Dipende dalla coda. Se da $s3$ in poi $p$ compare a posizioni alterne, allora e' vera: da qualunque punto futuro troverai ancora un punto con $p$.</p>
+<h3>Formula 5: $F G p$</h3>
+<p>Falsa se $p$ compare solo a posizioni alterne, perche' non c'e' nessun punto dopo cui $p$ resta sempre vero.</p>
+<hr>
+<h2>6. LTL e automi di Buchi</h2>
+<p>Il collegamento centrale e':</p>
+<blockquote>
+<p>a ogni formula LTL si puo' associare un automa di Buchi che riconosce esattamente le tracce che soddisfano la formula.</p>
+</blockquote>
+<p>Questo e' utile per il model checking.</p>
+<p>Supponiamo di avere:</p>
+<ul>
+<li>un sistema $S$, visto come generatore di tracce infinite;</li>
+<li>una specifica LTL $\varphi$.</li>
+</ul>
+<p>Vogliamo verificare:</p>
+<p>$$
+Lang(S)\subseteq Lang(\varphi).
+$$</p>
+<p>Equivalentemente:</p>
+<p>$$
+Lang(S)\cap Lang(\neg\varphi)=\emptyset.
+$$</p>
+<p>Quindi cerchiamo un controesempio:</p>
+<ol>
+<li>costruiamo l'automa di Buchi per $\neg\varphi$;</li>
+<li>facciamo il prodotto con il sistema;</li>
+<li>controlliamo se il prodotto ha un ciclo accettante raggiungibile.</li>
+</ol>
+<p>Se il prodotto e' vuoto, non esiste nessuna computazione del sistema che viola $\varphi$.</p>
+<p>Se non e' vuoto, una parola accettata e' un controesempio.</p>
+<h3>Esempio concettuale: response</h3>
+<p>Formula:</p>
+<p>$$
+\varphi=G(request\to F grant).
+$$</p>
+<p>Negazione:</p>
+<p>$$
+\neg\varphi = F(request\land G\neg grant).
+$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>esiste una posizione in cui compare una request e da quel punto in poi non compare mai grant.</p>
+</blockquote>
+<p>L'automa per la negazione puo' essere pensato cosi':</p>
+<ul>
+<li>stato iniziale: non ho ancora scelto la request cattiva;</li>
+<li>quando vedo <code>request</code>, posso decidere che quella e' la request da controllare;</li>
+<li>da quel momento devo vedere sempre <code>not grant</code>;</li>
+<li>se compare <code>grant</code>, quella scelta fallisce;</li>
+<li>se resto per sempre nella zona senza grant, ho trovato una violazione.</li>
+</ul>
+<p>Questa intuizione e' spesso piu importante, all'orale, del disegno completo dell'automa.</p>
+<hr>
+<h2>7. Tableau LTL: richiamo essenziale</h2>
+<p>Il tableau LTL serve a decidere la soddisfacibilita' di una formula:</p>
+<blockquote>
+<p>esiste almeno una computazione infinita che soddisfa la formula?</p>
+</blockquote>
+<p>Il punto delicato e' che gli operatori temporali generano promesse future. Una formula come:</p>
+<p>$$
+F p
+$$</p>
+<p>promette che prima o poi $p$ verra' realizzata.</p>
+<p>Una formula come:</p>
+<p>$$
+p U q
+$$</p>
+<p>promette che prima o poi $q$ verra' realizzata.</p>
+<h3>Chiusura</h3>
+<p>Data una formula $\varphi$, la chiusura contiene:</p>
+<ul>
+<li>la formula stessa;</li>
+<li>le sue sottoformule;</li>
+<li>le negazioni;</li>
+<li>le formule next necessarie per espandere $G$, $F$ e $U$.</li>
+</ul>
+<p>Esempio:</p>
+<p>$$
+\varphi=G p\land F\neg p.
+$$</p>
+<p>Le formule rilevanti sono:</p>
+<ul>
+<li>$\varphi$;</li>
+<li>$G p$;</li>
+<li>$F\neg p$;</li>
+<li>$XG p$;</li>
+<li>$XF\neg p$;</li>
+<li>$p$;</li>
+<li>$\neg p$;</li>
+<li>le rispettive negazioni.</li>
+</ul>
+<h3>Atomi</h3>
+<p>Un atomo e' un insieme massimale e localmente coerente di formule della chiusura.</p>
+<p>Deve rispettare:</p>
+<ul>
+<li>per ogni formula, contiene lei oppure la sua negazione;</li>
+<li>se contiene una congiunzione, contiene entrambi i congiunti;</li>
+<li>se contiene $G p$, contiene $p$ e $XG p$;</li>
+<li>se contiene $F p$, contiene $p$ oppure $XF p$;</li>
+<li>se contiene $p U q$, contiene $q$ oppure contiene $p$ e $X(p U q)$.</li>
+</ul>
+<h3>Archi del tableau</h3>
+<p>Metto un arco da un atomo $A$ a un atomo $B$ se le formule next di $A$ sono rispettate in $B$.</p>
+<p>Intuizione:</p>
+<blockquote>
+<p>se $A$ dice "nel prossimo stato deve valere p", allora il successore $B$ deve contenere p.</p>
+</blockquote>
+<h3>Cammini fulfilling</h3>
+<p>Un cammino infinito nel tableau e' buono solo se realizza tutte le promesse.</p>
+<p>Se lungo il cammino compare infinitamente l'obbligo $F p$, allora il cammino deve contenere punti in cui $p$ viene effettivamente realizzato.</p>
+<p>Se un ciclo mantiene per sempre $F p$ ma non visita mai $p$, quel ciclo non e' fulfilling.</p>
+<h3>Criterio</h3>
+<p>Una formula LTL e' soddisfacibile se e solo se il tableau contiene un cammino infinito fulfilling che parte da un atomo contenente la formula.</p>
+<p>Poiche' il tableau e' finito, la ricerca si riduce a cercare un sottografo fortemente connesso non transiente che soddisfi tutte le promesse.</p>
+<hr>
+<h2>8. CTL: Computational Tree Logic</h2>
+<h3>Intuizione</h3>
+<p>CTL interpreta le formule su stati di una struttura ramificata.</p>
+<p>Da uno stato possono partire molti cammini:</p>
+<p>$$
+s\to s1,\quad s\to s2,\quad s\to s3.
+$$</p>
+<p>LTL guarda una singola computazione:</p>
+<p>$$
+s,s1,\ldots
+$$</p>
+<p>CTL invece permette di dire:</p>
+<ul>
+<li>su tutti i cammini;</li>
+<li>su almeno un cammino.</li>
+</ul>
+<p>Per questo CTL e' una logica branching-time.</p>
+<h3>Quantificatori di cammino</h3>
+<p>I due quantificatori sono:</p>
+<ul>
+<li>$A$: per tutti i cammini;</li>
+<li>$E$: esiste almeno un cammino.</li>
+</ul>
+<p>Esempi:</p>
+<p>$$
+AF goal
+$$</p>
+<p>significa:</p>
+<blockquote>
+<p>su tutti i cammini, prima o poi si raggiunge goal.</p>
+</blockquote>
+<p>$$
+EF goal
+$$</p>
+<p>significa:</p>
+<blockquote>
+<p>esiste almeno un cammino lungo cui prima o poi si raggiunge goal.</p>
+</blockquote>
+<p>Sono molto diverse:</p>
+<ul>
+<li>$AF goal$ e' una garanzia;</li>
+<li>$EF goal$ e' una possibilita'.</li>
+</ul>
+<h3>Sintassi CTL: formule di stato e formule di cammino</h3>
+<p>CTL distingue due livelli.</p>
+<p>Le formule di stato sono vere o false in uno stato.</p>
+<p>Le formule di cammino sono vere o false lungo un cammino.</p>
+<p>Regole principali:</p>
+<ol>
+<li>ogni proposizione atomica e' formula di stato;</li>
+<li>combinazioni booleane di formule di stato sono formule di stato;</li>
+<li>se $\psi$ e' formula di cammino, allora $A\psi$ ed $E\psi$ sono formule di stato;</li>
+<li>se $\varphi$ e $\psi$ sono formule di stato, allora $X\varphi$ e $\varphi U \psi$ sono formule di cammino.</li>
+</ol>
+<p>In CTL, gli operatori temporali devono comparire sotto un quantificatore di cammino.</p>
+<p>Quindi sono formule CTL:</p>
+<p>$$
+EX p,\quad AX p,\quad EF p,\quad AF p,\quad EG p,\quad AG p.
+$$</p>
+<p>Sono formule CTL anche:</p>
+<p>$$
+E[p U q],\quad A[p U q].
+$$</p>
+<p>Non e' una formula CTL:</p>
+<p>$$
+X F p.
+$$</p>
+<p>Motivo: in CTL non puoi mettere due operatori temporali di cammino uno dopo l'altro senza reinserire un quantificatore di cammino.</p>
+<h3>Semantica degli operatori principali</h3>
+<p>Sia $M=(S,R,L)$ e sia $s\in S$.</p>
+<h4>EX</h4>
+<p>$$
+M,s\models EX p
+$$</p>
+<p>se esiste un successore $t$ di $s$ tale che:</p>
+<p>$$
+M,t\models p.
+$$</p>
+<h4>AX</h4>
+<p>$$
+M,s\models AX p
+$$</p>
+<p>se tutti i successori $t$ di $s$ soddisfano:</p>
+<p>$$
+M,t\models p.
+$$</p>
+<h4>EF</h4>
+<p>$$
+M,s\models EF p
+$$</p>
+<p>se esiste un cammino da $s$ in cui prima o poi si raggiunge uno stato che soddisfa $p$.</p>
+<h4>AF</h4>
+<p>$$
+M,s\models AF p
+$$</p>
+<p>se lungo ogni cammino da $s$, prima o poi si raggiunge uno stato che soddisfa $p$.</p>
+<h4>EG</h4>
+<p>$$
+M,s\models EG p
+$$</p>
+<p>se esiste un cammino infinito da $s$ lungo cui $p$ vale sempre.</p>
+<h4>AG</h4>
+<p>$$
+M,s\models AG p
+$$</p>
+<p>se lungo tutti i cammini da $s$, in tutti gli stati futuri, vale $p$.</p>
+<h3>Dualita' utili</h3>
+<p>Queste equivalenze sono molto utili:</p>
+<p>$$
+AX p \equiv \neg EX\neg p
+$$</p>
+<p>$$
+AG p \equiv \neg EF\neg p
+$$</p>
+<p>$$
+AF p \equiv \neg EG\neg p
+$$</p>
+<p>Lettura:</p>
+<ul>
+<li>"tutti i successori soddisfano p" equivale a "non esiste un successore che viola p";</li>
+<li>"sempre p su tutti i cammini" equivale a "non esiste un cammino che raggiunge una violazione";</li>
+<li>"su tutti i cammini prima o poi p" equivale a "non esiste un cammino che evita p per sempre".</li>
+</ul>
+<hr>
+<h2>9. Pattern CTL da saper tradurre</h2>
+<h3>Possibilita'</h3>
+<p>Frase:</p>
+<blockquote>
+<p>esiste un modo per arrivare al goal.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+EF goal.
+$$</p>
+<h3>Garanzia inevitabile</h3>
+<p>Frase:</p>
+<blockquote>
+<p>qualunque cosa accada, prima o poi si arriva al goal.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+AF goal.
+$$</p>
+<h3>Sicurezza globale</h3>
+<p>Frase:</p>
+<blockquote>
+<p>non si raggiunge mai bad.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+AG\neg bad.
+$$</p>
+<h3>Possibilita' permanente</h3>
+<p>Frase:</p>
+<blockquote>
+<p>da ogni stato resta possibile raggiungere reset.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+AG EF reset.
+$$</p>
+<p>Questa e' una formula molto importante: dice che il sistema non perde mai la possibilita' di recuperare.</p>
+<h3>Esistenza di un comportamento sempre sicuro</h3>
+<p>Frase:</p>
+<blockquote>
+<p>esiste almeno una computazione che resta sempre safe.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+EG safe.
+$$</p>
+<h3>Reazione garantita su tutti i futuri</h3>
+<p>Frase:</p>
+<blockquote>
+<p>in ogni stato, se parte una request, allora su tutti i cammini prima o poi arriva grant.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+AG(request\to AF grant).
+$$</p>
+<h3>Reazione possibile</h3>
+<p>Frase:</p>
+<blockquote>
+<p>in ogni stato, se parte una request, allora esiste almeno un futuro in cui arriva grant.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+AG(request\to EF grant).
+$$</p>
+<p>Questa e' piu debole della precedente.</p>
+<h3>Prossimo passo controllato</h3>
+<p>Frase:</p>
+<blockquote>
+<p>se sono in p, allora esiste un successore in cui p resta vero.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+AG(p\to EX p).
+$$</p>
+<p>Questa formula non dice che tutti i successori mantengono p, solo che almeno uno lo fa.</p>
+<hr>
+<h2>10. CTL-star e rapporto con LTL/CTL</h2>
+<p>CTL-star e' una logica piu generale. Permette di combinare liberamente:</p>
+<ul>
+<li>quantificatori di cammino;</li>
+<li>operatori temporali;</li>
+<li>connettivi booleani sulle formule di cammino.</li>
+</ul>
+<p>In CTL non puoi scrivere una formula di cammino come:</p>
+<p>$$
+G F p.
+$$</p>
+<p>Perche' $G$ e $F$ sono due operatori temporali annidati senza quantificatore intermedio.</p>
+<p>In CTL-star invece puoi scrivere:</p>
+<p>$$
+A G F p.
+$$</p>
+<p>che significa:</p>
+<blockquote>
+<p>su tutti i cammini, p accade infinitamente spesso.</p>
+</blockquote>
+<p>Puoi anche scrivere:</p>
+<p>$$
+E G F p.
+$$</p>
+<p>che significa:</p>
+<blockquote>
+<p>esiste un cammino lungo cui p accade infinitamente spesso.</p>
+</blockquote>
+<p>Queste formule esprimono in modo naturale proprieta' di fairness e recurrence su cammini.</p>
+<h3>LTL dentro CTL-star</h3>
+<p>Una formula LTL come:</p>
+<p>$$
+G(request\to F grant)
+$$</p>
+<p>diventa in CTL-star:</p>
+<p>$$
+A G(request\to F grant)
+$$</p>
+<p>se voglio dire che tutti i cammini del sistema soddisfano la proprieta'.</p>
+<p>Nel model checking LTL, questo quantificatore universale sui cammini e' spesso implicito:</p>
+<blockquote>
+<p>il sistema soddisfa una formula LTL se tutte le sue computazioni la soddisfano.</p>
+</blockquote>
+<h3>CTL dentro CTL-star</h3>
+<p>Ogni formula CTL e' anche una formula CTL-star. CTL-star elimina la restrizione sintattica di CTL.</p>
+<p>Quindi:</p>
+<p>$$
+CTL \subset CTL^\ast
+$$</p>
+<p>e:</p>
+<p>$$
+LTL \subset CTL^\ast
+$$</p>
+<p>ma LTL e CTL non sono contenute una nell'altra.</p>
+<hr>
+<h2>11. LTL vs CTL: perche' sono incomparabili</h2>
+<p>Questo e' uno dei punti piu probabili all'orale.</p>
+<h3>Errore comune</h3>
+<p>Si potrebbe pensare:</p>
+<blockquote>
+<p>CTL ha i quantificatori A/E, quindi e' piu espressiva di LTL.</p>
+</blockquote>
+<p>Non e' corretto.</p>
+<p>CTL sa parlare molto bene della struttura ramificata, ma impone una forte disciplina sintattica: ogni operatore temporale deve essere immediatamente legato a un quantificatore di cammino.</p>
+<p>LTL sa esprimere bene proprieta' lineari come:</p>
+<p>$$
+G F p,\quad F G p,\quad G(request\to F grant).
+$$</p>
+<p>CTL sa esprimere bene possibilita' ramificate come:</p>
+<p>$$
+AG EF p.
+$$</p>
+<h3>Una proprieta' CTL non esprimibile in LTL</h3>
+<p>Formula:</p>
+<p>$$
+AG EF reset.
+$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>da ogni stato raggiungibile, resta possibile arrivare a reset.</p>
+</blockquote>
+<p>Questa e' una proprieta' strutturale del grafo: in ogni punto dell'albero delle computazioni deve esistere almeno un ramo buono.</p>
+<p>LTL guarda ogni cammino singolarmente. Su un singolo cammino non vede le alternative che non sono state prese. Quindi non puo' dire:</p>
+<blockquote>
+<p>anche se questo cammino non va verso reset, da qui c'era comunque un'altra scelta che avrebbe potuto farlo.</p>
+</blockquote>
+<p>Questa e' informazione branching-time.</p>
+<h3>Una proprieta' LTL non esprimibile in CTL puro</h3>
+<p>Formula:</p>
+<p>$$
+G F p.
+$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>lungo il cammino, p accade infinitamente spesso.</p>
+</blockquote>
+<p>Nel model checking LTL, detta sul sistema, significa:</p>
+<blockquote>
+<p>su ogni computazione del sistema, p accade infinitamente spesso.</p>
+</blockquote>
+<p>In CTL puro non posso scrivere direttamente:</p>
+<p>$$
+A G F p.
+$$</p>
+<p>perche' $GFp$ e' una formula di cammino con due operatori temporali annidati.</p>
+<p>CTL puo' scrivere formule simili, come:</p>
+<p>$$
+AG AF p.
+$$</p>
+<p>ma questa non e' la stessa cosa. Dice:</p>
+<blockquote>
+<p>da ogni stato raggiungibile, su tutti i cammini futuri, prima o poi p.</p>
+</blockquote>
+<p>La formula CTL forza una garanzia da ogni stato. LTL invece parla della stessa computazione lineare e impone che p ricompaia infinite volte lungo quella computazione.</p>
+<h3>Esempio intuitivo del perche' AG EF non e' LTL</h3>
+<p>Immagina uno stato da cui partono due scelte:</p>
+<ul>
+<li>una scelta porta a un ramo dove reset accade;</li>
+<li>un'altra scelta porta a un ramo dove reset non accade mai.</li>
+</ul>
+<p>La formula:</p>
+<p>$$
+EF reset
+$$</p>
+<p>e' vera nello stato, perche' esiste almeno un ramo buono.</p>
+<p>Ma una singola computazione LTL che prende il ramo cattivo non vede piu il ramo buono. Per LTL, quella computazione non contiene reset.</p>
+<p>Questa e' la differenza fondamentale:</p>
+<ul>
+<li>CTL valuta possibilita' alternative da uno stesso stato;</li>
+<li>LTL valuta cio' che accade lungo una computazione gia' scelta.</li>
+</ul>
+<h3>L'argomento rigoroso degli appunti: $AG(p\to EF q)$ vs $G(p\to F q)$</h3>
+<p>Negli appunti c'e' la costruzione che rende precisa l'intuizione. Il candidato
+LTL piu' vicino a $AG(p\to EFq)$ e' $G(p\to Fq)$ (letto su tutte le
+computazioni). Ma non sono equivalenti, e la differenza si vede su questo
+modello:</p>
+<blockquote>
+<p>costruisci un albero in cui, ogni volta che lungo un ramo incontri una $p$,
+la $q$ promessa sta su <strong>un altro ramo</strong> che si dirama li'. Puoi farlo in
+modo che esistano infiniti cammini, ognuno con un numero <strong>finito</strong> di
+occorrenze di $q$ — ma con limite infinito: per ogni $k$ c'e' un cammino con
+almeno $k$ occorrenze di $q$, pero' nessun cammino ne ha infinite.</p>
+</blockquote>
+<p>Su questo modello $AG(p\to EFq)$ e' <strong>vera</strong> (da ogni $p$ esiste sempre un
+ramo con una $q$ futura: cambio ramo ogni volta), mentre
+"$G(p\to Fq)$ su tutte le computazioni" e' <strong>falsa</strong>: il cammino che contiene
+infinite $p$ e continua a "mancare" le $q$ non soddisfa $G(p\to Fq)$, perche'
+su quel singolo cammino, da un certo punto in poi, le $q$ non arrivano.</p>
+<p>Per soddisfare la versione LTL con infinite $p$ sullo stesso cammino servono
+infinite $q$ <strong>sullo stesso cammino</strong>; alla versione CTL basta che la $q$
+esista da qualche parte, anche cambiando cammino infinite volte. Nessuna
+formula LTL esprime $AG(p\to EFq)$.</p>
+<h3>Il verso opposto: fairness fuori da CTL</h3>
+<p>L'inespressibilita' di $GFp$/$FGp$ in CTL non e' solo un fatto sintattico
+("non posso scrivere $A\,GF p$"): nessuna combinazione CTL equivale a quelle
+proprieta'. La conseguenza pratica segnalata negli appunti:</p>
+<blockquote>
+<p>le <strong>condizioni di fairness</strong> (justice: $\neg FG(\text{enabled}\land\neg\text{taken})$;
+compassion: $GF\,\text{enabled}\to GF\,\text{taken}$) si scrivono in LTL ma
+<strong>non in CTL</strong>. Chi usa CTL per sistemi fair deve <strong>incorporare la fairness
+nel modello</strong> (fair-CTL, vincoli sul modello), non nella formula.</p>
+</blockquote>
+<p>Conclusione da orale: LTL e CTL sono <strong>incomparabili</strong> — $AG\,EF\,reset$ non
+si esprime in LTL, $GFp$ non si esprime in CTL. CTL* le contiene entrambe.</p>
+<h3>Un esempio CTL* commentato (e il ruolo della X)</h3>
+<p>Dagli appunti:</p>
+<p>$$AG(p \to EXFp) \to (p \to EGFp)$$</p>
+<p>E' una formula (essenzialmente valida) di CTL<em> — nota $XF$ e $GF$: due
+operatori di stato annidati senza quantificatore di cammino in mezzo, vietati
+in CTL. Lettura: se ovunque ogni $p$ ha un successore da cui prima o poi si
+trova un'altra $p$ ($EXFp$), allora da una $p$ si puo' costruire passo passo
+un cammino con </em><em>infinite</em>* $p$ ($EGFp$).</p>
+<p>Perche' serve la $X$ in $EXFp$? Con il nostro until <strong>non-strict</strong> (il
+presente fa parte del futuro), $EFp$ avrebbe il testimone banale "la $p$
+corrente": l'antecedente sarebbe soddisfatto senza muoversi, e non si potrebbe
+concludere nulla sull'esistenza di infinite $p$. La $X$ forza ogni volta un
+passo in avanti, e l'unico modo di soddisfare sempre l'antecedente e' avere
+infinite $p$ sul cammino costruito.</p>
+<p>Varianti citate per completezza: PCTL<em> (passato sui cammini), DCTL</em>
+(successori espliciti sinistro/destro su alberi binari), PDCTL* (entrambi).</p>
+<hr>
+<h2>12. Esercizi svolti di traduzione LTL</h2>
+<h3>Esercizio 1: ogni richiesta viene prima o poi soddisfatta</h3>
+<p>Frase:</p>
+<blockquote>
+<p>ogni richiesta viene prima o poi soddisfatta.</p>
+</blockquote>
+<p>Proposizioni:</p>
+<ul>
+<li><code>req</code>: c'e' una richiesta;</li>
+<li><code>sat</code>: la richiesta viene soddisfatta.</li>
+</ul>
+<p>Formula:</p>
+<p>$$
+G(req\to F sat).
+$$</p>
+<p>Spiegazione:</p>
+<ul>
+<li>$G$ dice: controlla ogni posizione della computazione;</li>
+<li>se in una posizione vale <code>req</code>, allora da quella posizione in poi deve comparire <code>sat</code>;</li>
+<li>non basta $req\to F sat$, perche' controllerebbe solo la posizione iniziale.</li>
+</ul>
+<h3>Esercizio 2: errore fino al reset</h3>
+<p>Frase:</p>
+<blockquote>
+<p>se il sistema entra in errore, resta in errore finche' viene resettato.</p>
+</blockquote>
+<p>Se il reset e' obbligatorio:</p>
+<p>$$
+G(error\to (error\;U\;reset)).
+$$</p>
+<p>Se il reset potrebbe anche non arrivare:</p>
+<p>$$
+G(error\to (error\;W\;reset)).
+$$</p>
+<p>Senza weak until:</p>
+<p>$$
+G(error\to ((error\;U\;reset)\lor G error)).
+$$</p>
+<p>Differenza:</p>
+<ul>
+<li>con strong until, <code>reset</code> deve arrivare;</li>
+<li>con weak until, se <code>reset</code> non arriva, <code>error</code> puo' restare vero per sempre.</li>
+</ul>
+<h3>Esercizio 3: sezione critica infinite volte</h3>
+<p>Frase:</p>
+<blockquote>
+<p>il processo entra infinitamente spesso in sezione critica.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+G F critical.
+$$</p>
+<p>Spiegazione:</p>
+<p>Da ogni punto futuro, ci sara' ancora piu avanti un punto con <code>critical</code>. Quindi <code>critical</code> non smette mai definitivamente di comparire.</p>
+<h3>Esercizio 4: non due grant consecutivi senza request in mezzo</h3>
+<p>Una forma ragionevole e':</p>
+<p>$$
+G(grant\to X(\neg grant\;W\;request)).
+$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>dopo un grant, finche' non compare una request, non deve comparire un altro grant.</p>
+</blockquote>
+<p>Se non si vuole usare weak until:</p>
+<p>$$
+G(grant\to X((\neg grant\;U\;request)\lor G\neg grant)).
+$$</p>
+<p>Osservazione orale: questa formula controlla la distanza tra grant consecutivi e richiede una request in mezzo. Non dice che ogni request produca un grant; quello e' un altro requisito.</p>
+<hr>
+<h2>13. Esercizi svolti di traduzione CTL</h2>
+<h3>Esercizio 1: da ogni stato e' possibile raggiungere safe</h3>
+<p>Frase:</p>
+<blockquote>
+<p>da ogni stato e' possibile raggiungere uno stato safe.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+AG EF safe.
+$$</p>
+<p>Spiegazione:</p>
+<ul>
+<li>$AG$ visita tutti gli stati raggiungibili in tutti i futuri;</li>
+<li>$EF safe$ dice che da ciascuno di questi stati esiste un cammino verso <code>safe</code>.</li>
+</ul>
+<p>Questa e' una proprieta' di recuperabilita', non di garanzia.</p>
+<h3>Esercizio 2: esiste un cammino che raggiunge goal</h3>
+<p>Frase:</p>
+<blockquote>
+<p>esiste un cammino lungo cui prima o poi si raggiunge goal.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+EF goal.
+$$</p>
+<h3>Esercizio 3: se parte start, allora inevitabilmente heat</h3>
+<p>Frase:</p>
+<blockquote>
+<p>su tutti i cammini, se parte start allora prima o poi heat.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+AG(start\to AF heat).
+$$</p>
+<p>Spiegazione:</p>
+<p>Ogni volta che arrivo in uno stato con <code>start</code>, qualunque evoluzione futura deve prima o poi arrivare a <code>heat</code>.</p>
+<h3>Esercizio 4: reset sempre possibile</h3>
+<p>Frase:</p>
+<blockquote>
+<p>da ogni stato raggiungibile resta sempre possibile fare reset.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+AG EF reset.
+$$</p>
+<p>Questa e' simile al primo esercizio, ma con <code>reset</code>.</p>
+<p>Punto orale: <code>AG AF reset</code> sarebbe piu forte, perche' direbbe che reset e' inevitabile su tutti i cammini. <code>AG EF reset</code> dice solo che resta disponibile una scelta che porta a reset.</p>
+<hr>
+<h2>14. Esercizi svolti di semantica</h2>
+<h3>Esercizio: casi di until</h3>
+<p>Valuta:</p>
+<p>$$
+p U q
+$$</p>
+<p>alla posizione iniziale.</p>
+<h4>Caso 1</h4>
+<p>$q$ vale in $s3$ e $p$ vale in $s0,s1,s2$.</p>
+<p>Risposta: vera.</p>
+<p>Motivo:</p>
+<ul>
+<li>scelgo $j=3$;</li>
+<li>in $s3$ vale $q$;</li>
+<li>in tutte le posizioni precedenti da 0 a 2 vale $p$.</li>
+</ul>
+<h4>Caso 2</h4>
+<p>$q$ non vale mai e $p$ vale sempre.</p>
+<p>Risposta: falsa per strong until.</p>
+<p>Motivo:</p>
+<ul>
+<li>anche se $p$ vale sempre, l'operatore $U$ richiede che $q$ arrivi;</li>
+<li>se volevo permettere che $q$ non arrivasse mai, dovevo usare weak until:</li>
+</ul>
+<p>$$
+p W q.
+$$</p>
+<h4>Caso 3</h4>
+<p>$q$ vale gia' in $s0$.</p>
+<p>Risposta: vera.</p>
+<p>Motivo:</p>
+<ul>
+<li>l'until del corso e' non-strict;</li>
+<li>posso scegliere $j=0$;</li>
+<li>non ci sono posizioni precedenti da controllare.</li>
+</ul>
+<hr>
+<h2>15. Esercizi svolti su CTL e formule simili</h2>
+<h3>Esercizio 1: distinguere EF e AF</h3>
+<p>Supponi:</p>
+<ul>
+<li>da $s0$ partono due transizioni: una verso $s1$, una verso $s2$;</li>
+<li>da $s1$ si raggiunge <code>goal</code>;</li>
+<li>da $s2$ si entra in un ciclo senza <code>goal</code>.</li>
+</ul>
+<p>Allora:</p>
+<p>$$
+M,s0\models EF goal
+$$</p>
+<p>perche' esiste il cammino via $s1$.</p>
+<p>Ma:</p>
+<p>$$
+M,s0\not\models AF goal
+$$</p>
+<p>perche' il cammino via $s2$ evita <code>goal</code> per sempre.</p>
+<h3>Esercizio 2: distinguere EG e AG</h3>
+<p>Supponi:</p>
+<ul>
+<li>da $s0$ partono due cammini;</li>
+<li>nel primo, <code>safe</code> resta sempre vero;</li>
+<li>nel secondo, prima o poi <code>safe</code> diventa falso.</li>
+</ul>
+<p>Allora:</p>
+<p>$$
+M,s0\models EG safe
+$$</p>
+<p>perche' esiste un cammino sempre safe.</p>
+<p>Ma:</p>
+<p>$$
+M,s0\not\models AG safe
+$$</p>
+<p>perche' non tutti i cammini restano safe.</p>
+<h3>Esercizio 3: formula CTL valida</h3>
+<p>Considera:</p>
+<p>$$
+AG(p\to EX p)\to AG(p\to EG p).
+$$</p>
+<p>Intuizione:</p>
+<ul>
+<li>se in ogni stato con $p$ esiste un successore ancora con $p$;</li>
+<li>allora da ogni stato con $p$ posso costruire, passo dopo passo, un cammino infinito tutto in $p$.</li>
+</ul>
+<p>Quindi la conseguenza $EG p$ e' giustificata.</p>
+<p>Punto orale: qui si sfrutta il fatto che posso scegliere ogni volta un successore buono. E' una costruzione esistenziale di cammino.</p>
+<h3>Esercizio 4: perche' AG EF q non equivale a una fairness LTL</h3>
+<p>Formula CTL:</p>
+<p>$$
+AG EF q.
+$$</p>
+<p>Dice:</p>
+<blockquote>
+<p>da ogni stato e' possibile raggiungere q.</p>
+</blockquote>
+<p>Non dice:</p>
+<blockquote>
+<p>lungo ogni cammino q compare infinite volte.</p>
+</blockquote>
+<p>Infatti, a ogni stato potrebbe esistere un ramo laterale che raggiunge $q$, mentre il cammino effettivamente seguito evita sempre $q$.</p>
+<p>La fairness lineare richiede:</p>
+<p>$$
+G F q.
+$$</p>
+<p>cioe' q deve ricomparire sulla stessa computazione.</p>
+<hr>
+<h2>16. Classificare formule: LTL, CTL o CTL-star</h2>
+<p>Questa e' una domanda tipica per controllare se hai capito la sintassi.</p>
+<h3>Formula 1</h3>
+<p>$$
+G(request\to F grant)
+$$</p>
+<p>E' LTL.</p>
+<p>Come specifica di sistema, si intende spesso universalmente su tutti i cammini.</p>
+<h3>Formula 2</h3>
+<p>$$
+AG(request\to AF grant)
+$$</p>
+<p>E' CTL.</p>
+<p>Ogni operatore temporale e' preceduto dal quantificatore di cammino corretto.</p>
+<h3>Formula 3</h3>
+<p>$$
+A G F p
+$$</p>
+<p>E' CTL-star, non CTL.</p>
+<p>Motivo: dentro il quantificatore $A$ ci sono due operatori temporali annidati, $G$ e $F$.</p>
+<h3>Formula 4</h3>
+<p>$$
+EX EG p
+$$</p>
+<p>E' CTL.</p>
+<p>Lettura:</p>
+<blockquote>
+<p>esiste un successore da cui esiste un cammino sempre p.</p>
+</blockquote>
+<h3>Formula 5</h3>
+<p>$$
+E(F p\land G q)
+$$</p>
+<p>E' CTL-star, non CTL.</p>
+<p>Motivo: la formula di cammino combina due proprieta' temporali sulla stessa path.</p>
+<hr>
+<h2>17. Collegamento con model checking</h2>
+<h3>LTL model checking</h3>
+<p>Domanda:</p>
+<blockquote>
+<p>tutte le computazioni del sistema soddisfano la formula LTL?</p>
+</blockquote>
+<p>Approccio:</p>
+<ol>
+<li>prendo la negazione della formula;</li>
+<li>la traduco in automa di Buchi;</li>
+<li>costruisco il prodotto con il sistema;</li>
+<li>cerco un ciclo accettante raggiungibile.</li>
+</ol>
+<p>Se c'e' un ciclo accettante, esiste un controesempio.</p>
+<p>Se non c'e', la proprieta' e' verificata.</p>
+<h3>CTL model checking</h3>
+<p>Domanda:</p>
+<blockquote>
+<p>quali stati del sistema soddisfano la formula CTL?</p>
+</blockquote>
+<p>Approccio:</p>
+<ol>
+<li>calcolo gli insiemi di stati che soddisfano le sottoformule;</li>
+<li>procedo dal basso verso l'alto;</li>
+<li>alla fine controllo se lo stato iniziale e' nell'insieme della formula completa.</li>
+</ol>
+<p>Per esempio:</p>
+<p>$$
+EF p
+$$</p>
+<p>si calcola come minimo punto fisso:</p>
+<p>$$
+Z = p \lor EX Z.
+$$</p>
+<p>In parole:</p>
+<ul>
+<li>parti dagli stati che gia' soddisfano $p$;</li>
+<li>aggiungi gli stati che possono andare in quelli gia' trovati;</li>
+<li>ripeti finche' non cambia piu nulla.</li>
+</ul>
+<p>Questo spiega perche' CTL model checking e' piu locale: lavora su insiemi di stati, non su automi di parole infinite.</p>
+<hr>
+<h2>18. Errori comuni</h2>
+<h3>Confondere F G con G F</h3>
+<p>$$
+FG p
+$$</p>
+<p>vuol dire: prima o poi p resta sempre vero.</p>
+<p>$$
+GF p
+$$</p>
+<p>vuol dire: p accade infinite volte.</p>
+<h3>Confondere EF con AF</h3>
+<p>$$
+EF p
+$$</p>
+<p>vuol dire: esiste un cammino verso p.</p>
+<p>$$
+AF p
+$$</p>
+<p>vuol dire: tutti i cammini arrivano a p.</p>
+<h3>Scrivere formule CTL non ben formate</h3>
+<p>In CTL non scrivere:</p>
+<p>$$
+G F p.
+$$</p>
+<p>Devi usare CTL-star oppure una formula CTL diversa, sapendo che non sempre e' equivalente.</p>
+<h3>Pensare che AG EF p imponga p sul cammino corrente</h3>
+<p>No. $AG EF p$ dice che p resta raggiungibile da ogni stato. Il cammino effettivo potrebbe non visitare mai p.</p>
+<h3>Pensare che LTL veda i rami alternativi</h3>
+<p>No. LTL vede una path. Se una scelta alternativa non e' presa, LTL non puo' osservarla.</p>
+<hr>
+<h2>19. Risposta orale pronta: LTL vs CTL</h2>
+<p>Una risposta compatta da orale potrebbe essere:</p>
+<blockquote>
+<p>LTL e CTL sono due logiche temporali per sistemi reattivi, ma hanno una semantica diversa. LTL e' linear-time: valuta formule su singole computazioni infinite. Gli operatori principali sono X, F, G e U. Una formula come G(req -&gt; F grant) dice che lungo una computazione ogni richiesta viene prima o poi servita. Nel model checking si intende che tutte le computazioni del sistema devono soddisfarla, e infatti si usa spesso la traduzione della negazione in un automa di Buchi per cercare un controesempio.</p>
+<p>CTL invece e' branching-time: valuta formule sugli stati di una struttura di Kripke e usa quantificatori di cammino A ed E. Quindi posso distinguere tra AF goal, che dice che tutti i cammini raggiungono goal, ed EF goal, che dice che esiste almeno un cammino verso goal. Questo rende CTL adatta a proprieta' di possibilita' e inevitabilita' su sistemi non deterministici.</p>
+<p>Le due logiche sono incomparabili. CTL puo' esprimere proprieta' ramificate come AG EF reset, cioe' da ogni stato resta possibile raggiungere reset, che LTL non puo' esprimere perche' guarda una sola computazione alla volta. LTL invece esprime naturalmente fairness lineari come GF p, cioe' p accade infinitamente spesso sulla stessa computazione; CTL puro non puo' scrivere direttamente A GF p per via della sua restrizione sintattica. CTL-star contiene entrambe e permette di combinare liberamente quantificatori di cammino e operatori temporali.</p>
+</blockquote>
+<hr>
+<h2>20. Esercizi aggiuntivi svolti</h2>
+<h3>Esercizio A: formula per mutua esclusione</h3>
+<p>Frase:</p>
+<blockquote>
+<p>due processi non sono mai contemporaneamente in sezione critica.</p>
+</blockquote>
+<p>Formula LTL:</p>
+<p>$$
+G\neg(crit1\land crit2).
+$$</p>
+<p>Formula CTL equivalente come safety su tutti i cammini:</p>
+<p>$$
+AG\neg(crit1\land crit2).
+$$</p>
+<p>Nota: qui LTL e CTL sembrano simili, perche' la proprieta' e' puramente universale e di safety.</p>
+<h3>Esercizio B: accesso sempre possibile</h3>
+<p>Frase:</p>
+<blockquote>
+<p>da ogni stato e' possibile che il processo 1 entri in sezione critica.</p>
+</blockquote>
+<p>Formula CTL:</p>
+<p>$$
+AG EF crit1.
+$$</p>
+<p>Questa non e' la stessa cosa di:</p>
+<p>$$
+AG AF crit1.
+$$</p>
+<p>La seconda dice che l'ingresso in sezione critica e' inevitabile su tutti i futuri.</p>
+<h3>Esercizio C: starvation freedom</h3>
+<p>Frase:</p>
+<blockquote>
+<p>se il processo 1 richiede accesso, prima o poi entra in sezione critica.</p>
+</blockquote>
+<p>Formula LTL:</p>
+<p>$$
+G(req1\to F crit1).
+$$</p>
+<p>Formula CTL forte:</p>
+<p>$$
+AG(req1\to AF crit1).
+$$</p>
+<p>Differenza:</p>
+<ul>
+<li>LTL, come specifica di sistema, richiede la proprieta' su ogni computazione completa;</li>
+<li>CTL la esprime localmente su ogni stato e su ogni futuro da quello stato.</li>
+</ul>
+<h3>Esercizio D: esiste una strategia buona?</h3>
+<p>Frase:</p>
+<blockquote>
+<p>esiste almeno un comportamento infinito in cui il sistema resta sempre safe e visita goal infinite volte.</p>
+</blockquote>
+<p>In CTL puro non posso scrivere direttamente:</p>
+<p>$$
+E(G safe\land G F goal).
+$$</p>
+<p>Questa e' una formula CTL-star.</p>
+<p>In LTL, lungo un singolo cammino, potrei scrivere:</p>
+<p>$$
+G safe\land G F goal.
+$$</p>
+<p>Ma LTL non esprime il quantificatore esistenziale sul branching della struttura. Per usarla come proprieta' esistenziale del sistema serve un contesto diverso.</p>
+<hr>
+<h2>21. Domande da orale</h2>
+<ol>
+<li>Che differenza c'e' tra tempo lineare e tempo ramificato?</li>
+<li>Che cosa significa $X p$ in LTL?</li>
+<li>Che cosa significa $p U q$? Che succede se $q$ vale gia' ora?</li>
+<li>Differenza tra strong until e weak until.</li>
+<li>Differenza tra $GF p$ e $FG p$.</li>
+<li>Scrivi una formula LTL per "ogni richiesta viene prima o poi servita".</li>
+<li>Scrivi una formula LTL per weak fairness e una per strong fairness.</li>
+<li>Che cosa significa $EF p$ in CTL?</li>
+<li>Che differenza c'e' tra $EF p$ e $AF p$?</li>
+<li>Che differenza c'e' tra $EG p$ e $AG p$?</li>
+<li>Perche' $AG EF p$ non impone che p appaia sul cammino corrente?</li>
+<li>Perche' LTL e CTL sono incomparabili?</li>
+<li>Fai un esempio di proprieta' CTL non esprimibile in LTL.</li>
+<li>Fai un esempio di proprieta' LTL non esprimibile in CTL.</li>
+<li>Che cosa aggiunge CTL-star?</li>
+<li>Come si collega LTL agli automi di Buchi?</li>
+<li>Perche' nel model checking LTL si guarda la negazione della formula?</li>
+<li>Perche' CTL model checking puo' essere fatto con insiemi di stati?</li>
+</ol>
+<hr>
+<h2>22. Quiz interattivo</h2>
+<div id="quiz-container-7" style="background:#f9f9f9; padding:20px; border-radius:8px; border: 1px solid #ddd; margin-top:2rem;">
+  <h3 style="margin-top:0;">Quiz Capitolo 7 - Logiche temporali</h3>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>1. Che cosa descrive LTL?</strong></p>
+    <label><input type="radio" name="q7_1" value="A"> A) Proprietà su una singola computazione lineare infinita.</label><br>
+    <label><input type="radio" name="q7_1" value="B"> B) Solo proprietà su parole finite.</label><br>
+    <label><input type="radio" name="q7_1" value="C"> C) Solo proprietà esistenziali su alberi di computazione.</label><br>
+    <button onclick="checkAnswer7('q7_1', 'A', 'Esatto. LTL è linear-time: lavora su una sequenza infinita di stati.', 'No. LTL interpreta le formule lungo computazioni infinite lineari.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q7_1-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>2. Quale formula dice che p accade infinitamente spesso?</strong></p>
+    <label><input type="radio" name="q7_2" value="A"> A) F G p</label><br>
+    <label><input type="radio" name="q7_2" value="B"> B) G F p</label><br>
+    <label><input type="radio" name="q7_2" value="C"> C) X G p</label><br>
+    <button onclick="checkAnswer7('q7_2', 'B', 'Corretto. GF p dice che da ogni punto futuro si ritroverà p.', 'Non corretto. FG p significa che da un certo punto in poi p resta sempre vero.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q7_2-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>3. Che differenza c'è tra EF goal e AF goal?</strong></p>
+    <label><input type="radio" name="q7_3" value="A"> A) EF è una possibilità, AF è una garanzia su tutti i cammini.</label><br>
+    <label><input type="radio" name="q7_3" value="B"> B) Sono sempre equivalenti.</label><br>
+    <label><input type="radio" name="q7_3" value="C"> C) EF parla del passato, AF del futuro.</label><br>
+    <button onclick="checkAnswer7('q7_3', 'A', 'Esatto. EF basta un cammino; AF richiede tutti i cammini.', 'No. Il punto è il quantificatore di cammino: E esistenziale, A universale.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q7_3-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>4. Quale formula CTL dice: da ogni stato resta possibile raggiungere reset?</strong></p>
+    <label><input type="radio" name="q7_4" value="A"> A) A G E F reset</label><br>
+    <label><input type="radio" name="q7_4" value="B"> B) E G A F reset</label><br>
+    <label><input type="radio" name="q7_4" value="C"> C) F G reset</label><br>
+    <button onclick="checkAnswer7('q7_4', 'A', 'Giusto. AG visita tutti gli stati raggiungibili; EF chiede raggiungibilità possibile da ciascuno.', 'No. Serve universalità sugli stati raggiungibili e possibilità verso reset: AG EF reset.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q7_4-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>5. Perché A G F p non è una formula CTL pura?</strong></p>
+    <label><input type="radio" name="q7_5" value="A"> A) Perché CTL non ammette proposizioni atomiche.</label><br>
+    <label><input type="radio" name="q7_5" value="B"> B) Perché in CTL non si annidano liberamente operatori temporali di cammino.</label><br>
+    <label><input type="radio" name="q7_5" value="C"> C) Perché CTL non ha il quantificatore A.</label><br>
+    <button onclick="checkAnswer7('q7_5', 'B', 'Corretto. A GF p è una formula CTL-star, non CTL.', 'No. CTL ha A ed E, ma impone una sintassi più rigida sugli operatori temporali.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q7_5-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>6. Che cosa rappresenta l'automa di Buchi per la negazione di una formula LTL?</strong></p>
+    <label><input type="radio" name="q7_6" value="A"> A) Le computazioni che violano la formula originale.</label><br>
+    <label><input type="radio" name="q7_6" value="B"> B) Solo gli stati iniziali del sistema.</label><br>
+    <label><input type="radio" name="q7_6" value="C"> C) Una dimostrazione di CTL-star.</label><br>
+    <button onclick="checkAnswer7('q7_6', 'A', 'Esatto. Il prodotto con il sistema cerca proprio un controesempio.', 'No. La negazione serve a riconoscere le tracce cattive.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q7_6-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>7. Quale formula è più forte?</strong></p>
+    <label><input type="radio" name="q7_7" value="A"> A) A G A F p è più forte di A G E F p.</label><br>
+    <label><input type="radio" name="q7_7" value="B"> B) A G E F p è sempre più forte di A G A F p.</label><br>
+    <label><input type="radio" name="q7_7" value="C"> C) Nessuna formula CTL può confrontarsi con un'altra.</label><br>
+    <button onclick="checkAnswer7('q7_7', 'A', 'Giusto. AF richiede tutti i cammini; EF richiede solo un cammino.', 'No. La versione con AF impone inevitabilità, quindi è più forte.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q7_7-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>8. Qual è il rapporto corretto tra LTL, CTL e CTL-star?</strong></p>
+    <label><input type="radio" name="q7_8" value="A"> A) LTL e CTL sono incomparabili, entrambe contenute in CTL-star.</label><br>
+    <label><input type="radio" name="q7_8" value="B"> B) CTL è contenuta in LTL.</label><br>
+    <label><input type="radio" name="q7_8" value="C"> C) LTL è contenuta in CTL.</label><br>
+    <button onclick="checkAnswer7('q7_8', 'A', 'Esatto. CTL-star è il quadro più generale; LTL e CTL hanno punti di forza diversi.', 'Non corretto. LTL e CTL non sono una sottologica dell’altra.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q7_8-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+</div>
+
+<script>
+function checkAnswer7(qName, correctVal, correctMsg, wrongMsg) {
+  var selected = document.querySelector('input[name="' + qName + '"]:checked');
+  var feedback = document.getElementById(qName + '-feedback');
+  if (!feedback) return;
+  if (!selected) {
+    feedback.style.display = 'block';
+    feedback.style.color = '#8a5a00';
+    feedback.textContent = 'Seleziona una risposta prima di verificare.';
+    return;
+  }
+  feedback.style.display = 'block';
+  if (selected.value === correctVal) {
+    feedback.style.color = '#126b2e';
+    feedback.textContent = correctMsg;
+  } else {
+    feedback.style.color = '#9b1c1c';
+    feedback.textContent = wrongMsg;
+  }
+}
+</script>
+
+<hr>
+<h2>23. Mini-scaletta di ripasso</h2>
+<ol>
+<li>Parti dai sistemi reattivi: computazioni infinite.</li>
+<li>Definisci Kripke structure e cammino.</li>
+<li>Spiega LTL: sintassi, semantica, $X$, $F$, $G$, $U$.</li>
+<li>Fai tre pattern LTL: safety, response, fairness.</li>
+<li>Spiega $GF$ vs $FG$.</li>
+<li>Collega LTL agli automi di Buchi e alla ricerca di controesempi.</li>
+<li>Spiega CTL: path quantifiers $A/E$, formule di stato e di cammino.</li>
+<li>Fai tre pattern CTL: $EF$, $AF$, $AG EF$.</li>
+<li>Spiega CTL-star: perche' serve e cosa permette.</li>
+<li>Chiudi con incomparabilita': esempio CTL non LTL e LTL non CTL.</li>
+</ol></article>
+  <p class="section-label">Esercizi (piano di studio)</p>
+  
+<div class="exercises-block prose">
+<h2>Esercizi e domande — settimana 4</h2>
+<p><strong>Obiettivo della settimana:</strong> saper tradurre requisiti temporali e calcolare model checking su strutture piccole.</p>
+<h3>Esercizi scritti essenziali</h3>
+<ol>
+<li><strong>Traduzione in LTL.</strong> Traduci:</li>
+<li>ogni richiesta viene prima o poi soddisfatta;</li>
+<li>se il sistema entra in errore, resta in errore finche viene resettato;</li>
+<li>il processo entra infinitamente spesso in sezione critica;</li>
+<li>
+<p>non esistono due grant consecutivi senza una request in mezzo.</p>
+</li>
+<li>
+<p><strong>Traduzione in CTL.</strong> Traduci:</p>
+</li>
+<li>da ogni stato e' possibile raggiungere uno stato safe;</li>
+<li>esiste un cammino lungo cui prima o poi si raggiunge goal;</li>
+<li>su tutti i cammini, se parte start allora prima o poi heat;</li>
+<li>
+<p>da ogni stato raggiungibile resta sempre possibile fare reset.</p>
+</li>
+<li>
+<p><strong>LTL vs CTL.</strong> Trova una formula CTL che esprima una possibilita strutturale non esprimibile in LTL, e una formula LTL di fairness non esprimibile in CTL puro. Spiega la differenza con parole tue.</p>
+</li>
+<li>
+<p><strong>Semantica di Until.</strong> Valuta se la parola infinita:
+   $$s_0s_1s_2\ldots$$
+   soddisfa $p U q$ nei casi:</p>
+</li>
+<li>$q$ vale in $s_3$ e $p$ vale in $s_0,s_1,s_2$;</li>
+<li>$q$ non vale mai e $p$ vale sempre;</li>
+<li>
+<p>$q$ vale in $s_0$.</p>
+</li>
+<li>
+<p><strong>Tableau LTL piccolo.</strong> Per $\varphi=G p \land F\neg p$, costruisci intuitivamente gli obblighi generati e spiega perche la formula e' insoddisfacibile.</p>
+</li>
+<li>
+<p><strong>LTL -&gt; Buchi.</strong> Per $\varphi=G(req \rightarrow F ack)$, descrivi l'automa per $\neg\varphi$ a livello di stati concettuali: quando cerca una request non seguita da ack?</p>
+</li>
+<li>
+<p><strong>CTL EF.</strong> Su una struttura con:
+   $$s_0\to s_1,\quad s_1\to s_2,\quad s_2\to s_2$$
+   e $p$ vero solo in $s_2$, calcola $EF p$ con il least fixpoint.</p>
+</li>
+<li>
+<p><strong>CTL EG.</strong> Su una struttura con:
+   $$s_0\to s_1,\quad s_1\to s_1,\quad s_1\to s_2,\quad s_2\to s_2$$
+   e $p$ vero in $s_1$ ma falso in $s_0,s_2$, calcola $EG p$ con greatest fixpoint.</p>
+</li>
+<li>
+<p><strong>CTL Until.</strong> Su una struttura a 4 stati inventata da te, calcola $E[p U q]$ usando:
+   $$\mu Z.(q \lor (p \land EX Z))$$</p>
+</li>
+<li>
+<p><strong>Prodotto model checking.</strong> Spiega con un disegno perche controllare:
+   $$Lang(S)\subseteq Lang(\varphi)$$
+   equivale a controllare:
+   $$Lang(S)\cap Lang(\neg\varphi)=\emptyset$$</p>
+</li>
+</ol>
+<h3>Domande orali secche</h3>
+<ol>
+<li>Differenza tra linear time e branching time.</li>
+<li>Perche CTL model checking e' piu locale di LTL model checking?</li>
+<li>Che cos'e' un Kripke model?</li>
+<li>Che cosa sono least e greatest fixpoint?</li>
+<li>Perche nel model checking LTL si controlla spesso la negazione della formula?</li>
+</ol>
+<h3>Controllo</h3>
+<p>Hai superato la settimana se sai tradurre requisiti naturali in LTL/CTL e calcolare EF, EG, EU a mano su grafi piccoli.</p>
+</div>
+
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap06.html">← Precedente</a></span><span><a href="cap08.html">Successivo →</a></span></div>
+</div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script defer src="assets/chat.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

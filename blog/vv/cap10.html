@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capitolo 10 — Il problema della sintesi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/chat.css" />
+  
+</head>
+<body>
+
+<header class="site-header">
+  <h1>V&amp;V in AI — Appunti</h1>
+  <p class="subtitle">Settimana 5</p>
+  <div class="ornament">✦</div>
+</header>
+<div class="wrap">
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap09.html">← Precedente</a></span><span><a href="cap11.html">Successivo →</a></span></div>
+  
+<div class="chapter-opener">
+  <div class="label">Capitolo 10</div>
+  <h1>Capitolo 10 — Il problema della sintesi</h1>
+  <p class="focus">Sintesi, problema di Church, Buchi-Landweber, giochi di Muller/parita, LAR e strategie di Mealy.</p>
+</div>
+
+  <article class="prose"><h1>Problema di Church</h1>
+<p>Il problema di Church chiede se, data una specifica logica della relazione tra sequenza di input e sequenza di output, sia possibile costruire automaticamente un sistema finito che produca l'output corretto per ogni input.</p>
+<h2>Idea</h2>
+<p>L'ambiente sceglie l'input, il sistema sceglie l'output. La soluzione cercata e' un automa di Mealy che realizzi una strategia vincente.</p>
+<h2>Soluzione di Buchi-Landweber</h2>
+<p>Per specifiche in S1S, la procedura passa attraverso:</p>
+<p>S1S -&gt; automa di Muller -&gt; gioco di Muller -&gt; gioco di parita -&gt; automa di Mealy.</p>
+<p>Se esiste una strategia vincente per il sistema, esiste anche una strategia a stati finiti costruibile effettivamente.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Automi di Mealy</li>
+<li>Automi di Muller</li>
+<li>Giochi di parità</li>
+<li>Secondo teorema di Büchi</li>
+</ul>
+<hr />
+
+<h1>Giochi di parita</h1>
+<p>Un gioco di parita e' un gioco infinito su grafo finito in cui ogni stato ha una priorita numerica.</p>
+<h2>Condizione di vittoria</h2>
+<p>Una run infinita e' vincente per un giocatore se la massima priorita vista infinitamente spesso ha la parita favorevole, spesso pari per il giocatore di sistema.</p>
+<h2>Importanza</h2>
+<p>I giochi di parita sono centrali nella sintesi e nel model checking del mu-calcolo. Le condizioni di Muller possono essere simulate tramite giochi di parita usando la LAR construction.</p>
+<h2>Strategie</h2>
+<p>I giochi di parita sono determinati e ammettono strategie posizionali vincenti.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Problema di Church</li>
+<li>Automi di Muller</li>
+<li>Registro di ultima apparizione (LAR)</li>
+</ul>
+<hr />
+
+<h1>Registro di ultima apparizione</h1>
+<p>Il <strong>registro di ultima apparizione</strong> (LAR) e' una memoria finita che registra l'ordine piu recente in cui sono comparsi gli stati di un gioco o di una run.</p>
+<h2>Uso</h2>
+<p>La costruzione LAR permette di trasformare una condizione di Muller, basata sull'insieme degli stati visitati infinitamente spesso, in una condizione di parita.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Automi di Muller</li>
+<li>Giochi di parità</li>
+<li>Problema di Church</li>
+</ul>
+<hr />
+
+<h1>Automi di Mealy</h1>
+<p>Un automa di Mealy e' una macchina a stati finiti che produce output in base allo stato corrente e al simbolo di input.</p>
+<h2>Forma generale</h2>
+<p>E' adatto a modellare controllori reattivi: a ogni passo legge un input dell'ambiente e produce immediatamente un output del sistema.</p>
+<h2>Uso nella sintesi</h2>
+<p>Nel problema di Church, la soluzione cercata e' un automa di Mealy che implementa una strategia vincente a memoria finita.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Problema di Church</li>
+<li>Trasduttori sequenziali</li>
+</ul>
+<hr />
+
+<h1>Approfondimento completo settimana 5 - Sintesi, giochi e Buchi-Landweber</h1>
+<blockquote>
+<p>Questa e' la versione estesa e autocontenuta del capitolo 10, nello stesso
+spirito del capitolo 9: ogni oggetto viene prima motivato, poi definito, poi
+riletto in parole. L'obiettivo e' saper ricostruire all'orale la pipeline
+completa:</p>
+<p>specifica logica -&gt; automa deterministico -&gt; gioco -&gt; strategia vincente -&gt;
+automa di Mealy.</p>
+</blockquote>
+<h2>Di cosa parla davvero questo capitolo</h2>
+<p>Fino al capitolo 9 il problema principale era:</p>
+<p>$$M\models\varphi?$$</p>
+<p>cioe': dato un modello $M$ gia' costruito, verificare se soddisfa una
+specifica $\varphi$.</p>
+<p>Il capitolo 10 cambia domanda:</p>
+<blockquote>
+<p>data una specifica, posso costruire automaticamente un sistema finito che la
+soddisfa?</p>
+</blockquote>
+<p>Questa e' la <strong>sintesi</strong>. Non controlliamo piu' un sistema gia' dato: proviamo a
+costruire il controllore stesso.</p>
+<p>Il capitolo segue la formulazione classica del problema di Church e la soluzione
+di Buchi-Landweber. Gli strumenti sono tutti gia' comparsi nei capitoli
+precedenti, ma qui vengono collegati in una catena nuova:</p>
+<ol>
+<li>la logica S1S descrive la relazione desiderata fra input e output;</li>
+<li>il teorema di Buchi trasforma la formula in un automa su parole infinite;</li>
+<li>la determinizzazione porta a un automa deterministico di Muller;</li>
+<li>l'automa viene trasformato in un gioco fra ambiente e sistema;</li>
+<li>il gioco viene risolto tramite condizioni Muller/parita;</li>
+<li>una strategia vincente viene implementata come automa di Mealy.</li>
+</ol>
+<p>La mappa del capitolo e':</p>
+<ol>
+<li>Parte I: perche' la sintesi non e' model checking.</li>
+<li>Parte II: il problema di Church, online e finite-state.</li>
+<li>Parte III: automi di Mealy come controllori.</li>
+<li>Parte IV: da S1S ad automi deterministici di Muller.</li>
+<li>Parte V: da automi a giochi.</li>
+<li>Parte VI: strategie, regioni vincenti e determinazione.</li>
+<li>Parte VII: reachability, weak Muller, Muller.</li>
+<li>Parte VIII: LAR e giochi di parita.</li>
+<li>Parte IX: soluzione completa di Church's problem.</li>
+<li>Parte X: errori tipici, esercizi e mappa per l'orale.</li>
+</ol>
+<h3>0. Richiami minimi</h3>
+<p><strong>S1S.</strong> E' la logica monadica del secondo ordine su $(\omega,+1)$. Serve a
+parlare di posizioni naturali e di insiemi di posizioni. Una parola binaria
+infinita si puo' rappresentare come un insieme $X\subseteq\omega$: $i\in X$
+vuol dire che alla posizione $i$ il bit vale 1.</p>
+<p><strong>Automi su parole infinite.</strong> Gli automi di Buchi/Muller leggono sequenze
+infinite. La condizione di accettazione non riguarda uno stato finale "alla
+fine", perche' non c'e' fine: riguarda cio' che accade infinitamente spesso.</p>
+<p><strong>Automa deterministico di Muller.</strong> Un automa di Muller ha una famiglia
+$\mathcal{F}\subseteq 2^Q$ e accetta una run $\rho$ se:</p>
+<p>$$Inf(\rho)\in\mathcal{F}.$$</p>
+<p>Qui $Inf(\rho)$ e' l'insieme degli stati visitati infinitamente spesso.</p>
+<p><strong>Gioco infinito.</strong> Un gioco su grafo finito produce una play infinita. Alcuni
+stati sono controllati dall'ambiente, altri dal sistema. Una winning condition
+decide se la play e' vinta dal sistema.</p>
+<p><strong>Automa di Mealy.</strong> E' una macchina finita che legge input e produce output.
+Nel capitolo 10 e' il formato finale del controllore sintetizzato.</p>
+<hr>
+<h2>Parte I - Dal model checking alla sintesi</h2>
+<h3>1. Il limite concettuale del model checking</h3>
+<p>Il model checking e' potente, ma parte da un presupposto:</p>
+<blockquote>
+<p>il modello del sistema esiste gia'.</p>
+</blockquote>
+<p>L'algoritmo prende:</p>
+<p>$$K=(S,S_0,R,L)$$</p>
+<p>e una formula temporale $\varphi$, poi risponde se:</p>
+<p>$$K\models\varphi.$$</p>
+<p>Se la risposta e' negativa, abbiamo un controesempio. Se e' positiva, sappiamo
+che il <strong>modello</strong> rispetta la specifica.</p>
+<p>Ma restano due problemi pratici.</p>
+<p><strong>Primo problema: il modello puo' essere sbagliato.</strong> Un controesempio puo'
+indicare un bug reale, ma puo' anche indicare che il modello non rappresenta
+bene il sistema che volevamo costruire.</p>
+<p><strong>Secondo problema: il sistema reale va ancora implementato.</strong> Anche se il
+modello e' corretto, bisogna trasformarlo in codice, circuito, controllore o
+protocollo. In questa trasformazione si possono introdurre errori.</p>
+<p>La sintesi nasce per eliminare questo passaggio:</p>
+<blockquote>
+<p>invece di costruire a mano un sistema e poi verificarlo, costruiamolo
+automaticamente dalla specifica.</p>
+</blockquote>
+<h3>2. Che cosa significa "sintesi" in questo capitolo</h3>
+<p>La parola sintesi puo' indicare cose diverse. Gli appunti chiariscono che qui
+non si parla genericamente di "trovare un modello" per una formula.</p>
+<p>Qui sintesi significa:</p>
+<blockquote>
+<p>costruire un <strong>controllore finito</strong> che interagisce con un ambiente e soddisfa
+una specifica per ogni comportamento possibile dell'ambiente.</p>
+</blockquote>
+<p>Il controllore non sceglie tutto. L'ambiente fornisce input. Il sistema produce
+output. La specifica dice quali coppie input/output sono accettabili.</p>
+<p>Schema mentale:</p>
+<table>
+<thead>
+<tr>
+<th>Ruolo</th>
+<th>Che cosa controlla</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ambiente</td>
+<td>la sequenza di input</td>
+</tr>
+<tr>
+<td>Sistema</td>
+<td>la sequenza di output</td>
+</tr>
+<tr>
+<td>Specifica</td>
+<td>quali coppie input/output sono corrette</td>
+</tr>
+<tr>
+<td>Sintesi</td>
+<td>costruire una macchina che produce sempre output corretti</td>
+</tr>
+</tbody>
+</table>
+<p>Questa distinzione e' fondamentale: il sistema controlla $\beta$, non
+$\alpha$.</p>
+<h3>3. Perche la sintesi e' piu' forte della soddisfacibilita'</h3>
+<p>Una specifica puo' dire:</p>
+<p>$$\varphi(X,Y)$$</p>
+<p>dove:</p>
+<ul>
+<li>$X$ rappresenta l'input;</li>
+<li>$Y$ rappresenta l'output.</li>
+</ul>
+<p>La soddisfacibilita' chiede:</p>
+<p>$$\exists X\exists Y.\ \varphi(X,Y).$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>esiste almeno una coppia input/output buona?</p>
+</blockquote>
+<p>La sintesi chiede qualcosa di molto piu' forte:</p>
+<blockquote>
+<p>per ogni input scelto dall'ambiente, il sistema sa produrre online un output
+che soddisfa la specifica?</p>
+</blockquote>
+<p>Una formula piu' vicina sarebbe:</p>
+<p>$$\forall X\exists Y.\ \varphi(X,Y),$$</p>
+<p>ma anche questa non basta, perche' manca il vincolo operativo:</p>
+<ul>
+<li>$Y$ deve dipendere causalmente da $X$;</li>
+<li>$Y(t)$ non puo' usare input futuri;</li>
+<li>la dipendenza deve essere implementabile da una macchina finita.</li>
+</ul>
+<p>Quindi la sintesi non e' solo logica dei quantificatori. E' logica piu'
+causalita' piu' memoria finita.</p>
+<h3>4. Il punto di vista del gioco</h3>
+<p>La forma:</p>
+<p>$$\forall X\exists Y$$</p>
+<p>suggerisce gia' un gioco:</p>
+<ol>
+<li>l'ambiente sceglie l'input;</li>
+<li>il sistema risponde con l'output;</li>
+<li>la specifica decide chi ha vinto.</li>
+</ol>
+<p>Il sistema non deve trovare un singolo output buono per un singolo input. Deve
+avere una regola che funziona contro tutti gli input.</p>
+<p>Questa regola e' una <strong>strategia</strong>.</p>
+<p>Per questo il capitolo passa dai linguaggi e dagli automi ai giochi:</p>
+<blockquote>
+<p>una soluzione della sintesi e' una strategia vincente del sistema.</p>
+</blockquote>
+<h3>5. Perche in generale la sintesi e' difficile</h3>
+<p>In generale, sintetizzare programmi da specifiche arbitrarie e' troppo potente.
+Il problema diventa indecidibile.</p>
+<p>Il risultato positivo del capitolo e':</p>
+<blockquote>
+<p>restringendo la specifica a S1S, il problema di Church e' decidibile.</p>
+</blockquote>
+<p>Il prezzo e' alto: le costruzioni sono complesse e possono esplodere. Ma dal
+punto di vista teorico il risultato e' enorme:</p>
+<ul>
+<li>dice quando la sintesi e' possibile;</li>
+<li>dice come decidere se una soluzione esiste;</li>
+<li>dice come costruire una macchina finita quando esiste.</li>
+</ul>
+<hr>
+<h2>Parte II - Church's Problem</h2>
+<h3>6. Formulazione informale</h3>
+<p>Il problema di Church riguarda trasformazioni fra sequenze infinite.</p>
+<p>L'ambiente produce una sequenza di input:</p>
+<p>$$\alpha=\alpha(0)\alpha(1)\alpha(2)\ldots$$</p>
+<p>Il sistema produce una sequenza di output:</p>
+<p>$$\beta=\beta(0)\beta(1)\beta(2)\ldots$$</p>
+<p>La specifica descrive quali coppie:</p>
+<p>$$(\alpha,\beta)$$</p>
+<p>sono ammesse.</p>
+<p>La domanda e':</p>
+<blockquote>
+<p>data la specifica della relazione input/output, esiste una macchina finita che
+produce $\beta$ online per ogni $\alpha$, in modo che la coppia
+$(\alpha,\beta)$ soddisfi la specifica?</p>
+</blockquote>
+<h3>7. La parola "bit-to-bit"</h3>
+<p>Nella formulazione classica, Church's problem parla di trasformazioni
+<strong>bit-to-bit</strong>.</p>
+<p>Vuol dire che a ogni istante:</p>
+<ul>
+<li>l'ambiente fornisce un bit;</li>
+<li>il sistema produce un bit.</li>
+</ul>
+<p>Al tempo $t$:</p>
+<p>$$\alpha(t)\in\{0,1\},\qquad \beta(t)\in\{0,1\}.$$</p>
+<p>La coppia globale e' quindi una parola infinita su coppie:</p>
+<p>$$((\alpha(0),\beta(0)),(\alpha(1),\beta(1)),\ldots)
+\in(\{0,1\}\times\{0,1\})^\omega.$$</p>
+<p>Questa osservazione sara' importante quando costruiremo l'automa: l'automa
+legge coppie input/output.</p>
+<h3>8. La parola "online"</h3>
+<p>Online significa:</p>
+<blockquote>
+<p>l'output corrente non puo' dipendere da input futuri.</p>
+</blockquote>
+<p>Al tempo $t$, il sistema ha visto solo:</p>
+<p>$$\alpha(0),\ldots,\alpha(t).$$</p>
+<p>Quindi puo' produrre $\beta(t)$ usando il prefisso corrente, ma non
+$\alpha(t+1)$.</p>
+<p>Esempio non realizzabile online:</p>
+<p>$$\beta(t)=\alpha(t+1).$$</p>
+<p>Per produrre $\beta(t)$ dovrei conoscere il prossimo input. Un controllore reale
+non puo' farlo.</p>
+<p>Esempio realizzabile online:</p>
+<p>$$\beta(t)=\alpha(t).$$</p>
+<p>Qui il sistema copia l'input corrente. Non serve conoscere il futuro.</p>
+<h3>9. La parola "finite-state"</h3>
+<p>Finite-state significa:</p>
+<blockquote>
+<p>tutta l'informazione rilevante del passato deve essere compressa in uno stato
+finito.</p>
+</blockquote>
+<p>Il sistema non puo' ricordare un prefisso arbitrariamente lungo dell'input.</p>
+<p>Esempio non finite-state:</p>
+<blockquote>
+<p>al tempo $t$, produrre il numero esatto di 1 comparsi finora nell'input.</p>
+</blockquote>
+<p>Se il numero deve essere esatto e illimitato, serve memoria non limitata.</p>
+<p>Esempio finite-state:</p>
+<blockquote>
+<p>produrre 1 se finora il numero di 1 visti e' pari, 0 se e' dispari.</p>
+</blockquote>
+<p>Qui basta ricordare una parita', cioe' due stati.</p>
+<h3>10. Formalizzazione con S1S</h3>
+<p>Per una parola binaria infinita $\alpha$, definiamo:</p>
+<p>$$P_\alpha=\{i\in\omega\mid \alpha(i)=1\}.$$</p>
+<p>Allo stesso modo:</p>
+<p>$$P_\beta=\{i\in\omega\mid \beta(i)=1\}.$$</p>
+<p>Una specifica S1S:</p>
+<p>$$\varphi(X,Y)$$</p>
+<p>parla di due insiemi di posizioni:</p>
+<ul>
+<li>$X$ = posizioni in cui l'input vale 1;</li>
+<li>$Y$ = posizioni in cui l'output vale 1.</li>
+</ul>
+<p>La coppia $(\alpha,\beta)$ soddisfa la specifica se:</p>
+<p>$$(\omega,+1)\models \varphi[P_\alpha,P_\beta].$$</p>
+<p>Quindi Church's problem diventa:</p>
+<blockquote>
+<p>data $\varphi(X,Y)$, costruire un automa di Mealy che per ogni input
+$\alpha$ produce un output $\beta$ tale che
+$(\omega,+1)\models \varphi[P_\alpha,P_\beta]$, oppure dire che non esiste.</p>
+</blockquote>
+<h3>11. Lettura della quantificazione corretta</h3>
+<p>La specifica non chiede:</p>
+<p>$$\exists P_\alpha\exists P_\beta.\ \varphi(P_\alpha,P_\beta).$$</p>
+<p>Questa formula dice solo che esiste una coppia buona.</p>
+<p>La specifica di realizzabilita' chiede:</p>
+<blockquote>
+<p>esiste una funzione causale finita $F$ tale che per ogni input $\alpha$,
+l'output $\beta=F(\alpha)$ soddisfa $\varphi$?</p>
+</blockquote>
+<p>In simboli, informalmente:</p>
+<p>$$\exists F\ \forall \alpha.\ \varphi(P_\alpha,P_{F(\alpha)}).$$</p>
+<p>Ma $F$ non e' una funzione arbitraria: deve essere una macchina finita online.</p>
+<p>Questo e' il ponte con gli automi di Mealy.</p>
+<hr>
+<h2>Parte III - Automi di Mealy come controllori</h2>
+<h3>12. Definizione di automa di Mealy</h3>
+<p>Un automa di Mealy e':</p>
+<p>$$\mathcal{M}=(S,\Sigma,\Gamma,\delta,\tau,s_0).$$</p>
+<p>Dove:</p>
+<ul>
+<li>$S$ e' l'insieme finito degli stati interni;</li>
+<li>$\Sigma$ e' l'alfabeto di input;</li>
+<li>$\Gamma$ e' l'alfabeto di output;</li>
+<li>$\delta:S\times\Sigma\to S$ aggiorna lo stato;</li>
+<li>$\tau:S\times\Sigma\to\Gamma$ produce l'output;</li>
+<li>$s_0$ e' lo stato iniziale.</li>
+</ul>
+<p>Al tempo $t$, se lo stato interno e' $s_t$ e arriva input $\alpha(t)$, allora:</p>
+<p>$$\beta(t)=\tau(s_t,\alpha(t))$$</p>
+<p>e:</p>
+<p>$$s_{t+1}=\delta(s_t,\alpha(t)).$$</p>
+<h3>13. Come si legge questa definizione</h3>
+<p>La funzione $\tau$ risponde alla domanda:</p>
+<blockquote>
+<p>che output devo produrre adesso?</p>
+</blockquote>
+<p>La funzione $\delta$ risponde alla domanda:</p>
+<blockquote>
+<p>che cosa devo ricordare per il futuro?</p>
+</blockquote>
+<p>Quindi un Mealy automaton e' esattamente un controllore online:</p>
+<ul>
+<li>legge input uno alla volta;</li>
+<li>produce output subito;</li>
+<li>aggiorna memoria finita.</li>
+</ul>
+<h3>14. Perche non basta un automa accettatore</h3>
+<p>Un automa accettatore legge una parola e alla fine, o secondo una condizione
+omega, decide se accettarla.</p>
+<p>Nel problema di Church il sistema deve <strong>costruire</strong> la parola di output mentre
+legge l'input.</p>
+<p>Quindi serve una macchina con output:</p>
+<p>$$\tau:S\times\Sigma\to\Gamma.$$</p>
+<p>Gli automi accettatori servono nella parte intermedia, per riconoscere le coppie
+input/output corrette. Il risultato finale, pero', deve essere un Mealy.</p>
+<h3>15. Strategia e Mealy sono la stessa idea vista da due lati</h3>
+<p>Nel gioco, una strategia dice:</p>
+<blockquote>
+<p>se la storia finora e' questa, fai questa mossa.</p>
+</blockquote>
+<p>Nel Mealy, lo stato interno riassume la storia, e $\tau$ dice che output
+produrre.</p>
+<p>Quindi:</p>
+<p>$$\text{strategia a memoria finita}
+\quad\Longleftrightarrow\quad
+\text{automa di Mealy}.$$</p>
+<p>Questa equivalenza e' il motivo per cui i giochi sono utili alla sintesi.</p>
+<h3>16. Esempio piccolo: parita degli input</h3>
+<p>Specifica:</p>
+<blockquote>
+<p>l'output deve essere 1 esattamente quando il numero di 1 visti finora
+nell'input e' dispari.</p>
+</blockquote>
+<p>Bastano due stati:</p>
+<ul>
+<li>$E$: finora ho visto un numero pari di 1;</li>
+<li>$O$: finora ho visto un numero dispari di 1.</li>
+</ul>
+<p>Transizioni:</p>
+<table>
+<thead>
+<tr>
+<th>Stato</th>
+<th>input 0</th>
+<th>input 1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$E$</td>
+<td>resta $E$, output 0</td>
+<td>va a $O$, output 1</td>
+</tr>
+<tr>
+<td>$O$</td>
+<td>resta $O$, output 1</td>
+<td>va a $E$, output 0</td>
+</tr>
+</tbody>
+</table>
+<p>Qui la memoria finita e' sufficiente perche' non serve ricordare il conteggio
+esatto, ma solo la sua parita'.</p>
+<hr>
+<h2>Parte IV - Da S1S ad automi deterministici di Muller</h2>
+<h3>17. Perche compare un automa</h3>
+<p>S1S e automi su parole infinite sono collegati dal secondo teorema di Buchi:</p>
+<blockquote>
+<p>i linguaggi definibili in S1S sono esattamente quelli riconoscibili da automi
+su parole infinite.</p>
+</blockquote>
+<p>Data:</p>
+<p>$$\varphi(X,Y),$$</p>
+<p>costruiamo un automa che legge la parola infinita di coppie:</p>
+<p>$$((\alpha(0),\beta(0)),(\alpha(1),\beta(1)),\ldots).$$</p>
+<p>L'automa accetta esattamente le coppie input/output che soddisfano la formula.</p>
+<h3>18. Alfabeto dell'automa</h3>
+<p>Nel caso binario, l'alfabeto e':</p>
+<p>$$\Sigma_\text{pair}=\{0,1\}\times\{0,1\}.$$</p>
+<p>Una lettera e' una coppia:</p>
+<p>$$(b,c)$$</p>
+<p>dove:</p>
+<ul>
+<li>$b$ e' il bit scelto dall'ambiente;</li>
+<li>$c$ e' il bit scelto dal sistema.</li>
+</ul>
+<p>Se l'automa legge una parola su questo alfabeto, sta leggendo insieme input e
+output.</p>
+<h3>19. Perche serve determinismo</h3>
+<p>Nel model checking automata-theoretic potevamo usare automi nondeterministici:
+se esisteva una run accettante, la parola era accettata.</p>
+<p>Nella sintesi, pero', vogliamo trasformare l'automa in un gioco. Il gioco deve
+sapere in quale stato si trova dopo ogni coppia input/output.</p>
+<p>Se l'automa fosse nondeterministico, ci sarebbe un'ulteriore scelta:</p>
+<blockquote>
+<p>quale transizione nondeterministica prende l'automa?</p>
+</blockquote>
+<p>Questa scelta non appartiene ne' all'ambiente ne' al sistema. Introdurla
+confonderebbe il gioco.</p>
+<p>Per questo si usa un automa deterministico.</p>
+<h3>20. Perche Muller</h3>
+<p>Gli automi di Buchi deterministici non riconoscono tutti gli omega-linguaggi
+regolari. Per recuperare tutta l'espressivita' in forma deterministica, si usano
+condizioni piu' ricche, come Muller.</p>
+<p>Un automa deterministico di Muller e':</p>
+<p>$$\mathcal{A}=(Q,q_0,\Sigma,\delta,\mathcal{F})$$</p>
+<p>con:</p>
+<p>$$\mathcal{F}\subseteq 2^Q.$$</p>
+<p>Dato un input infinito, l'automa produce una run unica:</p>
+<p>$$\rho=q_0q_1q_2\ldots$$</p>
+<p>e accetta se:</p>
+<p>$$Inf(\rho)\in\mathcal{F}.$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>guardo quali stati appaiono infinitamente spesso; se quell'insieme appartiene
+alla famiglia vincente $\mathcal{F}$, la parola e' accettata.</p>
+</blockquote>
+<h3>21. Perche la condizione di Muller e' naturale per la sintesi</h3>
+<p>In una computazione reattiva non conta solo raggiungere qualcosa una volta.
+Spesso conta cio' che succede per sempre:</p>
+<ul>
+<li>una richiesta deve essere servita infinite volte;</li>
+<li>un errore deve non comparire mai da un certo punto in poi;</li>
+<li>certi stati devono ricorrere;</li>
+<li>certi stati devono sparire.</li>
+</ul>
+<p>La condizione:</p>
+<p>$$Inf(\rho)\in\mathcal{F}$$</p>
+<p>e' molto generale proprio perche' parla della parte ricorrente della run.</p>
+<p>Quando passeremo ai giochi, la stessa idea diventera':</p>
+<blockquote>
+<p>il sistema vince se l'insieme degli stati visitati infinitamente spesso dalla
+partita appartiene a $\mathcal{F}$.</p>
+</blockquote>
+<h3>22. La pipeline fino a qui</h3>
+<p>Abbiamo trasformato:</p>
+<p>$$\varphi(X,Y)$$</p>
+<p>in:</p>
+<p>$$\mathcal{A}_\varphi=(Q,q_0,\{0,1\}\times\{0,1\},\delta,\mathcal{F}).$$</p>
+<p>Questo automa riconosce tutte e sole le coppie input/output corrette.</p>
+<p>Ma non abbiamo ancora costruito un controllore. L'automa dice:</p>
+<blockquote>
+<p>questa coppia completa e' accettabile.</p>
+</blockquote>
+<p>La sintesi richiede:</p>
+<blockquote>
+<p>il sistema puo' scegliere gli output in modo da rendere accettabile la coppia
+qualunque siano gli input?</p>
+</blockquote>
+<p>Per rispondere serve un gioco.</p>
+<hr>
+<h2>Parte V - Da automa a gioco</h2>
+<h3>23. Separare input e output</h3>
+<p>L'automa deterministico legge una coppia:</p>
+<p>$$(b,c).$$</p>
+<p>Ma nella sintesi i due componenti della coppia non sono scelti dallo stesso
+giocatore:</p>
+<ul>
+<li>$b$ lo sceglie l'ambiente;</li>
+<li>$c$ lo sceglie il sistema.</li>
+</ul>
+<p>Quindi ogni passo dell'automa viene spezzato in due mosse.</p>
+<p>Se l'automa e' nello stato $q$:</p>
+<ol>
+<li>l'ambiente sceglie input $b$;</li>
+<li>il gioco passa allo stato intermedio $(q,b)$;</li>
+<li>il sistema sceglie output $c$;</li>
+<li>l'automa avanza a:</li>
+</ol>
+<p>$$q'=\delta(q,(b,c)).$$</p>
+<p>Questa e' la costruzione centrale.</p>
+<h3>24. Stati del gioco</h3>
+<p>Partendo dall'automa di Muller, il gioco ha due tipi di stati.</p>
+<p><strong>Stati dell'ambiente.</strong> Sono gli stati originali dell'automa:</p>
+<p>$$q\in Q.$$</p>
+<p>In questi stati tocca all'ambiente scegliere il prossimo input.</p>
+<p><strong>Stati del sistema.</strong> Sono coppie:</p>
+<p>$$(q,b)$$</p>
+<p>dove $q$ e' lo stato dell'automa e $b$ e' l'input appena scelto.</p>
+<p>In questi stati tocca al sistema scegliere l'output.</p>
+<p>Quindi l'arena separa cio' che nell'automa era compresso in una singola lettera.</p>
+<h3>25. Archi del gioco</h3>
+<p>Da uno stato ambiente $q$ ci sono archi verso:</p>
+<p>$$(q,0),\qquad(q,1).$$</p>
+<p>Questi rappresentano le due possibili scelte dell'ambiente.</p>
+<p>Da uno stato sistema $(q,b)$ ci sono archi verso:</p>
+<p>$$\delta(q,(b,0)),\qquad \delta(q,(b,1)).$$</p>
+<p>Questi rappresentano le due possibili scelte di output del sistema.</p>
+<p>La partita alterna quindi:</p>
+<p>$$q_0,\ (q_0,b_0),\ q_1,\ (q_1,b_1),\ q_2,\ldots$$</p>
+<p>dove:</p>
+<p>$$q_{i+1}=\delta(q_i,(b_i,c_i)).$$</p>
+<h3>26. Winning condition del gioco</h3>
+<p>La condizione di Muller dell'automa era:</p>
+<p>$$Inf(q_0q_1q_2\ldots)\in\mathcal{F}.$$</p>
+<p>Nel gioco compaiono anche gli stati intermedi $(q,b)$. Ci sono due modi
+equivalenti di pensarla:</p>
+<ol>
+<li>proiettare la play sugli stati originali $Q$;</li>
+<li>estendere la condizione ai nuovi stati in modo coerente.</li>
+</ol>
+<p>Concettualmente, quello che conta e':</p>
+<blockquote>
+<p>la coppia input/output generata dalla partita deve essere accettata
+dall'automa della specifica.</p>
+</blockquote>
+<p>Quindi il sistema vince se la run dell'automa soddisfa la condizione di Muller.</p>
+<h3>27. Perche questa costruzione e' corretta</h3>
+<p>Ogni partita determina:</p>
+<ul>
+<li>una sequenza di input $\alpha$ scelta dall'ambiente;</li>
+<li>una sequenza di output $\beta$ scelta dal sistema;</li>
+<li>una run unica dell'automa deterministico sulla coppia $(\alpha,\beta)$.</li>
+</ul>
+<p>Se il sistema ha una strategia vincente, allora qualunque sia $\alpha$,
+l'output prodotto dalla strategia genera una coppia accettata dall'automa.</p>
+<p>Questo significa:</p>
+<p>$$(\omega,+1)\models\varphi[P_\alpha,P_\beta].$$</p>
+<p>Viceversa, un controllore Mealy che realizza la specifica induce una strategia
+vincente nel gioco: quando tocca al sistema, il controllore sceglie l'output.</p>
+<h3>28. Stati del gioco e stati del Mealy: non confonderli</h3>
+<p>Gli appunti insistono su questo punto:</p>
+<blockquote>
+<p>gli stati del game graph non sono automaticamente gli stati del Mealy finale.</p>
+</blockquote>
+<p>Il game graph e' l'arena:</p>
+<ul>
+<li>contiene stati dell'automa;</li>
+<li>contiene stati intermedi dopo la scelta dell'ambiente;</li>
+<li>serve a definire la partita.</li>
+</ul>
+<p>Il Mealy finale deve implementare una strategia. I suoi stati devono contenere
+la memoria necessaria per decidere gli output.</p>
+<p>Questa memoria puo' includere:</p>
+<ul>
+<li>lo stato corrente dell'automa di Muller;</li>
+<li>la memoria della strategia vincente;</li>
+<li>eventualmente memoria LAR o memoria derivata dal gioco di parita.</li>
+</ul>
+<p>Quindi il Mealy finale nasce dal gioco, ma non coincide semplicemente con il
+grafo del gioco.</p>
+<hr>
+<h2>Parte VI - Giochi infiniti</h2>
+<h3>29. Game graph</h3>
+<p>Un game graph, o arena, e':</p>
+<p>$$G=(Q,Q_A,E).$$</p>
+<p>Dove:</p>
+<ul>
+<li>$Q$ e' l'insieme finito degli stati;</li>
+<li>$Q_A\subseteq Q$ sono gli stati controllati dal giocatore A;</li>
+<li>$Q_B=Q\setminus Q_A$ sono gli stati controllati dal giocatore B;</li>
+<li>$E\subseteq Q\times Q$ e' la relazione degli archi.</li>
+</ul>
+<p>Nel capitolo:</p>
+<ul>
+<li>A = ambiente;</li>
+<li>B = sistema.</li>
+</ul>
+<p>Si assume che non ci siano deadlock:</p>
+<p>$$\forall q\in Q,\quad \exists q'.\ (q,q')\in E.$$</p>
+<p>Le partite sono infinite, come le computazioni reattive.</p>
+<h3>30. Play</h3>
+<p>Una play da $q_0$ e' un cammino infinito:</p>
+<p>$$\rho=q_0q_1q_2\ldots$$</p>
+<p>tale che:</p>
+<p>$$(q_i,q_{i+1})\in E$$</p>
+<p>per ogni $i$.</p>
+<p>Quando $q_i\in Q_A$, sceglie A. Quando $q_i\in Q_B$, sceglie B.</p>
+<p>Una play e' quindi una storia completa dell'interazione fra ambiente e sistema.</p>
+<h3>31. Winning condition</h3>
+<p>Un gioco e':</p>
+<p>$$(G,W)$$</p>
+<p>dove:</p>
+<p>$$W\subseteq Q^\omega$$</p>
+<p>e' l'insieme delle play vinte da B.</p>
+<p>Se:</p>
+<p>$$\rho\in W,$$</p>
+<p>vince B. Altrimenti vince A.</p>
+<p>Nel problema di Church:</p>
+<ul>
+<li>B vince = il sistema soddisfa la specifica;</li>
+<li>A vince = l'ambiente riesce a falsificarla.</li>
+</ul>
+<h3>32. Strategie</h3>
+<p>Una strategia per B e' una funzione che, ogni volta che la play arriva in uno
+stato di B, sceglie il prossimo stato.</p>
+<p>Formalmente, una strategia generale puo' avere tipo:</p>
+<p>$$f:Q^+\to Q.$$</p>
+<p>Dato un prefisso:</p>
+<p>$$q_0q_1\ldots q_k,$$</p>
+<p>se $q_k\in Q_B$, la strategia sceglie un successore legale:</p>
+<p>$$(q_k,f(q_0\ldots q_k))\in E.$$</p>
+<h3>33. Strategia vincente</h3>
+<p>Una strategia di B e' vincente da $q$ se:</p>
+<blockquote>
+<p>qualunque cosa faccia A, ogni play che parte da $q$ e segue la strategia di B
+appartiene a $W$.</p>
+</blockquote>
+<p>Questa e' la quantificazione giusta per la sintesi:</p>
+<ul>
+<li>il sistema controlla solo le proprie mosse;</li>
+<li>l'ambiente puo' scegliere qualsiasi input;</li>
+<li>la strategia deve funzionare contro tutte le scelte dell'ambiente.</li>
+</ul>
+<h3>34. Winning regions</h3>
+<p>La winning region di B e':</p>
+<p>$$W_B=\{q\in Q\mid B\text{ ha una strategia vincente da }q\}.$$</p>
+<p>La winning region di A e':</p>
+<p>$$W_A=\{q\in Q\mid A\text{ ha una strategia vincente da }q\}.$$</p>
+<p>Se:</p>
+<p>$$W_A\cup W_B=Q,$$</p>
+<p>il gioco e' <strong>determinato</strong>.</p>
+<p>Lettura:</p>
+<blockquote>
+<p>da ogni stato, uno dei due giocatori puo' forzare la vittoria.</p>
+</blockquote>
+<p>Determinato non vuol dire facile da risolvere. Vuol dire che non esistono stati
+neutri in cui nessuno dei due abbia una strategia vincente.</p>
+<h3>35. Strategie posizionali e strategie a memoria finita</h3>
+<p>Una strategia <strong>posizionale</strong> dipende solo dallo stato corrente:</p>
+<p>$$f(q).$$</p>
+<p>Non ricorda la storia.</p>
+<p>Una strategia <strong>a memoria finita</strong> ha uno stato interno finito. Aggiorna questa
+memoria lungo la play e usa la memoria per decidere.</p>
+<p>Questa distinzione sara' essenziale:</p>
+<table>
+<thead>
+<tr>
+<th>Gioco</th>
+<th>Memoria necessaria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reachability</td>
+<td>strategie posizionali bastano</td>
+</tr>
+<tr>
+<td>Weak Muller</td>
+<td>puo' servire memoria finita</td>
+</tr>
+<tr>
+<td>Muller</td>
+<td>puo' servire memoria finita piu' ricca</td>
+</tr>
+<tr>
+<td>Parity</td>
+<td>strategie posizionali bastano</td>
+</tr>
+</tbody>
+</table>
+<p>Il trucco LAR serve proprio a trasformare memoria Muller in stato del gioco
+simulato, cosi' nel parity game bastano strategie posizionali.</p>
+<hr>
+<h2>Parte VII - Reachability, weak Muller, Muller</h2>
+<h3>36. Reachability games</h3>
+<p>Dato un insieme target:</p>
+<p>$$F\subseteq Q,$$</p>
+<p>B vince se la play visita almeno una volta uno stato di $F$:</p>
+<p>$$\exists i.\ \rho(i)\in F.$$</p>
+<p>Questa e' la condizione piu' semplice:</p>
+<blockquote>
+<p>raggiungi il target almeno una volta.</p>
+</blockquote>
+<h3>37. Attractor per reachability</h3>
+<p>La regione vincente di B si calcola con l'attrattore.</p>
+<p>Si parte da:</p>
+<p>$$Attr_B^0(F)=F.$$</p>
+<p>Poi si ripete:</p>
+<ul>
+<li>aggiungi uno stato di B se ha almeno un successore gia' nell'attrattore;</li>
+<li>aggiungi uno stato di A se tutti i suoi successori sono gia' nell'attrattore.</li>
+</ul>
+<p>Formula concettuale:</p>
+<p>$$
+Attr_B^{i+1}(F)=Attr_B^i(F)
+\cup
+\{q\in Q_B\mid \exists q'.\ qEq'\land q'\in Attr_B^i(F)\}
+$$</p>
+<p>$$
+\cup
+\{q\in Q_A\mid \forall q'.\ qEq'\Rightarrow q'\in Attr_B^i(F)\}.
+$$</p>
+<p>Si itera fino a stabilizzazione.</p>
+<p>Lettura:</p>
+<ul>
+<li>se tocca a B, basta una mossa buona;</li>
+<li>se tocca ad A, tutte le mosse devono essere buone, perche' A e' avversario.</li>
+</ul>
+<h3>38. Perche reachability ha strategie posizionali</h3>
+<p>Quando uno stato entra nell'attrattore, entra con una "ragione":</p>
+<ul>
+<li>e' target;</li>
+<li>oppure B puo' andare verso uno stato piu' vicino al target;</li>
+<li>oppure A non puo' evitare di andare verso l'attrattore.</li>
+</ul>
+<p>La strategia di B e':</p>
+<blockquote>
+<p>in ogni stato di B, scegli un successore che diminuisce il livello
+dell'attrattore.</p>
+</blockquote>
+<p>Non serve ricordare come ci si e' arrivati. Basta lo stato corrente.</p>
+<h3>39. Weak Muller games</h3>
+<p>Una condizione weak Muller, o Staiger-Wagner, guarda l'insieme degli stati
+visitati almeno una volta:</p>
+<p>$$Occ(\rho)=\{q\in Q\mid \exists i.\ \rho(i)=q\}.$$</p>
+<p>B vince se:</p>
+<p>$$Occ(\rho)\in\mathcal{F}.$$</p>
+<p>Questa condizione e' "weak" perche' non distingue fra:</p>
+<ul>
+<li>stati visitati una sola volta;</li>
+<li>stati visitati infinite volte.</li>
+</ul>
+<p>Conta solo se sono comparsi.</p>
+<h3>40. Perche weak Muller puo' richiedere memoria</h3>
+<p>Se l'obiettivo riguarda l'insieme degli stati gia' visitati, il sistema puo'
+dover ricordare quali stati ha visto.</p>
+<p>Esempio:</p>
+<blockquote>
+<p>B vince se durante la play vengono visitati tutti gli stati di
+$\{1,2,3\}$.</p>
+</blockquote>
+<p>Se B e' in una posizione con piu' scelte, potrebbe dover sapere quali stati
+mancano ancora. Una strategia che guarda solo lo stato corrente puo' non
+bastare.</p>
+<p>Una memoria naturale e':</p>
+<p>$$R\subseteq Q$$</p>
+<p>dove $R$ e' l'insieme degli stati visitati finora.</p>
+<p>Aggiornamento:</p>
+<p>$$R' = R\cup\{q\}.$$</p>
+<p>Questa memoria ha al massimo:</p>
+<p>$$2^{|Q|}$$</p>
+<p>valori.</p>
+<h3>41. Weak Muller come weak parity</h3>
+<p>Per weak Muller si puo' colorare ogni memoria $R$ in base a due informazioni:</p>
+<ul>
+<li>quanto e' grande $R$;</li>
+<li>se $R\in\mathcal{F}$.</li>
+</ul>
+<p>Una codifica possibile:</p>
+<p>$$c(R)=2|R|\quad\text{se }R\in\mathcal{F},$$</p>
+<p>$$c(R)=2|R|-1\quad\text{se }R\notin\mathcal{F}.$$</p>
+<p>Poiche' $R$ cresce monotonicamente e poi si stabilizza, il colore finale dice se
+l'insieme visitato appartiene a $\mathcal{F}$.</p>
+<p>Questa e' una versione piu' semplice dell'idea che useremo per Muller pieno.</p>
+<h3>42. Muller games</h3>
+<p>Una condizione di Muller guarda:</p>
+<p>$$Inf(\rho)=\{q\in Q\mid q\text{ appare infinitamente spesso in }\rho\}.$$</p>
+<p>B vince se:</p>
+<p>$$Inf(\rho)\in\mathcal{F}.$$</p>
+<p>Questa e' piu' espressiva della weak Muller, perche' distingue:</p>
+<ul>
+<li>stati visitati solo finitely many times;</li>
+<li>stati visitati infinitely often.</li>
+</ul>
+<p>Esempio:</p>
+<p>$$\rho=a,b,c,b,c,b,c,\ldots$$</p>
+<p>Allora:</p>
+<p>$$Occ(\rho)=\{a,b,c\},$$</p>
+<p>ma:</p>
+<p>$$Inf(\rho)=\{b,c\}.$$</p>
+<p>Weak Muller e Muller possono quindi dare risposte diverse.</p>
+<h3>43. Teorema sui Muller games</h3>
+<p>Il risultato usato nel capitolo e':</p>
+<blockquote>
+<p>i Muller games su grafi finiti sono determinati; le winning regions sono
+calcolabili; il giocatore vincente ha una strategia a memoria finita.</p>
+</blockquote>
+<p>Se il grafo ha $n$ stati, una costruzione standard usa memoria dell'ordine:</p>
+<p>$$n!\cdot n.$$</p>
+<p>Questa quantita' non e' casuale:</p>
+<ul>
+<li>$n!$ corrisponde agli ordini possibili degli stati;</li>
+<li>$n$ corrisponde alla posizione di hit nella costruzione LAR.</li>
+</ul>
+<h3>44. Game simulation</h3>
+<p>L'idea di game simulation e':</p>
+<blockquote>
+<p>trasformare un gioco difficile in un gioco piu' semplice, preservando chi
+vince.</p>
+</blockquote>
+<p>Dire che un gioco $(G,W)$ e' simulato da $(G',W')$ significa che una play
+$\rho$ di $G$ viene trasformata in una play $\rho'$ di $G'$ in modo che:</p>
+<p>$$\rho\in W \quad\Longleftrightarrow\quad \rho'\in W'.$$</p>
+<p>Perche' serve?</p>
+<p>Se il gioco simulato $G'$ ha strategie posizionali, allora riportandole indietro
+otteniamo strategie a memoria finita per il gioco originale.</p>
+<p>La costruzione:</p>
+<p>$$\text{Muller}\to\text{parity}$$</p>
+<p>tramite LAR e' esattamente una game simulation.</p>
+<hr>
+<h2>Parte VIII - LAR e giochi di parita</h2>
+<h3>45. Latest Appearance Record</h3>
+<p>Il <strong>Latest Appearance Record</strong> registra l'ordine delle ultime apparizioni degli
+stati visitati.</p>
+<p>Un LAR ha forma:</p>
+<p>$$((i_1,\ldots,i_r),h).$$</p>
+<p>Dove:</p>
+<ul>
+<li>$(i_1,\ldots,i_r)$ e' una lista di stati visti;</li>
+<li>gli stati piu' recenti stanno piu' a sinistra;</li>
+<li>$h$ e' la posizione di hit;</li>
+<li>$h=0$ quando lo stato letto e' nuovo.</li>
+</ul>
+<p>Quando compare uno stato gia' presente nella lista:</p>
+<ol>
+<li>si guarda la posizione in cui stava;</li>
+<li>quella posizione diventa $h$;</li>
+<li>lo stato viene spostato in testa.</li>
+</ol>
+<h3>46. Aggiornamento LAR: esempio base</h3>
+<p>Sequenza:</p>
+<p>$$A,C,C,D,B,D,C,D,\ldots$$</p>
+<p>Aggiorniamo la lista:</p>
+<table>
+<thead>
+<tr>
+<th>leggo</th>
+<th>LAR lista</th>
+<th>$h$</th>
+<th>spiegazione</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$A$</td>
+<td>$(A)$</td>
+<td>0</td>
+<td>nuovo</td>
+</tr>
+<tr>
+<td>$C$</td>
+<td>$(C,A)$</td>
+<td>0</td>
+<td>nuovo</td>
+</tr>
+<tr>
+<td>$C$</td>
+<td>$(C,A)$</td>
+<td>1</td>
+<td>$C$ era in posizione 1</td>
+</tr>
+<tr>
+<td>$D$</td>
+<td>$(D,C,A)$</td>
+<td>0</td>
+<td>nuovo</td>
+</tr>
+<tr>
+<td>$B$</td>
+<td>$(B,D,C,A)$</td>
+<td>0</td>
+<td>nuovo</td>
+</tr>
+<tr>
+<td>$D$</td>
+<td>$(D,B,C,A)$</td>
+<td>2</td>
+<td>$D$ era in posizione 2</td>
+</tr>
+<tr>
+<td>$C$</td>
+<td>$(C,D,B,A)$</td>
+<td>3</td>
+<td>$C$ era in posizione 3</td>
+</tr>
+</tbody>
+</table>
+<p>Il LAR non conserva tutta la storia. Conserva solo un ordine recente abbastanza
+informativo per recuperare la parte ricorrente.</p>
+<h3>47. Hitting set</h3>
+<p>Dato:</p>
+<p>$$((i_1,\ldots,i_r),h)$$</p>
+<p>con $h&gt;0$, l'hitting set e':</p>
+<p>$$H=\{i_1,\ldots,i_h\}.$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>quando uno stato ricompare, l'hitting set contiene gli stati attraversati
+dall'ultima apparizione di quello stato fino ad ora, secondo l'ordine LAR.</p>
+</blockquote>
+<p>Nel limite infinito, gli hit che ricorrono infinitamente spesso rivelano quali
+stati ricorrono infinitamente spesso nella play.</p>
+<h3>48. Da Muller a colori</h3>
+<p>La condizione di Muller e':</p>
+<p>$$Inf(\rho)\in\mathcal{F}.$$</p>
+<p>Vogliamo tradurla in una condizione di parita sui LAR.</p>
+<p>Per $h=0$ si puo' usare colore 0.</p>
+<p>Per $h&gt;0$:</p>
+<p>$$c((i_1,\ldots,i_r),h)=2h
+\quad\text{se }\{i_1,\ldots,i_h\}\in\mathcal{F},$$</p>
+<p>$$c((i_1,\ldots,i_r),h)=2h-1
+\quad\text{se }\{i_1,\ldots,i_h\}\notin\mathcal{F}.$$</p>
+<p>Quindi:</p>
+<ul>
+<li>hitting set buono -&gt; colore pari;</li>
+<li>hitting set cattivo -&gt; colore dispari.</li>
+</ul>
+<p>La condizione di parita dice:</p>
+<blockquote>
+<p>guarda il massimo colore che compare infinitamente spesso; se e' pari, vince
+B; se e' dispari, vince A.</p>
+</blockquote>
+<h3>49. Perche il massimo colore ricorrente funziona</h3>
+<p>In una play infinita, dopo un certo punto:</p>
+<ul>
+<li>gli stati visitati solo finitely many times spariscono;</li>
+<li>restano solo gli stati visitati infinitely often.</li>
+</ul>
+<p>Il LAR continua allora a riorganizzare soprattutto gli stati ricorrenti.</p>
+<p>Il massimo hit che compare infinitamente spesso corrisponde al blocco degli
+stati ricorrenti. Il suo hitting set coincide con:</p>
+<p>$$Inf(\rho).$$</p>
+<p>Quindi controllare se quell'hitting set appartiene a $\mathcal{F}$ equivale a
+controllare la condizione di Muller originale.</p>
+<p>La parita del colore codifica esattamente questa appartenenza.</p>
+<h3>50. Esempio LAR completo</h3>
+<p>Sia:</p>
+<p>$$Q=\{1,2,3\}$$</p>
+<p>e:</p>
+<p>$$\mathcal{F}=\{\{2,3\}\}.$$</p>
+<p>B vince solo se gli stati visitati infinitamente spesso sono esattamente
+$\{2,3\}$.</p>
+<p><strong>Partita 1:</strong></p>
+<p>$$1,2,3,2,3,2,3,\ldots$$</p>
+<p>Qui:</p>
+<p>$$Inf(\rho)=\{2,3\}\in\mathcal{F}.$$</p>
+<p>Traccia:</p>
+<table>
+<thead>
+<tr>
+<th>leggo</th>
+<th>LAR dopo</th>
+<th>$h$</th>
+<th>$H$</th>
+<th>$H\in\mathcal{F}$?</th>
+<th>colore</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$1$</td>
+<td>$(1)$</td>
+<td>0</td>
+<td>-</td>
+<td>-</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$2$</td>
+<td>$(2,1)$</td>
+<td>0</td>
+<td>-</td>
+<td>-</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$3$</td>
+<td>$(3,2,1)$</td>
+<td>0</td>
+<td>-</td>
+<td>-</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$2$</td>
+<td>$(2,3,1)$</td>
+<td>2</td>
+<td>$\{2,3\}$</td>
+<td>si'</td>
+<td>4</td>
+</tr>
+<tr>
+<td>$3$</td>
+<td>$(3,2,1)$</td>
+<td>2</td>
+<td>$\{3,2\}$</td>
+<td>si'</td>
+<td>4</td>
+</tr>
+<tr>
+<td>$2$</td>
+<td>$(2,3,1)$</td>
+<td>2</td>
+<td>$\{2,3\}$</td>
+<td>si'</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p>Da un certo punto in poi il colore ricorrente massimo e' 4, pari. Quindi B
+vince.</p>
+<p><strong>Partita 2:</strong></p>
+<p>$$1,2,3,1,2,3,1,2,3,\ldots$$</p>
+<p>Qui:</p>
+<p>$$Inf(\rho)=\{1,2,3\}\notin\mathcal{F}.$$</p>
+<p>Traccia:</p>
+<table>
+<thead>
+<tr>
+<th>leggo</th>
+<th>LAR dopo</th>
+<th>$h$</th>
+<th>$H$</th>
+<th>$H\in\mathcal{F}$?</th>
+<th>colore</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$1,2,3$</td>
+<td>$(3,2,1)$</td>
+<td>0</td>
+<td>-</td>
+<td>-</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$1$</td>
+<td>$(1,3,2)$</td>
+<td>3</td>
+<td>$\{1,3,2\}$</td>
+<td>no</td>
+<td>5</td>
+</tr>
+<tr>
+<td>$2$</td>
+<td>$(2,1,3)$</td>
+<td>3</td>
+<td>$\{2,1,3\}$</td>
+<td>no</td>
+<td>5</td>
+</tr>
+<tr>
+<td>$3$</td>
+<td>$(3,2,1)$</td>
+<td>3</td>
+<td>$\{3,2,1\}$</td>
+<td>no</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<p>Il massimo colore ricorrente e' 5, dispari. Quindi B perde.</p>
+<h3>51. Parity games</h3>
+<p>Un parity game e' un gioco su grafo finito con una funzione colore:</p>
+<p>$$c:Q\to\{0,\ldots,k\}.$$</p>
+<p>Una play produce una sequenza infinita di colori:</p>
+<p>$$c(q_0)c(q_1)c(q_2)\ldots$$</p>
+<p>B vince se il massimo colore visto infinitamente spesso e' pari.</p>
+<p>Questa e' la convenzione usata qui. Alcuni testi usano il minimo colore o
+invertono pari/dispari: il concetto non cambia, basta essere coerenti.</p>
+<h3>52. Perche i parity games sono comodi</h3>
+<p>I parity games sono comodi per tre motivi:</p>
+<ol>
+<li>sono determinati;</li>
+<li>ammettono strategie posizionali;</li>
+<li>sono risolvibili effettivamente.</li>
+</ol>
+<p>Il passaggio Muller -&gt; parity sembra complicare l'arena, perche' aggiunge la
+memoria LAR. Pero' semplifica la winning condition e permette di usare la
+teoria dei parity games.</p>
+<p>La memoria non sparisce: viene spostata nello stato del gioco simulato.</p>
+<h3>53. Determinazione dei parity games</h3>
+<p>Il teorema dice:</p>
+<blockquote>
+<p>ogni parity game finito e' determinato, e le winning regions sono calcolabili.</p>
+</blockquote>
+<p>In piu':</p>
+<blockquote>
+<p>il giocatore vincente ha una strategia posizionale.</p>
+</blockquote>
+<p>Questa frase e' importante:</p>
+<ul>
+<li>nel parity game simulato basta guardare lo stato corrente;</li>
+<li>ma lo stato corrente include anche il LAR;</li>
+<li>quindi nel gioco Muller originale la strategia corrispondente e' a memoria
+  finita.</li>
+</ul>
+<h3>54. Complessita dei parity games</h3>
+<p>Il problema:</p>
+<blockquote>
+<p>dato un parity game e uno stato $q$, decidere se $q\in W_B$</p>
+</blockquote>
+<p>e' noto essere in:</p>
+<p>$$NP\cap coNP.$$</p>
+<p>Il fatto che sia in $NP\cap coNP$ suggerisce che non e' probabilmente
+NP-completo, ma non implica automaticamente un algoritmo polinomiale. La
+complessita' dei parity games e' un tema importante della teoria algoritmica dei
+giochi.</p>
+<p>Per il corso basta ricordare:</p>
+<ul>
+<li>la soluzione e' effettiva;</li>
+<li>le strategie posizionali esistono;</li>
+<li>la complessita' e' delicata;</li>
+<li>i parity games sono centrali anche nel mu-calcolo.</li>
+</ul>
+<hr>
+<h2>Parte IX - Soluzione di Church's Problem</h2>
+<h3>55. Teorema di Buchi-Landweber</h3>
+<p>Il teorema di Buchi-Landweber dice:</p>
+<blockquote>
+<p>per specifiche S1S, Church's problem e' decidibile; se una soluzione esiste,
+e' possibile costruire una macchina a stati finiti che la realizza.</p>
+</blockquote>
+<p>Detto in modo operativo:</p>
+<ol>
+<li>ricevi una formula S1S $\varphi(X,Y)$;</li>
+<li>decidi se e' realizzabile;</li>
+<li>se e' realizzabile, costruisci un automa di Mealy.</li>
+</ol>
+<p>Questo e' molto piu' forte di una semplice procedura decisionale yes/no.</p>
+<h3>56. Pipeline completa</h3>
+<p>La pipeline e':</p>
+<p>$$
+\varphi(X,Y)
+\to
+\mathcal{A}_\varphi
+\to
+G_\varphi
+\to
+\text{parity game}
+\to
+\text{strategia vincente}
+\to
+\text{Mealy}.
+$$</p>
+<p>Con parole:</p>
+<ol>
+<li>S1S -&gt; automa deterministico di Muller sulle coppie input/output.</li>
+<li>Automa -&gt; gioco di Muller, separando input e output.</li>
+<li>Gioco di Muller -&gt; gioco di parita tramite LAR.</li>
+<li>Risoluzione del parity game.</li>
+<li>Se lo stato iniziale e' vincente per B, costruzione della strategia.</li>
+<li>Strategia -&gt; automa di Mealy finale.</li>
+</ol>
+<h3>57. Dove entra esattamente Buchi-Landweber</h3>
+<p>Il teorema entra nel punto in cui bisogna sapere che:</p>
+<ul>
+<li>i giochi di Muller sono determinati;</li>
+<li>le winning regions sono calcolabili;</li>
+<li>se il sistema vince, esiste una strategia a memoria finita costruibile.</li>
+</ul>
+<p>Senza questo risultato avremmo:</p>
+<ul>
+<li>una specifica;</li>
+<li>un automa;</li>
+<li>un gioco;</li>
+</ul>
+<p>ma non avremmo la garanzia che il gioco porti a una macchina finita.</p>
+<p>Buchi-Landweber chiude proprio questo buco.</p>
+<h3>58. Come si costruisce il Mealy finale</h3>
+<p>Supponi di avere:</p>
+<ul>
+<li>l'automa di Muller della specifica, con stati $Q$;</li>
+<li>un automa di strategia, con memoria $S$.</li>
+</ul>
+<p>Il Mealy finale usa stati del tipo:</p>
+<p>$$Q\times S.$$</p>
+<p>Un suo stato:</p>
+<p>$$(q,s)$$</p>
+<p>significa:</p>
+<ul>
+<li>$q$ = dove si trova l'automa della specifica;</li>
+<li>$s$ = qual e' la memoria attuale della strategia.</li>
+</ul>
+<p>Quando arriva un input $b$:</p>
+<ol>
+<li>il gioco entra nello stato intermedio $(q,b)$;</li>
+<li>la strategia aggiorna la memoria;</li>
+<li>la strategia sceglie un'uscita del gioco;</li>
+<li>da questa uscita si ricava l'output $c$;</li>
+<li>l'automa di Muller avanza a $q'=\delta(q,(b,c))$;</li>
+<li>la memoria diventa $s'$.</li>
+</ol>
+<p>Il nuovo stato del Mealy e':</p>
+<p>$$(q',s').$$</p>
+<p>Questa e' la ragione tecnica per cui il Mealy finale combina automa della
+specifica e automa della strategia.</p>
+<h3>59. Caso vincente e caso perdente</h3>
+<p>Dopo aver risolto il gioco, guardiamo lo stato iniziale.</p>
+<p>Se:</p>
+<p>$$q_0\in W_B,$$</p>
+<p>allora il sistema ha una strategia vincente. La specifica e' realizzabile e
+possiamo costruire il Mealy.</p>
+<p>Se:</p>
+<p>$$q_0\in W_A,$$</p>
+<p>allora l'ambiente ha una strategia vincente. La specifica non e' realizzabile:
+qualunque controllore il sistema scelga, l'ambiente puo' produrre input che
+violano la specifica.</p>
+<p>Questa risposta negativa e' importante: non significa che l'algoritmo non ha
+trovato il controllore. Significa che il controllore non esiste.</p>
+<h3>60. Esempio: vincoli su input e output binari</h3>
+<p>Negli appunti compare un esempio con input $\alpha$ e output $\beta$ binari.
+Vincoli tipici:</p>
+<ol>
+<li>se l'input e' 1, allora l'output deve essere 1;</li>
+<li>non possono comparire due 0 consecutivi nell'output;</li>
+<li>se l'input contiene infiniti 0, allora anche l'output deve contenere
+   infiniti 0.</li>
+</ol>
+<p>Il primo vincolo da solo ammette la soluzione banale:</p>
+<blockquote>
+<p>produci sempre 1.</p>
+</blockquote>
+<p>Il terzo vincolo elimina questa soluzione, perche' se l'input ha infiniti 0,
+anche l'output deve avere infiniti 0.</p>
+<p>Il secondo vincolo impedisce di copiare ciecamente l'input, perche' l'ambiente
+potrebbe produrre due 0 consecutivi.</p>
+<p>La soluzione, se esiste, deve usare memoria finita per decidere quando emettere
+0 senza crearne due consecutivi, ma garantendo infiniti 0 quando l'ambiente li
+offre infinitamente spesso.</p>
+<p>Il punto dell'esempio e':</p>
+<blockquote>
+<p>il sistema non sceglie una singola sequenza $\beta$; sceglie una regola finita
+per produrre $\beta$ contro ogni input $\alpha$.</p>
+</blockquote>
+<h3>61. Sintesi LTL e varianti</h3>
+<p>Gli appunti chiudono osservando che Church's problem ha molte varianti.</p>
+<p>Si puo' cambiare:</p>
+<ul>
+<li>il linguaggio di specifica;</li>
+<li>la struttura input/output;</li>
+<li>il tipo di memoria consentita;</li>
+<li>la winning condition;</li>
+<li>il modello temporale.</li>
+</ul>
+<p>La sintesi LTL moderna e' una prosecuzione naturale:</p>
+<blockquote>
+<p>una specifica temporale descrive il comportamento desiderato, e il problema e'
+costruire un controllore che la realizza contro l'ambiente.</p>
+</blockquote>
+<p>Il capitolo 10 non chiede di conoscere tutta la teoria moderna della sintesi
+LTL. Chiede di capire il risultato classico:</p>
+<blockquote>
+<p>logica -&gt; automi -&gt; giochi -&gt; strategie -&gt; controllori.</p>
+</blockquote>
+<hr>
+<h2>Parte X - Quadro finale</h2>
+<h3>62. Confronto con il capitolo 9</h3>
+<p>Il capitolo 9 e il capitolo 10 sono collegati, ma rispondono a domande diverse.</p>
+<table>
+<thead>
+<tr>
+<th>Capitolo</th>
+<th>Domanda</th>
+<th>Strumento centrale</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>9</td>
+<td>Il modello dato soddisfa la formula?</td>
+<td>OBDD/BMC/SAT</td>
+<td>si/no, controesempio</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Esiste un controllore che soddisfa la formula?</td>
+<td>giochi e strategie</td>
+<td>Mealy o unrealizable</td>
+</tr>
+</tbody>
+</table>
+<p>Nel capitolo 9 il sistema e' gia' fissato.</p>
+<p>Nel capitolo 10 il sistema deve essere costruito.</p>
+<h3>63. La frase chiave del capitolo</h3>
+<p>La frase da ricordare e':</p>
+<blockquote>
+<p>la sintesi e' una verifica contro un ambiente avversario, dove il risultato
+positivo non e' solo "vero", ma una strategia implementabile.</p>
+</blockquote>
+<p>Se sai spiegare questa frase, hai gia' il nucleo del capitolo.</p>
+<h3>64. Errori tipici</h3>
+<h4>Confondere sintesi e model building</h4>
+<p>Model building puo' significare: data una formula soddisfacibile, costruisci un
+modello.</p>
+<p>La sintesi qui e': costruisci un controllore che funziona per ogni input
+dell'ambiente.</p>
+<h4>Pensare che basti $\exists Y$</h4>
+<p>Non basta trovare un output buono. Serve una funzione online e finite-state che
+produca output per ogni input.</p>
+<h4>Dimenticare il vincolo online</h4>
+<p>Specifiche come:</p>
+<p>$$\beta(t)=\alpha(t+1)$$</p>
+<p>possono sembrare semplici, ma non sono realizzabili online.</p>
+<h4>Confondere automa della specifica e controllore</h4>
+<p>L'automa di Muller riconosce coppie input/output corrette. Il controllore Mealy
+produce output. Sono oggetti diversi.</p>
+<h4>Confondere stati del gioco e stati del Mealy</h4>
+<p>Il gioco e' l'arena. Il Mealy implementa una strategia. Il Mealy finale puo'
+avere stati del tipo $Q\times S$, non semplicemente gli stati dell'arena.</p>
+<h4>Pensare che Muller e weak Muller siano uguali</h4>
+<p>Weak Muller guarda $Occ(\rho)$, cioe' gli stati visitati almeno una volta.
+Muller guarda $Inf(\rho)$, cioe' gli stati visitati infinitamente spesso.</p>
+<h4>Pensare che LAR sia solo una lista</h4>
+<p>La lista da sola non basta. Servono anche hit e hitting set, per collegare le
+ultime apparizioni all'insieme $Inf(\rho)$.</p>
+<h4>Pensare che i parity games richiedano memoria</h4>
+<p>I parity games ammettono strategie posizionali. La memoria sta nella simulazione
+LAR: lo stato del gioco simulato include cio' che nel gioco Muller era memoria.</p>
+<h3>65. Mini-esercizi guidati</h3>
+<h4>Esercizio 1: online</h4>
+<p>Specifica:</p>
+<p>$$\beta(t)=\alpha(t+1).$$</p>
+<p>E' realizzabile online?</p>
+<p>No. Per produrre $\beta(t)$ bisogna conoscere l'input futuro $\alpha(t+1)$.</p>
+<h4>Esercizio 2: finite-state</h4>
+<p>Specifica:</p>
+<blockquote>
+<p>l'output al tempo $t$ e' il numero esatto di 1 comparsi finora.</p>
+</blockquote>
+<p>E' realizzabile con un Mealy finito?</p>
+<p>No, se il numero deve essere esatto e illimitato. Serve memoria non limitata.</p>
+<h4>Esercizio 3: soddisfacibilita' contro sintesi</h4>
+<p>Supponi che esista una coppia $(\alpha,\beta)$ che soddisfa $\varphi$.</p>
+<p>Questo implica che la specifica sia sintetizzabile?</p>
+<p>No. Significa solo:</p>
+<p>$$\exists X\exists Y.\ \varphi(X,Y).$$</p>
+<p>La sintesi richiede una strategia per ogni input.</p>
+<h4>Esercizio 4: attractor</h4>
+<p>Se $q\in Q_B$ ha almeno un successore in $Attr_B(F)$, perche' entra
+nell'attrattore?</p>
+<p>Perche' in $q$ sceglie B, quindi puo' scegliere quel successore.</p>
+<p>Se $q\in Q_A$, perche' servono tutti i successori nell'attrattore?</p>
+<p>Perche' in $q$ sceglie A, e B deve vincere contro ogni scelta dell'ambiente.</p>
+<h4>Esercizio 5: weak Muller vs Muller</h4>
+<p>Per:</p>
+<p>$$\rho=a,b,c,b,c,b,c,\ldots$$</p>
+<p>calcola $Occ(\rho)$ e $Inf(\rho)$.</p>
+<p>Soluzione:</p>
+<p>$$Occ(\rho)=\{a,b,c\},$$</p>
+<p>$$Inf(\rho)=\{b,c\}.$$</p>
+<h4>Esercizio 6: LAR</h4>
+<p>Se il LAR e':</p>
+<p>$$((D,C,B,A),2),$$</p>
+<p>qual e' l'hitting set?</p>
+<p>Soluzione:</p>
+<p>$$H=\{D,C\}.$$</p>
+<h4>Esercizio 7: colore LAR</h4>
+<p>Sia:</p>
+<p>$$\mathcal{F}=\{\{D,C\}\}.$$</p>
+<p>Per il LAR:</p>
+<p>$$((D,C,B,A),2),$$</p>
+<p>il colore e' pari o dispari?</p>
+<p>Poiche':</p>
+<p>$$H=\{D,C\}\in\mathcal{F},$$</p>
+<p>il colore e':</p>
+<p>$$2h=4,$$</p>
+<p>quindi pari.</p>
+<h4>Esercizio 8: Mealy finale</h4>
+<p>Perche' il Mealy finale usa stati $Q\times S$?</p>
+<p>Perche' deve sapere sia:</p>
+<ul>
+<li>lo stato dell'automa della specifica;</li>
+<li>la memoria della strategia vincente.</li>
+</ul>
+<h3>66. Mappa per l'orale</h3>
+<p>Per rispondere bene:</p>
+<ol>
+<li>Parti dalla differenza fra model checking e sintesi.</li>
+<li>Spiega che il sistema controlla output, non input.</li>
+<li>Definisci Church's problem: sequenza input $\alpha$, sequenza output
+   $\beta$, specifica S1S $\varphi(X,Y)$.</li>
+<li>Spiega online e finite-state.</li>
+<li>Definisci automa di Mealy.</li>
+<li>Spiega perche $\exists X\exists Y$ non basta.</li>
+<li>Dai la pipeline Buchi-Landweber.</li>
+<li>Spiega S1S -&gt; automa deterministico di Muller.</li>
+<li>Spiega perche Muller: determinismo ed espressivita' omega-regolare.</li>
+<li>Spiega automa -&gt; gioco separando input e output.</li>
+<li>Definisci arena, play, winning condition.</li>
+<li>Definisci strategia vincente e winning region.</li>
+<li>Distingui reachability, weak Muller e Muller.</li>
+<li>Spiega attractor per reachability.</li>
+<li>Spiega perche weak Muller puo' richiedere memoria.</li>
+<li>Spiega LAR: lista, hit, hitting set.</li>
+<li>Spiega Muller -&gt; parity tramite colori.</li>
+<li>Spiega perche i parity games sono utili: determinazione e strategie
+    posizionali.</li>
+<li>Chiudi con la costruzione del Mealy finale.</li>
+</ol>
+<h3>67. Risposta orale pronta</h3>
+<p>Una risposta compatta:</p>
+<blockquote>
+<p>La sintesi automatica cerca di costruire un sistema finito a partire da una
+specifica, mentre il model checking verifica un sistema gia' dato. Nel
+problema di Church l'ambiente produce una sequenza infinita di input e il
+sistema deve produrre online una sequenza infinita di output, in modo che la
+coppia input/output soddisfi una specifica S1S. La soluzione cercata e' un
+automa di Mealy, quindi una strategia a memoria finita.</p>
+<p>Il teorema di Buchi-Landweber mostra che, per S1S, il problema e' decidibile:
+si trasforma la formula in un automa deterministico di Muller sulle coppie
+input/output, poi l'automa in un gioco di Muller che separa le mosse
+dell'ambiente e del sistema. Risolvere il gioco significa stabilire se il
+sistema ha una strategia vincente. I giochi di Muller vengono gestiti
+trasformandoli in giochi di parita tramite LAR, che registra l'ordine delle
+ultime apparizioni, l'hit e l'hitting set. Se lo stato iniziale e' vincente
+per il sistema, la strategia risultante viene implementata come automa di
+Mealy.</p>
+</blockquote>
+<h3>68. Riassunto finale</h3>
+<p>Il capitolo 10 combina logica, automi e giochi.</p>
+<p>La logica S1S esprime la specifica. Gli automi riconoscono le coppie
+input/output che soddisfano la specifica. I giochi separano il ruolo
+dell'ambiente e del sistema. Le strategie vincenti rappresentano controllori.
+Gli automi di Mealy implementano queste strategie.</p>
+<p>La catena da ricordare e':</p>
+<p>$$
+\text{S1S}
+\to
+\text{Muller automaton}
+\to
+\text{Muller game}
+\to
+\text{parity game tramite LAR}
+\to
+\text{winning strategy}
+\to
+\text{Mealy controller}.
+$$</p>
+<p>La sintesi e' quindi model checking rovesciato e rafforzato:</p>
+<blockquote>
+<p>non chiedo se un modello dato e' corretto; chiedo se esiste una strategia
+finita che rende vera la specifica contro ogni comportamento dell'ambiente.</p>
+</blockquote></article>
+  <p class="section-label">Esercizi (piano di studio)</p>
+  
+<div class="exercises-block prose">
+<h2>Esercizi e domande — settimana 5</h2>
+<p><strong>Obiettivo della settimana:</strong> capire come si supera lo state explosion e avviare la parte su Church/Buchi-Landweber.</p>
+<h3>Esercizi scritti essenziali</h3>
+<ol>
+<li>
+<p><strong>State encoding.</strong> Codifica 8 stati con 3 variabili booleane. Scrivi la formula che rappresenta il set:
+   $$\lbrace 001,011,101,111\rbrace$$
+   e semplificala.</p>
+</li>
+<li>
+<p><strong>Preimmagine simbolica.</strong> Data:
+   $$R(x,x')=(x_1\rightarrow x_1')\land(x_2\leftrightarrow x_2')$$
+   e target $T(x')=x_1'\land \neg x_2'$, calcola:
+   $$Pre(T)=\exists x'(R(x,x')\land T(x'))$$</p>
+</li>
+<li>
+<p><strong>OBDD base.</strong> Disegna e riduci l'OBDD di:
+   $$f(x_1,x_2,x_3)=(x_1\land x_2)\lor x_3$$
+   con ordine $x_1&lt;x_2&lt;x_3$.</p>
+</li>
+<li>
+<p><strong>Ordine variabili.</strong> Disegna intuitivamente l'OBDD del comparatore:
+   $$(a_1\leftrightarrow b_1)\land(a_2\leftrightarrow b_2)$$
+   con ordine buono $a_1,b_1,a_2,b_2$ e ordine meno buono $a_1,a_2,b_1,b_2$. Spiega perche l'ordine conta.</p>
+</li>
+<li>
+<p><strong>Restrict e Shannon.</strong> Calcola:
+   $$f|_{x_1=0},\quad f|_{x_1=1}$$
+   per $f=(x_1\land x_2)\lor(\neg x_1\land x_3)$ e ricostruisci $f$ con Shannon expansion.</p>
+</li>
+<li>
+<p><strong>CheckEX.</strong> Scrivi la formula simbolica per $EX p$ usando $R(\bar{x},\bar{x}')$ e $p(\bar{x}')$. Poi spiega perche serve la quantificazione esistenziale sulle variabili next.</p>
+</li>
+<li>
+<p><strong>CheckEU.</strong> Esegui 3 iterazioni di:
+   $$Z_{i+1}=q\lor(p\land EX Z_i),\quad Z_0=\emptyset$$
+   su un grafo piccolo inventato da te.</p>
+</li>
+<li>
+<p><strong>BMC k=1.</strong> Formula l'encoding SAT per cercare un controesempio a:
+   $$G\neg p$$
+   con bound $k=1$, iniziale $I(s_0)$, transizione $T(s_0,s_1)$ e violazione $p(s_i)$.</p>
+</li>
+<li>
+<p><strong>Lasso.</strong> Disegna una path di lunghezza 3 con loopback a posizione 1. Scrivi la parola infinita rappresentata come $u\cdot v^\omega$.</p>
+</li>
+<li>
+<p><strong>NuSMV mentale.</strong> Scrivi un mini modello SMV di un contatore modulo 4 con due bit e una proprieta LTL falsa. Indica quale controesempio ti aspetti.</p>
+</li>
+<li>
+<p><strong>Church's problem.</strong> Formalizza in parole:
+   "se input e' 1 allora output e' 1; non ci sono due output 0 consecutivi; se input ha infiniti 0 allora output ha infiniti 0".
+   Disegna un Mealy automaton a due stati che realizza la strategia.</p>
+</li>
+<li>
+<p><strong>Pipeline di sintesi.</strong> Disegna lo schema:
+   S1S specification -&gt; deterministic Muller automaton -&gt; Muller game -&gt; parity game -&gt; Mealy automaton.
+   Per ogni freccia scrivi una riga: cosa cambia e perche serve.</p>
+</li>
+</ol>
+<h3>Domande orali secche</h3>
+<ol>
+<li>Che cos'e' lo state explosion problem?</li>
+<li>Perche gli OBDD sono canonici solo fissato l'ordine delle variabili?</li>
+<li>Differenza tra symbolic model checking e bounded model checking.</li>
+<li>Perche BMC trova bene bug ma non sempre prova facilmente correttezza?</li>
+<li>Che cosa chiede Church's problem?</li>
+</ol>
+<h3>Controllo</h3>
+<p>Hai superato la settimana se sai calcolare una preimmagine simbolica semplice, spiegare un OBDD e raccontare la differenza tra model checking e sintesi.</p>
+</div>
+
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap09.html">← Precedente</a></span><span><a href="cap11.html">Successivo →</a></span></div>
+</div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script defer src="assets/chat.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

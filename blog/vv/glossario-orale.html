@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Glossario orale V&amp;V</title>
+  <link rel="stylesheet" href="assets/teach.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Reference</p>
+      <h1>Glossario orale V&amp;V</h1>
+      <p class="subtitle">Definizioni corte da usare come lingua comune nelle lezioni e nelle risposte orali.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="term-grid">
+      <article class="term">
+        <h2>Model checking</h2>
+        <p>Problema di decidere se un modello formale di sistema soddisfa una proprieta' logica. La domanda tipica e' $M,s \\models \\varphi$ oppure $M \\models \\varphi$.</p>
+      </article>
+      <article class="term">
+        <h2>DFA/NFA</h2>
+        <p>Automi su parole finite. Gli NFA possono avere piu' mosse possibili, ma riconoscono gli stessi linguaggi dei DFA tramite subset construction.</p>
+      </article>
+      <article class="term">
+        <h2>Residuo di linguaggio</h2>
+        <p>Dato un prefisso $u$, il residuo $u^{-1}L$ contiene i suffissi $v$ tali che $uv \\in L$. In L* le righe della tabella approssimano residui.</p>
+      </article>
+      <article class="term">
+        <h2>Fairness</h2>
+        <p>Vincolo sui comportamenti infiniti che elimina esecuzioni irrealistiche. Justice richiede che cio' che resta abilitato accada; compassion lega infinite abilitazioni a infinite occorrenze.</p>
+      </article>
+      <article class="term">
+        <h2>Automa di B&uuml;chi</h2>
+        <p>Automa su parole infinite che accetta se una computazione visita stati finali infinitamente spesso. Il punto non e' raggiungere una fine, ma vedere una condizione ricorrente.</p>
+      </article>
+      <article class="term">
+        <h2>S1S / WS1S / S2S</h2>
+        <p>Logiche monadiche del secondo ordine per strutture lineari o ad albero. S1S descrive omega-parole, WS1S insiemi finiti, S2S alberi binari infiniti.</p>
+      </article>
+      <article class="term">
+        <h2>LTL / CTL / CTL*</h2>
+        <p>LTL quantifica implicitamente su un cammino lineare; CTL combina quantificatori di cammino e operatori temporali; CTL* generalizza entrambe.</p>
+      </article>
+      <article class="term">
+        <h2>OBDD</h2>
+        <p>Rappresentazione canonica e compatta di funzioni booleane fissato un ordine delle variabili. Serve al model checking simbolico per evitare di enumerare stati uno per uno.</p>
+      </article>
+      <article class="term">
+        <h2>BMC</h2>
+        <p>Bounded Model Checking: cerca controesempi di lunghezza limitata codificando sistema, proprieta' negata e vincolo di cammino come formula SAT.</p>
+      </article>
+      <article class="term">
+        <h2>Gioco di parita'</h2>
+        <p>Gioco infinito su grafo dove vince chi soddisfa una condizione sui colori visti infinitamente spesso. E' centrale nella sintesi e nella soluzione di giochi omega-regolari.</p>
+      </article>
+      <article class="term">
+        <h2>Mealy machine</h2>
+        <p>Macchina finita che produce output in risposta a input. Nella sintesi rappresenta una strategia implementabile del controllore.</p>
+      </article>
+      <article class="term">
+        <h2>Strong-cyclic solution</h2>
+        <p>Piano per domini non deterministici che consente cicli, ma garantisce raggiungimento del goal sotto ipotesi di fairness sugli esiti.</p>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

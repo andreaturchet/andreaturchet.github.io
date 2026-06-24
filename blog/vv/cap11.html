@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capitolo 11 — Pianificazione non deterministica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/chat.css" />
+  
+</head>
+<body>
+
+<header class="site-header">
+  <h1>V&amp;V in AI — Appunti</h1>
+  <p class="subtitle">Settimana 6</p>
+  <div class="ornament">✦</div>
+</header>
+<div class="wrap">
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap10.html">← Precedente</a></span></div>
+  
+<div class="chapter-opener">
+  <div class="label">Capitolo 11</div>
+  <h1>Capitolo 11 — Pianificazione non deterministica</h1>
+  <p class="focus">Planning non deterministico via symbolic model checking: state-action tables, execution structures, weak/strong/strong-cyclic solutions, preimmagini e linguaggio AR.</p>
+</div>
+
+  <article class="prose"><h1>Pianificazione come model checking</h1>
+<p>Il planning come model checking rappresenta un dominio di pianificazione come
+sistema di transizione e il goal come proprieta' da raggiungere o verificare.</p>
+<p>La differenza rispetto al model checking classico e' che qui non ci limitiamo a
+controllare un modello gia' fissato: cerchiamo una <strong>state-action table</strong>, cioe'
+un piano, che induca una execution structure con la proprieta' richiesta.</p>
+<h2>Dominio</h2>
+<p>Un dominio non deterministico puo' essere descritto come:</p>
+<p>$$D=(P,S,A,R).$$</p>
+<p>Dove:</p>
+<ul>
+<li>$P$ e' un insieme finito di proposizioni, spesso del tipo <code>fluent = value</code>;</li>
+<li>$S\subseteq 2^P$ e' l'insieme degli stati validi;</li>
+<li>$A$ e' l'insieme finito delle azioni;</li>
+<li>$R\subseteq S\times A\times S$ e' la relazione di transizione.</li>
+</ul>
+<p>Un'azione $a$ e' abilitata in uno stato $s$ se esiste almeno un successore $s'$
+tale che $(s,a,s')\in R$.</p>
+<h2>Fluents</h2>
+<p>I fluents descrivono il dominio.</p>
+<ul>
+<li><strong>Inerziali</strong>: cambiano solo per effetto di azioni del piano.</li>
+<li><strong>Non inerziali</strong>: possono cambiare indipendentemente dal piano, per effetto
+  dell'ambiente.</li>
+</ul>
+<p>Questa distinzione spiega molte sorgenti di non determinismo: il piano controlla
+le azioni, ma non sempre controlla l'ambiente.</p>
+<h2>Piani</h2>
+<p>Un piano e' rappresentabile come:</p>
+<p>$$SA\subseteq S\times A.$$</p>
+<p>Ogni coppia $(s,a)$ dice che nello stato $s$ l'azione $a$ e' ammessa dal piano.</p>
+<p>Una state-action table puo' essere:</p>
+<ul>
+<li>deterministica, se per ogni stato contiene al piu' un'azione;</li>
+<li>non deterministica, se per uno stato contiene piu' azioni;</li>
+<li>universale, se associa almeno un'azione a ogni stato del dominio.</li>
+</ul>
+<h2>Execution Structure</h2>
+<p>Data una state-action table $SA$ e un insieme di iniziali $I$, si costruisce la
+execution structure:</p>
+<p>$$K=(Q,T).$$</p>
+<p>$Q$ contiene gli stati raggiungibili da $I$ eseguendo azioni ammesse da $SA$.
+$T$ contiene le transizioni indotte da $SA$ e dalla relazione $R$.</p>
+<p>Uno stato terminale e' uno stato senza successori in $T$.</p>
+<h2>Soluzioni</h2>
+<ul>
+<li><strong>Weak solution</strong>: da ogni stato iniziale esiste almeno un cammino della
+  execution structure che raggiunge un goal. E' una garanzia esistenziale.</li>
+<li><strong>Strong solution</strong>: la execution structure e' aciclica e tutti i terminali sono
+  goal. Quindi tutti i cammini terminano correttamente.</li>
+<li><strong>Strong-cyclic solution</strong>: da ogni stato raggiungibile resta possibile arrivare
+  al goal, e tutti i terminali sono goal. Ammette cicli, ma garantisce il goal
+  sotto ipotesi di fairness.</li>
+</ul>
+<p>La relazione di inclusione e':</p>
+<p>$$\text{strong}\subseteq \text{strong-cyclic}\subseteq \text{weak}.$$</p>
+<h2>Determinizzazioni</h2>
+<p>Se $SA$ e' non deterministica, una determinizzazione $SA'\subseteq SA$ sceglie
+una sola azione per ogni stato coperto da $SA$.</p>
+<p>Una state-action table non deterministica e' weak, strong o strong-cyclic se
+tutte le sue determinizzazioni hanno la proprieta' corrispondente.</p>
+<h2>Tecnica simbolica</h2>
+<p>Weak e strong preimage permettono di calcolare piani come insiemi di coppie
+stato-azione rappresentati simbolicamente.</p>
+<ul>
+<li>La <strong>weak preimage</strong> usa una condizione esistenziale sui successori:
+  esiste un'azione con almeno un successore nella regione target.</li>
+<li>La <strong>strong preimage</strong> usa una condizione universale sui successori:
+  esiste un'azione applicabile i cui successori sono tutti nella regione target.</li>
+</ul>
+<p>La condizione di applicabilita' e' necessaria per evitare che un'azione non
+abilitata soddisfi vacuamente la quantificazione universale.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Linguaggio di descrizione delle azioni AR</li>
+<li>Model checking simbolico</li>
+<li>CTL</li>
+</ul>
+<hr />
+
+<h1>Linguaggio di descrizione delle azioni AR</h1>
+<p>Il linguaggio $\mathcal{AR}$ e' un linguaggio di descrizione di azioni usato per
+modellare problemi di pianificazione in domini non deterministici.</p>
+<p>Serve a descrivere:</p>
+<ul>
+<li>effetti obbligatori delle azioni;</li>
+<li>effetti possibili e quindi non deterministici;</li>
+<li>vincoli validi in tutti gli stati;</li>
+<li>stati iniziali;</li>
+<li>stati goal.</li>
+</ul>
+<p>Una descrizione $\mathcal{AR}$ puo' essere compilata in una relazione di
+transizione simbolica:</p>
+<p>$$R(\vec{x},\vec{a},\vec{x}').$$</p>
+<h2>Regole principali</h2>
+<h3><code>A CAUSES P IF Q</code></h3>
+<p>Significa:</p>
+<blockquote>
+<p>se l'azione $A$ viene eseguita in uno stato in cui vale $Q$, allora nel
+successore deve valere $P$.</p>
+</blockquote>
+<p>Schema:</p>
+<p>$$A(\vec{a})\land Q(\vec{x})\Rightarrow P(\vec{x}').$$</p>
+<h3><code>A POSSIBLY CHANGES F IF Q</code></h3>
+<p>Significa:</p>
+<blockquote>
+<p>se $A$ viene eseguita in una situazione in cui vale $Q$, allora il fluent $F$
+puo' cambiare valore.</p>
+</blockquote>
+<p>Questa regola introduce non determinismo: il cambiamento e' permesso, non
+imposto.</p>
+<h3><code>ALWAYS P</code></h3>
+<p>Impone un vincolo di integrita' su tutti gli stati validi.</p>
+<p>Esempio: se la posizione puo' essere solo station, traffic light o airport, si
+usano vincoli <code>ALWAYS</code> per impedire che due posizioni siano vere insieme.</p>
+<h3><code>INITIALLY P</code></h3>
+<p>Descrive gli stati iniziali.</p>
+<p>Se <code>INITIALLY station</code> non specifica il colore del semaforo, allora entrambi gli
+stati <code>station/red</code> e <code>station/green</code> possono essere iniziali.</p>
+<h3><code>GOAL G</code></h3>
+<p>Descrive gli stati goal.</p>
+<p>Se <code>GOAL airport</code> non specifica il colore del semaforo, allora sia
+<code>airport/red</code> sia <code>airport/green</code> sono goal.</p>
+<h2>Inerzia</h2>
+<p>I fluents inerziali non devono cambiare senza motivo. Cambiano solo se:</p>
+<ul>
+<li>un'azione li causa;</li>
+<li>una regola <code>POSSIBLY CHANGES</code> ne permette il cambiamento.</li>
+</ul>
+<p>Questo evita transizioni spurie, ad esempio un pacco che cambia posizione senza
+azione di trasporto.</p>
+<h2>Esempio tipico</h2>
+<p>Nel dominio pacco-semaforo:</p>
+<pre><code class="language-text">transportation CAUSES traffic_light IF station
+transportation CAUSES airport IF traffic_light and light = green
+transportation CAUSES false IF not (station or (traffic_light and light = green))
+wait CAUSES false IF not traffic_light
+ALWAYS station &lt;-&gt; not (traffic_light or airport)
+ALWAYS traffic_light &lt;-&gt; not (station or airport)
+ALWAYS airport &lt;-&gt; not (traffic_light or station)
+INITIALLY station
+GOAL airport
+</code></pre>
+<p>Le regole <code>CAUSES false</code> codificano azioni non applicabili. I vincoli <code>ALWAYS</code>
+codificano la consistenza degli stati.</p>
+<h2>Uso in V&amp;V</h2>
+<p>Le descrizioni in $\mathcal{AR}$ permettono di passare da una descrizione
+dichiarativa del dominio a formule booleane usate nel
+model checking simbolico.</p>
+<p>In questo modo un problema di planning diventa manipolabile con:</p>
+<ul>
+<li>insiemi simbolici di stati;</li>
+<li>preimmagini weak e strong;</li>
+<li>calcolo di state-action tables;</li>
+<li>verifica di soluzioni weak, strong e strong-cyclic.</li>
+</ul>
+<h2>Collegamenti</h2>
+<ul>
+<li>Pianificazione come model checking</li>
+<li>Model checking simbolico</li>
+<li>Model checking</li>
+<li>Panoramica degli appunti</li>
+</ul>
+<hr />
+
+<h1>Approfondimento completo settimana 6 - Planning non deterministico via Symbolic Model Checking</h1>
+<p>Questo capitolo chiude il percorso del corso: dopo model checking, logiche
+temporali, automi, sintesi e giochi, si arriva al <strong>planning non
+deterministico</strong>.</p>
+<p>L'idea centrale e':</p>
+<blockquote>
+<p>un problema di pianificazione puo' essere visto come un problema di model
+checking e, piu' precisamente, come un problema di costruzione/verifica di un
+piano su un sistema di transizione.</p>
+</blockquote>
+<p>La parola chiave e' <strong>piano</strong>. Un piano non e' sempre una lista fissa di azioni.
+In domini non deterministici deve spesso essere una tabella, una strategia o un
+controllore che sceglie cosa fare in base allo stato osservato.</p>
+<p>Questo e' il collegamento con il capitolo 10: li' abbiamo sintetizzato un
+controller reattivo; qui sintetizziamo o verifichiamo un controller di planning.</p>
+<h2>1. Perche' il planning entra in V&amp;V</h2>
+<p>Nel model checking classico la domanda e':</p>
+<blockquote>
+<p>dato un modello $M$ e una proprieta' $\varphi$, tutte le computazioni rilevanti
+di $M$ soddisfano $\varphi$?</p>
+</blockquote>
+<p>Nel planning la domanda e':</p>
+<blockquote>
+<p>dato un dominio, un insieme di stati iniziali, un goal e un insieme di azioni,
+esiste un modo di scegliere azioni che porta al goal?</p>
+</blockquote>
+<p>Quindi non stiamo solo verificando un sistema gia' fissato. Stiamo cercando una
+politica di comportamento.</p>
+<p>La differenza e' questa:</p>
+<ul>
+<li>nel <strong>model checking</strong>, il comportamento del sistema e' gia' dato;</li>
+<li>nel <strong>planning</strong>, una parte del comportamento deve essere scelta dal piano;</li>
+<li>nel <strong>planning non deterministico</strong>, dopo una scelta del piano possono comunque
+  esserci esiti non controllati.</li>
+</ul>
+<p>Questa ultima parte e' fondamentale. Se un'azione puo' avere piu' effetti, il
+piano non controlla tutto. Deve essere robusto rispetto all'incertezza ammessa
+dal dominio.</p>
+<h2>2. Action-based planning e timeline-based planning</h2>
+<p>Gli appunti distinguono:</p>
+<ul>
+<li><strong>action-based planning</strong>;</li>
+<li><strong>timeline-based planning</strong>.</li>
+</ul>
+<p>Nel capitolo si lavora con l'<strong>action-based planning</strong>.</p>
+<p>Action-based significa che il piano e' costruito a partire da:</p>
+<ul>
+<li>azioni disponibili;</li>
+<li>precondizioni delle azioni;</li>
+<li>effetti delle azioni;</li>
+<li>stati iniziali;</li>
+<li>stati goal.</li>
+</ul>
+<p>Il problema e' quindi:</p>
+<blockquote>
+<p>trovare azioni, o una regola per scegliere azioni, che trasformino uno stato
+iniziale in uno stato goal.</p>
+</blockquote>
+<p>Timeline-based planning invece ragiona piu' esplicitamente su variabili che
+evolvono lungo linee temporali, durate, vincoli temporali e assegnamenti nel
+tempo. Negli appunti e' citato come confronto, ma la formalizzazione sviluppata
+qui e' quella action-based.</p>
+<h2>3. Questioni principali nel planning automatico</h2>
+<p>Gli appunti elencano alcune questioni generali:</p>
+<ul>
+<li>espressivita';</li>
+<li>decidibilita' e complessita';</li>
+<li>planning as satisfiability checking;</li>
+<li>planning as model checking;</li>
+<li>sintesi di plan controllers;</li>
+<li>monitoring dell'esecuzione del piano.</li>
+</ul>
+<p>Non sono punti decorativi: spiegano perche' il planning e' difficile.</p>
+<h3>Espressivita' (expressiveness)</h3>
+<p>Un formalismo di planning deve descrivere:</p>
+<ul>
+<li>stati;</li>
+<li>azioni;</li>
+<li>precondizioni;</li>
+<li>effetti;</li>
+<li>incertezza;</li>
+<li>vincoli durante l'esecuzione;</li>
+<li>goal finali.</li>
+</ul>
+<p>Un formalismo piu' espressivo permette di descrivere domini piu' realistici, ma
+spesso rende piu' difficile decidere se esiste un piano.</p>
+<h3>Decidibilita' (decidability) e complessita'</h3>
+<p>Nel caso studiato qui il dominio e' finito: fluents finiti, stati finiti, azioni
+finite. In questo caso i problemi principali sono decidibili.</p>
+<p>Ma la decidibilita' non e' automatica in ogni variante. Se si passa, per
+esempio, a domini temporali densi come il tempo reale continuo, alcune versioni
+del planning diventano indecidibili.</p>
+<p>Quindi il corso lavora in un setting finito e simbolico: abbastanza ricco per
+modellare domini non deterministici, ma abbastanza controllato da permettere
+algoritmi.</p>
+<h3>Planning as satisfiability checking</h3>
+<p>Un modo classico di affrontare il planning e' codificare:</p>
+<ul>
+<li>stati al tempo $0,1,\ldots,k$;</li>
+<li>azioni scelte nei vari passi;</li>
+<li>transizioni;</li>
+<li>goal al tempo $k$;</li>
+</ul>
+<p>come una formula SAT.</p>
+<p>Se la formula e' soddisfacibile, l'assegnamento trovato descrive un piano di
+lunghezza $k$.</p>
+<p>Questa idea e' vicina al bounded model checking del capitolo 9: si fissa un
+bound e si cerca una testimonianza finita.</p>
+<h3>Planning as model checking</h3>
+<p>Nel planning come model checking il dominio diventa un modello, e il goal diventa
+una proprieta' di raggiungibilita' o una formula temporale.</p>
+<p>Il vantaggio e' che si possono riusare:</p>
+<ul>
+<li>rappresentazioni simboliche;</li>
+<li>preimmagini;</li>
+<li>punti fissi;</li>
+<li>ragionamento su tutti i cammini o su qualche cammino.</li>
+</ul>
+<h3>Plan controllers</h3>
+<p>Non basta sapere che un piano esiste. Bisogna anche eseguirlo.</p>
+<p>Per questo gli appunti parlano di <strong>synthesis of plan controllers</strong>. Il risultato
+desiderato non e' solo "si/no", ma un oggetto operativo:</p>
+<ul>
+<li>una state-action table;</li>
+<li>una politica;</li>
+<li>un controller che osserva lo stato e sceglie un'azione.</li>
+</ul>
+<h3>Monitoring</h3>
+<p>Nei domini realistici il piano viene eseguito dentro un ambiente non totalmente
+controllato.</p>
+<p>Quindi durante l'esecuzione bisogna misurare parametri ambientali e adattare la
+scelta dell'azione. Questo e' il motivo per cui i piani situated e universal
+sono importanti.</p>
+<h2>4. Il planning problem in forma intuitiva</h2>
+<p>La definizione intuitiva e':</p>
+<blockquote>
+<p>trovare una sequenza di azioni che porta un sistema da uno stato iniziale a uno
+stato goal.</p>
+</blockquote>
+<p>Questa e' la versione piu' semplice. Ma nel planning non deterministico la
+sequenza fissa spesso non basta, perche':</p>
+<ul>
+<li>potrei non conoscere esattamente lo stato iniziale;</li>
+<li>l'ambiente potrebbe cambiare variabili non controllate;</li>
+<li>un'azione potrebbe avere effetti diversi;</li>
+<li>potrei dover controllare vincoli durante l'esecuzione, non solo il goal finale.</li>
+</ul>
+<p>Per questo il piano viene rappresentato come relazione stato-azione, non solo
+come lista:</p>
+<p>$$SA\subseteq S\times A.$$</p>
+<p>Il piano dice:</p>
+<blockquote>
+<p>se sei nello stato $s$, puoi/esegui l'azione $a$.</p>
+</blockquote>
+<h2>5. Elementi del problema</h2>
+<p>Un problema di planning contiene:</p>
+<ul>
+<li>un <strong>dominio</strong> o contesto;</li>
+<li>un insieme di <strong>stati iniziali</strong>;</li>
+<li>un insieme di <strong>stati goal</strong>;</li>
+<li>un insieme di <strong>azioni</strong>;</li>
+<li>una relazione che descrive gli effetti delle azioni.</li>
+</ul>
+<p>Nel dominio compaiono variabili, chiamate spesso <strong>fluents</strong>, che descrivono il
+mondo.</p>
+<p>Esempi di fluent:</p>
+<ul>
+<li>posizione del pacco;</li>
+<li>colore del semaforo;</li>
+<li>porta aperta/chiusa;</li>
+<li>batteria alta/bassa;</li>
+<li>robot in stanza A/B/C.</li>
+</ul>
+<p>Uno stato e' una configurazione completa dei fluents.</p>
+<h2>6. Fluents inerziali e non inerziali</h2>
+<p>Gli appunti distinguono due tipi di fluents.</p>
+<h3>Fluents inerziali</h3>
+<p>Un fluent e' <strong>inerziale</strong> se il suo valore cambia solo come effetto di un'azione
+del piano.</p>
+<p>Esempio:</p>
+<ul>
+<li>la posizione del pacco cambia se eseguo <code>transport</code>;</li>
+<li>la posizione del robot cambia se eseguo <code>move</code>;</li>
+<li>una porta cambia da chiusa ad aperta se eseguo <code>open</code>.</li>
+</ul>
+<p>Il punto e':</p>
+<blockquote>
+<p>un fluent inerziale non cambia spontaneamente.</p>
+</blockquote>
+<p>Questa e' una forma di frame assumption: cio' che non viene modificato da
+un'azione resta uguale.</p>
+<h3>Fluents non inerziali</h3>
+<p>Un fluent e' <strong>non inerziale</strong> se puo' cambiare indipendentemente dalle azioni del
+piano.</p>
+<p>Esempio:</p>
+<ul>
+<li>colore del semaforo;</li>
+<li>meteo;</li>
+<li>disponibilita' di una risorsa esterna;</li>
+<li>stato di un sensore controllato dall'ambiente.</li>
+</ul>
+<p>Il punto e':</p>
+<blockquote>
+<p>il piano non controlla direttamente quel valore.</p>
+</blockquote>
+<p>Questa distinzione e' una delle radici del non determinismo.</p>
+<h2>7. Il caso semplice standard</h2>
+<p>Il corso parte da un setting ristretto:</p>
+<ul>
+<li>domini finiti o discreti;</li>
+<li>tempo discreto;</li>
+<li>osservabilita' completa;</li>
+<li>assenza di eventi esterni;</li>
+<li>azioni deterministiche.</li>
+</ul>
+<p>In questo caso il planning e' piu' vicino alla ricerca in un grafo:</p>
+<ol>
+<li>parti da uno stato iniziale;</li>
+<li>scegli un'azione;</li>
+<li>arrivi a un successore unico;</li>
+<li>ripeti finche' raggiungi il goal.</li>
+</ol>
+<p>Queste ipotesi sono utili per capire la base, ma vengono rilassate appena si
+entra nel planning non deterministico.</p>
+<h2>8. Dove nasce il non determinismo (nondeterminism)</h2>
+<p>Gli appunti indicano tre sorgenti principali di non determinismo.</p>
+<h3>Eventi esterni</h3>
+<p>L'ambiente puo' cambiare alcune variabili indipendentemente dal piano.</p>
+<p>Esempio: il semaforo puo' diventare rosso o verde.</p>
+<h3>Specifica parziale degli stati iniziali</h3>
+<p>Potrei sapere che il pacco e' alla stazione, ma non sapere se il semaforo e'
+rosso o verde.</p>
+<p>Allora non ho un singolo stato iniziale, ma un insieme:</p>
+<p>$$I\subseteq S.$$</p>
+<p>Il piano deve funzionare rispetto agli stati iniziali ammessi.</p>
+<h3>Incertezza sugli effetti delle azioni</h3>
+<p>Una stessa azione puo' produrre piu' successori.</p>
+<p>Formalmente:</p>
+<p>$$R\subseteq S\times A\times S.$$</p>
+<p>Se per una coppia $(s,a)$ esistono piu' $s'$ tali che $(s,a,s')\in R$, allora
+l'azione e' non deterministica.</p>
+<h2>9. Extended goals</h2>
+<p>Nel planning piu' semplice il goal e' solo:</p>
+<blockquote>
+<p>raggiungi uno stato finale desiderato.</p>
+</blockquote>
+<p>Ma spesso non basta. Potrei volere anche:</p>
+<ul>
+<li>non passare mai per stati pericolosi;</li>
+<li>mantenere vincoli di integrita';</li>
+<li>evitare deadlock;</li>
+<li>visitare certi stati prima di altri;</li>
+<li>garantire una proprieta' temporale durante l'esecuzione.</li>
+</ul>
+<p>Questi sono <strong>extended goals</strong>.</p>
+<p>Qui entra la logica temporale:</p>
+<ul>
+<li>safety: "non accade mai qualcosa di cattivo";</li>
+<li>reachability: "prima o poi raggiungo il goal";</li>
+<li>response: "se accade una richiesta, prima o poi rispondo";</li>
+<li>fairness o recurrence: "certe condizioni favorevoli non vengono ignorate per
+  sempre".</li>
+</ul>
+<p>Nel capitolo 11 il focus resta soprattutto sulla reachability, ma gli appunti
+motivano perche' una formula temporale puo' descrivere goal piu' ricchi.</p>
+<h2>10. Situated, universal e conformant plans</h2>
+<p>Gli appunti classificano i piani in tre famiglie.</p>
+<h3>Situated plans</h3>
+<p>Un <strong>situated plan</strong> osserva l'ambiente durante l'esecuzione.</p>
+<p>L'idea e':</p>
+<blockquote>
+<p>misuro lo stato o il contesto corrente, poi scelgo l'azione.</p>
+</blockquote>
+<p>Questo tipo di piano e' adatto a domini in cui:</p>
+<ul>
+<li>ci sono fluents non inerziali;</li>
+<li>l'ambiente puo' evolvere;</li>
+<li>la scelta migliore dipende dalla misura corrente;</li>
+<li>il piano puo' usare trial and error.</li>
+</ul>
+<p>Esempio: se sono al semaforo e vedo rosso, aspetto; se vedo verde, trasporto.</p>
+<h3>Universal plans</h3>
+<p>Un <strong>universal plan</strong> associa almeno un'azione a ogni stato possibile del
+dominio.</p>
+<p>Formalmente, per ogni $s\in S$ esiste almeno un $a\in A$ tale che:</p>
+<p>$$(s,a)\in SA.$$</p>
+<p>E' un caso speciale di situated plan: qualunque sia lo stato osservato, il piano
+sa cosa proporre.</p>
+<p>Attenzione: un piano universale non esiste sempre. Alcuni stati potrebbero essere
+irrimediabilmente perdenti, oppure non avere azioni utili.</p>
+<h3>Conformant plans</h3>
+<p>Un <strong>conformant plan</strong> non richiede osservazioni durante l'esecuzione.</p>
+<p>Serve quando:</p>
+<ul>
+<li>non posso misurare l'ambiente;</li>
+<li>non ho osservabilita';</li>
+<li>devo garantire il goal qualunque sia l'evoluzione ammessa.</li>
+</ul>
+<p>Questo e' piu' difficile. Se non posso osservare, non posso adattare il piano a
+cio' che succede.</p>
+<h2>11. Planning as model checking</h2>
+<p>Il collegamento con il model checking e':</p>
+<ul>
+<li>il dominio di planning diventa il <strong>modello</strong>;</li>
+<li>il goal diventa la <strong>formula</strong>;</li>
+<li>il piano diventa una restrizione/scelta delle transizioni.</li>
+</ul>
+<p>Nel model checking classico:</p>
+<p>$$M\models \varphi.$$</p>
+<p>Nel planning:</p>
+<blockquote>
+<p>cerco una state-action table $SA$ tale che la execution structure indotta da
+$SA$ soddisfi la proprieta' richiesta.</p>
+</blockquote>
+<p>Quindi non verifico solo il dominio completo. Verifico il sottosistema generato
+dal piano.</p>
+<h2>12. Dominio di planning non deterministico</h2>
+<p>La definizione degli appunti e':</p>
+<p>$$D=(P,S,A,R).$$</p>
+<p>Dove:</p>
+<ul>
+<li>$P$ e' un insieme finito di lettere proposizionali;</li>
+<li>$S\subseteq 2^P$ e' un insieme finito di stati;</li>
+<li>$A$ e' un insieme finito di azioni;</li>
+<li>$R\subseteq S\times A\times S$ e' la relazione di transizione.</li>
+</ul>
+<p>Le lettere proposizionali hanno spesso la forma:</p>
+<p>$$fluent_i=value_j.$$</p>
+<p>Esempio:</p>
+<ul>
+<li><code>position = station</code>;</li>
+<li><code>position = traffic_light</code>;</li>
+<li><code>light = red</code>;</li>
+<li><code>light = green</code>.</li>
+</ul>
+<p>Uno stato e' l'insieme delle lettere vere in quella configurazione.</p>
+<h2>13. Perche' $S\subseteq 2^P$</h2>
+<p>Se $P$ contiene tutte le proposizioni atomiche, allora ogni stato puo' essere
+identificato con il sottoinsieme di $P$ vero in quello stato.</p>
+<p>Esempio:</p>
+<p>$$s=\{position=station,\ light=red\}.$$</p>
+<p>Questo significa:</p>
+<ul>
+<li>la posizione e' station;</li>
+<li>il semaforo e' red;</li>
+<li>le altre proposizioni incompatibili sono false.</li>
+</ul>
+<p>La notazione $S\subseteq 2^P$ ricorda che non ogni sottoinsieme di $P$ e'
+necessariamente uno stato valido.</p>
+<p>Per esempio non voglio uno stato in cui siano vere insieme:</p>
+<ul>
+<li><code>position = station</code>;</li>
+<li><code>position = airport</code>.</li>
+</ul>
+<p>I vincoli di consistenza eliminano valutazioni impossibili.</p>
+<h2>14. Azioni abilitate</h2>
+<p>Un'azione $a$ e' <strong>enabled</strong> in uno stato $s$ se esiste almeno un successore
+$s'$ tale che:</p>
+<p>$$(s,a,s')\in R.$$</p>
+<p>Quindi:</p>
+<p>$$enabled(s,a)\quad\text{se e solo se}\quad \exists s'.\ R(s,a,s').$$</p>
+<p>Questo e' il modo formale per dire che un'azione e' applicabile.</p>
+<p>Se <code>transport</code> non puo' essere eseguita con il semaforo rosso, allora in quello
+stato non ci sara' nessuna transizione valida associata a <code>transport</code>.</p>
+<h2>15. Deterministico vs non deterministico</h2>
+<p>Nel caso deterministico, per ogni stato e azione abilitata esiste al piu' un
+successore:</p>
+<p>$$(s,a)\mapsto s'.$$</p>
+<p>Nel caso non deterministico, possono esistere piu' successori:</p>
+<p>$$(s,a)\mapsto \{s'_1,s'_2,\ldots\}.$$</p>
+<p>La relazione $R$ e' quindi piu' generale di una funzione.</p>
+<p>Questa differenza e' il motivo per cui weak, strong e strong-cyclic non
+coincidono.</p>
+<h2>16. Esempio del pacco e del semaforo</h2>
+<p>L'esempio degli appunti:</p>
+<blockquote>
+<p>un pacco deve essere trasferito dalla stazione ferroviaria all'aeroporto.</p>
+</blockquote>
+<p>Sul percorso c'e' un semaforo. Il veicolo puo' dover aspettare il verde.</p>
+<p>I fluents principali sono:</p>
+<ul>
+<li><code>position</code>, inerziale;</li>
+<li><code>light</code>, non inerziale.</li>
+</ul>
+<p>Valori possibili:</p>
+<ul>
+<li><code>position in {station, traffic_light, airport}</code>;</li>
+<li><code>light in {red, green}</code>.</li>
+</ul>
+<p>Stati iniziali:</p>
+<ul>
+<li>pacco alla stazione;</li>
+<li>colore del semaforo non necessariamente noto.</li>
+</ul>
+<p>Quindi potrei avere:</p>
+<p>$$I=\{(station,red),(station,green)\}.$$</p>
+<p>Stati goal:</p>
+<ul>
+<li>pacco all'aeroporto;</li>
+<li>il colore del semaforo non importa piu'.</li>
+</ul>
+<p>Quindi:</p>
+<p>$$G=\{(airport,red),(airport,green)\}.$$</p>
+<h2>17. Perche' il colore del semaforo causa esplosione di stati</h2>
+<p>Il goal riguarda la posizione del pacco, ma lo stato formale include anche il
+colore del semaforo.</p>
+<p>Quindi devo distinguere:</p>
+<ul>
+<li><code>station/red</code>;</li>
+<li><code>station/green</code>;</li>
+<li><code>traffic_light/red</code>;</li>
+<li><code>traffic_light/green</code>;</li>
+<li><code>airport/red</code>;</li>
+<li><code>airport/green</code>.</li>
+</ul>
+<p>Anche se in aeroporto il colore e' irrilevante per il goal, il modello simbolico
+lo rappresenta comunque.</p>
+<p>Questo e' un piccolo esempio dello <strong>state explosion problem</strong>:</p>
+<blockquote>
+<p>variabili indipendenti o quasi indipendenti producono un prodotto cartesiano di
+configurazioni.</p>
+</blockquote>
+<p>Il symbolic model checking aiuta perche' rappresenta insiemi di stati con
+formule booleane, invece di enumerare ogni stato uno per uno.</p>
+<h2>18. Azioni nell'esempio</h2>
+<p>Le azioni principali sono:</p>
+<ul>
+<li><code>transport</code>;</li>
+<li><code>wait</code>.</li>
+</ul>
+<p><code>transport</code> sposta il pacco:</p>
+<ul>
+<li>da <code>station</code> a <code>traffic_light</code>;</li>
+<li>da <code>traffic_light</code> a <code>airport</code>, ma solo se <code>light=green</code>.</li>
+</ul>
+<p><code>wait</code> serve quando si e' al semaforo.</p>
+<p>Il colore del semaforo puo' cambiare in modo non controllato:</p>
+<ul>
+<li>da red a green;</li>
+<li>da green a red;</li>
+<li>o restare uguale, a seconda della modellazione.</li>
+</ul>
+<p>La precondizione importante e':</p>
+<blockquote>
+<p>non posso trasportare dal semaforo all'aeroporto se il semaforo e' rosso.</p>
+</blockquote>
+<h2>19. Piano come state-action table</h2>
+<p>Un piano puo' essere rappresentato da una <strong>state-action table</strong>:</p>
+<p>$$SA\subseteq S\times A.$$</p>
+<p>Ogni coppia $(s,a)$ dice:</p>
+<blockquote>
+<p>nello stato $s$, il piano ammette l'azione $a$.</p>
+</blockquote>
+<p>La condizione minima e' che $a$ sia enabled in $s$.</p>
+<p>Quindi una tabella non dovrebbe contenere coppie impossibili, come:</p>
+<p>$$(traffic\_light,red,\ transport)$$</p>
+<p>se il trasporto con rosso non e' abilitato.</p>
+<h2>20. Piani deterministici e universali</h2>
+<p>Un piano e' <strong>deterministico</strong> se per ogni stato c'e' al piu' una coppia:</p>
+<p>$$|\{a\mid (s,a)\in SA\}|\le 1.$$</p>
+<p>Un piano e' <strong>universale</strong> se per ogni stato c'e' almeno una coppia:</p>
+<p>$$|\{a\mid (s,a)\in SA\}|\ge 1.$$</p>
+<p>Queste due proprieta' sono diverse:</p>
+<ul>
+<li>deterministico: non lascia scelta tra piu' azioni;</li>
+<li>universale: copre tutti gli stati.</li>
+</ul>
+<p>Un piano puo' essere:</p>
+<ul>
+<li>deterministico ma non universale;</li>
+<li>universale ma non deterministico;</li>
+<li>entrambe le cose;</li>
+<li>nessuna delle due.</li>
+</ul>
+<h2>21. Piani non deterministici</h2>
+<p>Una state-action table e' <strong>non deterministica</strong> se in uno stesso stato ammette
+piu' azioni:</p>
+<p>$$(s,a_1)\in SA,\quad (s,a_2)\in SA,\quad a_1\ne a_2.$$</p>
+<p>Questo non va confuso con il non determinismo della transizione.</p>
+<p>Ci sono due livelli:</p>
+<ol>
+<li>il piano puo' ammettere piu' azioni nello stesso stato;</li>
+<li>il dominio puo' far evolvere una stessa azione verso piu' successori.</li>
+</ol>
+<p>Il primo e' non determinismo nella scelta del piano. Il secondo e' non
+determinismo dell'ambiente o dell'azione.</p>
+<h2>22. Rappresentazione alternativa: ACT e CTXT</h2>
+<p>Gli appunti citano anche una rappresentazione alternativa che distingue:</p>
+<ul>
+<li>stato dell'agente/sistema;</li>
+<li>contesto.</li>
+</ul>
+<p>Usa funzioni del tipo:</p>
+<p>$$ACT(q,c)$$</p>
+<p>che specifica l'azione da eseguire quando il sistema e' nello stato $q$ e nel
+contesto $c$.</p>
+<p>E:</p>
+<p>$$CTXT(q,c,q')$$</p>
+<p>che aggiorna il contesto dopo aver raggiunto $q'$.</p>
+<p>Questa rappresentazione non viene sviluppata nel corso, ma serve a far capire
+che un piano puo' essere visto come un controller contestuale.</p>
+<h2>23. Execution structure</h2>
+<p>Data una state-action table $SA$, si costruisce la <strong>execution structure</strong>.</p>
+<p>Intuizione:</p>
+<blockquote>
+<p>e' il grafo di tutte le esecuzioni possibili del piano.</p>
+</blockquote>
+<p>Il dominio contiene tutte le transizioni possibili. La state-action table sceglie
+quali azioni sono ammesse. La execution structure tiene solo le transizioni
+indotte da quelle azioni, partendo dagli stati iniziali.</p>
+<p>Formalmente, data:</p>
+<p>$$D=(P,S,A,R),$$</p>
+<p>una state-action table $SA$ e un insieme di iniziali $I$, la execution structure
+e':</p>
+<p>$$K=(Q,T).$$</p>
+<p>Dove $Q\subseteq S$ e $T\subseteq S\times S$ sono i minimi insiemi tali che:</p>
+<ol>
+<li>se $s\in I$, allora $s\in Q$;</li>
+<li>se $s\in Q$, $(s,a)\in SA$ e $R(s,a,s')$, allora $s'\in Q$ e $(s,s')\in T$.</li>
+</ol>
+<p>La parola "minimi" significa che $Q$ contiene solo gli stati raggiungibili
+eseguendo il piano, non tutti gli stati del dominio.</p>
+<h2>24. Perche' la execution structure e' una Kripke structure</h2>
+<p>La execution structure e' sostanzialmente una struttura di Kripke:</p>
+<ul>
+<li>nodi = stati raggiungibili;</li>
+<li>archi = transizioni possibili indotte dal piano;</li>
+<li>etichette = proposizioni vere negli stati.</li>
+</ul>
+<p>La differenza rispetto ad alcune definizioni classiche di Kripke e' che qui il
+grafo non deve per forza essere totale.</p>
+<p>Puo' contenere stati terminali.</p>
+<p>Questo e' naturale nel planning, perche' un piano puo' terminare quando arriva
+al goal.</p>
+<h2>25. Stati terminali</h2>
+<p>Uno stato $s\in Q$ e' terminale se non esiste nessuno stato $s'$ tale che:</p>
+<p>$$(s,s')\in T.$$</p>
+<p>In parole:</p>
+<blockquote>
+<p>l'esecuzione si ferma.</p>
+</blockquote>
+<p>Uno stato terminale non e' per forza buono. E' buono se e' un goal.</p>
+<p>Un piano che si blocca in uno stato non-goal e' difettoso per strong planning.</p>
+<h2>26. Execution paths</h2>
+<p>Un execution path da $s_0\in I$ e' una sequenza:</p>
+<p>$$s_0,s_1,s_2,\ldots$$</p>
+<p>tale che per ogni $i$:</p>
+<ul>
+<li>o $s_i$ e' l'ultimo stato della sequenza, quindi terminale;</li>
+<li>oppure $(s_i,s_{i+1})\in T$.</li>
+</ul>
+<p>Il path puo' essere:</p>
+<ul>
+<li>finito, se termina;</li>
+<li>infinito, se continua per sempre.</li>
+</ul>
+<p>Nel planning di reachability, i path infiniti sono pericolosi quando evitano per
+sempre il goal.</p>
+<h2>27. Raggiungibilita' e aciclicita'</h2>
+<p>Uno stato $s'$ e' raggiungibile da $s$ se esiste un path da $s$ a $s'$.</p>
+<p>La execution structure $K$ e' <strong>aciclica</strong> se tutti i suoi execution paths sono
+finiti.</p>
+<p>Attenzione: "aciclica" qui e' legata al fatto che non si puo' restare in un ciclo
+infinito. Se non ci sono cicli raggiungibili, ogni path prima o poi termina.</p>
+<p>Questa nozione e' cruciale per strong solutions.</p>
+<h2>28. Esempio di piano sbagliato nel semaforo</h2>
+<p>Supponiamo di costruire un piano che dice:</p>
+<ul>
+<li>se sei alla stazione, fai <code>transport</code>;</li>
+<li>se sei al semaforo e il semaforo e' verde, fai <code>transport</code>;</li>
+<li>non includere <code>wait</code> quando il semaforo e' rosso.</li>
+</ul>
+<p>Questo piano puo' sembrare ragionevole, perche' trasporta appena possibile.</p>
+<p>Ma se arrivi a:</p>
+<p>$$traffic\_light/red$$</p>
+<p>e non hai l'azione <code>wait</code>, sei bloccato in uno stato non-goal.</p>
+<p>Quindi il piano non garantisce il goal.</p>
+<p>Questo esempio e' importante per capire che una state-action table non deve
+contenere tutte le azioni del dominio, ma deve contenere abbastanza azioni per
+evitare blocchi sbagliati.</p>
+<h2>29. Planning problem formale</h2>
+<p>Dato un dominio:</p>
+<p>$$D=(P,S,A,R),$$</p>
+<p>un problema di planning e' una tripla:</p>
+<p>$$(D,I,G),$$</p>
+<p>dove:</p>
+<ul>
+<li>$I\subseteq S$ e' l'insieme degli stati iniziali;</li>
+<li>$G\subseteq S$ e' l'insieme degli stati goal.</li>
+</ul>
+<p>La richiesta generale e':</p>
+<blockquote>
+<p>trovare una state-action table $SA$ tale che, partendo da ogni stato in $I$, si
+riesca a raggiungere uno stato in $G$ nel senso richiesto dalla nozione di
+soluzione scelta.</p>
+</blockquote>
+<p>Il "nel senso richiesto" e' importante, perche' weak, strong e strong-cyclic
+hanno garanzie diverse.</p>
+<h2>30. Le due forme di non determinismo nella definizione</h2>
+<p>Gli appunti sottolineano due forme di non determinismo:</p>
+<ol>
+<li>incertezza sugli stati iniziali;</li>
+<li>non determinismo nella relazione di transizione.</li>
+</ol>
+<h3>Incertezza sugli iniziali</h3>
+<p>Se non conosco il colore del semaforo all'inizio, devo includere due stati:</p>
+<p>$$(station,red),\quad (station,green).$$</p>
+<p>Il piano deve tenere conto di entrambi.</p>
+<h3>Non determinismo delle transizioni</h3>
+<p>Se eseguo <code>wait</code> al semaforo rosso, il semaforo potrebbe:</p>
+<ul>
+<li>diventare verde;</li>
+<li>restare rosso.</li>
+</ul>
+<p>Allora la stessa azione nello stesso stato ha piu' successori.</p>
+<h2>31. Requisito di raggiungibilita'</h2>
+<p>Le soluzioni del planning problem soddisfano un requisito di reachability:</p>
+<blockquote>
+<p>partendo dagli stati iniziali, il piano deve permettere o garantire di
+raggiungere uno stato goal.</p>
+</blockquote>
+<p>Ma ci sono diversi gradi di garanzia.</p>
+<p>La domanda diventa:</p>
+<ul>
+<li>basta che esista un cammino buono?</li>
+<li>devono essere buoni tutti i cammini?</li>
+<li>posso ammettere cicli se sotto fairness prima o poi ne esco?</li>
+</ul>
+<p>Queste tre domande danno weak, strong e strong-cyclic.</p>
+<h2>32. Soluzioni deterministiche: setting</h2>
+<p>Per prima cosa gli appunti definiscono le soluzioni nel caso in cui $SA$ sia
+deterministica.</p>
+<p>Abbiamo:</p>
+<ul>
+<li>dominio $D=(P,S,A,R)$;</li>
+<li>problema $(D,I,G)$;</li>
+<li>state-action table deterministica $SA$;</li>
+<li>execution structure $K=(Q,T)$ indotta da $SA$ da $I$.</li>
+</ul>
+<p>Ora classifichiamo $SA$.</p>
+<h2>33. Weak solution</h2>
+<p>$SA$ e' una <strong>weak solution</strong> se:</p>
+<blockquote>
+<p>per ogni stato iniziale $i\in I$, qualche stato terminale di $K$ appartenente a
+$G$ e' raggiungibile.</p>
+</blockquote>
+<p>In forma intuitiva:</p>
+<p>$$\forall i\in I,\ \exists \text{ path da } i \text{ a un goal}.$$</p>
+<p>E' una garanzia esistenziale.</p>
+<p>Significa:</p>
+<ul>
+<li>c'e' almeno un modo di arrivare al goal;</li>
+<li>ma possono esistere anche esecuzioni che falliscono;</li>
+<li>il piano non e' robusto rispetto a tutti gli esiti.</li>
+</ul>
+<p>Per questo si chiama weak.</p>
+<h2>34. Perche' weak non basta sempre</h2>
+<p>Nel semaforo, una soluzione weak potrebbe dire:</p>
+<blockquote>
+<p>se al semaforo aspetto, esiste un'evoluzione in cui il semaforo diventa verde,
+poi trasporto e arrivo all'aeroporto.</p>
+</blockquote>
+<p>Ma se il semaforo resta rosso per sempre, il piano non raggiunge il goal.</p>
+<p>Quindi weak e' utile per dire "il goal e' possibile", non "il goal e'
+garantito".</p>
+<h2>35. Strong solution</h2>
+<p>$SA$ e' una <strong>strong solution</strong> se:</p>
+<ol>
+<li>$K$ e' aciclica;</li>
+<li>tutti gli stati terminali di $K$ sono in $G$.</li>
+</ol>
+<p>La condizione di aciclicita' garantisce che non ci siano esecuzioni infinite che
+girano senza raggiungere il goal.</p>
+<p>La condizione sui terminali garantisce che, se l'esecuzione si ferma, si ferma
+solo in un goal.</p>
+<p>Quindi una strong solution garantisce:</p>
+<p>$$\forall \text{ path},\ \text{prima o poi si raggiunge }G.$$</p>
+<p>E' la nozione piu' robusta.</p>
+<h2>36. Perche' strong e' forte</h2>
+<p>Strong elimina due problemi:</p>
+<ol>
+<li>terminali non-goal;</li>
+<li>cicli infiniti non-goal.</li>
+</ol>
+<p>Se il dominio e' non deterministico, strong richiede che tutti gli esiti ammessi
+siano compatibili con il raggiungimento del goal.</p>
+<p>Nel semaforo, una strong solution sarebbe difficile se l'ambiente potesse
+mantenere il semaforo rosso per sempre. In quel caso il piano non puo' forzare
+il verde.</p>
+<h2>37. Strong-cyclic solution</h2>
+<p>$SA$ e' una <strong>strong-cyclic solution</strong> se:</p>
+<ol>
+<li>da ogni stato $q\in Q$ qualche stato terminale di $K$ e' raggiungibile;</li>
+<li>tutti gli stati terminali di $K$ sono in $G$.</li>
+</ol>
+<p>Rispetto a strong, manca l'obbligo di aciclicita'.</p>
+<p>Quindi sono ammessi cicli.</p>
+<p>L'idea e':</p>
+<blockquote>
+<p>da ogni stato raggiungibile resta sempre possibile arrivare al goal.</p>
+</blockquote>
+<h2>38. Perche' strong-cyclic usa fairness</h2>
+<p>Una strong-cyclic solution puo' produrre esecuzioni infinite.</p>
+<p>Esempio:</p>
+<ul>
+<li>sono al semaforo rosso;</li>
+<li>faccio <code>wait</code>;</li>
+<li>il semaforo resta rosso;</li>
+<li>faccio <code>wait</code>;</li>
+<li>il semaforo resta rosso;</li>
+<li>e cosi' via.</li>
+</ul>
+<p>Formalmente esiste un path infinito che non raggiunge il goal.</p>
+<p>Perche' allora la soluzione viene considerata accettabile?</p>
+<p>Perche' si assume una forma di fairness:</p>
+<blockquote>
+<p>se da un ciclo resta sempre possibile prendere un'uscita favorevole, l'ambiente
+non puo' ignorarla per sempre in modo ingiusto.</p>
+</blockquote>
+<p>Nel semaforo:</p>
+<blockquote>
+<p>se aspettando il verde prima o poi puo' comparire, una sequenza in cui il verde
+viene evitato per sempre e' considerata unfair.</p>
+</blockquote>
+<p>Questa e' una strategia di trial and error: provi, osservi, riprovi; sotto
+fairness prima o poi l'esito favorevole accade.</p>
+<h2>39. Strong-cyclic non significa strong</h2>
+<p>Strong-cyclic non garantisce il goal su tutti i path grezzi.</p>
+<p>Garantisce il goal su path considerati fair, oppure garantisce che ogni
+prefisso parziale possa essere esteso a una computazione finita che arriva al
+goal.</p>
+<p>Questa e' la frase da ricordare:</p>
+<blockquote>
+<p>strong-cyclic accetta cicli, ma solo cicli da cui il goal rimane raggiungibile.</p>
+</blockquote>
+<p>Se esiste un ciclo chiuso senza uscita verso il goal, non e' strong-cyclic.</p>
+<h2>40. Inclusione tra le classi</h2>
+<p>Le classi soddisfano:</p>
+<p>$$\text{strong}\subseteq \text{strong-cyclic}\subseteq \text{weak}.$$</p>
+<p>Perche'?</p>
+<h3>Strong implica strong-cyclic</h3>
+<p>Se un piano e' strong:</p>
+<ul>
+<li>tutti i path sono finiti;</li>
+<li>tutti i terminali sono goal.</li>
+</ul>
+<p>Allora da ogni stato raggiungibile un goal e' raggiungibile, e tutti i terminali
+sono goal. Quindi e' anche strong-cyclic.</p>
+<h3>Strong-cyclic implica weak</h3>
+<p>Se un piano e' strong-cyclic:</p>
+<ul>
+<li>da ogni stato raggiungibile, quindi anche da ogni iniziale, un terminale goal e'
+  raggiungibile.</li>
+</ul>
+<p>Quindi esiste almeno un path verso il goal. Questo basta per weak.</p>
+<h3>Le inclusioni sono proprie</h3>
+<p>Weak puo' fallire su alcuni esiti.</p>
+<p>Strong-cyclic puo' avere cicli infiniti unfair.</p>
+<p>Strong non ammette questi cicli.</p>
+<h2>41. Determinizzazione di una state-action table</h2>
+<p>Ora passiamo al caso in cui $SA$ sia non deterministica, cioe' possa contenere
+piu' azioni per lo stesso stato.</p>
+<p>Una <strong>determinization</strong> di $SA$ e' una tabella deterministica:</p>
+<p>$$SA'\subseteq SA$$</p>
+<p>tale che conserva gli stessi stati coperti:</p>
+<p>$$\{s\mid \exists a.\ (s,a)\in SA'\}=\{s\mid \exists a.\ (s,a)\in SA\}.$$</p>
+<p>In parole:</p>
+<blockquote>
+<p>per ogni stato in cui $SA$ propone azioni, $SA'$ ne sceglie una sola.</p>
+</blockquote>
+<p>La determinizzazione elimina l'ambiguita' della scelta del piano.</p>
+<h2>42. Soluzioni non deterministiche</h2>
+<p>Gli appunti definiscono cosi' le soluzioni per una state-action table non
+deterministica:</p>
+<blockquote>
+<p>$SA$ e' weak, strong o strong-cyclic se tutte le sue determinizations sono
+weak, strong o strong-cyclic rispettivamente.</p>
+</blockquote>
+<p>Quindi non basta che una scelta interna alla tabella funzioni.</p>
+<p>Deve funzionare ogni modo deterministico di risolvere le scelte ammesse da $SA$.</p>
+<p>Questo rende la definizione robusta: se la tabella lascia piu' opzioni, nessuna
+opzione ammessa deve rovinare la garanzia dichiarata.</p>
+<h2>43. Esempio di determinizzazione</h2>
+<p>Supponiamo:</p>
+<p>$$SA=\{(s,a),(s,b),(t,c)\}.$$</p>
+<p>Allora due determinizations possibili sono:</p>
+<p>$$SA_1=\{(s,a),(t,c)\},$$</p>
+<p>$$SA_2=\{(s,b),(t,c)\}.$$</p>
+<p>Se $SA_1$ e' strong ma $SA_2$ non lo e', allora $SA$ non e' strong.</p>
+<p>Il motivo e' semplice:</p>
+<blockquote>
+<p>se il piano ammette anche l'azione $b$ in $s$, allora deve essere sicuro anche
+scegliere $b$.</p>
+</blockquote>
+<h2>44. Perche' servono algoritmi simbolici</h2>
+<p>Il dominio puo' avere moltissimi stati.</p>
+<p>Se ho $n$ variabili booleane, il numero massimo di stati e':</p>
+<p>$$2^n.$$</p>
+<p>Se alcune variabili hanno piu' valori, la crescita resta combinatoria.</p>
+<p>Enumerare tutto il grafo puo' diventare impraticabile.</p>
+<p>Il symbolic model checking evita l'enumerazione esplicita rappresentando:</p>
+<ul>
+<li>insiemi di stati;</li>
+<li>relazioni di transizione;</li>
+<li>piani;</li>
+</ul>
+<p>come formule booleane, spesso tramite OBDD o strutture simili.</p>
+<h2>45. Preimmagini: idea generale</h2>
+<p>Gli algoritmi di planning simbolico ragionano all'indietro dal goal.</p>
+<p>Invece di chiedere:</p>
+<blockquote>
+<p>da dove posso andare?</p>
+</blockquote>
+<p>chiedono:</p>
+<blockquote>
+<p>da quali stati posso arrivare nell'insieme gia' buono?</p>
+</blockquote>
+<p>Questo e' il concetto di <strong>preimage</strong>.</p>
+<p>Se $X$ e' un insieme di stati gia' considerati buoni, una preimage calcola stati
+che possono entrare in $X$ con una certa garanzia.</p>
+<p>E' la stessa idea di:</p>
+<ul>
+<li>predecessori in CTL;</li>
+<li>backward reachability;</li>
+<li>attractor nei giochi.</li>
+</ul>
+<h2>46. Weak preimage</h2>
+<p>La <strong>weak preimage</strong> di $X$ contiene gli stati da cui esiste un'azione con almeno
+un successore in $X$.</p>
+<p>Formalmente:</p>
+<p>$$Pre_w(X)=\{s\mid \exists a.\ \exists s'.\ R(s,a,s')\land s'\in X\}.$$</p>
+<p>Questa e' esistenziale sia sull'azione sia sul successore.</p>
+<p>Significa:</p>
+<blockquote>
+<p>c'e' un modo favorevole per entrare in $X$.</p>
+</blockquote>
+<p>Per questo corrisponde alla logica weak.</p>
+<h2>47. Strong preimage</h2>
+<p>La <strong>strong preimage</strong> di $X$ contiene gli stati da cui esiste un'azione tale che
+tutti i successori possibili stanno in $X$.</p>
+<p>Formalmente:</p>
+<p>$$Pre_s(X)=\{s\mid \exists a.\ enabled(s,a)\land \forall s'.\ R(s,a,s')\Rightarrow s'\in X\}.$$</p>
+<p>Questa e' esistenziale sull'azione, ma universale sugli esiti.</p>
+<p>Significa:</p>
+<blockquote>
+<p>posso scegliere un'azione che mi porta sicuramente dentro $X$, qualunque esito
+non deterministico accada.</p>
+</blockquote>
+<p>Questa e' la base delle strong solutions.</p>
+<h2>48. Perche' serve <code>enabled</code> o <code>APPL</code></h2>
+<p>Nella formula della strong preimage compare una condizione di applicabilita':</p>
+<p>$$APPL(s,a)=\exists s'.\ R(s,a,s').$$</p>
+<p>Serve per evitare una verita' vacua.</p>
+<p>Senza <code>APPL</code>, la formula:</p>
+<p>$$\forall s'.\ R(s,a,s')\Rightarrow s'\in X$$</p>
+<p>sarebbe vera anche per un'azione non abilitata, perche' non ci sono successori
+che violano la condizione.</p>
+<p>Ma un'azione non abilitata non puo' essere scelta in un piano.</p>
+<p>Quindi strong preimage deve richiedere:</p>
+<ul>
+<li>l'azione e' applicabile;</li>
+<li>tutti i suoi successori sono buoni.</li>
+</ul>
+<h2>49. Strong-cyclic preimage</h2>
+<p>Per strong-cyclic serve una condizione intermedia.</p>
+<p>L'idea e':</p>
+<blockquote>
+<p>scegli azioni che restano dentro una regione controllata e che hanno almeno una
+possibilita' di progresso verso la regione gia' buona.</p>
+</blockquote>
+<p>Una forma utile e':</p>
+<p>$$Pre_{sc}(X,Z)=\{s\mid \exists a.\ Succ(s,a)\subseteq Z\land Succ(s,a)\cap X\ne\emptyset\}.$$</p>
+<p>Dove:</p>
+<ul>
+<li>$Z$ e' la regione candidata sicura;</li>
+<li>$X$ e' la parte gia' nota come progressiva verso il goal;</li>
+<li>$Succ(s,a)=\{s'\mid R(s,a,s')\}$.</li>
+</ul>
+<p>Questa formula cattura l'idea trial-and-error:</p>
+<ul>
+<li>tutti gli esiti restano nella regione da cui il goal resta possibile;</li>
+<li>almeno un esito fa progresso.</li>
+</ul>
+<p>Sotto fairness, ripetere tentativi che hanno sempre una possibilita' di
+progresso permette di giustificare strong-cyclic.</p>
+<h2>50. Algoritmo weak: intuizione</h2>
+<p>Per weak planning si puo' partire da:</p>
+<p>$$X_0=G.$$</p>
+<p>Poi si aggiungono stati che possono raggiungere $X_i$ con una weak preimage:</p>
+<p>$$X_{i+1}=X_i\cup Pre_w(X_i).$$</p>
+<p>Quando il punto fisso si stabilizza, $X$ contiene gli stati da cui esiste un path
+verso il goal.</p>
+<p>Se:</p>
+<p>$$I\subseteq X,$$</p>
+<p>allora esiste una weak solution.</p>
+<p>Durante il calcolo si memorizzano anche le coppie $(s,a)$ che giustificano
+l'ingresso di $s$ in $X$. Quelle coppie costruiscono la state-action table.</p>
+<h2>51. Algoritmo strong: intuizione</h2>
+<p>Per strong planning si usa la strong preimage.</p>
+<p>Parti da:</p>
+<p>$$X_0=G.$$</p>
+<p>Poi:</p>
+<p>$$X_{i+1}=X_i\cup Pre_s(X_i).$$</p>
+<p>Uno stato entra solo se esiste un'azione che forza tutti i successori dentro
+l'insieme gia' controllato.</p>
+<p>Se alla fine:</p>
+<p>$$I\subseteq X,$$</p>
+<p>allora il piano puo' garantire il goal.</p>
+<p>Intuitivamente, costruisci una distanza simbolica dal goal:</p>
+<ul>
+<li>goal a distanza 0;</li>
+<li>stati che forzano il goal a distanza 1;</li>
+<li>stati che forzano stati di distanza minore a distanza 2;</li>
+<li>ecc.</li>
+</ul>
+<p>Questo produce una struttura aciclica se il piano sceglie azioni secondo il
+livello decrescente verso il goal.</p>
+<h2>52. Algoritmo strong-cyclic: intuizione</h2>
+<p>Strong-cyclic e' piu' delicato perche' ammette cicli.</p>
+<p>L'algoritmo cerca una regione $Z$ tale che:</p>
+<ul>
+<li>da ogni stato in $Z$ il goal resta raggiungibile;</li>
+<li>le azioni scelte non escono da $Z$;</li>
+<li>non ci sono terminali non-goal;</li>
+<li>il progresso verso $G$ e' sempre possibile sotto fairness.</li>
+</ul>
+<p>Una descrizione intuitiva e':</p>
+<ol>
+<li>considera una regione candidata di stati ammessi;</li>
+<li>calcola quali stati possono raggiungere il goal restando nella regione;</li>
+<li>elimina stati che non hanno azioni sicure/progressive;</li>
+<li>ripeti fino a un punto fisso.</li>
+</ol>
+<p>Se tutti gli iniziali restano nella regione finale, esiste una strong-cyclic
+solution.</p>
+<p>Questa e' una via di mezzo tra:</p>
+<ul>
+<li>reachability esistenziale;</li>
+<li>garanzia universale forte;</li>
+<li>ragionamento da gioco con fairness.</li>
+</ul>
+<h2>53. Rappresentazione simbolica del dominio</h2>
+<p>Per rappresentare simbolicamente il dominio:</p>
+<ol>
+<li>si associa una variabile booleana a ogni proposizione in $P$;</li>
+<li>uno stato e' rappresentato da un vettore di variabili;</li>
+<li>un insieme di stati e' rappresentato da una formula;</li>
+<li>le azioni sono rappresentate da variabili di azione;</li>
+<li>i successori sono rappresentati con variabili next-state.</li>
+</ol>
+<p>Se il vettore di stato e':</p>
+<p>$$\vec{x}=(x_1,\ldots,x_n),$$</p>
+<p>allora il vettore next-state e':</p>
+<p>$$\vec{x}'=(x'_1,\ldots,x'_n).$$</p>
+<p>La relazione di transizione diventa:</p>
+<p>$$R(\vec{x},\vec{a},\vec{x}').$$</p>
+<h2>54. Formula di uno stato</h2>
+<p>Dato uno stato $s$, la formula $\xi(s)$ e' la congiunzione:</p>
+<ul>
+<li>delle variabili vere in $s$;</li>
+<li>delle negazioni delle variabili false in $s$.</li>
+</ul>
+<p>Esempio:</p>
+<p>se:</p>
+<p>$$s=\{station,red\},$$</p>
+<p>allora:</p>
+<p>$$\xi(s)=station\land red\land \neg traffic\_light\land \neg airport\land \neg green.$$</p>
+<p>Naturalmente, nella pratica si usano codifiche piu' compatte, ma l'idea e'
+questa.</p>
+<h2>55. Formula di un insieme di stati</h2>
+<p>Un insieme $Q\subseteq S$ si rappresenta come:</p>
+<p>$$\xi(Q)=\bigvee_{s\in Q}\xi(s).$$</p>
+<p>Questa formula e' vera esattamente negli stati appartenenti a $Q$.</p>
+<p>Il punto simbolico e':</p>
+<blockquote>
+<p>invece di manipolare una lista di stati, manipolo una formula.</p>
+</blockquote>
+<p>Con OBDD, SAT o altre strutture, questa formula puo' essere gestita in modo
+compatto.</p>
+<h2>56. Variabili di azione</h2>
+<p>Le azioni possono essere rappresentate in due modi.</p>
+<h3>Una variabile per azione</h3>
+<p>Si introduce una variabile booleana per ogni azione.</p>
+<p>Esempio:</p>
+<ul>
+<li><code>do_transport</code>;</li>
+<li><code>do_wait</code>.</li>
+</ul>
+<p>Se non sono ammesse azioni concorrenti, bisogna aggiungere vincoli di mutua
+esclusione:</p>
+<blockquote>
+<p>non possono essere vere due azioni contemporaneamente.</p>
+</blockquote>
+<h3>Codifica binaria delle azioni</h3>
+<p>Se ci sono $|A|$ azioni, si possono usare:</p>
+<p>$$\lceil \log_2 |A| \rceil$$</p>
+<p>variabili booleane.</p>
+<p>Ogni assegnamento rappresenta un'azione.</p>
+<p>In questo caso la mutua esclusione e' incorporata nella codifica, perche' un
+assegnamento denota una sola azione.</p>
+<h2>57. Relazione di transizione simbolica</h2>
+<p>Una transizione e' una tripla:</p>
+<p>$$(s,a,s').$$</p>
+<p>Simbolicamente viene rappresentata con:</p>
+<p>$$R(\vec{x},\vec{a},\vec{x}').$$</p>
+<p>Dove:</p>
+<ul>
+<li>$\vec{x}$ descrive lo stato corrente;</li>
+<li>$\vec{a}$ descrive l'azione scelta;</li>
+<li>$\vec{x}'$ descrive lo stato successivo.</li>
+</ul>
+<p>Questa e' la stessa forma usata nel symbolic model checking del capitolo 9.</p>
+<h2>58. Formule principali</h2>
+<p>Gli appunti indicano formule per rappresentare:</p>
+<ul>
+<li>stati validi: $S(\vec{x})$;</li>
+<li>transizione: $R(\vec{x},\vec{a},\vec{x}')$;</li>
+<li>iniziali: $I(\vec{x})$;</li>
+<li>goal: $G(\vec{x})$.</li>
+</ul>
+<p>Il planning problem diventa allora manipolazione di formule:</p>
+<ul>
+<li>calcolo preimmagini;</li>
+<li>verifica se gli iniziali sono inclusi nella regione vincente;</li>
+<li>estrazione delle azioni che giustificano il piano.</li>
+</ul>
+<h2>59. Rappresentazione simbolica di una state-action table</h2>
+<p>Una state-action table $SA$ si rappresenta con una formula:</p>
+<p>$$SA(\vec{x},\vec{a}).$$</p>
+<p>Questa formula e' vera quando:</p>
+<blockquote>
+<p>nello stato rappresentato da $\vec{x}$, il piano ammette l'azione rappresentata
+da $\vec{a}$.</p>
+</blockquote>
+<p>Da questa formula si possono ottenere:</p>
+<h3>Stati coperti dalla tabella</h3>
+<p>$$StatesOf(SA)(\vec{x})=\exists \vec{a}.\ SA(\vec{x},\vec{a}).$$</p>
+<h3>Azioni associate a uno stato</h3>
+<p>Per uno stato fissato $s$, le azioni ammesse sono quelle $\vec{a}$ tali che:</p>
+<p>$$SA(\xi(s),\vec{a})$$</p>
+<p>risulta vera.</p>
+<h2>60. Preimmagini simboliche come costruttori di piani</h2>
+<p>La cosa importante negli appunti e':</p>
+<blockquote>
+<p>le preimmagini non restituiscono solo insiemi di stati; possono costruire anche
+state-action tables.</p>
+</blockquote>
+<p>Per weak preimage, si memorizzano coppie $(s,a)$ per cui:</p>
+<p>$$\exists s'.\ R(s,a,s')\land Q(s').$$</p>
+<p>Per strong preimage, si memorizzano coppie $(s,a)$ per cui:</p>
+<p>$$APPL(s,a)\land \forall s'.\ R(s,a,s')\Rightarrow Q(s').$$</p>
+<p>Quindi l'algoritmo non dice solo "da qui si puo' vincere", ma anche:</p>
+<blockquote>
+<p>quale azione usare per giustificare la vittoria.</p>
+</blockquote>
+<p>Questo e' il passaggio da verifica a sintesi del piano.</p>
+<h2>61. Weak preimage simbolica</h2>
+<p>Con vettori:</p>
+<ul>
+<li>stato corrente $\vec{x}$;</li>
+<li>azione $\vec{a}$;</li>
+<li>stato successivo $\vec{x}'$;</li>
+<li>regione target $Q(\vec{x}')$;</li>
+</ul>
+<p>la weak preimage usa:</p>
+<p>$$\exists \vec{x}'.\ R(\vec{x},\vec{a},\vec{x}')\land Q(\vec{x}').$$</p>
+<p>Se poi voglio solo l'insieme degli stati, quantifico anche le azioni:</p>
+<p>$$\exists \vec{a}.\exists \vec{x}'.\ R(\vec{x},\vec{a},\vec{x}')\land Q(\vec{x}').$$</p>
+<p>Se invece voglio la state-action table, tengo anche $\vec{a}$ libera.</p>
+<h2>62. Strong preimage simbolica</h2>
+<p>La strong preimage usa:</p>
+<p>$$APPL(\vec{x},\vec{a})\land \forall \vec{x}'.\ R(\vec{x},\vec{a},\vec{x}')\Rightarrow Q(\vec{x}').$$</p>
+<p>Dove:</p>
+<p>$$APPL(\vec{x},\vec{a})=\exists \vec{x}'.\ R(\vec{x},\vec{a},\vec{x}').$$</p>
+<p>La lettura e':</p>
+<ul>
+<li>l'azione e' applicabile;</li>
+<li>ogni successore ammesso dalla relazione entra nella regione target.</li>
+</ul>
+<p>Questa e' la formula simbolica della garanzia forte.</p>
+<h2>63. Collegamento con CTL</h2>
+<p>Le nozioni weak e strong ricordano formule CTL:</p>
+<ul>
+<li>weak: esiste un cammino verso il goal, simile a $EF\ goal$;</li>
+<li>strong: tutti i cammini raggiungono il goal, simile a $AF\ goal$;</li>
+<li>strong-cyclic: da ogni stato resta possibile raggiungere il goal, con una
+  lettura fair/trial-and-error.</li>
+</ul>
+<p>Ma attenzione:</p>
+<blockquote>
+<p>nel planning non stiamo solo verificando una formula su un modello dato; stiamo
+scegliendo una state-action table che induce il modello da verificare.</p>
+</blockquote>
+<p>Quindi CTL aiuta a capire il significato, ma il problema operativo e' di
+sintesi.</p>
+<h2>64. Il linguaggio di descrizione delle azioni $\mathcal{AR}$</h2>
+<p>Gli appunti introducono il linguaggio $\mathcal{AR}$ per modellare domini di
+planning non deterministici.</p>
+<p>Le forme principali sono:</p>
+<ul>
+<li><code>A CAUSES P IF Q</code>;</li>
+<li><code>A POSSIBLY CHANGES F IF Q</code>;</li>
+<li><code>ALWAYS P</code>;</li>
+<li><code>INITIALLY P</code>;</li>
+<li><code>GOAL G</code>.</li>
+</ul>
+<p>Questo linguaggio serve a descrivere il dominio in modo dichiarativo, poi
+tradurlo in formule booleane e relazioni di transizione.</p>
+<h2>65. <code>A CAUSES P IF Q</code></h2>
+<p>La regola:</p>
+<pre><code class="language-text">A CAUSES P IF Q
+</code></pre>
+<p>significa:</p>
+<blockquote>
+<p>se l'azione $A$ viene eseguita in uno stato in cui vale $Q$, allora nel
+successore deve valere $P$.</p>
+</blockquote>
+<p>Esempio:</p>
+<pre><code class="language-text">transportation CAUSES traffic_light IF station
+</code></pre>
+<p>Se sono alla stazione e faccio <code>transportation</code>, nel prossimo stato sono al
+semaforo.</p>
+<h2>66. <code>A POSSIBLY CHANGES F IF Q</code></h2>
+<p>La regola:</p>
+<pre><code class="language-text">A POSSIBLY CHANGES F IF Q
+</code></pre>
+<p>significa:</p>
+<blockquote>
+<p>se eseguo $A$ in una situazione in cui vale $Q$, allora il fluent $F$ puo'
+cambiare.</p>
+</blockquote>
+<p>Questo introduce non determinismo.</p>
+<p>Esempio:</p>
+<pre><code class="language-text">wait POSSIBLY CHANGES light IF traffic_light
+</code></pre>
+<p>Se aspetto al semaforo, il colore puo' cambiare, ma non e' garantito che cambi
+nel modo desiderato.</p>
+<h2>67. <code>ALWAYS P</code></h2>
+<p>La regola:</p>
+<pre><code class="language-text">ALWAYS P
+</code></pre>
+<p>impone un vincolo di integrita' su tutti gli stati validi.</p>
+<p>Esempio:</p>
+<pre><code class="language-text">ALWAYS station &lt;-&gt; not (traffic_light or airport)
+</code></pre>
+<p>Serve a dire che la posizione e' mutuamente esclusiva:</p>
+<ul>
+<li>o station;</li>
+<li>o traffic_light;</li>
+<li>o airport.</li>
+</ul>
+<p>Non posso essere in due posizioni allo stesso tempo.</p>
+<h2>68. <code>INITIALLY P</code> e <code>GOAL G</code></h2>
+<p>La regola:</p>
+<pre><code class="language-text">INITIALLY P
+</code></pre>
+<p>descrive gli stati iniziali.</p>
+<p>La regola:</p>
+<pre><code class="language-text">GOAL G
+</code></pre>
+<p>descrive gli stati goal.</p>
+<p>Esempio:</p>
+<pre><code class="language-text">INITIALLY station
+GOAL airport
+</code></pre>
+<p>Questo non fissa necessariamente il colore del semaforo, quindi possono esserci
+piu' stati iniziali e piu' stati goal.</p>
+<h2>69. Formalizzazione dell'esempio in $\mathcal{AR}$</h2>
+<p>Una formalizzazione compatta dell'esempio e':</p>
+<pre><code class="language-text">transportation CAUSES traffic_light IF station
+transportation CAUSES airport IF traffic_light and light = green
+transportation CAUSES false IF not (station or (traffic_light and light = green))
+wait CAUSES false IF not traffic_light
+ALWAYS station &lt;-&gt; not (traffic_light or airport)
+ALWAYS traffic_light &lt;-&gt; not (station or airport)
+ALWAYS airport &lt;-&gt; not (traffic_light or station)
+INITIALLY station
+GOAL airport
+</code></pre>
+<p>Le righe con <code>CAUSES false</code> esprimono impossibilita' o azioni non applicabili.</p>
+<p>Per esempio:</p>
+<ul>
+<li>non puoi trasportare se non sei alla stazione o al semaforo verde;</li>
+<li>non puoi aspettare se non sei al semaforo.</li>
+</ul>
+<h2>70. Stati validi in $\mathcal{AR}$</h2>
+<p>Gli stati validi sono le valutazioni che soddisfano tutti i vincoli <code>ALWAYS</code>.</p>
+<p>Quindi <code>ALWAYS</code> definisce:</p>
+<p>$$State(\vec{x}).$$</p>
+<p>Gli stati iniziali soddisfano in piu':</p>
+<p>$$Initially(\vec{x}).$$</p>
+<p>Gli stati goal soddisfano in piu':</p>
+<p>$$Goal(\vec{x}).$$</p>
+<p>Quindi:</p>
+<p>$$I(\vec{x})=State(\vec{x})\land Initially(\vec{x}),$$</p>
+<p>$$G(\vec{x})=State(\vec{x})\land Goal(\vec{x}).$$</p>
+<h2>71. Azioni in $\mathcal{AR}$</h2>
+<p>Le azioni vengono rappresentate con variabili di azione.</p>
+<p>Una variabile e' vera se l'azione corrispondente viene eseguita.</p>
+<p>Se non voglio azioni concorrenti, impongo che esattamente una azione sia vera, o
+al piu' una, a seconda della modellazione.</p>
+<p>Questo permette di tradurre le regole di $\mathcal{AR}$ in una formula:</p>
+<p>$$R(\vec{x},\vec{a},\vec{x}').$$</p>
+<h2>72. Effetti e next-state</h2>
+<p>Una regola:</p>
+<pre><code class="language-text">A CAUSES P IF Q
+</code></pre>
+<p>diventa un vincolo sul prossimo stato:</p>
+<blockquote>
+<p>se nello stato corrente vale $Q$ e l'azione $A$ e' scelta, allora nel next-state
+vale $P$.</p>
+</blockquote>
+<p>In forma schematica:</p>
+<p>$$A(\vec{a})\land Q(\vec{x})\Rightarrow P(\vec{x}').$$</p>
+<p>Il punto e':</p>
+<ul>
+<li>$Q$ guarda lo stato corrente;</li>
+<li>$P$ guarda lo stato successivo;</li>
+<li>$A$ guarda l'azione scelta.</li>
+</ul>
+<h2>73. Inerzia e frame problem</h2>
+<p>Per i fluents inerziali bisogna impedire cambiamenti immotivati.</p>
+<p>Se un fluent $F$ e' inerziale, allora:</p>
+<blockquote>
+<p>$F$ puo' cambiare solo se un'azione lo causa o se una regola <code>POSSIBLY CHANGES</code>
+lo permette.</p>
+</blockquote>
+<p>Senza vincoli di inerzia, il modello ammetterebbe transizioni assurde:</p>
+<ul>
+<li>il pacco cambia posizione senza <code>transport</code>;</li>
+<li>una porta si apre senza <code>open</code>;</li>
+<li>una risorsa sparisce senza evento o azione.</li>
+</ul>
+<p>Gli appunti collegano questo alla preservazione nei sistemi di transizione:</p>
+<blockquote>
+<p>cio' che non viene modificato resta uguale.</p>
+</blockquote>
+<h2>74. Perche' <code>POSSIBLY CHANGES</code> e' diverso da <code>CAUSES</code></h2>
+<p><code>CAUSES</code> impone un effetto.</p>
+<p><code>POSSIBLY CHANGES</code> permette un cambiamento.</p>
+<p>Differenza:</p>
+<ul>
+<li><code>A CAUSES P IF Q</code>: se $A$ e $Q$, allora $P$ nel successore;</li>
+<li><code>A POSSIBLY CHANGES F IF Q</code>: se $A$ e $Q$, allora $F$ puo' cambiare, ma non e'
+  obbligato a cambiare in un valore specifico.</li>
+</ul>
+<p>Quindi <code>POSSIBLY CHANGES</code> e' una sorgente di non determinismo.</p>
+<h2>75. Collegamento con i capitoli precedenti</h2>
+<p>Il capitolo 11 riusa quasi tutti gli strumenti gia' visti.</p>
+<h3>Dal capitolo 4: FTS e fairness</h3>
+<p>Strong-cyclic usa fairness per escludere esecuzioni infinitamente sfortunate.</p>
+<h3>Dal capitolo 7: CTL e LTL</h3>
+<p>Weak e strong ricordano $EF$ e $AF$.</p>
+<p>Extended goals possono essere formule temporali.</p>
+<h3>Dal capitolo 8: procedure di model checking</h3>
+<p>Le preimmagini e i punti fissi sono la base degli algoritmi.</p>
+<h3>Dal capitolo 9: symbolic model checking</h3>
+<p>Stati, transizioni e piani vengono rappresentati con formule booleane.</p>
+<h3>Dal capitolo 10: sintesi</h3>
+<p>Il risultato non e' solo una verifica, ma un controller/piano eseguibile.</p>
+<h2>76. Errori tipici all'esame</h2>
+<h3>Confondere piano e path</h3>
+<p>Un path e' una singola esecuzione.</p>
+<p>Un piano e' una regola che genera possibili esecuzioni.</p>
+<p>Nel non determinismo, lo stesso piano puo' avere molti path.</p>
+<h3>Dire che weak garantisce il goal</h3>
+<p>Weak garantisce solo che esiste un path verso il goal.</p>
+<p>Non garantisce tutti gli esiti.</p>
+<h3>Dire che strong-cyclic e' uguale a strong</h3>
+<p>No. Strong-cyclic ammette cicli.</p>
+<p>La garanzia dipende dall'ipotesi di fairness.</p>
+<h3>Dimenticare terminali non-goal</h3>
+<p>Un piano che si blocca in uno stato non-goal non e' strong e non e'
+strong-cyclic.</p>
+<h3>Dimenticare <code>APPL</code> nella strong preimage</h3>
+<p>Senza applicabilita', un'azione non enabled potrebbe soddisfare vacuamente la
+condizione universale.</p>
+<h3>Confondere non determinismo del piano e non determinismo del dominio</h3>
+<p>Il piano e' non deterministico se ammette piu' azioni nello stesso stato.</p>
+<p>Il dominio e' non deterministico se la stessa azione nello stesso stato ha piu'
+successori.</p>
+<h2>77. Mini-esempio: classificazione rapida</h2>
+<p>Supponi:</p>
+<ul>
+<li>stato iniziale $s_0$;</li>
+<li>goal $g$;</li>
+<li>stato morto $d$;</li>
+<li>azione $a$ da $s_0$ con due successori: $g$ e $d$.</li>
+</ul>
+<p>Se il piano contiene solo $(s_0,a)$:</p>
+<ul>
+<li>e' weak, perche' esiste l'esito verso $g$;</li>
+<li>non e' strong, perche' esiste l'esito verso $d$;</li>
+<li>non e' strong-cyclic se $d$ e' terminale non-goal.</li>
+</ul>
+<p>Ora supponi invece:</p>
+<ul>
+<li>da $s_0$ con <code>try</code> puoi tornare a $s_0$ o andare a $g$;</li>
+<li>$g$ e' terminale goal.</li>
+</ul>
+<p>Il piano che ripete <code>try</code>:</p>
+<ul>
+<li>non e' strong, perche' esiste il path infinito $s_0,s_0,s_0,\ldots$;</li>
+<li>e' strong-cyclic sotto fairness, perche' da $s_0$ il goal resta sempre
+  raggiungibile;</li>
+<li>e' weak.</li>
+</ul>
+<h2>78. Esercizio 1: weak o strong?</h2>
+<p>Hai:</p>
+<ul>
+<li>$I=\{s\}$;</li>
+<li>$G=\{g\}$;</li>
+<li>azione $a$ da $s$ con successori $g$ e $t$;</li>
+<li>$t$ terminale non-goal.</li>
+</ul>
+<p>Il piano $SA=\{(s,a)\}$ e' strong?</p>
+<p>Risposta: no.</p>
+<p>Motivo: un successore possibile e' $t$, terminale non-goal. Strong richiede che
+tutti i terminali siano goal e che tutti i path arrivino al goal.</p>
+<p>E' weak?</p>
+<p>Si', perche' esiste un path da $s$ a $g$.</p>
+<h2>79. Esercizio 2: strong-cyclic</h2>
+<p>Hai:</p>
+<ul>
+<li>$s$ iniziale;</li>
+<li>$g$ goal;</li>
+<li>azione <code>try</code> da $s$ con successori $s$ e $g$.</li>
+</ul>
+<p>Il piano $SA=\{(s,try)\}$ e' strong?</p>
+<p>No, perche' esiste il path infinito che resta in $s$.</p>
+<p>E' strong-cyclic?</p>
+<p>Si', se tutti i terminali sono goal e se da $s$ il goal resta raggiungibile.
+Sotto fairness, l'esito favorevole non puo' essere evitato per sempre.</p>
+<h2>80. Esercizio 3: strong preimage</h2>
+<p>Sia:</p>
+<p>$$X=\{g\}.$$</p>
+<p>Da $s$:</p>
+<ul>
+<li>azione $a$ ha successori $\{g\}$;</li>
+<li>azione $b$ ha successori $\{g,d\}$.</li>
+</ul>
+<p>Quali azioni giustificano la strong preimage di $X$?</p>
+<p>Solo $a$.</p>
+<p>Per $b$, non tutti i successori sono in $X$.</p>
+<h2>81. Esercizio 4: weak preimage</h2>
+<p>Con lo stesso esempio:</p>
+<ul>
+<li>$a$ ha successori $\{g\}$;</li>
+<li>$b$ ha successori $\{g,d\}$.</li>
+</ul>
+<p>Quali azioni giustificano la weak preimage di $X$?</p>
+<p>Sia $a$ sia $b$, perche' entrambe hanno almeno un successore in $X$.</p>
+<h2>82. Esercizio 5: determinizzazione</h2>
+<p>Sia:</p>
+<p>$$SA=\{(s,a),(s,b),(t,c)\}.$$</p>
+<p>Elenca le determinizations.</p>
+<p>Risposta:</p>
+<p>$$SA_1=\{(s,a),(t,c)\},$$</p>
+<p>$$SA_2=\{(s,b),(t,c)\}.$$</p>
+<p>Se $SA_1$ e' weak e $SA_2$ non e' weak, allora $SA$ e' weak?</p>
+<p>No. Per una tabella non deterministica, tutte le determinizations devono avere
+la proprieta'.</p>
+<h2>83. Mappa orale del capitolo</h2>
+<p>Per esporre il capitolo 11 all'esame:</p>
+<ol>
+<li>parti dal planning problem intuitivo;</li>
+<li>spiega action-based planning;</li>
+<li>definisci fluents, stati, azioni, iniziali e goal;</li>
+<li>distingui fluents inerziali e non inerziali;</li>
+<li>spiega le sorgenti di non determinismo;</li>
+<li>classifica situated, universal e conformant plans;</li>
+<li>definisci il dominio $D=(P,S,A,R)$;</li>
+<li>spiega action enabled;</li>
+<li>presenta l'esempio pacco-semaforo;</li>
+<li>definisci state-action table;</li>
+<li>costruisci la execution structure $K=(Q,T)$;</li>
+<li>definisci terminali, execution path e aciclicita';</li>
+<li>definisci planning problem $(D,I,G)$;</li>
+<li>confronta weak, strong e strong-cyclic;</li>
+<li>spiega la fairness in strong-cyclic;</li>
+<li>passa alle determinizations;</li>
+<li>spiega preimmagini weak e strong;</li>
+<li>mostra la rappresentazione simbolica;</li>
+<li>chiudi con $\mathcal{AR}$ e le regole <code>CAUSES</code>, <code>POSSIBLY CHANGES</code>,
+    <code>ALWAYS</code>, <code>INITIALLY</code>, <code>GOAL</code>.</li>
+</ol>
+<h2>84. Risposta orale completa</h2>
+<p>Una risposta compatta ma completa potrebbe essere:</p>
+<blockquote>
+<p>Nel planning non deterministico via symbolic model checking rappresentiamo il
+dominio come $D=(P,S,A,R)$, dove $P$ e' un insieme finito di proposizioni,
+$S\subseteq 2^P$ e' l'insieme degli stati, $A$ e' l'insieme delle azioni e
+$R\subseteq S\times A\times S$ e' la relazione di transizione. Un'azione e'
+enabled in uno stato se ha almeno un successore secondo $R$. Un problema di
+planning e' una tripla $(D,I,G)$, con stati iniziali e goal. Un piano e'
+rappresentato come state-action table $SA\subseteq S\times A$; da questa
+tabella si costruisce la execution structure $K=(Q,T)$, cioe' il grafo delle
+esecuzioni possibili del piano a partire da $I$.</p>
+<p>Le soluzioni si distinguono in weak, strong e strong-cyclic. Una weak solution
+richiede che da ogni iniziale esista almeno un path verso un terminale goal.
+Una strong solution richiede che la execution structure sia aciclica e che
+tutti i terminali siano goal, quindi tutti i cammini terminano correttamente.
+Una strong-cyclic solution ammette cicli, ma richiede che da ogni stato
+raggiungibile un terminale goal resti raggiungibile e che tutti i terminali
+siano goal; la garanzia vale sotto fairness. Per tabelle non deterministiche,
+la proprieta' deve valere per tutte le determinizations.</p>
+<p>Il collegamento con il symbolic model checking consiste nel rappresentare stati,
+azioni, transizioni, iniziali, goal e piani con formule booleane:
+$S(\vec{x})$, $R(\vec{x},\vec{a},\vec{x}')$, $I(\vec{x})$, $G(\vec{x})$ e
+$SA(\vec{x},\vec{a})$. Gli algoritmi lavorano all'indietro dal goal con
+preimmagini. La weak preimage usa una condizione esistenziale sui successori;
+la strong preimage richiede un'azione applicabile i cui successori siano tutti
+nella regione target. In questo modo non solo si verifica la raggiungibilita',
+ma si costruisce anche la state-action table che realizza il piano.</p>
+</blockquote>
+<h2>85. Riassunto finale</h2>
+<p>Il capitolo 11 dice:</p>
+<ul>
+<li>il planning e' costruzione di piani, non solo verifica di modelli;</li>
+<li>un piano in domini non deterministici e' una state-action table;</li>
+<li>la execution structure mostra tutte le esecuzioni indotte dal piano;</li>
+<li>weak, strong e strong-cyclic misurano livelli diversi di garanzia;</li>
+<li>strong-cyclic accetta trial-and-error sotto fairness;</li>
+<li>le determinizations servono a interpretare tabelle non deterministiche;</li>
+<li>il symbolic model checking rappresenta tutto con formule booleane;</li>
+<li>le preimmagini costruiscono regioni vincenti e azioni del piano;</li>
+<li>$\mathcal{AR}$ descrive azioni, effetti, vincoli, iniziali e goal in modo
+  dichiarativo.</li>
+</ul>
+<p>Se ricordi solo una frase:</p>
+<blockquote>
+<p>il planning non deterministico via symbolic model checking trasforma la ricerca
+di un piano in un calcolo simbolico di stati e azioni che garantiscono, in modo
+weak, strong o strong-cyclic, il raggiungimento del goal.</p>
+</blockquote></article>
+  <p class="section-label">Esercizi (piano di studio)</p>
+  
+<div class="exercises-block prose">
+<h2>Esercizi e domande — settimana 6</h2>
+<p><strong>Obiettivo della settimana:</strong> chiudere il programma con giochi e pianificazione, senza lasciare i capitoli finali come "appendice".</p>
+<h3>Esercizi scritti essenziali</h3>
+<ol>
+<li>
+<p><strong>Arena di gioco.</strong> Disegna un gioco a 5 stati con stati di Player A e Player B. Definisci una condizione di reachability per B e calcola l'attractor di B.</p>
+</li>
+<li>
+<p><strong>Muller condition.</strong> Su un grafo piccolo, scegli:
+   $$\mathcal{F}=\lbrace \lbrace q_1,q_2\rbrace,\lbrace q_3\rbrace\rbrace$$
+   e valuta se tre run infinite diverse sono vincenti per B in base a $Inf(\rho)$.</p>
+</li>
+<li>
+<p><strong>Weak Muller.</strong> Per le stesse run, valuta una condizione Staiger-Wagner basata su $Occ(\rho)$. Spiega la differenza con Muller.</p>
+</li>
+<li>
+<p><strong>LAR.</strong> Prendi una run periodica su stati $A,B,C$:
+   $$A B C B A C B C B A \ldots$$
+   aggiorna a mano il registro di ultima apparizione per i primi 8 passi. Identifica l'insieme colpente.</p>
+</li>
+<li>
+<p><strong>Parity condition.</strong> Costruisci un parity game con priorita 0,1,2,3. Dai due cicli possibili e stabilisci chi vince in ciascuno usando "massima priorita vista infinitamente spesso".</p>
+</li>
+<li>
+<p><strong>Da Muller a parity.</strong> Spiega perche la LAR construction serve: quale informazione di memoria aggiunge rispetto al grafo originale?</p>
+</li>
+<li>
+<p><strong>Dominio di pianificazione.</strong> Formalizza il dominio del pacco stazione -&gt; semaforo -&gt; aeroporto:
+   fluents, stati, azioni, iniziali, goal, relazione di transizione.</p>
+</li>
+<li>
+<p><strong>State-action table.</strong> Scrivi una state-action table che "trasporta se verde, aspetta se rosso". Disegna l'execution structure.</p>
+</li>
+<li>
+<p><strong>Weak vs strong.</strong> Sul dominio del semaforo, costruisci:</p>
+</li>
+<li>un piano weak ma non strong;</li>
+<li>un piano strong cyclic;</li>
+<li>
+<p>se possibile, un piano strong. Se non e' possibile, spiega perche.</p>
+</li>
+<li>
+<p><strong>Strong preimage.</strong> Dato un set goal $G$ e una transizione nondeterministica $R(s,a,s')$, calcola weak preimage e strong preimage su un esempio a 4 stati. Evidenzia la differenza tra $\exists s'$ e $\forall s'$.</p>
+</li>
+<li>
+<p><strong>AR language.</strong> Scrivi in stile $\mathcal{AR}$:</p>
+</li>
+<li><code>transport CAUSES traffic_light IF station</code>;</li>
+<li><code>wait POSSIBLY CHANGES light IF traffic_light</code>;</li>
+<li>un vincolo <code>ALWAYS</code> che impedisca di essere in due posizioni contemporaneamente;</li>
+<li>
+<p><code>INITIALLY</code> e <code>GOAL</code>.</p>
+</li>
+<li>
+<p><strong>Pianificazione come model checking.</strong> Scrivi una risposta orale da 8 minuti: come un problema di planning nondeterministico diventa una verifica su un modello simbolico?</p>
+</li>
+</ol>
+<h3>Domande orali secche</h3>
+<ol>
+<li>Che cos'e' una winning strategy?</li>
+<li>Differenza tra Muller game, reachability game e parity game.</li>
+<li>Che cosa dice, in pratica, Buchi-Landweber?</li>
+<li>Differenza tra weak, strong e strong-cyclic planning.</li>
+<li>Perche lo strong-cyclic planning richiede un'ipotesi di fairness?</li>
+</ol>
+<h3>Controllo</h3>
+<p>Hai superato la settimana se sai spiegare la pipeline giochi-sintesi e distinguere i tre tipi di planning con un esempio concreto.</p>
+</div>
+
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap10.html">← Precedente</a></span></div>
+</div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script defer src="assets/chat.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

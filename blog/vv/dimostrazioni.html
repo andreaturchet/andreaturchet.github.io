@@ -1,0 +1,3266 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dimostrazioni formali complete — V&amp;V</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/chat.css" />
+  
+</head>
+<body>
+
+<header class="site-header">
+  <h1>Dimostrazioni formali complete</h1>
+  <p class="subtitle">Passaggi dimostrativi estesi dagli appunti locali</p>
+  <div class="ornament">✦</div>
+</header>
+<div class="wrap">
+  <div class="nav-row"><a href="index.html">← Indice</a></div>
+  <article class="prose"><h2>Come usare questa pagina</h2>
+<p>Questa pagina raccoglie le dimostrazioni degli appunti che piu facilmente possono diventare domande orali. L'obiettivo non e' riassumere l'idea, ma avere una versione studiabile in cui i passaggi "immediati" sono esplicitati.</p>
+<p>Le fonti locali usate sono soprattutto:</p>
+<ul>
+<li><code>raw/Automi a stati finiti su parole finite.md</code></li>
+<li><code>raw/Myhill-Nerode Theorem.md</code></li>
+<li><code>raw/Automi a stati finiti su parole infinite.md</code></li>
+<li><code>raw/Secondo teorema di Büchi.md</code></li>
+<li><code>raw/Linear Temporal Logic.md</code></li>
+<li><code>raw/Model Checking.md</code></li>
+<li><code>raw/notes.pdf</code></li>
+<li><code>raw/Riassunti si o.pdf</code> (controllo visivo: PDF manoscritto senza testo estraibile)</li>
+<li><code>expansions/week01_finite_automata_deepening.md</code></li>
+<li><code>expansions/week03_infinite_automata_deepening.md</code></li>
+<li><code>expansions/week03_mso_s1s_deepening.md</code></li>
+</ul>
+<h2>Indice delle dimostrazioni</h2>
+<ul>
+<li><a href="#proof-01">1. Subset construction: ogni NFA ha un DFA equivalente</a></li>
+<li><a href="#proof-02">2. Vuotezza dei DFA: small model property</a></li>
+<li><a href="#proof-03">3. Infinitudine dei DFA</a></li>
+<li><a href="#proof-04">4. Teorema di Myhill-Nerode</a></li>
+<li><a href="#proof-05">5. Da automi di Büchi a espressioni omega-regolari, e viceversa</a></li>
+<li><a href="#proof-06">6. Intersezione di automi di Büchi e GNBA</a></li>
+<li><a href="#proof-07">7. Emptiness degli automi di Büchi</a></li>
+<li><a href="#proof-08">8. Complementazione Büchi tramite congruenza e saturazione</a></li>
+<li><a href="#proof-09">9. Caratterizzazione dei DBA e non-chiusura per complemento</a></li>
+<li><a href="#proof-10">10. Secondo teorema di Büchi: direzione automa -&gt; S1S</a></li>
+<li><a href="#proof-11">11. Secondo teorema di Büchi: direzione S1S -&gt; automa</a></li>
+<li><a href="#proof-12">12. Behavior graph LTL: componente adeguata implica soddisfacibilita' sul programma</a></li>
+<li><a href="#proof-13">13. Traduzioni LTL: forme da saper giustificare</a></li>
+<li><a href="#proof-14">14. Da epsilon-NFA a NFA</a></li>
+<li><a href="#proof-15">15. Teorema automi finiti - espressioni regolari</a></li>
+<li><a href="#proof-16">16. Chiusura booleana dei linguaggi regolari finiti</a></li>
+<li><a href="#proof-17">17. Chiusure base degli omega-regolari: $V^\omega$ e $V\cdot L$</a></li>
+<li><a href="#proof-18">18. Parole ultimamente periodiche</a></li>
+<li><a href="#proof-19">19. Decidibilita' per automi di Büchi</a></li>
+<li><a href="#proof-20">20. Tableau LTL: soddisfacibilita' tramite fulfilling MSCS</a></li>
+<li><a href="#proof-21">21. CTL tramite punti fissi: $EG$ ed $EU$</a></li>
+<li><a href="#proof-22">22. Chiusura di DBA per unione e intersezione</a></li>
+<li><a href="#proof-23">23. Automi di Muller: da Büchi, complemento e operazioni booleane</a></li>
+<li><a href="#proof-24">24. NMA e S1S: formalizzare la condizione di Muller</a></li>
+<li><a href="#proof-25">25. Giochi di raggiungibilita': attractor e strategie posizionali</a></li>
+<li><a href="#proof-26">26. Weak Muller games come weak parity games</a></li>
+<li><a href="#proof-27">27. Da Muller a parity con LAR</a></li>
+</ul>
+<hr>
+<h2>1. Subset construction: ogni NFA ha un DFA equivalente <a id="proof-01"></a></h2>
+<h3>Enunciato</h3>
+<p>Per ogni NFA</p>
+<p>$$
+\mathcal{N}=(Q,\Sigma,\Delta,q_0,F)
+$$</p>
+<p>con $\Delta:Q\times\Sigma\to 2^Q$, esiste un DFA $\mathcal{D}$ tale che:</p>
+<p>$$
+L(\mathcal{D})=L(\mathcal{N}).
+$$</p>
+<h3>Costruzione</h3>
+<p>Costruiamo:</p>
+<p>$$
+\mathcal{D}=(2^Q,\Sigma,\delta^D,\{q_0\},F^D)
+$$</p>
+<p>dove:</p>
+<p>$$
+\delta^D(S,a)=\bigcup_{q\in S}\Delta(q,a)
+$$</p>
+<p>e:</p>
+<p>$$
+F^D=\{S\subseteq Q\mid S\cap F\neq\emptyset\}.
+$$</p>
+<p>Uno stato del DFA non rappresenta un singolo stato dell'NFA, ma l'insieme di tutti gli stati in cui l'NFA potrebbe trovarsi dopo aver letto un certo prefisso.</p>
+<h3>Invariante da dimostrare</h3>
+<p>Per ogni parola $w\in\Sigma^\ast$:</p>
+<p>$$
+\hat{\delta}^{D}(\{q_0\},w)
+=
+\{q\in Q\mid q_0\xrightarrow[\mathcal{N}]{w}q\}.
+$$</p>
+<p>Il lato sinistro e' lo stato raggiunto dal DFA. Il lato destro e' l'insieme degli stati raggiungibili dall'NFA leggendo $w$.</p>
+<h3>Dimostrazione per induzione su $|w|$</h3>
+<p><strong>Base: $w=\varepsilon$.</strong></p>
+<p>Per definizione dell'estensione della transizione del DFA:</p>
+<p>$$
+\hat{\delta}^{D}(\{q_0\},\varepsilon)=\{q_0\}.
+$$</p>
+<p>Nell'NFA, leggendo la parola vuota da $q_0$, l'unico stato raggiungibile senza consumare simboli e' $q_0$. Quindi:</p>
+<p>$$
+\{q\in Q\mid q_0\xrightarrow[\mathcal{N}]{\varepsilon}q\}=\{q_0\}.
+$$</p>
+<p>I due insiemi coincidono.</p>
+<p><strong>Passo induttivo.</strong></p>
+<p>Supponiamo vera la tesi per una parola $w$. Dimostriamola per $wa$, con $a\in\Sigma$.</p>
+<p>Per definizione di transizione estesa nel DFA:</p>
+<p>$$
+\hat{\delta}^{D}(\{q_0\},wa)
+=
+\delta^{D}(\hat{\delta}^{D}(\{q_0\},w),a).
+$$</p>
+<p>Per ipotesi induttiva:</p>
+<p>$$
+\hat{\delta}^{D}(\{q_0\},w)
+=
+R_w
+$$</p>
+<p>dove:</p>
+<p>$$
+R_w=\{q\in Q\mid q_0\xrightarrow[\mathcal{N}]{w}q\}.
+$$</p>
+<p>Quindi:</p>
+<p>$$
+\hat{\delta}^{D}(\{q_0\},wa)
+=
+\delta^{D}(R_w,a)
+=
+\bigcup_{q\in R_w}\Delta(q,a).
+$$</p>
+<p>Ora guardiamo il significato del lato destro. Uno stato $r$ appartiene a $\bigcup_{q\in R_w}\Delta(q,a)$ se e solo se esiste uno stato $q\in R_w$ tale che $r\in\Delta(q,a)$. Ma $q\in R_w$ significa che l'NFA puo arrivare da $q_0$ a $q$ leggendo $w$, e $r\in\Delta(q,a)$ significa che puo poi andare da $q$ a $r$ leggendo $a$.</p>
+<p>Dunque:</p>
+<p>$$
+r\in\bigcup_{q\in R_w}\Delta(q,a)
+\iff
+q_0\xrightarrow[\mathcal{N}]{wa}r.
+$$</p>
+<p>Quindi:</p>
+<p>$$
+\hat{\delta}^{D}(\{q_0\},wa)
+=
+\{r\in Q\mid q_0\xrightarrow[\mathcal{N}]{wa}r\}.
+$$</p>
+<p>L'invariante e' dimostrato.</p>
+<h3>Uguaglianza dei linguaggi</h3>
+<p>Una parola $w$ e' accettata da $\mathcal{D}$ se e solo se:</p>
+<p>$$
+\hat{\delta}^{D}(\{q_0\},w)\in F^D.
+$$</p>
+<p>Per definizione di $F^D$, questo equivale a:</p>
+<p>$$
+\hat{\delta}_D(\{q_0\},w)\cap F\neq\emptyset.
+$$</p>
+<p>Per l'invariante, cioe':</p>
+<p>$$
+\{q\mid q_0\xrightarrow[\mathcal{N}]{w}q\}\cap F\neq\emptyset.
+$$</p>
+<p>Questa e' esattamente la definizione di accettazione dell'NFA: esiste almeno una computazione che, leggendo tutta $w$, finisce in uno stato finale. Quindi:</p>
+<p>$$
+w\in L(\mathcal{D})
+\iff
+w\in L(\mathcal{N}).
+$$</p>
+<p>Poiche' vale per ogni $w$, abbiamo:</p>
+<p>$$
+L(\mathcal{D})=L(\mathcal{N}).
+$$</p>
+<p>Punto orale: quando negli appunti si dice "si dimostra per induzione", l'induzione e' sull'invariante che lo stato-sottoinsieme del DFA coincide con l'insieme degli stati raggiungibili dall'NFA.</p>
+<hr>
+<h2>2. Vuotezza dei DFA: small model property <a id="proof-02"></a></h2>
+<h3>Enunciato</h3>
+<p>Sia $\mathcal{A}=(Q,\Sigma,\delta,q_0,F)$ un DFA con $n=|Q|$ stati. Allora:</p>
+<p>$$
+L(\mathcal{A})\neq\emptyset
+\iff
+\exists w\in L(\mathcal{A})\text{ con }|w|&lt;n.
+$$</p>
+<h3>Dimostrazione</h3>
+<p><strong>Direzione destra-sinistra.</strong></p>
+<p>Se esiste $w\in L(\mathcal{A})$ con $|w|&lt;n$, allora esiste almeno una parola accettata. Quindi:</p>
+<p>$$
+L(\mathcal{A})\neq\emptyset.
+$$</p>
+<p><strong>Direzione sinistra-destra.</strong></p>
+<p>Supponiamo:</p>
+<p>$$
+L(\mathcal{A})\neq\emptyset.
+$$</p>
+<p>Allora esiste almeno una parola accettata. Tra tutte le parole accettate scegliamone una di lunghezza minima e chiamiamola $w$.</p>
+<p>Vogliamo dimostrare che $|w|&lt;n$.</p>
+<p>Supponiamo per assurdo che:</p>
+<p>$$
+|w|\ge n.
+$$</p>
+<p>Scriviamo:</p>
+<p>$$
+w=a_1a_2\ldots a_m
+$$</p>
+<p>con $m=|w|\ge n$. Durante la lettura di $w$, il DFA attraversa la sequenza di stati:</p>
+<p>$$
+q_0,q_1,q_2,\ldots,q_m
+$$</p>
+<p>dove:</p>
+<p>$$
+q_i=\hat{\delta}(q_0,a_1\ldots a_i).
+$$</p>
+<p>Questa sequenza contiene $m+1$ stati. Poiche' $m\ge n$, contiene almeno $n+1$ occorrenze di stati, ma l'automa ha solo $n$ stati distinti. Per il principio dei cassetti, esistono indici $i&lt;j$ tali che:</p>
+<p>$$
+q_i=q_j.
+$$</p>
+<p>Allora la parte di parola:</p>
+<p>$$
+a_{i+1}\ldots a_j
+$$</p>
+<p>descrive un ciclo: partendo da $q_i$ e leggendo quel blocco si ritorna a $q_i$.</p>
+<p>Ora rimuoviamo quel ciclo da $w$ e definiamo:</p>
+<p>$$
+w'=a_1\ldots a_i a_{j+1}\ldots a_m.
+$$</p>
+<p>Leggendo $w'$, il DFA segue lo stesso percorso di $w$ fino a $q_i$, poi salta il ciclo e continua dal medesimo stato $q_j=q_i$ lungo il suffisso. Quindi termina nello stesso stato finale in cui terminava $w$.</p>
+<p>Dunque:</p>
+<p>$$
+w'\in L(\mathcal{A}).
+$$</p>
+<p>Ma $w'$ e' strettamente piu corta di $w$, perche' abbiamo rimosso un blocco non vuoto. Questo contraddice la scelta di $w$ come parola accettata di lunghezza minima.</p>
+<p>Quindi l'assunzione $|w|\ge n$ e' falsa, e deve valere:</p>
+<p>$$
+|w|&lt;n.
+$$</p>
+<p>Punto orale: non serve citare il pumping lemma in modo vago. Basta scegliere una parola accettata minima e rimuovere un ciclo; la contraddizione e' la minimalita'.</p>
+<hr>
+<h2>3. Infinitudine dei DFA <a id="proof-03"></a></h2>
+<h3>Enunciato</h3>
+<p>Sia $\mathcal{A}$ un DFA con $n$ stati. Allora $L(\mathcal{A})$ e' infinito se e solo se esiste una parola accettata $w$ con lunghezza compresa tra $n$ e $2n$ circa. Una forma standard e':</p>
+<p>$$
+L(\mathcal{A})\text{ infinito}
+\iff
+\exists w\in L(\mathcal{A})\text{ con }n\le |w|&lt;2n.
+$$</p>
+<p>Se gli appunti usano $n&lt;|w|&lt;2n$, e' solo una convenzione di indicizzazione: il ragionamento e' lo stesso.</p>
+<h3>Dimostrazione</h3>
+<p><strong>Se esiste una parola accettata lunga almeno $n$, allora il linguaggio e' infinito.</strong></p>
+<p>Sia $w=a_1\ldots a_m$ una parola accettata con $m\ge n$.</p>
+<p>Durante la lettura di $w$, l'automa attraversa:</p>
+<p>$$
+q_0,q_1,\ldots,q_m.
+$$</p>
+<p>Ci sono $m+1\ge n+1$ occorrenze di stati e solo $n$ stati disponibili. Quindi esistono $i&lt;j$ con:</p>
+<p>$$
+q_i=q_j.
+$$</p>
+<p>Scriviamo:</p>
+<p>$$
+w=xyz
+$$</p>
+<p>dove:</p>
+<p>$$
+x=a_1\ldots a_i,\qquad
+y=a_{i+1}\ldots a_j,\qquad
+z=a_{j+1}\ldots a_m.
+$$</p>
+<p>Il blocco $y$ e' non vuoto e porta da $q_i$ a $q_j=q_i$, quindi e' un ciclo. Per ogni $k\ge 0$, la parola:</p>
+<p>$$
+xy^kz
+$$</p>
+<p>porta l'automa nello stesso stato finale raggiunto da $w$. Quindi:</p>
+<p>$$
+xy^kz\in L(\mathcal{A})
+\quad\text{per ogni }k\ge 0.
+$$</p>
+<p>Poiche' $|y|&gt;0$, le parole $xy^kz$ sono tutte distinte al variare di $k$. Dunque $L(\mathcal{A})$ contiene infinite parole.</p>
+<p><strong>Se il linguaggio e' infinito, esiste una parola accettata con $n\le |w|&lt;2n$.</strong></p>
+<p>Se $L(\mathcal{A})$ e' infinito, allora contiene parole accettate di lunghezza arbitrariamente grande. In particolare esiste una parola accettata $w$ con:</p>
+<p>$$
+|w|\ge n.
+$$</p>
+<p>Tra tutte le parole accettate di lunghezza almeno $n$, scegliamone una di lunghezza minima.</p>
+<p>Vogliamo mostrare che:</p>
+<p>$$
+|w|&lt;2n.
+$$</p>
+<p>Supponiamo per assurdo che:</p>
+<p>$$
+|w|\ge 2n.
+$$</p>
+<p>Guardiamo i primi $n+1$ stati visitati nella lettura di $w$. Per il principio dei cassetti, tra questi compare un ciclo di lunghezza al massimo $n$. Rimuovendo quel ciclo otteniamo una parola $w'$ ancora accettata.</p>
+<p>La lunghezza rimossa e' al piu' $n$, quindi:</p>
+<p>$$
+|w'|\ge |w|-n\ge 2n-n=n.
+$$</p>
+<p>Ma $w'$ e' accettata, ha lunghezza almeno $n$ ed e' piu corta di $w$. Questo contraddice la scelta di $w$ come parola accettata minima tra quelle di lunghezza almeno $n$.</p>
+<p>Quindi:</p>
+<p>$$
+|w|&lt;2n.
+$$</p>
+<p>Abbiamo trovato una parola accettata con:</p>
+<p>$$
+n\le |w|&lt;2n.
+$$</p>
+<p>Punto orale: la direzione "infinito implica parola nel range" usa una minimalita' vincolata: minima tra le parole accettate di lunghezza almeno $n$.</p>
+<hr>
+<h2>4. Teorema di Myhill-Nerode <a id="proof-04"></a></h2>
+<h3>Enunciato</h3>
+<p>Sia $L\subseteq\Sigma^\ast$. Definiamo la relazione canonica:</p>
+<p>$$
+x\equiv_L y
+\iff
+\forall z\in\Sigma^\ast,\;xz\in L \iff yz\in L.
+$$</p>
+<p>Il teorema dice che sono equivalenti:</p>
+<ol>
+<li>$L$ e' regolare.</li>
+<li>$L$ e' unione di classi di una relazione invariante a destra di indice finito.</li>
+<li>$\equiv_L$ ha indice finito.</li>
+</ol>
+<h3>Definizioni tecniche</h3>
+<p>Una relazione $\sim$ su $\Sigma^\ast$ e' <strong>invariante a destra</strong> se:</p>
+<p>$$
+x\sim y\Rightarrow xz\sim yz
+\quad\text{per ogni }z\in\Sigma^\ast.
+$$</p>
+<p>Ha <strong>indice finito</strong> se ha un numero finito di classi di equivalenza.</p>
+<p>Dire che $L$ e' unione di classi di $\sim$ significa:</p>
+<p>$$
+x\sim y \Rightarrow (x\in L \iff y\in L).
+$$</p>
+<h3>Dimostrazione: $1\Rightarrow 2$</h3>
+<p>Supponiamo che $L$ sia regolare. Allora esiste un DFA:</p>
+<p>$$
+\mathcal{A}=(Q,\Sigma,\delta,q_0,F)
+$$</p>
+<p>tale che:</p>
+<p>$$
+L=L(\mathcal{A}).
+$$</p>
+<p>Definiamo una relazione $\sim_{\mathcal{A}}$ su $\Sigma^\ast$:</p>
+<p>$$
+x\sim_{\mathcal{A}}y
+\iff
+\hat{\delta}(q_0,x)=\hat{\delta}(q_0,y).
+$$</p>
+<p>Questa e' una relazione di equivalenza:</p>
+<ul>
+<li>riflessiva, perche' ogni parola porta allo stesso stato di se stessa;</li>
+<li>simmetrica, perche' l'uguaglianza degli stati e' simmetrica;</li>
+<li>transitiva, perche' l'uguaglianza degli stati e' transitiva.</li>
+</ul>
+<p>Ha indice finito, perche' ogni classe corrisponde a uno stato raggiungibile del DFA, e gli stati sono finiti.</p>
+<p>Mostriamo che e' invariante a destra. Supponiamo:</p>
+<p>$$
+x\sim_{\mathcal{A}}y.
+$$</p>
+<p>Allora:</p>
+<p>$$
+\hat{\delta}(q_0,x)=\hat{\delta}(q_0,y).
+$$</p>
+<p>Per ogni $z\in\Sigma^\ast$:</p>
+<p>$$
+\hat{\delta}(q_0,xz)
+=
+\hat{\delta}(\hat{\delta}(q_0,x),z)
+$$</p>
+<p>e:</p>
+<p>$$
+\hat{\delta}(q_0,yz)
+=
+\hat{\delta}(\hat{\delta}(q_0,y),z).
+$$</p>
+<p>Poiche' $\hat{\delta}(q_0,x)=\hat{\delta}(q_0,y)$, i due risultati coincidono:</p>
+<p>$$
+\hat{\delta}(q_0,xz)=\hat{\delta}(q_0,yz).
+$$</p>
+<p>Quindi:</p>
+<p>$$
+xz\sim_{\mathcal{A}}yz.
+$$</p>
+<p>Infine, $L$ e' unione di classi di $\sim_{\mathcal{A}}$. Infatti, se $x\sim_{\mathcal{A}}y$, allora $x$ e $y$ portano allo stesso stato. Quello stato o e' finale o non e' finale. Quindi:</p>
+<p>$$
+x\in L
+\iff
+\hat{\delta}(q_0,x)\in F
+\iff
+\hat{\delta}(q_0,y)\in F
+\iff
+y\in L.
+$$</p>
+<p>Quindi $2$ vale.</p>
+<h3>Dimostrazione: $2\Rightarrow 3$</h3>
+<p>Supponiamo che esista una relazione $\sim$ invariante a destra, di indice finito, tale che $L$ sia unione di classi di $\sim$.</p>
+<p>Vogliamo mostrare che $\equiv_L$ ha indice finito.</p>
+<p>Mostriamo prima che:</p>
+<p>$$
+x\sim y\Rightarrow x\equiv_L y.
+$$</p>
+<p>Sia $x\sim y$. Poiche' $\sim$ e' invariante a destra, per ogni $z$ vale:</p>
+<p>$$
+xz\sim yz.
+$$</p>
+<p>Poiche' $L$ e' unione di classi di $\sim$, due parole nella stessa classe o appartengono entrambe a $L$ o non appartengono entrambe a $L$. Quindi:</p>
+<p>$$
+xz\in L\iff yz\in L.
+$$</p>
+<p>Questo vale per ogni $z\in\Sigma^\ast$, quindi:</p>
+<p>$$
+x\equiv_L y.
+$$</p>
+<p>Abbiamo dimostrato che $\sim$ raffina $\equiv_L$: ogni classe di $\sim$ e' contenuta in una classe di $\equiv_L$. Dunque $\equiv_L$ ha al piu' tante classi quante ne ha $\sim$.</p>
+<p>Poiche' $\sim$ ha indice finito, anche $\equiv_L$ ha indice finito.</p>
+<h3>Dimostrazione: $3\Rightarrow 1$</h3>
+<p>Supponiamo che $\equiv_L$ abbia indice finito.</p>
+<p>Costruiamo un DFA:</p>
+<p>$$
+\mathcal{A}_L=(Q,\Sigma,\delta,[\varepsilon],F)
+$$</p>
+<p>dove:</p>
+<p>$$
+Q=\{[x]_{\equiv_L}\mid x\in\Sigma^\ast\}
+$$</p>
+<p>e' l'insieme delle classi di equivalenza di $\equiv_L$.</p>
+<p>Lo stato iniziale e':</p>
+<p>$$
+[\varepsilon].
+$$</p>
+<p>La transizione e':</p>
+<p>$$
+\delta([x],a)=[xa].
+$$</p>
+<p>Gli stati finali sono:</p>
+<p>$$
+F=\{[x]\mid x\in L\}.
+$$</p>
+<p>Bisogna verificare due cose: che la transizione sia ben definita e che il DFA riconosca davvero $L$.</p>
+<p><strong>Ben definizione della transizione.</strong></p>
+<p>Se $[x]=[y]$, allora $x\equiv_L y$. Per definizione:</p>
+<p>$$
+\forall z,\;xz\in L\iff yz\in L.
+$$</p>
+<p>Vogliamo mostrare:</p>
+<p>$$
+[xa]=[ya].
+$$</p>
+<p>Prendiamo un suffisso arbitrario $z$. Allora:</p>
+<p>$$
+(xa)z=x(az)
+$$</p>
+<p>e:</p>
+<p>$$
+(ya)z=y(az).
+$$</p>
+<p>Poiche' $x\equiv_L y$, applicando la definizione al suffisso $az$ otteniamo:</p>
+<p>$$
+x(az)\in L\iff y(az)\in L.
+$$</p>
+<p>Quindi:</p>
+<p>$$
+(xa)z\in L\iff (ya)z\in L.
+$$</p>
+<p>Questo vale per ogni $z$, dunque:</p>
+<p>$$
+xa\equiv_L ya.
+$$</p>
+<p>La transizione $\delta([x],a)=[xa]$ non dipende dal rappresentante scelto.</p>
+<p><strong>Correttezza del DFA.</strong></p>
+<p>Mostriamo per induzione su $w$ che:</p>
+<p>$$
+\hat{\delta}([\varepsilon],w)=[w].
+$$</p>
+<p>Base:</p>
+<p>$$
+\hat{\delta}([\varepsilon],\varepsilon)=[\varepsilon].
+$$</p>
+<p>Passo:</p>
+<p>$$
+\hat{\delta}([\varepsilon],wa)
+=
+\delta(\hat{\delta}([\varepsilon],w),a)
+=
+\delta([w],a)
+=
+[wa].
+$$</p>
+<p>Quindi l'invariante vale.</p>
+<p>Ora:</p>
+<p>$$
+w\in L(\mathcal{A}_L)
+\iff
+\hat{\delta}([\varepsilon],w)\in F
+\iff
+[w]\in F
+\iff
+w\in L.
+$$</p>
+<p>Quindi:</p>
+<p>$$
+L(\mathcal{A}_L)=L.
+$$</p>
+<p>Poiche' $\equiv_L$ ha indice finito, $\mathcal{A}_L$ ha un numero finito di stati. Dunque $L$ e' regolare.</p>
+<p>Punto orale: la parte da non saltare e' la ben definizione di $\delta([x],a)=[xa]$. Se il docente chiede "perche' posso scegliere un rappresentante qualunque?", devi usare l'invarianza a destra della relazione canonica.</p>
+<hr>
+<h2>5. Da automi di Büchi a espressioni omega-regolari, e viceversa <a id="proof-05"></a></h2>
+<h3>Enunciato</h3>
+<p>Un linguaggio $L\subseteq A^\omega$ e' riconosciuto da un automa di Büchi non deterministico se e solo se e' esprimibile come unione finita:</p>
+<p>$$
+L=\bigcup_{i=1}^k U_iV_i^\omega
+$$</p>
+<p>dove $U_i,V_i\subseteq A^\ast$ sono linguaggi regolari di parole finite e, per evitare blocchi vuoti nella ripetizione infinita, si assume $V_i\subseteq A^+$.</p>
+<h3>Direzione Büchi -&gt; espressione omega-regolare</h3>
+<p>Sia:</p>
+<p>$$
+\mathcal{A}=(Q,A,\Delta,q_0,F)
+$$</p>
+<p>un NBA.</p>
+<p>Per due stati $p,q\in Q$, definiamo:</p>
+<p>$$
+W_{p,q}=\{w\in A^\ast\mid p\xrightarrow{w}q\}.
+$$</p>
+<p>Definiamo anche:</p>
+<p>$$
+C_f=\{w\in A^+\mid f\xrightarrow{w}f\}.
+$$</p>
+<p>Entrambi sono linguaggi regolari. Infatti si riconoscono con un automa finito che usa la stessa struttura di $\mathcal{A}$, prendendo $p$ come iniziale e $q$ come finale. Nel caso di $C_f$ si esclude la parola vuota.</p>
+<p>Dimostriamo:</p>
+<p>$$
+L(\mathcal{A})
+=
+\bigcup_{f\in F} W_{q_0,f}C_f^\omega.
+$$</p>
+<p><strong>Inclusione $\subseteq$.</strong></p>
+<p>Sia $\alpha\in L(\mathcal{A})$. Allora esiste una run accettante:</p>
+<p>$$
+\rho=q_0q_1q_2\ldots
+$$</p>
+<p>su $\alpha$. Poiche' la run e' accettante, visita stati finali infinite volte:</p>
+<p>$$
+Inf(\rho)\cap F\neq\emptyset.
+$$</p>
+<p>Poiche' $F$ e' finito, almeno uno stato finale $f\in F$ e' visitato infinite volte. Siano:</p>
+<p>$$
+i_0&lt;i_1&lt;i_2&lt;\ldots
+$$</p>
+<p>le posizioni della run in cui compare $f$, cioe':</p>
+<p>$$
+q_{i_j}=f.
+$$</p>
+<p>Spezziamo $\alpha$ in:</p>
+<p>$$
+\alpha=u v_1v_2v_3\ldots
+$$</p>
+<p>dove:</p>
+<ul>
+<li>$u$ e' il blocco letto da $q_0$ fino alla prima visita a $f$;</li>
+<li>$v_j$ e' il blocco letto da $f$ alla visita successiva a $f$.</li>
+</ul>
+<p>Allora:</p>
+<p>$$
+u\in W_{q_0,f}
+$$</p>
+<p>e, per ogni $j$:</p>
+<p>$$
+v_j\in C_f.
+$$</p>
+<p>Quindi:</p>
+<p>$$
+\alpha\in W_{q_0,f}C_f^\omega.
+$$</p>
+<p>Poiche' $f\in F$, otteniamo:</p>
+<p>$$
+\alpha\in\bigcup_{f\in F} W_{q_0,f}C_f^\omega.
+$$</p>
+<p><strong>Inclusione $\supseteq$.</strong></p>
+<p>Sia:</p>
+<p>$$
+\alpha\in W_{q_0,f}C_f^\omega
+$$</p>
+<p>per qualche $f\in F$. Allora:</p>
+<p>$$
+\alpha=uv_1v_2\ldots
+$$</p>
+<p>con:</p>
+<p>$$
+u\in W_{q_0,f}
+$$</p>
+<p>e:</p>
+<p>$$
+v_i\in C_f\quad\text{per ogni }i.
+$$</p>
+<p>Per definizione di $W_{q_0,f}$, esiste una computazione che legge $u$ e porta da $q_0$ a $f$. Per definizione di $C_f$, per ogni $v_i$ esiste una computazione che parte da $f$, legge $v_i$ e torna a $f$.</p>
+<p>Concatenando queste computazioni otteniamo una run infinita su $\alpha$ che visita $f$ alla fine di ogni blocco $v_i$. Poiche' ci sono infiniti blocchi, $f$ viene visitato infinite volte.</p>
+<p>Dato che $f\in F$, la run e' accettante. Quindi:</p>
+<p>$$
+\alpha\in L(\mathcal{A}).
+$$</p>
+<p>Abbiamo dimostrato l'uguaglianza.</p>
+<h3>Direzione espressione omega-regolare -&gt; Büchi</h3>
+<p>Basta costruire un NBA per ogni linguaggio della forma:</p>
+<p>$$
+UV^\omega
+$$</p>
+<p>con $U,V$ regolari, e poi usare la chiusura per unione.</p>
+<p>Siano:</p>
+<p>$$
+\mathcal{A}_U
+$$</p>
+<p>un automa finito per $U$ e:</p>
+<p>$$
+\mathcal{A}_V
+$$</p>
+<p>un automa finito per $V$.</p>
+<p>Costruiamo un NBA che:</p>
+<ol>
+<li>simula $\mathcal{A}_U$ per leggere un prefisso in $U$;</li>
+<li>quando $\mathcal{A}_U$ raggiunge uno stato finale, entra nella componente che simula $\mathcal{A}_V$;</li>
+<li>ogni volta che la componente $V$ raggiunge uno stato finale, torna nondeterministicamente all'inizio della componente $V$;</li>
+<li>rende finale lo stato di ritorno o gli stati finali del componente $V$, in modo che completare un blocco di $V$ venga registrato come visita Büchi.</li>
+</ol>
+<p><strong>Correttezza.</strong></p>
+<p>Se una parola e' in $UV^\omega$, allora ha forma:</p>
+<p>$$
+\alpha=uv_1v_2\ldots
+$$</p>
+<p>con $u\in U$ e $v_i\in V$. L'automa legge $u$ usando $\mathcal{A}_U$, poi legge ciascun $v_i$ usando $\mathcal{A}_V$ e ritorna all'inizio della componente $V$ infinite volte. Quindi visita stati finali infinite volte e accetta.</p>
+<p>Viceversa, se l'automa accetta, allora deve visitare infinite volte la zona finale della componente $V$. Ogni visita corrisponde al completamento di un blocco letto da $\mathcal{A}_V$ e appartenente a $V$. Prima di entrare nella componente $V$ deve aver completato un prefisso appartenente a $U$. Quindi la parola accettata ha forma:</p>
+<p>$$
+uv_1v_2\ldots
+$$</p>
+<p>con $u\in U$ e $v_i\in V$. Dunque appartiene a $UV^\omega$.</p>
+<p>Per una unione finita $\bigcup_i U_iV_i^\omega$, si costruisce un NBA che all'inizio sceglie nondeterministicamente quale componente simulare. Quindi ogni espressione omega-regolare e' riconosciuta da un NBA.</p>
+<p>Punto orale: nella direzione Büchi -&gt; espressione, non basta dire "c'e' un ciclo". Devi scegliere uno stato finale $f$ visitato infinite volte e spezzare la run tra visite successive a quello stesso $f$.</p>
+<hr>
+<h2>6. Intersezione di automi di Büchi e GNBA <a id="proof-06"></a></h2>
+<h3>Enunciato</h3>
+<p>Se $L_1$ e $L_2$ sono omega-regolari, allora:</p>
+<p>$$
+L_1\cap L_2
+$$</p>
+<p>e' omega-regolare.</p>
+<h3>Perche' il prodotto semplice non basta</h3>
+<p>Per parole finite, il prodotto con finali $F_1\times F_2$ funziona. Per Büchi no, perche' le due run potrebbero visitare i rispettivi finali infinite volte in istanti diversi.</p>
+<p>Esempio concettuale:</p>
+<ul>
+<li>il primo automa visita un finale ai tempi pari;</li>
+<li>il secondo automa visita un finale ai tempi dispari.</li>
+</ul>
+<p>Entrambi accettano, ma il prodotto potrebbe non visitare mai $F_1\times F_2$.</p>
+<p>Serve quindi una condizione che dica:</p>
+<ol>
+<li>visita infinite volte finali della prima componente;</li>
+<li>visita infinite volte finali della seconda componente.</li>
+</ol>
+<p>Questa e' esattamente una condizione di Büchi generalizzata.</p>
+<h3>Costruzione come GNBA</h3>
+<p>Siano:</p>
+<p>$$
+\mathcal{A}_1=(Q_1,A,\Delta_1,q_1^0,F_1)
+$$</p>
+<p>e:</p>
+<p>$$
+\mathcal{A}_2=(Q_2,A,\Delta_2,q_2^0,F_2).
+$$</p>
+<p>Costruiamo il prodotto:</p>
+<p>$$
+\mathcal{G}=(Q_1\times Q_2,A,\Delta,(q_1^0,q_2^0),\mathcal{F})
+$$</p>
+<p>dove:</p>
+<p>$$
+((p_1,p_2),a,(r_1,r_2))\in\Delta
+$$</p>
+<p>se e solo se:</p>
+<p>$$
+(p_1,a,r_1)\in\Delta_1
+\quad\text{e}\quad
+(p_2,a,r_2)\in\Delta_2.
+$$</p>
+<p>La famiglia di accettazione e':</p>
+<p>$$
+\mathcal{F}=\{F_1\times Q_2,\; Q_1\times F_2\}.
+$$</p>
+<p>Una run del GNBA e' accettante se visita infinite volte almeno uno stato di ciascun insieme della famiglia $\mathcal{F}$.</p>
+<h3>Correttezza del prodotto</h3>
+<p>Sia $\alpha\in A^\omega$.</p>
+<p><strong>Se $\alpha\in L(\mathcal{A}_1)\cap L(\mathcal{A}_2)$</strong>, allora esistono:</p>
+<ul>
+<li>una run accettante $\rho_1$ di $\mathcal{A}_1$ su $\alpha$;</li>
+<li>una run accettante $\rho_2$ di $\mathcal{A}_2$ su $\alpha$.</li>
+</ul>
+<p>La run prodotto:</p>
+<p>$$
+\rho=(\rho_1(0),\rho_2(0))(\rho_1(1),\rho_2(1))\ldots
+$$</p>
+<p>e' valida per costruzione delle transizioni. Poiche' $\rho_1$ visita $F_1$ infinite volte, $\rho$ visita $F_1\times Q_2$ infinite volte. Poiche' $\rho_2$ visita $F_2$ infinite volte, $\rho$ visita $Q_1\times F_2$ infinite volte. Quindi $\rho$ e' accettante per il GNBA.</p>
+<p><strong>Se $\alpha$ e' accettata dal GNBA</strong>, esiste una run prodotto accettante:</p>
+<p>$$
+\rho=(p_0,r_0)(p_1,r_1)\ldots
+$$</p>
+<p>Proiettando sulla prima componente otteniamo una run valida di $\mathcal{A}_1$; proiettando sulla seconda otteniamo una run valida di $\mathcal{A}_2$.</p>
+<p>Poiche' $\rho$ visita $F_1\times Q_2$ infinite volte, la prima proiezione visita $F_1$ infinite volte. Poiche' $\rho$ visita $Q_1\times F_2$ infinite volte, la seconda proiezione visita $F_2$ infinite volte. Quindi entrambe le run proiettate sono accettanti.</p>
+<p>Dunque:</p>
+<p>$$
+\alpha\in L(\mathcal{A}_1)\cap L(\mathcal{A}_2).
+$$</p>
+<h3>Conversione GNBA -&gt; NBA</h3>
+<p>Sia un GNBA con famiglia:</p>
+<p>$$
+\mathcal{F}=\{F_1,\ldots,F_k\}.
+$$</p>
+<p>Costruiamo un NBA con stati:</p>
+<p>$$
+Q'=Q\times\{1,\ldots,k\}.
+$$</p>
+<p>L'indice $i$ significa: "sto aspettando di visitare $F_i$".</p>
+<p>La transizione simula quella originale e aggiorna l'indice:</p>
+<ul>
+<li>se lo stato raggiunto appartiene a $F_i$, passo all'indice successivo $i+1$;</li>
+<li>se $i=k$ e visito $F_k$, torno a $1$;</li>
+<li>altrimenti resto nello stesso indice.</li>
+</ul>
+<p>Gli stati finali del nuovo NBA possono essere, per esempio:</p>
+<p>$$
+F'=Q\times\{1\}
+$$</p>
+<p>raggiunti dopo aver completato un ciclo di obblighi.</p>
+<p><strong>Correttezza.</strong></p>
+<p>Se una run del GNBA visita ogni $F_i$ infinite volte, allora il contatore riesce a completare il ciclo:</p>
+<p>$$
+F_1,F_2,\ldots,F_k
+$$</p>
+<p>infinite volte. Quindi il nuovo NBA torna infinite volte all'indice $1$ e accetta.</p>
+<p>Viceversa, se il nuovo NBA accetta, allora visita infinite volte l'indice $1$. Per tornare infinite volte a $1$, deve aver attraversato infinite volte tutti gli obblighi $F_1,\ldots,F_k$. Quindi la run originale visita ogni $F_i$ infinite volte ed e' accettante per il GNBA.</p>
+<p>Punto orale: per l'intersezione non devi imporre finali simultanei. Devi imporre due obblighi Büchi separati e poi convertirli in un solo obbligo usando un contatore.</p>
+<hr>
+<h2>7. Emptiness degli automi di Büchi <a id="proof-07"></a></h2>
+<h3>Enunciato</h3>
+<p>Sia:</p>
+<p>$$
+\mathcal{A}=(Q,A,\Delta,q_0,F)
+$$</p>
+<p>un NBA. Allora:</p>
+<p>$$
+L(\mathcal{A})\neq\emptyset
+$$</p>
+<p>se e solo se esiste una componente fortemente connessa raggiungibile da $q_0$ che contiene almeno uno stato finale ed e' attraversabile infinitamente.</p>
+<p>Equivalente: esiste uno stato finale $f\in F$ raggiungibile da $q_0$ e da cui e' possibile tornare a $f$ leggendo una parola non vuota.</p>
+<h3>Dimostrazione</h3>
+<p><strong>Se il linguaggio e' non vuoto, esiste una SCC finale raggiungibile.</strong></p>
+<p>Supponiamo:</p>
+<p>$$
+L(\mathcal{A})\neq\emptyset.
+$$</p>
+<p>Allora esiste una parola $\alpha$ accettata e una run accettante:</p>
+<p>$$
+\rho=q_0q_1q_2\ldots
+$$</p>
+<p>Poiche' la run e' accettante:</p>
+<p>$$
+Inf(\rho)\cap F\neq\emptyset.
+$$</p>
+<p>Scegliamo uno stato finale:</p>
+<p>$$
+f\in Inf(\rho)\cap F.
+$$</p>
+<p>Lo stato $f$ compare infinite volte nella run. In particolare:</p>
+<ul>
+<li>$f$ e' raggiungibile da $q_0$, perche' appare lungo la run;</li>
+<li>dopo una visita a $f$, la run torna di nuovo a $f$ piu avanti.</li>
+</ul>
+<p>Quindi esiste un cammino non vuoto da $f$ a $f$. Gli stati che compaiono infinite volte nella run formano, o contengono, una componente fortemente connessa raggiungibile contenente $f$.</p>
+<p><strong>Se esiste una SCC finale raggiungibile, il linguaggio e' non vuoto.</strong></p>
+<p>Supponiamo che esista uno stato finale $f$ raggiungibile da $q_0$ e con un ciclo non vuoto da $f$ a $f$.</p>
+<p>Sia:</p>
+<p>$$
+u\in A^\ast
+$$</p>
+<p>una parola che porta da $q_0$ a $f$, e sia:</p>
+<p>$$
+v\in A^+
+$$</p>
+<p>una parola che porta da $f$ a $f$.</p>
+<p>Allora la parola infinita:</p>
+<p>$$
+\alpha=uv^\omega
+$$</p>
+<p>ammette una run che:</p>
+<ol>
+<li>legge $u$ e arriva in $f$;</li>
+<li>legge $v$ e torna in $f$;</li>
+<li>ripete il ciclo $v$ infinite volte.</li>
+</ol>
+<p>Questa run visita $f$ infinite volte. Poiche' $f\in F$, la run e' accettante. Dunque:</p>
+<p>$$
+\alpha\in L(\mathcal{A})
+$$</p>
+<p>e quindi:</p>
+<p>$$
+L(\mathcal{A})\neq\emptyset.
+$$</p>
+<p>Punto orale: l'emptiness Büchi non cerca solo un finale raggiungibile. Cerca un finale raggiungibile che stia su un ciclo, perche' l'accettazione deve avvenire infinite volte.</p>
+<hr>
+<h2>8. Complementazione Büchi tramite congruenza e saturazione <a id="proof-08"></a></h2>
+<p>Questa e' la dimostrazione piu tecnica degli appunti sui "buchi". Serve a giustificare il fatto che gli omega-regolari sono chiusi per complemento, ma senza fingere che basti invertire gli stati finali.</p>
+<h3>Definizioni</h3>
+<p>Sia:</p>
+<p>$$
+\mathcal{A}=(Q,A,\Delta,q_0,F)
+$$</p>
+<p>un NBA.</p>
+<p>Per $u\in A^\ast$ e $p,q\in Q$ scriviamo:</p>
+<p>$$
+p\xrightarrow{u}q
+$$</p>
+<p>se esiste una computazione finita che parte da $p$, legge $u$ e arriva in $q$.</p>
+<p>Scriviamo:</p>
+<p>$$
+p\xrightarrow[F]{u} q
+$$</p>
+<p>se esiste una computazione finita da $p$ a $q$ su $u$ che visita almeno uno stato finale durante il segmento. Contiamo anche gli estremi del segmento, cosi' una visita finale al bordo tra due blocchi non viene persa.</p>
+<p>Definiamo la relazione $\approx_{\mathcal{A}}$ su $A^\ast$:</p>
+<p>$$
+u\approx_{\mathcal{A}}v
+$$</p>
+<p>se per ogni $p,q\in Q$ valgono entrambe:</p>
+<p>$$
+p\xrightarrow{u}q \iff p\xrightarrow{v}q
+$$</p>
+<p>e:</p>
+<p>$$
+p\xrightarrow[F]{u} q \iff p\xrightarrow[F]{v} q.
+$$</p>
+<p>Quindi due parole finite sono equivalenti se producono gli stessi collegamenti tra stati e gli stessi collegamenti che attraversano almeno un finale.</p>
+<h3>Lemma 1: $\approx_{\mathcal{A}}$ ha indice finito</h3>
+<p>Per ogni parola $u$, la sua informazione rilevante e' una coppia di relazioni su $Q$:</p>
+<p>$$
+(R_u,R_u^F)
+$$</p>
+<p>dove:</p>
+<p>$$
+R_u=\{(p,q)\mid p\xrightarrow{u}q\}
+$$</p>
+<p>e:</p>
+<p>$$
+R_u^F=\{(p,q)\mid p\xrightarrow[F]{u} q\}.
+$$</p>
+<p>Poiche' $Q$ e' finito, $Q\times Q$ e' finito. Le possibili relazioni su $Q\times Q$ sono finite:</p>
+<p>$$
+2^{|Q|^2}.
+$$</p>
+<p>Le possibili coppie $(R_u,R_u^F)$ sono quindi al piu':</p>
+<p>$$
+2^{|Q|^2}\cdot 2^{|Q|^2}.
+$$</p>
+<p>Quindi $\approx_{\mathcal{A}}$ ha un numero finito di classi.</p>
+<h3>Lemma 2: $\approx_{\mathcal{A}}$ e' una congruenza</h3>
+<p>Vogliamo mostrare:</p>
+<p>$$
+u\approx u'
+\quad\text{e}\quad
+v\approx v'
+\Rightarrow
+uv\approx u'v'.
+$$</p>
+<p>Fissiamo $p,r\in Q$.</p>
+<p>Per i collegamenti senza vincolo finale:</p>
+<p>$$
+p\xrightarrow{uv}r
+$$</p>
+<p>se e solo se esiste uno stato intermedio $s$ tale che:</p>
+<p>$$
+p\xrightarrow{u}s
+\quad\text{e}\quad
+s\xrightarrow{v}r.
+$$</p>
+<p>Poiche' $u\approx u'$ e $v\approx v'$, questo equivale a:</p>
+<p>$$
+p\xrightarrow{u'}s
+\quad\text{e}\quad
+s\xrightarrow{v'}r
+$$</p>
+<p>per qualche $s$, cioe':</p>
+<p>$$
+p\xrightarrow{u'v'}r.
+$$</p>
+<p>Ora consideriamo i collegamenti che visitano un finale:</p>
+<p>$$
+p\xrightarrow[F]{uv} r.
+$$</p>
+<p>Questo accade se e solo se esiste uno stato intermedio $s$ tale che almeno una delle due parti visita un finale:</p>
+<p>$$
+(p\xrightarrow[F]{u} s \land s\xrightarrow{v}r)
+\quad\text{oppure}\quad
+(p\xrightarrow{u}s \land s\xrightarrow[F]{v} r).
+$$</p>
+<p>Usando $u\approx u'$ e $v\approx v'$, la condizione e' equivalente a:</p>
+<p>$$
+(p\xrightarrow[F]{u'} s \land s\xrightarrow{v'}r)
+\quad\text{oppure}\quad
+(p\xrightarrow{u'}s \land s\xrightarrow[F]{v'} r).
+$$</p>
+<p>Questo equivale a:</p>
+<p>$$
+p\xrightarrow[F]{u'v'} r.
+$$</p>
+<p>Abbiamo mostrato sia l'equivalenza dei collegamenti semplici sia quella dei collegamenti con visita finale. Quindi:</p>
+<p>$$
+uv\approx_{\mathcal{A}}u'v'.
+$$</p>
+<p>La relazione e' una congruenza.</p>
+<h3>Lemma 3: $\approx_{\mathcal{A}}$ satura $L(\mathcal{A})$</h3>
+<p>Dire che una congruenza $\sim$ satura un linguaggio $L\subseteq A^\omega$ significa:</p>
+<p>$$
+U V^\omega\cap L\neq\emptyset
+\Rightarrow
+U V^\omega\subseteq L
+$$</p>
+<p>per ogni coppia di classi $U,V$ di $\sim$.</p>
+<p>Dimostriamolo per $\approx_{\mathcal{A}}$ e $L(\mathcal{A})$.</p>
+<p>Supponiamo:</p>
+<p>$$
+U V^\omega\cap L(\mathcal{A})\neq\emptyset.
+$$</p>
+<p>Allora esiste:</p>
+<p>$$
+\alpha=uv_1v_2v_3\ldots
+$$</p>
+<p>con:</p>
+<p>$$
+u\in U,\qquad v_i\in V
+$$</p>
+<p>e:</p>
+<p>$$
+\alpha\in L(\mathcal{A}).
+$$</p>
+<p>Poiche' $\alpha$ e' accettata, esiste una run accettante. Guardiamo gli stati ai bordi dei blocchi:</p>
+<p>$$
+q_0=s_0\xrightarrow{u}s_1\xrightarrow{v_1}s_2\xrightarrow{v_2}s_3\xrightarrow{v_3}\ldots
+$$</p>
+<p>La run visita stati finali infinite volte. Poiche' abbiamo contato anche gli estremi dei segmenti, questo implica che per infiniti indici $i$ vale:</p>
+<p>$$
+s_i\xrightarrow[F]{v_i} s_{i+1}.
+$$</p>
+<p>Ora prendiamo una parola arbitraria:</p>
+<p>$$
+\beta=u'v_1'v_2'v_3'\ldots
+$$</p>
+<p>con:</p>
+<p>$$
+u'\in U,\qquad v_i'\in V.
+$$</p>
+<p>Poiche' $u,u'$ sono nella stessa classe:</p>
+<p>$$
+u\approx_{\mathcal{A}}u'.
+$$</p>
+<p>Quindi, da $q_0\xrightarrow{u}s_1$, otteniamo:</p>
+<p>$$
+q_0\xrightarrow{u'}s_1.
+$$</p>
+<p>Poiche' $v_i,v_i'$ sono nella stessa classe per ogni $i$:</p>
+<p>$$
+v_i\approx_{\mathcal{A}}v_i'.
+$$</p>
+<p>Quindi, da:</p>
+<p>$$
+s_i\xrightarrow{v_i}s_{i+1},
+$$</p>
+<p>otteniamo:</p>
+<p>$$
+s_i\xrightarrow{v_i'}s_{i+1}.
+$$</p>
+<p>Inoltre, per gli infiniti indici $i$ in cui:</p>
+<p>$$
+s_i\xrightarrow[F]{v_i} s_{i+1},
+$$</p>
+<p>otteniamo:</p>
+<p>$$
+s_i\xrightarrow[F]{v_i'} s_{i+1}.
+$$</p>
+<p>Dunque possiamo costruire su $\beta$ una run che segue la stessa sequenza di stati-bordo:</p>
+<p>$$
+q_0=s_0\xrightarrow{u'}s_1\xrightarrow{v_1'}s_2\xrightarrow{v_2'}s_3\ldots
+$$</p>
+<p>e che visita stati finali in infiniti segmenti. Quindi visita stati finali infinite volte.</p>
+<p>La run e' accettante, dunque:</p>
+<p>$$
+\beta\in L(\mathcal{A}).
+$$</p>
+<p>Poiche' $\beta$ era arbitraria in $UV^\omega$:</p>
+<p>$$
+UV^\omega\subseteq L(\mathcal{A}).
+$$</p>
+<p>Quindi $\approx_{\mathcal{A}}$ satura $L(\mathcal{A})$.</p>
+<h3>Lemma 4: se una congruenza finita satura $L$, allora satura anche il complemento</h3>
+<p>Sia $\sim$ una congruenza che satura $L$. Vogliamo mostrare che satura anche:</p>
+<p>$$
+\overline{L}=A^\omega\setminus L.
+$$</p>
+<p>Prendiamo classi $U,V$ e supponiamo:</p>
+<p>$$
+UV^\omega\cap\overline{L}\neq\emptyset.
+$$</p>
+<p>Vogliamo dimostrare:</p>
+<p>$$
+UV^\omega\subseteq\overline{L}.
+$$</p>
+<p>Supponiamo per assurdo che non sia cosi'. Allora esiste una parola in $UV^\omega$ che appartiene a $L$, cioe':</p>
+<p>$$
+UV^\omega\cap L\neq\emptyset.
+$$</p>
+<p>Poiche' $\sim$ satura $L$, segue:</p>
+<p>$$
+UV^\omega\subseteq L.
+$$</p>
+<p>Ma questo contraddice:</p>
+<p>$$
+UV^\omega\cap\overline{L}\neq\emptyset.
+$$</p>
+<p>Quindi l'assurdo e' falso, e:</p>
+<p>$$
+UV^\omega\subseteq\overline{L}.
+$$</p>
+<p>La congruenza satura il complemento.</p>
+<h3>Lemma 5: da saturazione finita a omega-regolarita'</h3>
+<p>Se una congruenza finita $\sim$ satura $L$, allora $L$ e' unione finita di linguaggi della forma:</p>
+<p>$$
+UV^\omega
+$$</p>
+<p>dove $U,V$ sono classi di $\sim$.</p>
+<p>Dimostriamo i passaggi.</p>
+<p><strong>Passo 1: decomposizione di una parola infinita.</strong></p>
+<p>Sia:</p>
+<p>$$
+\alpha=a_0a_1a_2\ldots\in A^\omega.
+$$</p>
+<p>Poiche' $\sim$ ha indice finito, ci sono solo finitamente molte classi. Coloriamo ogni coppia di indici $i&lt;j$ con la classe del fattore finito:</p>
+<p>$$
+\alpha(i,j)=a_i a_{i+1}\ldots a_{j-1}.
+$$</p>
+<p>Per il teorema infinito di Ramsey, esiste una sequenza infinita di indici:</p>
+<p>$$
+i_0&lt;i_1&lt;i_2&lt;\ldots
+$$</p>
+<p>tale che tutti i fattori:</p>
+<p>$$
+\alpha(i_r,i_s)
+\quad\text{con }r&lt;s
+$$</p>
+<p>appartengono alla stessa classe $V$.</p>
+<p>Sia $U$ la classe del prefisso:</p>
+<p>$$
+\alpha(0,i_0).
+$$</p>
+<p>Allora:</p>
+<p>$$
+\alpha
+=
+u v_0v_1v_2\ldots
+$$</p>
+<p>dove:</p>
+<p>$$
+u=\alpha(0,i_0)\in U
+$$</p>
+<p>e:</p>
+<p>$$
+v_r=\alpha(i_r,i_{r+1})\in V.
+$$</p>
+<p>Quindi:</p>
+<p>$$
+\alpha\in U V^\omega.
+$$</p>
+<p>Inoltre vale:</p>
+<p>$$
+V\cdot V\subseteq V.
+$$</p>
+<p>Infatti, presi $x,y\in V$, abbiamo:</p>
+<p>$$
+x\sim v_0
+\quad\text{e}\quad
+y\sim v_1.
+$$</p>
+<p>Poiche' $\sim$ e' una congruenza:</p>
+<p>$$
+xy\sim v_0v_1.
+$$</p>
+<p>Ma:</p>
+<p>$$
+v_0v_1=\alpha(i_0,i_2)
+$$</p>
+<p>e, per la scelta degli indici di Ramsey, anche $\alpha(i_0,i_2)$ appartiene alla classe $V$. Quindi:</p>
+<p>$$
+xy\in V.
+$$</p>
+<p><strong>Passo 2: rappresentazione di $L$ come unione di classi omega.</strong></p>
+<p>Consideriamo tutte le coppie di classi $(U,V)$ tali che:</p>
+<p>$$
+UV^\omega\cap L\neq\emptyset.
+$$</p>
+<p>Poiche' il numero di classi e' finito, il numero di coppie $(U,V)$ e' finito.</p>
+<p>Definiamo:</p>
+<p>$$
+R=\bigcup_{\substack{U,V\text{ classi}\\UV^\omega\cap L\neq\emptyset}} UV^\omega.
+$$</p>
+<p>Mostriamo che:</p>
+<p>$$
+L=R.
+$$</p>
+<p>Prima, $R\subseteq L$. Se $UV^\omega$ compare nell'unione, allora:</p>
+<p>$$
+UV^\omega\cap L\neq\emptyset.
+$$</p>
+<p>Poiche' $\sim$ satura $L$, segue:</p>
+<p>$$
+UV^\omega\subseteq L.
+$$</p>
+<p>Quindi ogni pezzo dell'unione e' contenuto in $L$, e dunque:</p>
+<p>$$
+R\subseteq L.
+$$</p>
+<p>Ora, $L\subseteq R$. Sia $\alpha\in L$. Per il Passo 1, esistono classi $U,V$ tali che:</p>
+<p>$$
+\alpha\in UV^\omega.
+$$</p>
+<p>Poiche' $\alpha\in L$, abbiamo:</p>
+<p>$$
+UV^\omega\cap L\neq\emptyset.
+$$</p>
+<p>Quindi quella coppia $(U,V)$ compare nell'unione che definisce $R$, e:</p>
+<p>$$
+\alpha\in R.
+$$</p>
+<p>Abbiamo dimostrato:</p>
+<p>$$
+L=R.
+$$</p>
+<p><strong>Passo 3: ogni classe e' regolare.</strong></p>
+<p>Sia $C$ una classe di $\sim$. Costruiamo un DFA che riconosce $C$:</p>
+<ul>
+<li>stati: le classi di $\sim$;</li>
+<li>stato iniziale: $[\varepsilon]$;</li>
+<li>transizione: $[x]\xrightarrow{a}[xa]$;</li>
+<li>unico stato finale: $C$.</li>
+</ul>
+<p>La transizione e' ben definita perche' $\sim$ e' una congruenza. Per induzione su $w$:</p>
+<p>$$
+\hat{\delta}([\varepsilon],w)=[w].
+$$</p>
+<p>Quindi il DFA accetta esattamente le parole $w$ tali che $[w]=C$, cioe' esattamente la classe $C$. Dunque ogni classe e' un linguaggio regolare di parole finite.</p>
+<p><strong>Passo 4: omega-regolarita'.</strong></p>
+<p>Ogni $U$ e $V$ e' regolare. Quindi ogni linguaggio:</p>
+<p>$$
+UV^\omega
+$$</p>
+<p>e' omega-regolare. Poiche' $L$ e' unione finita di questi linguaggi, $L$ e' omega-regolare.</p>
+<h3>Conclusione: chiusura per complemento</h3>
+<p>Sia $L$ omega-regolare. Allora esiste un NBA $\mathcal{A}$ con:</p>
+<p>$$
+L=L(\mathcal{A}).
+$$</p>
+<p>Abbiamo mostrato che $\approx_{\mathcal{A}}$:</p>
+<ol>
+<li>ha indice finito;</li>
+<li>e' una congruenza;</li>
+<li>satura $L$.</li>
+</ol>
+<p>Per il Lemma 4, satura anche $\overline{L}$. Per il Lemma 5, $\overline{L}$ e' omega-regolare.</p>
+<p>Quindi:</p>
+<p>$$
+L\text{ omega-regolare}
+\Rightarrow
+\overline{L}\text{ omega-regolare}.
+$$</p>
+<p>Punto orale: il complemento Büchi esiste, ma non si ottiene scambiando finali e non finali. La dimostrazione passa da congruenze finite e saturazione.</p>
+<hr>
+<h2>9. Caratterizzazione dei DBA e non-chiusura per complemento <a id="proof-09"></a></h2>
+<h3>Enunciato di caratterizzazione</h3>
+<p>Un linguaggio $L\subseteq A^\omega$ e' riconosciuto da un automa di Büchi deterministico se e solo se:</p>
+<p>$$
+L=\overrightarrow{W}
+$$</p>
+<p>per qualche linguaggio regolare $W\subseteq A^\ast$, dove:</p>
+<p>$$
+\overrightarrow{W}
+=
+\{\alpha\in A^\omega\mid \exists^\omega n,\; \alpha(0,n)\in W\}.
+$$</p>
+<p>In parole: una parola infinita e' accettata se ha infiniti prefissi appartenenti a $W$.</p>
+<h3>Direzione DBA -&gt; $\overrightarrow{W}$</h3>
+<p>Sia:</p>
+<p>$$
+\mathcal{A}=(Q,A,\delta,q_0,F)
+$$</p>
+<p>un DBA.</p>
+<p>Definiamo:</p>
+<p>$$
+W=\{w\in A^\ast\mid \hat{\delta}(q_0,w)\in F\}.
+$$</p>
+<p>$W$ e' regolare, perche' e' riconosciuto dal DFA che ha la stessa struttura di $\mathcal{A}$ e gli stessi stati finali.</p>
+<p>Ora prendiamo $\alpha\in A^\omega$. La run di un DBA su $\alpha$ e' unica. La parola $\alpha$ e' accettata se e solo se la run visita $F$ infinite volte.</p>
+<p>Visitare $F$ dopo aver letto il prefisso $\alpha(0,n)$ significa:</p>
+<p>$$
+\alpha(0,n)\in W.
+$$</p>
+<p>Quindi:</p>
+<p>$$
+\alpha\in L(\mathcal{A})
+\iff
+\exists^\omega n,\;\alpha(0,n)\in W
+\iff
+\alpha\in\overrightarrow{W}.
+$$</p>
+<p>Dunque:</p>
+<p>$$
+L(\mathcal{A})=\overrightarrow{W}.
+$$</p>
+<h3>Direzione $\overrightarrow{W}$ -&gt; DBA</h3>
+<p>Supponiamo $W\subseteq A^\ast$ regolare. Esiste un DFA:</p>
+<p>$$
+\mathcal{D}=(Q,A,\delta,q_0,F)
+$$</p>
+<p>che riconosce $W$.</p>
+<p>Consideriamo lo stesso automa come DBA:</p>
+<p>$$
+\mathcal{A}=(Q,A,\delta,q_0,F).
+$$</p>
+<p>Per ogni $\alpha\in A^\omega$, la run del DBA visita $F$ infinite volte se e solo se esistono infiniti prefissi $\alpha(0,n)$ che portano il DFA in $F$, cioe' infiniti prefissi in $W$.</p>
+<p>Quindi:</p>
+<p>$$
+L(\mathcal{A})=\overrightarrow{W}.
+$$</p>
+<p>La caratterizzazione e' dimostrata.</p>
+<h3>Linguaggio con finitemente molte $a$: riconoscibile da NBA ma non da DBA</h3>
+<p>Sia:</p>
+<p>$$
+L_{fin}=\{\alpha\in\{a,b\}^\omega\mid \alpha\text{ contiene solo un numero finito di }a\}.
+$$</p>
+<p>In italiano: le parole infinite con solo un numero finito di occorrenze di $a$.</p>
+<p>Questo linguaggio e' riconoscibile da un NBA: l'automa legge liberamente, poi nondeterministicamente indovina il punto dopo l'ultima $a$ e passa in uno stato finale che permette solo $b$.</p>
+<p>Dimostriamo che non e' riconoscibile da un DBA.</p>
+<p>Supponiamo per assurdo che $L_{fin}$ sia riconoscibile da un DBA. Per la caratterizzazione, esiste un linguaggio regolare $W\subseteq\{a,b\}^\ast$ tale che:</p>
+<p>$$
+L_{fin}=\overrightarrow{W}.
+$$</p>
+<p>Costruiamo ora una parola con infinite $a$ che pero' ha infiniti prefissi in $W$, ottenendo una contraddizione.</p>
+<p>Partiamo da:</p>
+<p>$$
+b^\omega.
+$$</p>
+<p>Questa parola ha zero occorrenze di $a$, quindi appartiene a $L_{fin}$. Poiche':</p>
+<p>$$
+L_{fin}=\overrightarrow{W},
+$$</p>
+<p>deve avere infiniti prefissi in $W$. Quindi esiste $m_0$ tale che:</p>
+<p>$$
+b^{m_0}\in W.
+$$</p>
+<p>Ora consideriamo:</p>
+<p>$$
+b^{m_0}ab^\omega.
+$$</p>
+<p>Questa parola ha una sola $a$, quindi appartiene a $L_{fin}$. Dunque ha infiniti prefissi in $W$. In particolare, possiamo scegliere $m_1$ tale che:</p>
+<p>$$
+b^{m_0}ab^{m_1}\in W.
+$$</p>
+<p>Poi consideriamo:</p>
+<p>$$
+b^{m_0}ab^{m_1}ab^\omega.
+$$</p>
+<p>Questa parola ha due $a$, quindi appartiene ancora a $L_{fin}$. Quindi ha infiniti prefissi in $W$, e scegliamo $m_2$ tale che:</p>
+<p>$$
+b^{m_0}ab^{m_1}ab^{m_2}\in W.
+$$</p>
+<p>Continuando cosi', costruiamo una parola infinita:</p>
+<p>$$
+\beta=b^{m_0}ab^{m_1}ab^{m_2}a\ldots
+$$</p>
+<p>Questa parola contiene infinite occorrenze di $a$, quindi:</p>
+<p>$$
+\beta\notin L_{fin}.
+$$</p>
+<p>Pero' per costruzione ha infiniti prefissi in $W$:</p>
+<p>$$
+b^{m_0},\quad
+b^{m_0}ab^{m_1},\quad
+b^{m_0}ab^{m_1}ab^{m_2},\ldots
+$$</p>
+<p>Quindi:</p>
+<p>$$
+\beta\in\overrightarrow{W}.
+$$</p>
+<p>Poiche' $\overrightarrow{W}=L_{fin}$, otteniamo:</p>
+<p>$$
+\beta\in L_{fin}
+$$</p>
+<p>contraddizione.</p>
+<p>Dunque $L_{fin}$ non e' riconoscibile da alcun DBA.</p>
+<h3>Non-chiusura dei DBA per complemento</h3>
+<p>Il complemento di $L_{fin}$ e':</p>
+<p>$$
+L_{\infty a}
+=
+\{\alpha\mid \alpha\text{ contiene infinite occorrenze di }a\}.
+$$</p>
+<p>Questo linguaggio e' riconoscibile da un DBA: basta avere uno stato finale visitato ogni volta che si legge $a$.</p>
+<p>Se i DBA fossero chiusi per complemento, allora dal DBA per $L_{\infty a}$ otterremmo un DBA per il complemento, cioe' per $L_{fin}$. Ma abbiamo appena dimostrato che $L_{fin}$ non e' riconoscibile da DBA.</p>
+<p>Quindi i DBA non sono chiusi per complemento.</p>
+<p>Punto orale: il non determinismo serve a "indovinare" l'ultima $a$. Un DBA non puo' farlo perche' ha una sola computazione.</p>
+<hr>
+<h2>10. Secondo teorema di Büchi: direzione automa -&gt; S1S <a id="proof-10"></a></h2>
+<h3>Enunciato della direzione</h3>
+<p>Se $L\subseteq A^\omega$ e' omega-regolare, allora $L$ e' definibile in S1S.</p>
+<p>Poiche' $L$ e' omega-regolare, esiste un NBA:</p>
+<p>$$
+\mathcal{A}=(Q,A,\Delta,q_0,F)
+$$</p>
+<p>tale che:</p>
+<p>$$
+L=L(\mathcal{A}).
+$$</p>
+<p>Vogliamo costruire una formula S1S vera esattamente sulle parole accettate da $\mathcal{A}$.</p>
+<h3>Codifica della parola</h3>
+<p>Una parola $\alpha\in A^\omega$ viene vista come struttura:</p>
+<p>$$
+\underline{\alpha}=(\mathbb{N},0,+1,&lt;,\{Q_a\}_{a\in A})
+$$</p>
+<p>dove:</p>
+<p>$$
+Q_a(x)
+$$</p>
+<p>significa: "in posizione $x$ della parola compare il simbolo $a$".</p>
+<p>Assumiamo che la parola sia ben formata: in ogni posizione vale esattamente un predicato $Q_a$.</p>
+<h3>Codifica della run</h3>
+<p>Sia:</p>
+<p>$$
+Q=\{q_0,q_1,\ldots,q_m\}.
+$$</p>
+<p>Introduciamo una variabile monadica del secondo ordine $Y_i$ per ogni stato $q_i$.</p>
+<p>Interpretazione:</p>
+<p>$$
+x\in Y_i
+\quad\text{significa: alla posizione }x\text{ la run e' nello stato }q_i.
+$$</p>
+<p>La formula avra' forma:</p>
+<p>$$
+\exists Y_0\ldots\exists Y_m\;\Phi(Y_0,\ldots,Y_m).
+$$</p>
+<p>L'esistenziale sugli insiemi $Y_i$ rappresenta il non determinismo: stiamo dicendo che esiste una run accettante.</p>
+<h3>Vincolo 1: stato iniziale</h3>
+<p>Alla posizione $0$, la run e' nello stato iniziale $q_0$:</p>
+<p>$$
+\Phi_{init}\equiv 0\in Y_0.
+$$</p>
+<h3>Vincolo 2: esattamente uno stato a ogni posizione</h3>
+<p>Almeno uno stato:</p>
+<p>$$
+\Phi_{atleast}\equiv
+\forall x\bigvee_{i=0}^m x\in Y_i.
+$$</p>
+<p>Al piu' uno stato:</p>
+<p>$$
+\Phi_{atmost}\equiv
+\forall x\bigwedge_{i\neq j}\neg(x\in Y_i\land x\in Y_j).
+$$</p>
+<p>Mettiamo:</p>
+<p>$$
+\Phi_{state}\equiv \Phi_{atleast}\land\Phi_{atmost}.
+$$</p>
+<p>Questo evita il passaggio spesso saltato negli appunti: gli insiemi $Y_i$ devono formare una partizione delle posizioni.</p>
+<h3>Vincolo 3: rispetto delle transizioni</h3>
+<p>Per ogni posizione $x$, la tripla:</p>
+<ul>
+<li>stato corrente;</li>
+<li>simbolo letto;</li>
+<li>stato successivo;</li>
+</ul>
+<p>deve essere una transizione dell'automa.</p>
+<p>Formula:</p>
+<p>$$
+\Phi_{trans}\equiv
+\forall x
+\bigvee_{(q_i,a,q_j)\in\Delta}
+\bigl(x\in Y_i\land Q_a(x)\land x+1\in Y_j\bigr).
+$$</p>
+<p>Questa formula dice: per ogni passo, esiste una transizione compatibile con lo stato corrente e il simbolo corrente.</p>
+<p>Grazie a $\Phi_{state}$ e alla ben formazione della parola, non possono esserci due stati correnti o due simboli correnti diversi. Quindi la disgiunzione non introduce ambiguita' semantica: sceglie una transizione valida tra quelle disponibili.</p>
+<h3>Vincolo 4: condizione di Büchi</h3>
+<p>Almeno uno stato finale deve essere visitato infinite volte:</p>
+<p>$$
+\Phi_{acc}\equiv
+\bigvee_{q_i\in F}\forall x\exists y(x&lt;y\land y\in Y_i).
+$$</p>
+<p>La sottoformula:</p>
+<p>$$
+\forall x\exists y(x&lt;y\land y\in Y_i)
+$$</p>
+<p>significa che per ogni posizione $x$ esiste una posizione futura $y$ in cui la run e' in $q_i$. Quindi $q_i$ compare infinite volte.</p>
+<h3>Formula completa</h3>
+<p>Definiamo:</p>
+<p>$$
+\Phi_{\mathcal{A}}\equiv
+\exists Y_0\ldots\exists Y_m
+(\Phi_{init}\land\Phi_{state}\land\Phi_{trans}\land\Phi_{acc}).
+$$</p>
+<h3>Correttezza: se l'automa accetta, la formula e' vera</h3>
+<p>Supponiamo:</p>
+<p>$$
+\alpha\in L(\mathcal{A}).
+$$</p>
+<p>Allora esiste una run accettante:</p>
+<p>$$
+\rho=r_0r_1r_2\ldots
+$$</p>
+<p>su $\alpha$.</p>
+<p>Definiamo:</p>
+<p>$$
+Y_i=\{x\in\mathbb{N}\mid r_x=q_i\}.
+$$</p>
+<p>Con questa interpretazione:</p>
+<ul>
+<li>$\Phi_{init}$ e' vera perche' $r_0=q_0$;</li>
+<li>$\Phi_{state}$ e' vera perche' in ogni posizione la run ha uno e un solo stato;</li>
+<li>$\Phi_{trans}$ e' vera perche' $\rho$ e' una run valida;</li>
+<li>$\Phi_{acc}$ e' vera perche' la run visita almeno uno stato finale infinite volte.</li>
+</ul>
+<p>Quindi:</p>
+<p>$$
+\underline{\alpha}\models \Phi_{\mathcal{A}}.
+$$</p>
+<h3>Correttezza: se la formula e' vera, l'automa accetta</h3>
+<p>Supponiamo:</p>
+<p>$$
+\underline{\alpha}\models \Phi_{\mathcal{A}}.
+$$</p>
+<p>Allora esistono insiemi $Y_0,\ldots,Y_m$ che soddisfano tutti i vincoli.</p>
+<p>Da $\Phi_{state}$, per ogni posizione $x$ esiste un unico indice $i$ tale che:</p>
+<p>$$
+x\in Y_i.
+$$</p>
+<p>Definiamo la sequenza di stati:</p>
+<p>$$
+r_x=q_i
+\quad\text{se e solo se}\quad
+x\in Y_i.
+$$</p>
+<p>Da $\Phi_{init}$:</p>
+<p>$$
+r_0=q_0.
+$$</p>
+<p>Da $\Phi_{trans}$, per ogni $x$, se $\alpha(x)=a$ e $r_x=q_i$, allora esiste $q_j$ tale che:</p>
+<p>$$
+(q_i,a,q_j)\in\Delta
+$$</p>
+<p>e:</p>
+<p>$$
+r_{x+1}=q_j.
+$$</p>
+<p>Quindi:</p>
+<p>$$
+r_0r_1r_2\ldots
+$$</p>
+<p>e' una run valida di $\mathcal{A}$ su $\alpha$.</p>
+<p>Da $\Phi_{acc}$, esiste uno stato finale $q_i\in F$ tale che:</p>
+<p>$$
+\forall x\exists y(x&lt;y\land y\in Y_i).
+$$</p>
+<p>Quindi $q_i$ compare infinite volte nella run. La run e' accettante.</p>
+<p>Dunque:</p>
+<p>$$
+\alpha\in L(\mathcal{A}).
+$$</p>
+<p>Abbiamo dimostrato:</p>
+<p>$$
+\alpha\in L(\mathcal{A})
+\iff
+\underline{\alpha}\models\Phi_{\mathcal{A}}.
+$$</p>
+<p>Quindi $L$ e' definibile in S1S.</p>
+<p>Punto orale: ricordati "almeno uno stato" e "al piu' uno stato". Negli appunti spesso compare solo il divieto di stare in due stati, ma formalmente serve anche dire che la run sta sempre in qualche stato.</p>
+<hr>
+<h2>11. Secondo teorema di Büchi: direzione S1S -&gt; automa <a id="proof-11"></a></h2>
+<h3>Enunciato della direzione</h3>
+<p>Se $L\subseteq A^\omega$ e' definibile da una formula S1S, allora $L$ e' omega-regolare.</p>
+<p>In pratica: data una formula S1S $\varphi$, vogliamo costruire un NBA che riconosce esattamente i modelli di $\varphi$.</p>
+<h3>Strategia formale</h3>
+<p>La dimostrazione si fa per induzione sulla struttura della formula, dopo aver ridotto S1S a una forma in cui le variabili del primo ordine sono codificate come insiemi singleton.</p>
+<p>Una parola letta dall'automa non contiene solo il simbolo originale dell'alfabeto, ma anche la valutazione delle variabili libere della formula. Se le variabili libere sono $X_1,\ldots,X_k$, l'automa legge lettere che indicano, per ogni posizione, quali $X_i$ contengono quella posizione.</p>
+<h3>Formule atomiche</h3>
+<p>Per le formule atomiche si costruiscono automi finiti, quindi anche automi di Büchi.</p>
+<p>Esempio:</p>
+<p>$$
+X\subseteq Y.
+$$</p>
+<p>Questa formula significa:</p>
+<p>$$
+\forall x(x\in X\to x\in Y).
+$$</p>
+<p>L'automa scorre la parola e controlla che non esista una posizione in cui il bit di $X$ vale $1$ e il bit di $Y$ vale $0$. Se trova una violazione va in uno stato morto non finale. Se non trova violazioni, resta in uno stato finale visitato a ogni passo.</p>
+<p>Esempio:</p>
+<p>$$
+Succ(X,Y)
+$$</p>
+<p>nella versione ridotta $S1S_0$ significa: $X$ e $Y$ sono singleton e l'unico elemento di $Y$ e' il successore dell'unico elemento di $X$. Un automa finito puo' verificarlo con memoria finita:</p>
+<ol>
+<li>non ho ancora visto $X$;</li>
+<li>ho appena visto l'unica posizione di $X$;</li>
+<li>controllo che nella posizione successiva ci sia l'unica posizione di $Y$;</li>
+<li>da quel punto in poi non devo vedere altri $X$ o altri $Y$.</li>
+</ol>
+<p>Se una delle condizioni fallisce, va in uno stato morto non finale.</p>
+<h3>Connettivi booleani</h3>
+<p>Supponiamo di avere automi per $\varphi$ e $\psi$.</p>
+<p><strong>Disgiunzione.</strong></p>
+<p>Per:</p>
+<p>$$
+\varphi\lor\psi
+$$</p>
+<p>costruisco l'unione degli automi. Il nondeterminismo sceglie se verificare $\varphi$ o $\psi$.</p>
+<p><strong>Congiunzione.</strong></p>
+<p>Per:</p>
+<p>$$
+\varphi\land\psi
+$$</p>
+<p>costruisco l'intersezione degli automi. Serve il prodotto Büchi/GNBA visto sopra, perche' entrambe le condizioni di accettazione devono essere soddisfatte infinite volte.</p>
+<p><strong>Negazione.</strong></p>
+<p>Per:</p>
+<p>$$
+\neg\varphi
+$$</p>
+<p>uso la chiusura degli omega-regolari per complemento. Se l'automa per $\varphi$ riconosce $L(\varphi)$, allora l'automa per $\neg\varphi$ riconosce:</p>
+<p>$$
+A^\omega\setminus L(\varphi).
+$$</p>
+<p>Qui entra la dimostrazione tecnica della complementazione Büchi.</p>
+<h3>Quantificatore esistenziale come proiezione</h3>
+<p>Supponiamo di avere:</p>
+<p>$$
+\exists X\;\varphi(X,Y_1,\ldots,Y_k).
+$$</p>
+<p>Per ipotesi induttiva esiste un automa $\mathcal{A}_\varphi$ che riconosce le parole annotate con le valutazioni di:</p>
+<p>$$
+X,Y_1,\ldots,Y_k
+$$</p>
+<p>che soddisfano $\varphi$.</p>
+<p>Vogliamo un automa che legga solo:</p>
+<p>$$
+Y_1,\ldots,Y_k
+$$</p>
+<p>e accetti se esiste una scelta di $X$ che renderebbe vera $\varphi$.</p>
+<p>Costruzione: il nuovo automa simula $\mathcal{A}_\varphi$, ma a ogni posizione indovina nondeterministicamente se quella posizione appartiene a $X$ oppure no. In altre parole, proietta via la componente $X$ dell'alfabeto.</p>
+<p><strong>Correttezza.</strong></p>
+<p>Se una parola sulle variabili $Y_1,\ldots,Y_k$ soddisfa $\exists X\varphi$, allora esiste una interpretazione di $X$ tale che la parola estesa soddisfa $\varphi$. L'automa puo' indovinare esattamente quella interpretazione di $X$ e quindi accetta.</p>
+<p>Viceversa, se l'automa proiettato accetta, allora durante una run accettante ha scelto nondeterministicamente un valore per il bit $X$ in ogni posizione. Queste scelte definiscono un insieme $X$. Poiche' la simulazione di $\mathcal{A}_\varphi$ accetta, la formula $\varphi(X,Y_1,\ldots,Y_k)$ e' vera per quell'insieme $X$. Quindi:</p>
+<p>$$
+\exists X\;\varphi
+$$</p>
+<p>e' vera.</p>
+<h3>Quantificatore universale</h3>
+<p>Il quantificatore universale si elimina usando:</p>
+<p>$$
+\forall X\;\varphi
+\equiv
+\neg\exists X\neg\varphi.
+$$</p>
+<p>Poiche' abbiamo gia' costruzioni per negazione ed esistenziale, abbiamo anche la costruzione per il quantificatore universale.</p>
+<h3>Variabili del primo ordine</h3>
+<p>Una variabile del primo ordine $x$ viene codificata come una variabile monadica $X$ vincolata a essere un singleton:</p>
+<p>$$
+Sing(X).
+$$</p>
+<p>Allora:</p>
+<ul>
+<li>$x=y$ diventa $X=Y$ con $Sing(X)$ e $Sing(Y)$;</li>
+<li>$x+1=y$ diventa $Succ(X,Y)$;</li>
+<li>$\exists x\;\theta(x)$ diventa $\exists X(Sing(X)\land\theta(X))$;</li>
+<li>$\forall x\;\theta(x)$ diventa $\forall X(Sing(X)\to\theta(X))$.</li>
+</ul>
+<p>Quindi tutto S1S puo' essere ricondotto alla forma trattata sopra.</p>
+<h3>Conclusione</h3>
+<p>Per induzione strutturale:</p>
+<ol>
+<li>le formule atomiche hanno automi;</li>
+<li>i connettivi booleani preservano omega-regolarita';</li>
+<li>i quantificatori corrispondono a proiezione e complemento;</li>
+<li>le variabili del primo ordine sono codificabili come singleton.</li>
+</ol>
+<p>Quindi ogni formula S1S definisce un linguaggio omega-regolare.</p>
+<p>Punto orale: la frase "il quantificatore esistenziale corrisponde alla proiezione" va saputa spiegare. L'automa non vede piu' la componente quantificata, ma il nondeterminismo la indovina.</p>
+<hr>
+<h2>12. Behavior graph LTL: componente adeguata implica soddisfacibilita' sul programma <a id="proof-12"></a></h2>
+<h3>Enunciato</h3>
+<p>Sia $P$ un programma, $G_P$ il suo grafo delle computazioni e $T_\varphi$ il tableau di una formula LTL $\varphi$.</p>
+<p>Costruiamo il behavior graph:</p>
+<p>$$
+B_{P,\varphi}.
+$$</p>
+<p>Se $B_{P,\varphi}$ contiene una componente adeguata, allora esiste una computazione di $P$ che soddisfa $\varphi$.</p>
+<h3>Definizioni minime</h3>
+<p>Un nodo del behavior graph ha forma:</p>
+<p>$$
+(s,A)
+$$</p>
+<p>dove:</p>
+<ul>
+<li>$s$ e' uno stato del programma;</li>
+<li>$A$ e' un atomo del tableau;</li>
+<li>$s$ e' consistente con le formule locali contenute in $A$.</li>
+</ul>
+<p>Un arco:</p>
+<p>$$
+(s,A)\to(s',A')
+$$</p>
+<p>esiste quando:</p>
+<ul>
+<li>$s'$ e' successore di $s$ nel grafo del programma;</li>
+<li>$A'$ e' successore di $A$ nel tableau LTL.</li>
+</ul>
+<p>Una componente e' <strong>fulfilling</strong> se tutte le promesse temporali degli atomi vengono realizzate. E' <strong>fair</strong> se rispetta i vincoli di justice e compassion del sistema. E' <strong>adeguata</strong> se e' sia fulfilling sia fair.</p>
+<h3>Dimostrazione</h3>
+<p>Supponiamo che esista una componente adeguata $S$ in $B_{P,\varphi}$.</p>
+<p>Poiche' $S$ e' una componente fortemente connessa non transiente, possiamo costruire un cammino infinito:</p>
+<p>$$
+(s_0,A_0),(s_1,A_1),(s_2,A_2),\ldots
+$$</p>
+<p>che rimane dentro $S$ e visita gli elementi necessari di $S$ infinite volte.</p>
+<p>Proiettando questo cammino sulla prima componente otteniamo:</p>
+<p>$$
+s_0,s_1,s_2,\ldots
+$$</p>
+<p>Per definizione degli archi del behavior graph, ogni $s_{i+1}$ e' successore di $s_i$ nel grafo del programma. Quindi questa proiezione e' una computazione valida di $P$.</p>
+<p>Proiettando sulla seconda componente otteniamo:</p>
+<p>$$
+A_0,A_1,A_2,\ldots
+$$</p>
+<p>Per definizione degli archi del behavior graph, ogni $A_{i+1}$ e' successore di $A_i$ nel tableau. Quindi questa proiezione e' un cammino del tableau.</p>
+<p>Inoltre, per definizione dei nodi del behavior graph, ogni $s_i$ e' consistente con $A_i$. Quindi la sequenza di atomi:</p>
+<p>$$
+A_0,A_1,A_2,\ldots
+$$</p>
+<p>e' una trail della computazione:</p>
+<p>$$
+s_0,s_1,s_2,\ldots
+$$</p>
+<p>Poiche' $S$ e' fulfilling, ogni promessa temporale presente lungo la trail viene realizzata. Per il teorema di correttezza del tableau LTL, una trail fulfilling corrisponde a una computazione che soddisfa $\varphi$.</p>
+<p>Poiche' $S$ e' fair, la computazione proiettata rispetta anche i vincoli di fairness del programma: le transizioni justice e compassion non vengono violate.</p>
+<p>Dunque esiste una computazione fair di $P$ che soddisfa $\varphi$.</p>
+<p>Quindi:</p>
+<p>$$
+B_{P,\varphi}\text{ contiene una componente adeguata}
+\Rightarrow
+P\text{ e' } \varphi\text{-soddisfacibile}.
+$$</p>
+<h3>Validita' tramite negazione</h3>
+<p>La componente adeguata dimostra esistenza di una computazione che soddisfa $\varphi$, non che tutte le computazioni soddisfano $\varphi$.</p>
+<p>Per verificare la validita' di $\varphi$ sul programma, si cerca una computazione che violi $\varphi$, cioe' che soddisfi $\neg\varphi$.</p>
+<p>Formalmente:</p>
+<p>$$
+P\models \varphi
+\iff
+\text{non esiste computazione di }P\text{ che soddisfa }\neg\varphi.
+$$</p>
+<p>Quindi:</p>
+<p>$$
+P\models\varphi
+\iff
+B_{P,\neg\varphi}\text{ non contiene componenti adeguate}.
+$$</p>
+<p>Punto orale: componente adeguata = esistenza di una computazione buona per quella formula. Per dimostrare che il programma soddisfa sempre una specifica, devi cercare l'assenza di componenti adeguate per la negazione.</p>
+<hr>
+<h2>13. Traduzioni LTL: forme da saper giustificare <a id="proof-13"></a></h2>
+<p>Questa non e' una dimostrazione lunga, ma all'orale la traduzione LTL e' quasi certa. Conviene sapere giustificare semanticamente le forme standard.</p>
+<h3>Ogni richiesta riceve prima o poi risposta</h3>
+<p>Requisito:</p>
+<blockquote>
+<p>ogni volta che compare <code>req</code>, prima o poi compare <code>ack</code>.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+G(req\to F ack).
+$$</p>
+<p>Giustificazione:</p>
+<ul>
+<li>$G$ quantifica ogni posizione della computazione;</li>
+<li>se in quella posizione vale <code>req</code>, allora deve valere $F ack$;</li>
+<li>$F ack$ significa che esiste una posizione futura, anche non immediata, in cui vale <code>ack</code>.</li>
+</ul>
+<h3>Infinite occorrenze di $p$</h3>
+<p>Formula:</p>
+<p>$$
+GFp.
+$$</p>
+<p>Giustificazione:</p>
+<ul>
+<li>$G$ dice: da ogni posizione in poi;</li>
+<li>$Fp$ dice: prima o poi nel futuro compare $p$;</li>
+<li>quindi dopo ogni prefisso c'e' ancora un $p$ futuro;</li>
+<li>questo equivale a dire che $p$ compare infinite volte.</li>
+</ul>
+<h3>Da un certo punto in poi sempre $p$</h3>
+<p>Formula:</p>
+<p>$$
+FGp.
+$$</p>
+<p>Giustificazione:</p>
+<ul>
+<li>$F$ dice: esiste una posizione futura;</li>
+<li>$Gp$ dice: da quella posizione in poi $p$ vale sempre;</li>
+<li>quindi c'e' una soglia dopo la quale $p$ non smette piu' di valere.</li>
+</ul>
+<h3>$p$ finche' non arriva $q$</h3>
+<p>Strong until:</p>
+<p>$$
+p\;U\;q.
+$$</p>
+<p>Semantica:</p>
+<p>$$
+\alpha,i\models pUq
+$$</p>
+<p>se e solo se esiste $j\ge i$ tale che:</p>
+<p>$$
+\alpha,j\models q
+$$</p>
+<p>e per ogni $k$ con $i\le k&lt;j$:</p>
+<p>$$
+\alpha,k\models p.
+$$</p>
+<p>Quindi $q$ deve arrivare davvero. Se vuoi permettere che $q$ non arrivi mai e $p$ resti vero per sempre, serve il weak until.</p>
+<h3>Ogni errore viene preceduto da un allarme</h3>
+<p>Se si intende "un allarme deve essere avvenuto prima di ogni errore", in LTL futura pura non e' immediato parlare del passato. Una forma con until e' vietare un errore prima del primo allarme:</p>
+<p>$$
+\neg error\;U\;alarm
+$$</p>
+<p>ma questa richiede anche che <code>alarm</code> prima o poi arrivi. Se invece si vuole dire "error non puo' accadere finche' alarm non e' accaduto, ma alarm potrebbe non accadere mai", serve weak until:</p>
+<p>$$
+\neg error\;W\;alarm.
+$$</p>
+<p>Punto orale: se usi $U$, stai promettendo che il secondo evento arrivera'. Se non vuoi prometterlo, devi usare weak until o una formula equivalente.</p>
+<hr>
+<h2>14. Da epsilon-NFA a NFA <a id="proof-14"></a></h2>
+<h3>Enunciato</h3>
+<p>Per ogni NFA con mosse $\varepsilon$ esiste un NFA senza mosse $\varepsilon$ che riconosce lo stesso linguaggio.</p>
+<p>Sia:</p>
+<p>$$
+\mathcal{A}=(Q,\Sigma,\Delta,q_0,F)
+$$</p>
+<p>un $\varepsilon$-NFA, dove:</p>
+<p>$$
+\Delta:Q\times(\Sigma\cup\{\varepsilon\})\to 2^Q.
+$$</p>
+<h3>Epsilon-closure</h3>
+<p>Per $S\subseteq Q$, definiamo:</p>
+<p>$$
+E(S)
+$$</p>
+<p>come l'insieme degli stati raggiungibili da qualche stato di $S$ usando solo mosse $\varepsilon$, incluse zero mosse. In particolare:</p>
+<p>$$
+S\subseteq E(S).
+$$</p>
+<p>Per uno stato singolo scriviamo:</p>
+<p>$$
+E(q)=E(\{q\}).
+$$</p>
+<h3>Costruzione dell'NFA equivalente</h3>
+<p>Costruiamo:</p>
+<p>$$
+\mathcal{A}'=(Q,\Sigma,\Delta',q_0,F')
+$$</p>
+<p>con gli stessi stati, lo stesso alfabeto e lo stesso stato iniziale.</p>
+<p>Per $q\in Q$ e $a\in\Sigma$:</p>
+<p>$$
+\Delta'(q,a)=E\left(\bigcup_{p\in E(q)}\Delta(p,a)\right).
+$$</p>
+<p>Questa formula dice: prima posso fare qualunque numero di mosse $\varepsilon$, poi leggo davvero $a$, poi posso fare ancora qualunque numero di mosse $\varepsilon$.</p>
+<p>Gli stati finali diventano:</p>
+<p>$$
+F'=\{q\in Q\mid E(q)\cap F\neq\emptyset\}.
+$$</p>
+<p>Questo serve per accettare anche parole che, dopo aver consumato tutto l'input, arrivano a un finale solo tramite mosse $\varepsilon$.</p>
+<h3>Invariante</h3>
+<p>Per ogni parola $w\in\Sigma^\ast$:</p>
+<p>$$
+\hat{\Delta}'(q,w)
+=
+E(\hat{\Delta}(E(q),w)).
+$$</p>
+<p>Lettura: gli stati raggiungibili nell'NFA senza $\varepsilon$ dopo aver letto $w$ sono esattamente quelli raggiungibili nell'automa originale leggendo $w$ e permettendo mosse $\varepsilon$ prima, tra e dopo i simboli.</p>
+<h3>Dimostrazione dell'invariante</h3>
+<p><strong>Base: $w=\varepsilon$.</strong></p>
+<p>Nel nuovo NFA, leggendo $\varepsilon$ da $q$ si resta in $q$:</p>
+<p>$$
+\hat{\Delta}'(q,\varepsilon)=\{q\}.
+$$</p>
+<p>Pero' l'accettazione tramite mosse finali $\varepsilon$ e' stata spostata in $F'$. Quindi, per il riconoscimento del linguaggio, la closure finale viene recuperata dalla definizione di finalita'. Se invece si vuole un invariante con closure incorporata anche a lunghezza zero, si prende come stato iniziale $E(q_0)$ nella subset construction. Le due presentazioni sono equivalenti.</p>
+<p><strong>Passo su $wa$.</strong></p>
+<p>Supponiamo che la simulazione sia corretta dopo aver letto $w$. Leggendo il simbolo successivo $a$, il nuovo NFA applica:</p>
+<p>$$
+\Delta'(q,a)=E\left(\bigcup_{p\in E(q)}\Delta(p,a)\right).
+$$</p>
+<p>Quindi comprime in una singola transizione tutto cio' che l'automa originale poteva fare con:</p>
+<p>$$
+\varepsilon^\ast a \varepsilon^\ast.
+$$</p>
+<p>Ripetendo questa compressione per ogni simbolo della parola, ogni run dell'automa originale con mosse $\varepsilon$ corrisponde a una run dell'NFA nuovo senza mosse $\varepsilon$, e viceversa ogni transizione nuova espande una sequenza valida di mosse originali.</p>
+<h3>Uguaglianza dei linguaggi</h3>
+<p>Se $w$ e' accettata da $\mathcal{A}$, allora esiste una computazione che alterna blocchi di mosse $\varepsilon$ e simboli reali:</p>
+<p>$$
+\varepsilon^\ast a_1\varepsilon^\ast a_2\varepsilon^\ast\ldots a_n\varepsilon^\ast.
+$$</p>
+<p>Ogni blocco $\varepsilon^\ast a_i\varepsilon^\ast$ e' rappresentato da una transizione di $\mathcal{A}'$. Se l'ultimo stato finale viene raggiunto solo dopo mosse $\varepsilon$, la definizione di $F'$ rende finale lo stato precedente. Quindi $w$ e' accettata da $\mathcal{A}'$.</p>
+<p>Viceversa, ogni transizione di $\mathcal{A}'$ e' stata costruita da un cammino reale dell'automa originale composto da mosse $\varepsilon$, una lettera, e altre mosse $\varepsilon$. Espandendo tutte le transizioni della run di $\mathcal{A}'$ si ottiene una run valida di $\mathcal{A}$. Quindi:</p>
+<p>$$
+L(\mathcal{A})=L(\mathcal{A}').
+$$</p>
+<p>Punto orale: la frase "metto le epsilon-closure dentro le transizioni" significa precisamente comprimere $\varepsilon^\ast a\varepsilon^\ast$ in una sola transizione su $a$.</p>
+<hr>
+<h2>15. Teorema automi finiti - espressioni regolari <a id="proof-15"></a></h2>
+<h3>Enunciato</h3>
+<p>Per ogni automa finito su parole finite esiste una espressione regolare ristretta equivalente, e per ogni espressione regolare ristretta esiste un automa finito equivalente.</p>
+<p>Quindi le seguenti classi descrivono gli stessi linguaggi:</p>
+<ul>
+<li>DFA;</li>
+<li>NFA;</li>
+<li>$\varepsilon$-NFA;</li>
+<li>espressioni regolari ristrette.</li>
+</ul>
+<h3>Direzione DFA -&gt; espressione regolare</h3>
+<p>Sia:</p>
+<p>$$
+\mathcal{A}=(Q,\Sigma,\delta,q_1,F)
+$$</p>
+<p>un DFA con:</p>
+<p>$$
+Q=\{q_1,\ldots,q_n\}.
+$$</p>
+<p>Definiamo $R_{i,j}^k$ come il linguaggio delle parole che portano da $q_i$ a $q_j$ usando come stati intermedi solo stati con indice al massimo $k$.</p>
+<p>Stati intermedi significa: escludiamo lo stato iniziale e quello finale del cammino; guardiamo solo gli stati attraversati nel mezzo.</p>
+<h3>Caso base</h3>
+<p>Per $k=0$, non sono ammessi stati intermedi.</p>
+<p>Se $i\neq j$:</p>
+<p>$$
+R_{i,j}^0=\{a\in\Sigma\mid \delta(q_i,a)=q_j\}.
+$$</p>
+<p>Se $i=j$:</p>
+<p>$$
+R_{i,i}^0=\{a\in\Sigma\mid \delta(q_i,a)=q_i\}\cup\{\varepsilon\}.
+$$</p>
+<p>La parola vuota va inclusa perche' da uno stato si puo' arrivare a se stesso leggendo nulla.</p>
+<p>Ogni $R_{i,j}^0$ e' descritto da una espressione regolare finita: unione delle lettere che realizzano transizioni dirette, piu eventualmente $\varepsilon$.</p>
+<h3>Passo induttivo</h3>
+<p>Vogliamo descrivere i cammini da $q_i$ a $q_j$ che possono usare come intermedi stati con indice al massimo $k$.</p>
+<p>Ci sono due casi.</p>
+<p><strong>Caso 1: il cammino non passa per $q_k$.</strong></p>
+<p>Allora usa solo intermedi con indice al massimo $k-1$, quindi la parola appartiene a:</p>
+<p>$$
+R_{i,j}^{k-1}.
+$$</p>
+<p><strong>Caso 2: il cammino passa per $q_k$.</strong></p>
+<p>Allora si puo' decomporre in:</p>
+<ol>
+<li>un tratto da $q_i$ a $q_k$ senza usare $q_k$ come intermedio:</li>
+</ol>
+<p>$$
+   R_{i,k}^{k-1};
+   $$</p>
+<ol>
+<li>zero o piu' cicli da $q_k$ a $q_k$, senza usare $q_k$ come intermedio interno:</li>
+</ol>
+<p>$$
+   (R_{k,k}^{k-1})^\ast;
+   $$</p>
+<ol>
+<li>un tratto da $q_k$ a $q_j$ senza usare $q_k$ come intermedio:</li>
+</ol>
+<p>$$
+   R_{k,j}^{k-1}.
+   $$</p>
+<p>Quindi:</p>
+<p>$$
+R_{i,j}^k
+=
+R_{i,j}^{k-1}
+\cup
+R_{i,k}^{k-1}(R_{k,k}^{k-1})^\ast R_{k,j}^{k-1}.
+$$</p>
+<p>Per ipotesi induttiva, tutti i pezzi a destra sono descritti da espressioni regolari. Poiche' le espressioni regolari sono chiuse per unione, concatenazione e stella, anche $R_{i,j}^k$ e' descritto da una espressione regolare.</p>
+<h3>Espressione finale</h3>
+<p>Una parola e' accettata da $\mathcal{A}$ se parte da $q_1$ e termina in uno stato finale. Quando $k=n$, non ci sono piu' restrizioni sugli stati intermedi.</p>
+<p>Quindi:</p>
+<p>$$
+L(\mathcal{A})=\bigcup_{q_j\in F}R_{1,j}^n.
+$$</p>
+<p>Il lato destro e' una espressione regolare.</p>
+<h3>Direzione espressione regolare -&gt; automa</h3>
+<p>Procediamo per induzione strutturale sull'espressione regolare $r$.</p>
+<p><strong>Base $\emptyset$.</strong></p>
+<p>Un automa con nessuno stato finale riconosce il linguaggio vuoto.</p>
+<p><strong>Base $\varepsilon$.</strong></p>
+<p>Un automa con stato iniziale anche finale riconosce $\{\varepsilon\}$.</p>
+<p><strong>Base $a$.</strong></p>
+<p>Un automa con una transizione:</p>
+<p>$$
+q_0\xrightarrow{a}q_f
+$$</p>
+<p>riconosce $\{a\}$.</p>
+<p><strong>Unione $r_1\cup r_2$.</strong></p>
+<p>Per ipotesi induttiva abbiamo automi $\mathcal{A}_1$ e $\mathcal{A}_2$. Rendiamo disgiunti gli insiemi di stati, aggiungiamo un nuovo iniziale $q_0$ e un nuovo finale $f_0$, con mosse:</p>
+<p>$$
+q_0\xrightarrow{\varepsilon}q_1
+\quad\text{e}\quad
+q_0\xrightarrow{\varepsilon}q_2
+$$</p>
+<p>verso gli iniziali dei due automi, e mosse $\varepsilon$ dai vecchi finali verso $f_0$.</p>
+<p>La computazione accetta se sceglie il ramo di $r_1$ oppure quello di $r_2$.</p>
+<p><strong>Concatenazione $r_1r_2$.</strong></p>
+<p>Colleghiamo ogni finale di $\mathcal{A}_1$ all'iniziale di $\mathcal{A}_2$ con una mossa $\varepsilon$. I finali del nuovo automa sono i finali di $\mathcal{A}_2$.</p>
+<p>Una parola e' accettata se si spezza in:</p>
+<p>$$
+w=uv
+$$</p>
+<p>con $u\in L(r_1)$ e $v\in L(r_2)$.</p>
+<p><strong>Stella $r_1^\ast$.</strong></p>
+<p>Aggiungiamo un nuovo iniziale $q_0$ e un nuovo finale $f_0$. Mettiamo:</p>
+<ul>
+<li>una mossa $\varepsilon$ da $q_0$ a $f_0$, per accettare $\varepsilon$;</li>
+<li>una mossa $\varepsilon$ da $q_0$ all'iniziale di $\mathcal{A}_1$;</li>
+<li>mosse $\varepsilon$ dai finali di $\mathcal{A}_1$ a $f_0$;</li>
+<li>mosse $\varepsilon$ dai finali di $\mathcal{A}_1$ all'iniziale di $\mathcal{A}_1$, per ripetere.</li>
+</ul>
+<p>L'automa accetta zero o piu' blocchi appartenenti a $L(r_1)$.</p>
+<p>Per induzione ogni espressione regolare ha un $\varepsilon$-NFA equivalente, quindi un NFA e un DFA equivalenti.</p>
+<p>Punto orale: nella direzione DFA -&gt; regex, il passaggio non ovvio e' la ricorrenza con $(R_{k,k}^{k-1})^\ast$, che rappresenta un numero arbitrario di ritorni su $q_k$.</p>
+<hr>
+<h2>16. Chiusura booleana dei linguaggi regolari finiti <a id="proof-16"></a></h2>
+<h3>Complemento</h3>
+<p>Sia $L\subseteq\Sigma^\ast$ regolare. Prendiamo un DFA completo:</p>
+<p>$$
+\mathcal{A}=(Q,\Sigma,\delta,q_0,F)
+$$</p>
+<p>che riconosce $L$.</p>
+<p>Costruiamo:</p>
+<p>$$
+\overline{\mathcal{A}}=(Q,\Sigma,\delta,q_0,Q\setminus F).
+$$</p>
+<p>Per ogni parola $w$ il DFA ha una e una sola computazione completa, perche' e' deterministico e completo.</p>
+<p>Allora:</p>
+<p>$$
+w\in L(\overline{\mathcal{A}})
+\iff
+\hat{\delta}(q_0,w)\in Q\setminus F
+\iff
+\hat{\delta}(q_0,w)\notin F
+\iff
+w\notin L(\mathcal{A}).
+$$</p>
+<p>Quindi:</p>
+<p>$$
+L(\overline{\mathcal{A}})=\Sigma^\ast\setminus L.
+$$</p>
+<p>La completezza e' essenziale: se una transizione manca, una parola potrebbe non avere computazione completa e lo scambio finali/non-finali non rappresenterebbe il complemento.</p>
+<h3>Intersezione</h3>
+<p>Siano $L_1,L_2$ regolari. Per De Morgan:</p>
+<p>$$
+L_1\cap L_2
+=
+\overline{\overline{L_1}\cup\overline{L_2}}.
+$$</p>
+<p>Poiche' i regolari sono chiusi per complemento e unione, sono chiusi anche per intersezione.</p>
+<p>In alternativa, dato due DFA:</p>
+<p>$$
+\mathcal{A}_1=(Q_1,\Sigma,\delta_1,q_1,F_1)
+$$</p>
+<p>e:</p>
+<p>$$
+\mathcal{A}_2=(Q_2,\Sigma,\delta_2,q_2,F_2),
+$$</p>
+<p>si costruisce il prodotto:</p>
+<p>$$
+Q=Q_1\times Q_2
+$$</p>
+<p>con transizione:</p>
+<p>$$
+\delta((p,r),a)=(\delta_1(p,a),\delta_2(r,a))
+$$</p>
+<p>e finali:</p>
+<p>$$
+F=F_1\times F_2.
+$$</p>
+<p>Per induzione su $w$:</p>
+<p>$$
+\hat{\delta}((q_1,q_2),w)
+=
+(\hat{\delta}_1(q_1,w),\hat{\delta}_2(q_2,w)).
+$$</p>
+<p>Quindi $w$ e' accettata dal prodotto se e solo se e' accettata da entrambi gli automi.</p>
+<p>Punto orale: per il complemento finito puoi scambiare finali solo dopo aver reso il DFA deterministico e completo.</p>
+<hr>
+<h2>17. Chiusure base degli omega-regolari: $V^\omega$ e $V\cdot L$ <a id="proof-17"></a></h2>
+<h3>Se $V$ e' regolare, allora $V^\omega$ e' omega-regolare</h3>
+<p>Sia $V\subseteq A^\ast$ regolare. Prendiamo un automa finito:</p>
+<p>$$
+\mathcal{D}=(Q,A,\Delta,q_0,F)
+$$</p>
+<p>che riconosce $V$.</p>
+<p>Assumiamo senza perdita di generalita':</p>
+<p>$$
+\varepsilon\notin V.
+$$</p>
+<p>Infatti:</p>
+<p>$$
+V^\omega=(V\setminus\{\varepsilon\})^\omega,
+$$</p>
+<p>perche' inserire blocchi vuoti non cambia la parola infinita prodotta.</p>
+<p>Costruiamo un automa di Büchi $\mathcal{B}$ che simula $\mathcal{D}$ e, ogni volta che completa un blocco di $V$, puo' tornare allo stato iniziale.</p>
+<p>Formalmente, per ogni transizione:</p>
+<p>$$
+(s,a,f)\in\Delta
+\quad\text{con }f\in F,
+$$</p>
+<p>aggiungiamo anche una transizione:</p>
+<p>$$
+(s,a,q_0).
+$$</p>
+<p>Lo stato finale Büchi e':</p>
+<p>$$
+\{q_0\}.
+$$</p>
+<p>L'idea e' che tornare in $q_0$ segnala "ho appena terminato un blocco di $V$ e sono pronto a leggerne un altro".</p>
+<p><strong>Correttezza.</strong></p>
+<p>Se:</p>
+<p>$$
+\alpha\in V^\omega,
+$$</p>
+<p>allora:</p>
+<p>$$
+\alpha=v_0v_1v_2\ldots
+$$</p>
+<p>con ogni $v_i\in V$. L'automa legge $v_0$ simulando $\mathcal{D}$, al completamento usa la transizione aggiunta per tornare a $q_0$, poi fa lo stesso per $v_1,v_2,\ldots$. Quindi visita $q_0$ infinite volte e accetta.</p>
+<p>Viceversa, se $\mathcal{B}$ accetta, visita $q_0$ infinite volte. Tra due visite consecutive a $q_0$ legge un blocco non vuoto che corrisponde a una computazione di $\mathcal{D}$ terminata in uno stato finale. Quindi quel blocco appartiene a $V$. La parola accettata e' quindi concatenazione infinita di blocchi di $V$:</p>
+<p>$$
+\alpha\in V^\omega.
+$$</p>
+<h3>Se $V$ e' regolare e $L$ omega-regolare, allora $V\cdot L$ e' omega-regolare</h3>
+<p>Sia $\mathcal{D}$ un automa finito per $V$ e sia $\mathcal{A}$ un NBA per $L$.</p>
+<p>Costruiamo un NBA che:</p>
+<ol>
+<li>simula $\mathcal{D}$ per leggere un prefisso finito in $V$;</li>
+<li>quando $\mathcal{D}$ raggiunge un finale, passa nondeterministicamente allo stato iniziale di $\mathcal{A}$;</li>
+<li>da quel momento simula $\mathcal{A}$;</li>
+<li>usa come stati finali quelli di $\mathcal{A}$.</li>
+</ol>
+<p>Se $\alpha\in V\cdot L$, allora:</p>
+<p>$$
+\alpha=u\beta
+$$</p>
+<p>con $u\in V$ e $\beta\in L$. L'automa legge $u$ nella parte finita, passa alla parte Büchi, e segue una run accettante di $\mathcal{A}$ su $\beta$.</p>
+<p>Viceversa, se l'automa accetta, prima di entrare nella parte Büchi deve aver completato una parola di $V$; poi la parte infinita residua viene accettata da $\mathcal{A}$, quindi appartiene a $L$. Dunque la parola e' in $V\cdot L$.</p>
+<p>Punto orale: in $V^\omega$ l'automa deve completare infiniti blocchi finiti; in $V\cdot L$ completa un solo prefisso finito e poi lascia l'accettazione alla parte Büchi.</p>
+<hr>
+<h2>18. Parole ultimamente periodiche <a id="proof-18"></a></h2>
+<h3>Definizione</h3>
+<p>Una parola infinita e' ultimamente periodica se ha forma:</p>
+<p>$$
+\alpha=uv^\omega
+$$</p>
+<p>con:</p>
+<p>$$
+u,v\in A^\ast,\qquad v\neq\varepsilon.
+$$</p>
+<p>Il prefisso $u$ puo' essere arbitrario; da un certo punto in poi si ripete sempre lo stesso blocco $v$.</p>
+<h3>Corollario: ogni omega-regolare non vuoto contiene una parola ultimamente periodica</h3>
+<p>Sia $L$ omega-regolare e non vuoto. Per il teorema Büchi - omega-regex:</p>
+<p>$$
+L=\bigcup_{i=1}^n U_iV_i^\omega
+$$</p>
+<p>con $U_i,V_i$ regolari.</p>
+<p>Poiche' $L\neq\emptyset$, esiste un indice $i$ e una parola:</p>
+<p>$$
+\alpha\in U_iV_i^\omega.
+$$</p>
+<p>Quindi:</p>
+<p>$$
+\alpha=uv_0v_1v_2\ldots
+$$</p>
+<p>con:</p>
+<p>$$
+u\in U_i
+$$</p>
+<p>e:</p>
+<p>$$
+v_j\in V_i.
+$$</p>
+<p>In particolare esiste almeno un blocco $v_0\in V_i$ non vuoto. Allora:</p>
+<p>$$
+uv_0^\omega
+$$</p>
+<p>appartiene ancora a:</p>
+<p>$$
+U_iV_i^\omega
+$$</p>
+<p>perche' e' ottenuta scegliendo sempre lo stesso blocco $v_0\in V_i$.</p>
+<p>Quindi:</p>
+<p>$$
+uv_0^\omega\in L.
+$$</p>
+<p>Abbiamo trovato una parola ultimamente periodica in $L$.</p>
+<h3>Esempio di linguaggio non omega-regolare</h3>
+<p>Sia $\beta\in A^\omega$ una parola non ultimamente periodica. Definiamo:</p>
+<p>$$
+L(\beta)=\{\alpha\in A^\omega\mid \alpha\text{ ha un suffisso in comune con }\beta\}.
+$$</p>
+<p>Chiaramente:</p>
+<p>$$
+\beta\in L(\beta),
+$$</p>
+<p>quindi:</p>
+<p>$$
+L(\beta)\neq\emptyset.
+$$</p>
+<p>Supponiamo per assurdo che $L(\beta)$ sia omega-regolare. Allora, per il corollario precedente, contiene una parola ultimamente periodica:</p>
+<p>$$
+\alpha=uv^\omega.
+$$</p>
+<p>Ma $\alpha\in L(\beta)$ significa che $\alpha$ e $\beta$ condividono un suffisso infinito. Un suffisso di una parola ultimamente periodica e' ancora ultimamente periodico. Quindi anche $\beta$ avrebbe un suffisso ultimamente periodico, e allora $\beta$ sarebbe ultimamente periodica da un certo punto in poi.</p>
+<p>Questo contraddice la scelta di $\beta$ come non ultimamente periodica.</p>
+<p>Dunque:</p>
+<p>$$
+L(\beta)
+$$</p>
+<p>non e' omega-regolare.</p>
+<p>Punto orale: il corollario e' utile per dimostrare non omega-regolarita': se un linguaggio non vuoto non contiene parole ultimamente periodiche, non puo' essere omega-regolare.</p>
+<hr>
+<h2>19. Decidibilita' per automi di Büchi <a id="proof-19"></a></h2>
+<h3>Universality</h3>
+<p>Vogliamo decidere:</p>
+<p>$$
+L(\mathcal{A})=A^\omega.
+$$</p>
+<p>Questo equivale a:</p>
+<p>$$
+\overline{L(\mathcal{A})}=\emptyset.
+$$</p>
+<p>Poiche' gli omega-regolari sono chiusi per complemento, possiamo costruire un automa per $\overline{L(\mathcal{A})}$ e poi usare l'algoritmo di emptiness Büchi.</p>
+<h3>Inclusion</h3>
+<p>Vogliamo decidere:</p>
+<p>$$
+L(\mathcal{A})\subseteq L(\mathcal{B}).
+$$</p>
+<p>Questo equivale a dire che non esiste una parola accettata da $\mathcal{A}$ e rifiutata da $\mathcal{B}$:</p>
+<p>$$
+L(\mathcal{A})\cap\overline{L(\mathcal{B})}=\emptyset.
+$$</p>
+<p>Costruiamo l'automa per il complemento di $\mathcal{B}$, poi l'intersezione con $\mathcal{A}$, e controlliamo emptiness.</p>
+<p>Questa e' la forma automata-theoretic del model checking: cerco un comportamento del sistema che violi la specifica.</p>
+<h3>Equivalence</h3>
+<p>Vogliamo decidere:</p>
+<p>$$
+L(\mathcal{A})=L(\mathcal{B}).
+$$</p>
+<p>Si puo' fare con doppia inclusione:</p>
+<p>$$
+L(\mathcal{A})\subseteq L(\mathcal{B})
+\quad\text{e}\quad
+L(\mathcal{B})\subseteq L(\mathcal{A}).
+$$</p>
+<p>Oppure con la differenza simmetrica:</p>
+<p>$$
+(L(\mathcal{A})\cap\overline{L(\mathcal{B})})
+\cup
+(\overline{L(\mathcal{A})}\cap L(\mathcal{B})).
+$$</p>
+<p>I due linguaggi sono uguali se e solo se questa differenza simmetrica e' vuota.</p>
+<p>Punto orale: tutte queste decisioni si riducono a emptiness grazie a intersezione e complementazione Büchi.</p>
+<h3>Fingerprint ultimamente periodico</h3>
+<p>Per un linguaggio omega-regolare $L$, indichiamo con $UP(L)$ l'insieme delle parole ultimamente periodiche in $L$.</p>
+<p>Teorema:</p>
+<p>$$
+UP(L_1)=UP(L_2)\Rightarrow L_1=L_2
+$$</p>
+<p>per $L_1,L_2$ omega-regolari.</p>
+<p>Dimostrazione. Supponiamo per assurdo:</p>
+<p>$$
+UP(L_1)=UP(L_2)
+\quad\text{ma}\quad
+L_1\neq L_2.
+$$</p>
+<p>Allora, senza perdita di generalita':</p>
+<p>$$
+L=L_1\setminus L_2\neq\emptyset.
+$$</p>
+<p>Poiche' gli omega-regolari sono chiusi per complemento e intersezione:</p>
+<p>$$
+L=L_1\cap\overline{L_2}
+$$</p>
+<p>e' omega-regolare.</p>
+<p>Poiche' $L$ e' omega-regolare non vuoto, contiene una parola ultimamente periodica $\alpha$.</p>
+<p>Allora:</p>
+<p>$$
+\alpha\in UP(L_1)
+$$</p>
+<p>ma:</p>
+<p>$$
+\alpha\notin UP(L_2),
+$$</p>
+<p>perche' $\alpha\notin L_2$. Questo contraddice:</p>
+<p>$$
+UP(L_1)=UP(L_2).
+$$</p>
+<p>Quindi:</p>
+<p>$$
+L_1=L_2.
+$$</p>
+<p>Punto orale: sugli omega-regolari le parole ultimamente periodiche sono una sorta di impronta del linguaggio.</p>
+<hr>
+<h2>20. Tableau LTL: soddisfacibilita' tramite fulfilling MSCS <a id="proof-20"></a></h2>
+<h3>Obiettivo</h3>
+<p>Per una formula LTL $\varphi$, vogliamo decidere se esiste un modello che la soddisfa. Il tableau costruisce un grafo finito $T_\varphi$ di atomi e riduce la soddisfacibilita' all'esistenza di un cammino infinito buono.</p>
+<h3>Promesse</h3>
+<p>Una formula promettente e' una formula che richiede una realizzazione futura. Esempi:</p>
+<ul>
+<li>$Fr$ promette $r$;</li>
+<li>$pUr$ promette $r$;</li>
+<li>$\neg G\neg r$ promette $r$.</li>
+</ul>
+<p>Un atomo $A$ realizza, o fulfills, una promessa $\psi$ che promette $r$ se:</p>
+<p>$$
+\neg\psi\in A
+\quad\text{oppure}\quad
+r\in A.
+$$</p>
+<p>Un cammino:</p>
+<p>$$
+\pi=A_0,A_1,A_2,\ldots
+$$</p>
+<p>e' fulfilling se, per ogni formula promettente $\psi$, il cammino contiene infiniti atomi che realizzano $\psi$.</p>
+<h3>Dai modelli ai cammini fulfilling</h3>
+<p>Supponiamo che $\sigma$ sia un modello di $\varphi$. Per ogni posizione $j$, definiamo:</p>
+<p>$$
+A_j=\{\psi\in\Phi_\varphi\mid \sigma,j\models\psi\}.
+$$</p>
+<p>Allora:</p>
+<ol>
+<li>ogni $A_j$ e' un atomo, perche' contiene una scelta coerente tra ogni formula e la sua negazione e rispetta le regole $\alpha/\beta$;</li>
+<li>se $X\psi\in A_j$, allora $\psi\in A_{j+1}$, quindi c'e' un arco $A_j\to A_{j+1}$ nel tableau;</li>
+<li>poiche' $\sigma,0\models\varphi$, vale $\varphi\in A_0$.</li>
+</ol>
+<p>Resta da verificare fulfilling. Se $\psi$ promette $r$ ed e' vera lungo il modello, la semantica LTL impone che la promessa venga realizzata, oppure che a un certo punto la promessa non sia piu' richiesta. Formalmente, ci sono infinite posizioni $j$ tali che:</p>
+<p>$$
+\sigma,j\models\neg\psi
+\quad\text{oppure}\quad
+\sigma,j\models r.
+$$</p>
+<p>Per definizione di $A_j$, questo significa:</p>
+<p>$$
+\neg\psi\in A_j
+\quad\text{oppure}\quad
+r\in A_j.
+$$</p>
+<p>Quindi il cammino indotto e' fulfilling.</p>
+<h3>Dai cammini fulfilling ai modelli</h3>
+<p>Supponiamo ora di avere un cammino fulfilling:</p>
+<p>$$
+\pi=A_0,A_1,A_2,\ldots
+$$</p>
+<p>Costruiamo un modello $\sigma$ facendo valere in posizione $j$ esattamente le proposizioni atomiche contenute in $A_j$.</p>
+<p>Vogliamo mostrare, per induzione sulla struttura di $\psi\in\Phi_\varphi$:</p>
+<p>$$
+\sigma,j\models\psi
+\iff
+\psi\in A_j.
+$$</p>
+<p><strong>Caso atomico.</strong></p>
+<p>Vero per costruzione del labeling di $\sigma$.</p>
+<p><strong>Connettivi booleani.</strong></p>
+<p>Seguono dalle regole degli atomi: ogni atomo contiene formule coerenti con le regole per $\land,\lor,\neg$.</p>
+<p><strong>Caso $X\psi$.</strong></p>
+<p>Per semantica:</p>
+<p>$$
+\sigma,j\models X\psi
+\iff
+\sigma,j+1\models\psi.
+$$</p>
+<p>Per ipotesi induttiva:</p>
+<p>$$
+\sigma,j+1\models\psi
+\iff
+\psi\in A_{j+1}.
+$$</p>
+<p>Per definizione degli archi del tableau:</p>
+<p>$$
+\psi\in A_{j+1}
+\iff
+X\psi\in A_j.
+$$</p>
+<p>Quindi il caso $X$ e' dimostrato.</p>
+<p><strong>Caso $F r$.</strong></p>
+<p>Supponiamo prima:</p>
+<p>$$
+Fr\in A_j.
+$$</p>
+<p>Poiche' il cammino e' fulfilling, esiste $k\ge j$ tale che $A_k$ realizza la promessa $Fr$. Prendiamo il primo tale $k$.</p>
+<p>Se $k=j$, allora, dato che $Fr\in A_j$ e $A_j$ realizza $Fr$, deve valere:</p>
+<p>$$
+r\in A_j.
+$$</p>
+<p>Per ipotesi induttiva:</p>
+<p>$$
+\sigma,j\models r,
+$$</p>
+<p>quindi:</p>
+<p>$$
+\sigma,j\models Fr.
+$$</p>
+<p>Se $k&gt;j$, allora fino a $k-1$ la promessa non e' realizzata. Le regole $\beta$ per $F$ impongono di propagare:</p>
+<p>$$
+XFr
+$$</p>
+<p>e quindi $Fr$ resta nel successore. Al primo punto $k$ in cui la promessa e' realizzata, deve valere:</p>
+<p>$$
+r\in A_k.
+$$</p>
+<p>Per ipotesi induttiva:</p>
+<p>$$
+\sigma,k\models r.
+$$</p>
+<p>Quindi:</p>
+<p>$$
+\sigma,j\models Fr.
+$$</p>
+<p>Viceversa, supponiamo:</p>
+<p>$$
+\sigma,j\models Fr
+$$</p>
+<p>ma:</p>
+<p>$$
+Fr\notin A_j.
+$$</p>
+<p>Allora:</p>
+<p>$$
+\neg Fr\in A_j.
+$$</p>
+<p>La formula $\neg Fr$ equivale a $G\neg r$. Le regole degli atomi e degli archi propagano $\neg r$ e $\neg Fr$ in tutti i successori. Per induzione avremmo:</p>
+<p>$$
+\sigma,k\models\neg r
+\quad\text{per ogni }k\ge j,
+$$</p>
+<p>contraddicendo $\sigma,j\models Fr$.</p>
+<p>Quindi:</p>
+<p>$$
+\sigma,j\models Fr
+\iff
+Fr\in A_j.
+$$</p>
+<p>Gli altri casi promettenti, come $pUr$, si trattano nello stesso modo: la parte fulfilling garantisce che la promessa dell'until venga prima o poi realizzata.</p>
+<h3>Teorema principale</h3>
+<p>Una formula $\varphi$ e' soddisfacibile se e solo se il tableau $T_\varphi$ contiene un cammino fulfilling:</p>
+<p>$$
+A_0,A_1,A_2,\ldots
+$$</p>
+<p>con:</p>
+<p>$$
+\varphi\in A_0.
+$$</p>
+<p>La direzione da sinistra a destra usa il cammino indotto dal modello. La direzione da destra a sinistra usa la costruzione del modello dal cammino fulfilling.</p>
+<h3>Riduzione a fulfilling MSCS</h3>
+<p>Poiche' $T_\varphi$ e' finito, un cammino infinito prima o poi resta in una componente fortemente connessa.</p>
+<p>Un SCS non transiente $S$ e' fulfilling se per ogni promessa $\psi$ esiste almeno un atomo $A\in S$ che realizza $\psi$.</p>
+<p>Allora:</p>
+<p>$$
+\varphi\text{ e' soddisfacibile}
+\iff
+T_\varphi\text{ contiene un fulfilling MSCS raggiungibile da un atomo che contiene }\varphi.
+$$</p>
+<p><strong>Direzione cammino -&gt; MSCS.</strong></p>
+<p>Se esiste un cammino fulfilling, considera gli atomi visitati infinite volte. Essi stanno dentro una componente fortemente connessa raggiungibile. Poiche' il cammino e' fulfilling, per ogni promessa qualche atomo visitato infinite volte la realizza. Quindi la componente e' fulfilling.</p>
+<p><strong>Direzione MSCS -&gt; cammino.</strong></p>
+<p>Se esiste un fulfilling MSCS raggiungibile, percorri un cammino finito fino alla componente e poi, usando la forte connessione, costruisci un cammino infinito che visita ogni atomo della componente infinite volte. Poiche' la componente contiene un realizzatore per ogni promessa, il cammino e' fulfilling.</p>
+<p>Punto orale: gli atomi garantiscono coerenza locale e propagazione dei next; la condizione fulfilling serve esattamente a impedire che una promessa futura venga rimandata per sempre.</p>
+<hr>
+<h2>21. CTL tramite punti fissi: $EG$ ed $EU$ <a id="proof-21"></a></h2>
+<p>Questa parte appare negli appunti di model checking. Non e' il blocco piu probabile se l'orale insiste su Büchi, ma chiude il quadro sulla differenza tra LTL e CTL.</p>
+<h3>Lemma: monotonia</h3>
+<p>Sia $S$ l'insieme finito degli stati di una struttura di Kripke. Un trasformatore:</p>
+<p>$$
+\tau:2^S\to 2^S
+$$</p>
+<p>e' monotono se:</p>
+<p>$$
+X\subseteq Y\Rightarrow \tau(X)\subseteq\tau(Y).
+$$</p>
+<p>Per:</p>
+<p>$$
+\tau(Z)=Sat(f)\cap Pre_\exists(Z)
+$$</p>
+<p>dove $Pre_\exists(Z)$ e' l'insieme degli stati con almeno un successore in $Z$, la monotonia vale. Infatti, se $Z_1\subseteq Z_2$, ogni stato che ha un successore in $Z_1$ ha anche un successore in $Z_2$. Quindi:</p>
+<p>$$
+Pre_\exists(Z_1)\subseteq Pre_\exists(Z_2)
+$$</p>
+<p>e intersecando con $Sat(f)$:</p>
+<p>$$
+\tau(Z_1)\subseteq\tau(Z_2).
+$$</p>
+<h3>$EG f$ come massimo punto fisso</h3>
+<p>La formula:</p>
+<p>$$
+EG f
+$$</p>
+<p>significa: esiste un cammino infinito lungo cui $f$ vale sempre.</p>
+<p>Definiamo:</p>
+<p>$$
+\tau(Z)=Sat(f)\cap Pre_\exists(Z).
+$$</p>
+<p>Allora:</p>
+<p>$$
+Sat(EG f)=\nu Z.\,\tau(Z),
+$$</p>
+<p>dove $\nu$ indica il massimo punto fisso.</p>
+<p><strong>Perche' $Sat(EG f)\subseteq \nu Z.\tau(Z)$.</strong></p>
+<p>Se $s\models EG f$, esiste un cammino:</p>
+<p>$$
+s=s_0,s_1,s_2,\ldots
+$$</p>
+<p>tale che ogni $s_i\models f$. Inoltre $s_1$ soddisfa ancora $EG f$, perche' il suffisso del cammino da $s_1$ in poi e' ancora un cammino infinito tutto in $f$.</p>
+<p>Quindi:</p>
+<p>$$
+s\in Sat(f)
+$$</p>
+<p>e $s$ ha un successore in $Sat(EG f)$. Dunque:</p>
+<p>$$
+Sat(EG f)\subseteq \tau(Sat(EG f)).
+$$</p>
+<p>In realta' vale uguaglianza, quindi $Sat(EG f)$ e' un punto fisso. Essendo $\nu Z.\tau(Z)$ il massimo punto fisso, contiene $Sat(EG f)$.</p>
+<p><strong>Perche' $\nu Z.\tau(Z)\subseteq Sat(EG f)$.</strong></p>
+<p>Sia:</p>
+<p>$$
+Z^\ast=\nu Z.\tau(Z).
+$$</p>
+<p>Se $s\in Z^\ast$, poiche' $Z^\ast=\tau(Z^\ast)$, allora:</p>
+<ol>
+<li>$s\in Sat(f)$;</li>
+<li>esiste un successore $s_1\in Z^\ast$.</li>
+</ol>
+<p>Applicando lo stesso ragionamento a $s_1$, otteniamo $s_2\in Z^\ast$, e cosi' via. Costruiamo quindi un cammino infinito:</p>
+<p>$$
+s=s_0,s_1,s_2,\ldots
+$$</p>
+<p>in cui ogni stato sta in $Z^\ast$ e quindi soddisfa $f$. Dunque:</p>
+<p>$$
+s\models EG f.
+$$</p>
+<p>Quindi:</p>
+<p>$$
+Sat(EG f)=\nu Z.\,(Sat(f)\cap Pre_\exists(Z)).
+$$</p>
+<h3>$E[f_1 U f_2]$ come minimo punto fisso</h3>
+<p>La formula:</p>
+<p>$$
+E[f_1 U f_2]
+$$</p>
+<p>significa: esiste un cammino in cui prima o poi vale $f_2$, e fino a quel momento vale $f_1$.</p>
+<p>Definiamo:</p>
+<p>$$
+\tau(Z)=Sat(f_2)\cup(Sat(f_1)\cap Pre_\exists(Z)).
+$$</p>
+<p>Allora:</p>
+<p>$$
+Sat(E[f_1 U f_2])=\mu Z.\,\tau(Z),
+$$</p>
+<p>dove $\mu$ indica il minimo punto fisso.</p>
+<p><strong>Intuizione costruttiva.</strong></p>
+<p>Partiamo da:</p>
+<p>$$
+Z_0=\emptyset.
+$$</p>
+<p>Poi:</p>
+<p>$$
+Z_{i+1}=\tau(Z_i).
+$$</p>
+<ul>
+<li>$Z_1$ contiene gli stati che soddisfano gia' $f_2$;</li>
+<li>$Z_2$ aggiunge gli stati che soddisfano $f_1$ e possono andare in uno stato di $Z_1$;</li>
+<li>$Z_3$ aggiunge gli stati che possono raggiungere $f_2$ in due passi mantenendo $f_1$ prima;</li>
+<li>e cosi' via.</li>
+</ul>
+<p>Poiche' $S$ e' finito e la sequenza e' crescente:</p>
+<p>$$
+Z_0\subseteq Z_1\subseteq Z_2\subseteq\ldots
+$$</p>
+<p>prima o poi si stabilizza. Il limite e' il minimo punto fisso.</p>
+<p><strong>Correttezza.</strong></p>
+<p>Se $s$ entra in qualche $Z_i$, allora esiste un cammino di lunghezza al piu' $i$ che arriva a uno stato che soddisfa $f_2$, e tutti gli stati precedenti soddisfano $f_1$. Quindi:</p>
+<p>$$
+s\models E[f_1 U f_2].
+$$</p>
+<p>Viceversa, se:</p>
+<p>$$
+s\models E[f_1 U f_2],
+$$</p>
+<p>allora esiste un cammino:</p>
+<p>$$
+s=s_0,s_1,\ldots,s_k
+$$</p>
+<p>con:</p>
+<p>$$
+s_k\models f_2
+$$</p>
+<p>e:</p>
+<p>$$
+s_i\models f_1\quad\text{per }0\le i&lt;k.
+$$</p>
+<p>Per induzione all'indietro:</p>
+<ul>
+<li>$s_k\in Z_1$;</li>
+<li>$s_{k-1}\in Z_2$;</li>
+<li>...</li>
+<li>$s_0\in Z_{k+1}$.</li>
+</ul>
+<p>Quindi $s$ appartiene al minimo punto fisso.</p>
+<p>Punto orale: CTL model checking e' locale perche' calcola insiemi di stati tramite punti fissi; LTL invece richiede ragionare su cammini interi/tableau/automi.</p>
+<hr>
+<h2>22. Chiusura di DBA per unione e intersezione <a id="proof-22"></a></h2>
+<p>Negli appunti questa parte compare come esercizio:</p>
+<blockquote>
+<p>dimostrare che gli automi di Büchi deterministici sono chiusi per unione e intersezione.</p>
+</blockquote>
+<p>La chiusura per unione e' semplice; quella per intersezione richiede un piccolo contatore di turno, perche' due stati finali possono essere visitati infinitamente spesso ma non nello stesso istante.</p>
+<h3>Unione</h3>
+<p>Siano:</p>
+<p>$$
+\mathcal{A}_1=(Q_1,\Sigma,\delta_1,q^1_0,F_1)
+$$</p>
+<p>e:</p>
+<p>$$
+\mathcal{A}_2=(Q_2,\Sigma,\delta_2,q^2_0,F_2)
+$$</p>
+<p>due DBA.</p>
+<p>Costruiamo:</p>
+<p>$$
+\mathcal{A}^{\cup}=(Q_1\times Q_2,\Sigma,\delta,(q^1_0,q^2_0),F^{\cup})
+$$</p>
+<p>dove:</p>
+<p>$$
+\delta((p_1,p_2),a)=(\delta_1(p_1,a),\delta_2(p_2,a))
+$$</p>
+<p>e:</p>
+<p>$$
+F^{\cup}=(F_1\times Q_2)\cup(Q_1\times F_2).
+$$</p>
+<p>Prendiamo una parola infinita:</p>
+<p>$$
+\alpha=a_0a_1a_2\cdots.
+$$</p>
+<p>Poiche' gli automi sono deterministici, su $\alpha$ esistono tre run uniche:</p>
+<p>$$
+\rho_1=p^1_0p^1_1p^1_2\cdots,
+$$</p>
+<p>$$
+\rho_2=p^2_0p^2_1p^2_2\cdots,
+$$</p>
+<p>e:</p>
+<p>$$
+\rho=(p^1_0,p^2_0)(p^1_1,p^2_1)(p^1_2,p^2_2)\cdots.
+$$</p>
+<p>La run prodotto visita $F^{\cup}$ infinitamente spesso se e solo se:</p>
+<p>$$
+\exists^\omega i\; p^1_i\in F_1
+$$</p>
+<p>oppure:</p>
+<p>$$
+\exists^\omega i\; p^2_i\in F_2.
+$$</p>
+<p>La prima condizione significa $\alpha\in L(\mathcal{A}_1)$; la seconda significa $\alpha\in L(\mathcal{A}_2)$.</p>
+<p>Quindi:</p>
+<p>$$
+L(\mathcal{A}^{\cup})=L(\mathcal{A}_1)\cup L(\mathcal{A}_2).
+$$</p>
+<h3>Intersezione</h3>
+<p>Per l'intersezione non basta prendere:</p>
+<p>$$
+F_1\times F_2.
+$$</p>
+<p>Motivo: puo' succedere che $\mathcal{A}_1$ visiti $F_1$ infinitamente spesso e $\mathcal{A}_2$ visiti $F_2$ infinitamente spesso, ma mai nello stesso momento.</p>
+<p>Costruiamo allora un automa che alterna due obblighi:</p>
+<ol>
+<li>vedere un finale di $\mathcal{A}_1$;</li>
+<li>poi vedere un finale di $\mathcal{A}_2$;</li>
+<li>poi ricominciare.</li>
+</ol>
+<p>Definiamo:</p>
+<p>$$
+\mathcal{A}^{\cap}=(Q_1\times Q_2\times\{1,2\},\Sigma,\delta, (q^1_0,q^2_0,1),F^{\cap}).
+$$</p>
+<p>Il terzo componente indica quale finale stiamo aspettando.</p>
+<p>Dato uno stato $(p_1,p_2,t)$ e una lettera $a$, poniamo:</p>
+<p>$$
+p'_1=\delta_1(p_1,a),\qquad p'_2=\delta_2(p_2,a).
+$$</p>
+<p>Il nuovo turno $t'$ viene deciso guardando lo stato corrente, prima di consumare la prossima lettera.</p>
+<p>$$
+t'=2\quad\text{se }t=1\text{ e }p_1\in F_1.
+$$</p>
+<p>Se invece $t=2$ e $p_2\in F_2$, poniamo:</p>
+<p>$$
+t'=1.
+$$</p>
+<p>In tutti gli altri casi poniamo:</p>
+<p>$$
+t'=t.
+$$</p>
+<p>e:</p>
+<p>$$
+\delta((p_1,p_2,t),a)=(p'_1,p'_2,t').
+$$</p>
+<p>Scegliamo come finali gli stati in cui stiamo aspettando il secondo automa e lo abbiamo appena visto finale:</p>
+<p>$$
+F^{\cap}=Q_1\times F_2\times\{2\}.
+$$</p>
+<h4>Correttezza: se il prodotto accetta, entrambi accettano</h4>
+<p>Supponiamo:</p>
+<p>$$
+\alpha\in L(\mathcal{A}^{\cap}).
+$$</p>
+<p>Allora accettare significa visitare infinitamente spesso stati in cui:</p>
+<ol>
+<li>si sta aspettando $\mathcal{A}_2$;</li>
+<li>il componente di $\mathcal{A}_2$ e' finale.</li>
+</ol>
+<p>Ogni visita a $F^{\cap}$ produce, al passo successivo di aggiornamento, il ritorno al turno $1$.</p>
+<p>Per tornare poi al turno $2$ serve una nuova visita a uno stato con primo componente in $F_1$.</p>
+<p>Quindi:</p>
+<p>$$
+\exists^\omega i\; p^1_i\in F_1
+$$</p>
+<p>e:</p>
+<p>$$
+\exists^\omega i\; p^2_i\in F_2.
+$$</p>
+<p>Dunque:</p>
+<p>$$
+\alpha\in L(\mathcal{A}_1)\cap L(\mathcal{A}_2).
+$$</p>
+<h4>Correttezza: se entrambi accettano, il prodotto accetta</h4>
+<p>Supponiamo ora:</p>
+<p>$$
+\alpha\in L(\mathcal{A}_1)\cap L(\mathcal{A}_2).
+$$</p>
+<p>Allora:</p>
+<p>$$
+\exists^\omega i\; p^1_i\in F_1
+$$</p>
+<p>e:</p>
+<p>$$
+\exists^\omega i\; p^2_i\in F_2.
+$$</p>
+<p>Quando il prodotto e' in turno $1$, prima o poi il primo componente entra in $F_1$, quindi il turno passa a $2$.</p>
+<p>Quando il prodotto e' in turno $2$, prima o poi il secondo componente entra in $F_2$, quindi viene visitato uno stato di:</p>
+<p>$$
+Q_1\times F_2\times\{2\}
+$$</p>
+<p>e poi il turno torna a $1$.</p>
+<p>Poiche' entrambe le visite finali accadono infinite volte, questo ciclo si ripete infinite volte.</p>
+<p>Quindi $\mathcal{A}^{\cap}$ visita $F^{\cap}$ infinitamente spesso e accetta $\alpha$.</p>
+<p>Conclusione:</p>
+<p>$$
+L(\mathcal{A}^{\cap})=L(\mathcal{A}_1)\cap L(\mathcal{A}_2).
+$$</p>
+<p>Punto orale: per l'unione basta il prodotto diretto; per l'intersezione serve ricordare quale dei due finali e' gia' stato visto nel ciclo corrente.</p>
+<hr>
+<h2>23. Automi di Muller: da Büchi, complemento e operazioni booleane <a id="proof-23"></a></h2>
+<p>Un automa di Muller deterministico e':</p>
+<p>$$
+\mathcal{M}=(Q,\Sigma,\delta,q_0,\mathcal{F})
+$$</p>
+<p>dove:</p>
+<p>$$
+\mathcal{F}\subseteq 2^Q.
+$$</p>
+<p>Su una parola infinita $\alpha$, la run deterministica e':</p>
+<p>$$
+\rho=q_0q_1q_2\cdots.
+$$</p>
+<p>Definiamo:</p>
+<p>$$
+Inf(\rho)=\{q\in Q\mid \exists^\omega i\; q_i=q\}.
+$$</p>
+<p>La condizione di accettazione Muller e':</p>
+<p>$$
+\alpha\in L(\mathcal{M})
+\quad\Longleftrightarrow\quad
+Inf(\rho)\in\mathcal{F}.
+$$</p>
+<h3>Ogni DBA e' un DMA</h3>
+<p>Sia:</p>
+<p>$$
+\mathcal{A}=(Q,\Sigma,\delta,q_0,F)
+$$</p>
+<p>un DBA.</p>
+<p>Costruiamo il DMA:</p>
+<p>$$
+\mathcal{M}=(Q,\Sigma,\delta,q_0,\mathcal{F})
+$$</p>
+<p>dove:</p>
+<p>$$
+\mathcal{F}=\{P\subseteq Q\mid P\cap F\neq\emptyset\}.
+$$</p>
+<p>Le due macchine hanno stessa struttura, quindi su ogni parola $\alpha$ hanno la stessa run $\rho$.</p>
+<p>Il DBA accetta se e solo se visita qualche stato finale infinite volte:</p>
+<p>$$
+\exists q\in F\;\exists^\omega i\;q_i=q.
+$$</p>
+<p>Questa condizione equivale a:</p>
+<p>$$
+Inf(\rho)\cap F\neq\emptyset.
+$$</p>
+<p>Per definizione di $\mathcal{F}$:</p>
+<p>$$
+Inf(\rho)\cap F\neq\emptyset
+\quad\Longleftrightarrow\quad
+Inf(\rho)\in\mathcal{F}.
+$$</p>
+<p>Quindi:</p>
+<p>$$
+L(\mathcal{A})=L(\mathcal{M}).
+$$</p>
+<h3>Ogni NBA e' un NMA</h3>
+<p>La stessa idea funziona per gli automi non deterministici.</p>
+<p>Sia:</p>
+<p>$$
+\mathcal{A}=(Q,\Sigma,\Delta,q_0,F)
+$$</p>
+<p>un NBA.</p>
+<p>Costruiamo:</p>
+<p>$$
+\mathcal{M}=(Q,\Sigma,\Delta,q_0,\mathcal{F})
+$$</p>
+<p>con:</p>
+<p>$$
+\mathcal{F}=\{P\subseteq Q\mid P\cap F\neq\emptyset\}.
+$$</p>
+<p>Ora una parola $\alpha$ e' accettata dall'NBA se e solo se esiste una run $\rho$ su $\alpha$ tale che:</p>
+<p>$$
+Inf(\rho)\cap F\neq\emptyset.
+$$</p>
+<p>Per la definizione di $\mathcal{F}$, cio' equivale a dire che esiste una run $\rho$ tale che:</p>
+<p>$$
+Inf(\rho)\in\mathcal{F}.
+$$</p>
+<p>Questa e' esattamente la condizione di accettazione dell'NMA.</p>
+<p>Quindi:</p>
+<p>$$
+L(\mathcal{A})=L(\mathcal{M}).
+$$</p>
+<h3>Complemento dei Muller deterministici</h3>
+<p>Sia:</p>
+<p>$$
+\mathcal{M}=(Q,\Sigma,\delta,q_0,\mathcal{F})
+$$</p>
+<p>un DMA che riconosce $L$.</p>
+<p>Costruiamo:</p>
+<p>$$
+\overline{\mathcal{M}}=(Q,\Sigma,\delta,q_0,2^Q\setminus\mathcal{F}).
+$$</p>
+<p>Prendiamo una parola $\alpha$ e sia $\rho$ la sua unica run.</p>
+<p>Allora:</p>
+<p>$$
+\alpha\in L(\overline{\mathcal{M}})
+\quad\Longleftrightarrow\quad
+Inf(\rho)\in 2^Q\setminus\mathcal{F}
+$$</p>
+<p>cioe':</p>
+<p>$$
+\alpha\in L(\overline{\mathcal{M}})
+\quad\Longleftrightarrow\quad
+Inf(\rho)\notin\mathcal{F}.
+$$</p>
+<p>Ma:</p>
+<p>$$
+Inf(\rho)\notin\mathcal{F}
+\quad\Longleftrightarrow\quad
+\alpha\notin L(\mathcal{M}).
+$$</p>
+<p>Quindi:</p>
+<p>$$
+L(\overline{\mathcal{M}})=\Sigma^\omega\setminus L(\mathcal{M}).
+$$</p>
+<p>Punto orale: qui il determinismo e' essenziale. Se ci fossero piu run, complementare la famiglia $\mathcal{F}$ non basterebbe, perche' l'accettazione esistenziale delle run cambierebbe il quantificatore.</p>
+<h3>Unione e intersezione dei Muller deterministici</h3>
+<p>Siano:</p>
+<p>$$
+\mathcal{M}_1=(Q_1,\Sigma,\delta_1,q^1_0,\mathcal{F}_1)
+$$</p>
+<p>e:</p>
+<p>$$
+\mathcal{M}_2=(Q_2,\Sigma,\delta_2,q^2_0,\mathcal{F}_2).
+$$</p>
+<p>Costruiamo il prodotto deterministico:</p>
+<p>$$
+\mathcal{P}=(Q_1\times Q_2,\Sigma,\delta,(q^1_0,q^2_0),\mathcal{F})
+$$</p>
+<p>con:</p>
+<p>$$
+\delta((p_1,p_2),a)=(\delta_1(p_1,a),\delta_2(p_2,a)).
+$$</p>
+<p>Se $\rho$ e' la run prodotto, allora:</p>
+<p>$$
+Inf(\rho)\subseteq Q_1\times Q_2.
+$$</p>
+<p>Le proiezioni soddisfano:</p>
+<p>$$
+\pi_1(Inf(\rho))=Inf(\rho_1)
+$$</p>
+<p>e:</p>
+<p>$$
+\pi_2(Inf(\rho))=Inf(\rho_2).
+$$</p>
+<p>Dimostriamo la prima uguaglianza; la seconda e' identica.</p>
+<p>Se $p\in \pi_1(Inf(\rho))$, allora esiste $r\in Q_2$ tale che $(p,r)$ compare infinite volte nella run prodotto. Quindi $p$ compare infinite volte nella prima componente, cioe' $p\in Inf(\rho_1)$.</p>
+<p>Viceversa, se $p\in Inf(\rho_1)$, allora $p$ compare infinite volte nella prima componente. Ogni volta che compare, la seconda componente ha uno dei finitemente molti valori di $Q_2$. Per il principio dei cassetti, esiste $r\in Q_2$ tale che $(p,r)$ compare infinite volte nella run prodotto. Quindi $p\in \pi_1(Inf(\rho))$.</p>
+<p>Per l'intersezione scegliamo:</p>
+<p>$$
+\mathcal{F}_\cap=\{R\subseteq Q_1\times Q_2\mid
+\pi_1(R)\in\mathcal{F}_1
+\text{ e }
+\pi_2(R)\in\mathcal{F}_2\}.
+$$</p>
+<p>Allora:</p>
+<p>$$
+Inf(\rho)\in\mathcal{F}_\cap
+$$</p>
+<p>se e solo se:</p>
+<p>$$
+Inf(\rho_1)\in\mathcal{F}_1
+\quad\text{e}\quad
+Inf(\rho_2)\in\mathcal{F}_2.
+$$</p>
+<p>Dunque:</p>
+<p>$$
+L(\mathcal{P})=L(\mathcal{M}_1)\cap L(\mathcal{M}_2).
+$$</p>
+<p>Per l'unione scegliamo:</p>
+<p>$$
+\mathcal{F}_\cup=\{R\subseteq Q_1\times Q_2\mid
+\pi_1(R)\in\mathcal{F}_1
+\text{ oppure }
+\pi_2(R)\in\mathcal{F}_2\}.
+$$</p>
+<p>Con lo stesso ragionamento:</p>
+<p>$$
+L(\mathcal{P})=L(\mathcal{M}_1)\cup L(\mathcal{M}_2).
+$$</p>
+<p>Il complemento e queste due costruzioni danno la chiusura booleana dei DMA.</p>
+<hr>
+<h2>24. NMA e S1S: formalizzare la condizione di Muller <a id="proof-24"></a></h2>
+<p>Negli appunti, per mostrare che gli NMA hanno lo stesso potere espressivo degli NBA, viene suggerito il passaggio:</p>
+<p>$$
+NMA \to S1S \to NBA.
+$$</p>
+<p>Il punto che viene lasciato come esercizio e' la formula S1S che esprime la condizione di accettazione Muller.</p>
+<p>Sia:</p>
+<p>$$
+\mathcal{M}=(Q,\Sigma,\Delta,q_0,\mathcal{F})
+$$</p>
+<p>un NMA, con:</p>
+<p>$$
+Q=\{q_0,\ldots,q_m\}.
+$$</p>
+<p>Come nella traduzione automa $\to$ S1S, usiamo variabili monadiche:</p>
+<p>$$
+Y_0,\ldots,Y_m
+$$</p>
+<p>dove:</p>
+<p>$$
+Y_i(x)
+$$</p>
+<p>significa: nella posizione $x$ della run siamo nello stato $q_i$.</p>
+<p>Le formule di partizione e transizione sono le stesse gia' viste per Büchi:</p>
+<ol>
+<li>in ogni posizione c'e' esattamente uno stato;</li>
+<li>in posizione $0$ c'e' lo stato iniziale;</li>
+<li>le posizioni consecutive rispettano la relazione di transizione.</li>
+</ol>
+<p>Resta solo la condizione Muller.</p>
+<h3>Stati visti infinite volte e finite volte</h3>
+<p>Per dire che $q_i$ compare infinite volte:</p>
+<p>$$
+Inf_i(Y_i)\;:=\;\forall x\,\exists y\,(x&lt;y\wedge Y_i(y)).
+$$</p>
+<p>Questa formula dice: dopo ogni posizione $x$ esiste una posizione successiva $y$ in cui la run e' in $q_i$.</p>
+<p>Per dire che $q_i$ compare solo finitemente molte volte:</p>
+<p>$$
+Fin_i(Y_i)\;:=\;\exists x\,\forall y\,(x&lt;y\to \neg Y_i(y)).
+$$</p>
+<p>Questa formula dice: esiste una soglia $x$ dopo la quale $q_i$ non compare piu.</p>
+<h3>Formula per un insieme Muller fissato</h3>
+<p>Sia:</p>
+<p>$$
+P\subseteq Q.
+$$</p>
+<p>Vogliamo esprimere:</p>
+<p>$$
+Inf(\rho)=P.
+$$</p>
+<p>La formula e':</p>
+<p>$$
+Exact_P(Y_0,\ldots,Y_m)
+:=
+\left(\bigwedge_{q_i\in P} Inf_i(Y_i)\right)
+\wedge
+\left(\bigwedge_{q_i\notin P} Fin_i(Y_i)\right).
+$$</p>
+<p>Dimostriamo che e' corretta.</p>
+<p>Se una run $\rho$ soddisfa $Exact_P$, allora:</p>
+<ul>
+<li>ogni stato in $P$ compare infinite volte;</li>
+<li>ogni stato fuori da $P$ compare solo finitemente molte volte.</li>
+</ul>
+<p>Quindi gli stati che compaiono infinite volte sono esattamente quelli di $P$:</p>
+<p>$$
+Inf(\rho)=P.
+$$</p>
+<p>Viceversa, se $Inf(\rho)=P$, allora ogni $q_i\in P$ compare infinite volte e ogni $q_i\notin P$ non compare infinite volte. Poiche' la run e' indicizzata su $\omega$, "non compare infinite volte" equivale a "compare solo finitemente molte volte". Quindi la run soddisfa $Exact_P$.</p>
+<h3>Formula Muller completa</h3>
+<p>La condizione di accettazione Muller e':</p>
+<p>$$
+Inf(\rho)\in\mathcal{F}.
+$$</p>
+<p>La traduciamo come:</p>
+<p>$$
+\varphi_{Muller}(Y_0,\ldots,Y_m)
+:=
+\bigvee_{P\in\mathcal{F}} Exact_P(Y_0,\ldots,Y_m).
+$$</p>
+<p>Questa e' una formula finita perche' $Q$ e' finito, quindi anche $\mathcal{F}\subseteq 2^Q$ e' finita.</p>
+<p>Conclusione:</p>
+<p>$$
+\exists Y_0\cdots\exists Y_m
+(\varphi_{partizione}\wedge\varphi_{iniziale}\wedge\varphi_{transizione}\wedge\varphi_{Muller})
+$$</p>
+<p>definisce esattamente le parole accettate dall'NMA.</p>
+<p>Poiche' ogni linguaggio S1S e' riconoscibile da un automa di Büchi, otteniamo:</p>
+<p>$$
+NMA\subseteq NBA.
+$$</p>
+<p>Insieme alla costruzione $NBA\subseteq NMA$ della sezione precedente:</p>
+<p>$$
+NMA\equiv NBA.
+$$</p>
+<p>Punto orale: se ti chiedono il passaggio lasciato come esercizio negli appunti, devi scrivere $Exact_P$ e poi fare la disgiunzione su tutti i $P\in\mathcal{F}$.</p>
+<hr>
+<h2>25. Giochi di raggiungibilita': attractor e strategie posizionali <a id="proof-25"></a></h2>
+<p>Negli appunti il teorema e':</p>
+<blockquote>
+<p>un reachability game e' determinato, le regioni vincenti sono computabili e le strategie vincenti posizionali sono computabili.</p>
+</blockquote>
+<h3>Definizione</h3>
+<p>Un gioco di raggiungibilita' e':</p>
+<p>$$
+G=(Q,Q_A,E,F)
+$$</p>
+<p>dove:</p>
+<ul>
+<li>$Q$ e' l'insieme finito degli stati;</li>
+<li>$Q_A\subseteq Q$ sono gli stati controllati dal giocatore $A$;</li>
+<li>$Q_B=Q\setminus Q_A$ sono gli stati controllati dal giocatore $B$;</li>
+<li>$E\subseteq Q\times Q$ e' la relazione delle mosse;</li>
+<li>$F\subseteq Q$ e' il target.</li>
+</ul>
+<p>Il giocatore $B$ vince una partita se prima o poi viene visitato uno stato di $F$.</p>
+<p>Assumiamo che ogni stato abbia almeno una mossa uscente.</p>
+<h3>Attractor di B</h3>
+<p>Definiamo per induzione:</p>
+<p>$$
+Attr^B_0(F)=F.
+$$</p>
+<p>Poi:</p>
+<p>$$
+Attr^B_{i+1}(F)=Attr^B_i(F)
+\cup
+\{q\in Q_B\mid \exists q'\,(E(q,q')\wedge q'\in Attr^B_i(F))\}
+$$</p>
+<p>$$
+\cup
+\{q\in Q_A\mid \forall q'\,(E(q,q')\to q'\in Attr^B_i(F))\}.
+$$</p>
+<p>Interpretazione:</p>
+<ul>
+<li>se lo stato e' di $B$, basta una mossa verso l'attractor;</li>
+<li>se lo stato e' di $A$, tutte le mosse possibili devono andare nell'attractor.</li>
+</ul>
+<p>La sequenza:</p>
+<p>$$
+Attr^B_0(F)\subseteq Attr^B_1(F)\subseteq Attr^B_2(F)\subseteq\cdots
+$$</p>
+<p>e' crescente.</p>
+<p>Poiche' $Q$ e' finito, si stabilizza entro al piu' $|Q|$ passi.</p>
+<p>Definiamo:</p>
+<p>$$
+Attr^B(F)=\bigcup_{i\ge 0}Attr^B_i(F).
+$$</p>
+<h3>Se uno stato e' nell'attractor, B vince</h3>
+<p>Per ogni stato $q\in Attr^B(F)$ definiamo il rango:</p>
+<p>$$
+r(q)=\min\{i\mid q\in Attr^B_i(F)\}.
+$$</p>
+<p>Se $r(q)=0$, allora $q\in F$ e $B$ ha gia' vinto.</p>
+<p>Se $r(q)&gt;0$ e $q\in Q_B$, per definizione di attractor esiste una mossa:</p>
+<p>$$
+q\to q'
+$$</p>
+<p>con:</p>
+<p>$$
+q'\in Attr^B_{r(q)-1}(F).
+$$</p>
+<p>B sceglie una di queste mosse. Il rango diminuisce.</p>
+<p>Se $r(q)&gt;0$ e $q\in Q_A$, per definizione tutte le mosse di $A$ portano in:</p>
+<p>$$
+Attr^B_{r(q)-1}(F).
+$$</p>
+<p>Quindi, qualunque scelta faccia $A$, il rango diminuisce.</p>
+<p>Il rango e' un numero naturale e diminuisce strettamente finche' non si arriva a $0$.</p>
+<p>Dunque in un numero finito di passi si raggiunge $F$.</p>
+<p>La strategia di $B$ dipende solo dallo stato corrente: e' quindi posizionale.</p>
+<h3>Se uno stato e' fuori dall'attractor, A vince</h3>
+<p>Sia:</p>
+<p>$$
+C=Q\setminus Attr^B(F).
+$$</p>
+<p>Mostriamo che da ogni stato in $C$, il giocatore $A$ puo' evitare per sempre $F$.</p>
+<p>Prima osservazione:</p>
+<p>$$
+C\cap F=\emptyset,
+$$</p>
+<p>perche' $F=Attr^B_0(F)\subseteq Attr^B(F)$.</p>
+<p>Seconda osservazione: $C$ e' chiuso rispetto al gioco nel senso favorevole ad $A$.</p>
+<p>Se $q\in C\cap Q_A$, non puo' essere vero che tutte le mosse da $q$ vadano in $Attr^B(F)$; altrimenti $q$ entrerebbe nell'attractor al passo successivo. Quindi esiste almeno una mossa:</p>
+<p>$$
+q\to q'
+$$</p>
+<p>con:</p>
+<p>$$
+q'\in C.
+$$</p>
+<p>A sceglie una di queste mosse.</p>
+<p>Se $q\in C\cap Q_B$, non puo' esistere una mossa da $q$ verso $Attr^B(F)$; altrimenti, essendo $q$ controllato da $B$, $q$ entrerebbe nell'attractor. Quindi tutte le mosse di $B$ restano in $C$.</p>
+<p>Pertanto, se la partita parte in $C$, $A$ puo' mantenerla per sempre in $C$.</p>
+<p>Poiche' $C$ non contiene stati target, $F$ non viene mai raggiunto.</p>
+<p>Quindi $A$ vince da ogni stato fuori dall'attractor.</p>
+<p>Conclusione:</p>
+<p>$$
+W_B=Attr^B(F)
+$$</p>
+<p>e:</p>
+<p>$$
+W_A=Q\setminus Attr^B(F).
+$$</p>
+<p>Il gioco e' determinato e le strategie vincenti sono posizionali.</p>
+<hr>
+<h2>26. Weak Muller games come weak parity games <a id="proof-26"></a></h2>
+<p>Negli appunti compare la trasformazione:</p>
+<blockquote>
+<p>una condizione weak Muller puo' essere espressa con una condizione weak parity usando l'appearance record.</p>
+</blockquote>
+<p>Qui formalizziamo il caso weak, quello in cui la condizione dipende da:</p>
+<p>$$
+Occ(\rho)=\{q\in Q\mid q\text{ compare almeno una volta in }\rho\}.
+$$</p>
+<p>Il giocatore $B$ vince se:</p>
+<p>$$
+Occ(\rho)\in\mathcal{F}.
+$$</p>
+<h3>Appearance record weak</h3>
+<p>Dato un prefisso finito:</p>
+<p>$$
+q_0q_1\cdots q_i,
+$$</p>
+<p>definiamo:</p>
+<p>$$
+R_i=\{q_0,\ldots,q_i\}.
+$$</p>
+<p>La sequenza:</p>
+<p>$$
+R_0\subseteq R_1\subseteq R_2\subseteq\cdots
+$$</p>
+<p>e' crescente e ogni $R_i$ e' un sottoinsieme di $Q$.</p>
+<p>Poiche' $Q$ e' finito, la sequenza si stabilizza.</p>
+<p>Il limite e':</p>
+<p>$$
+\bigcup_{i\ge 0}R_i=Occ(\rho).
+$$</p>
+<p>Anzi, esiste un indice $N$ tale che per ogni $i\ge N$:</p>
+<p>$$
+R_i=Occ(\rho).
+$$</p>
+<h3>Colorazione</h3>
+<p>Associamo a ogni record $R\subseteq Q$ un colore:</p>
+<p>$$
+c(R)=2|R|\quad\text{se }R\in\mathcal{F}.
+$$</p>
+<p>Se invece $R\notin\mathcal{F}$, poniamo:</p>
+<p>$$
+c(R)=2|R|-1.
+$$</p>
+<p>La parita' del colore dice se $R$ e' vincente:</p>
+<p>$$
+c(R)\text{ e' pari}
+\quad\Longleftrightarrow\quad
+R\in\mathcal{F}.
+$$</p>
+<p>La grandezza del colore cresce con $|R|$.</p>
+<p>Poiche' $R_i$ e' crescente per inclusione, anche $|R_i|$ e' non decrescente.</p>
+<p>Dopo l'indice $N$, tutti i record sono uguali a $Occ(\rho)$, quindi tutti i colori sono uguali a:</p>
+<p>$$
+c(Occ(\rho)).
+$$</p>
+<p>Il massimo colore che compare infinitamente spesso e' dunque:</p>
+<p>$$
+c(Occ(\rho)).
+$$</p>
+<p>Quindi:</p>
+<p>$$
+Occ(\rho)\in\mathcal{F}
+$$</p>
+<p>se e solo se:</p>
+<p>$$
+c(Occ(\rho))\text{ e' pari}
+$$</p>
+<p>se e solo se:</p>
+<p>$$
+\text{il massimo colore visto infinitamente spesso e' pari.}
+$$</p>
+<p>Questa e' esattamente una condizione di parita'.</p>
+<p>Punto orale: nel caso weak basta ricordare l'insieme degli stati gia' visti; nel caso Muller pieno serve il LAR, perche' la condizione dipende dagli stati visti infinite volte, non solo almeno una volta.</p>
+<hr>
+<h2>27. Da Muller a parity con LAR <a id="proof-27"></a></h2>
+<p>Per una condizione di Muller piena, il giocatore $B$ vince una play infinita:</p>
+<p>$$
+\rho=q_0q_1q_2\cdots
+$$</p>
+<p>se:</p>
+<p>$$
+Inf(\rho)\in\mathcal{F}.
+$$</p>
+<p>Qui:</p>
+<p>$$
+Inf(\rho)=\{q\in Q\mid q\text{ compare infinite volte in }\rho\}.
+$$</p>
+<p>Il problema e' che $Inf(\rho)$ non si ottiene guardando solo gli stati gia' apparsi: bisogna distinguere gli stati che appaiono solo finitamente da quelli che tornano per sempre.</p>
+<p>Il LAR, Latest Appearance Record, serve a fare questa distinzione con memoria finita.</p>
+<h3>Stato LAR</h3>
+<p>Uno stato LAR contiene:</p>
+<ol>
+<li>una lista senza ripetizioni di stati di $Q$, ordinata per ultima apparizione;</li>
+<li>un numero $h$, detto hit.</li>
+</ol>
+<p>Quando si legge un nuovo stato $q$:</p>
+<ul>
+<li>se $q$ non e' nella lista, lo si mette in testa e si pone $h=0$;</li>
+<li>se $q$ era nella posizione $h&gt;0$, lo si sposta in testa e si registra quell'hit $h$.</li>
+</ul>
+<p>Se prima dell'aggiornamento la lista era:</p>
+<p>$$
+i_1i_2\cdots i_r
+$$</p>
+<p>e $q=i_h$, allora l'hitting set e':</p>
+<p>$$
+H=\{i_1,\ldots,i_h\}.
+$$</p>
+<p>Intuitivamente, $H$ e' l'insieme degli stati visti dall'ultima occorrenza precedente di $q$ fino alla nuova occorrenza di $q$.</p>
+<h3>Lemma chiave</h3>
+<p>Sia $\rho$ una play infinita e sia:</p>
+<p>$$
+I=Inf(\rho).
+$$</p>
+<p>Dopo un certo prefisso:</p>
+<ul>
+<li>tutti gli stati fuori da $I$ non compaiono piu;</li>
+<li>tutti gli stati in $I$ continuano a comparire.</li>
+</ul>
+<p>Da quel punto in poi, la parte rilevante della lista LAR e' formata esattamente dagli stati di $I$, ordinati per ultima apparizione.</p>
+<p>Sia:</p>
+<p>$$
+k=|I|.
+$$</p>
+<p>Dimostriamo che il massimo hit che compare infinite volte e' $k$, e che l'hitting set corrispondente e' proprio $I$.</p>
+<h4>Il massimo hit infinito non puo' superare k</h4>
+<p>Dopo il prefisso in cui gli stati fuori da $I$ non compaiono piu, ogni nuovo hit riguarda uno stato di $I$.</p>
+<p>Tra gli stati che continuano ad apparire, ce ne sono solo $k$.</p>
+<p>Quindi un hit che compare infinite volte non puo' avere valore maggiore di $k$.</p>
+<p>Eventuali hit maggiori possono avvenire solo finitamente molte volte, prima che gli stati fuori da $I$ scompaiano definitivamente.</p>
+<h4>L'hit k compare infinite volte</h4>
+<p>Dopo il prefisso stabile, considera in ogni momento lo stato di $I$ la cui ultima apparizione e' piu vecchia.</p>
+<p>Quando quello stato ricompare, prima della ricomparsa tutti gli altri stati di $I$ sono apparsi piu recentemente.</p>
+<p>Quindi, nella lista LAR, quello stato occupa la posizione $k$ tra gli stati di $I$.</p>
+<p>Al suo ritorno si genera un hit $k$.</p>
+<p>Poiche' ogni stato di $I$ compare infinite volte, questa situazione si ripete infinite volte.</p>
+<p>Dunque l'hit $k$ compare infinite volte.</p>
+<h4>L'hitting set dell'hit k e' I</h4>
+<p>Quando avviene un hit $k$ dopo il prefisso stabile, l'hitting set contiene i primi $k$ stati della lista rilevante.</p>
+<p>Questi sono esattamente gli stati di $I$.</p>
+<p>Quindi:</p>
+<p>$$
+H=I.
+$$</p>
+<h3>Colorazione parity</h3>
+<p>Per ogni LAR con hit $h=0$, poniamo:</p>
+<p>$$
+c=0.
+$$</p>
+<p>Per ogni LAR con hit $h&gt;0$ e hitting set $H$, poniamo:</p>
+<p>$$
+c=2h\quad\text{se }H\in\mathcal{F},
+$$</p>
+<p>e:</p>
+<p>$$
+c=2h-1\quad\text{se }H\notin\mathcal{F}.
+$$</p>
+<p>Sia $k=|Inf(\rho)|$.</p>
+<p>Dal lemma, il massimo hit che compare infinitamente spesso e' $k$ e l'hitting set associato a quell'hit e':</p>
+<p>$$
+Inf(\rho).
+$$</p>
+<p>Quindi il massimo colore che compare infinitamente spesso e':</p>
+<p>$$
+2k\quad\text{se }Inf(\rho)\in\mathcal{F},
+$$</p>
+<p>e:</p>
+<p>$$
+2k-1\quad\text{se }Inf(\rho)\notin\mathcal{F}.
+$$</p>
+<p>Pertanto:</p>
+<p>$$
+Inf(\rho)\in\mathcal{F}
+$$</p>
+<p>se e solo se:</p>
+<p>$$
+\text{il massimo colore che compare infinitamente spesso e' pari.}
+$$</p>
+<p>Questa e' la condizione di parita'.</p>
+<p>Conclusione: un Muller game puo' essere simulato da un parity game usando una memoria finita LAR.</p>
+<p>Il numero di possibili LAR e' finito, dell'ordine di:</p>
+<p>$$
+|Q|!\cdot |Q|.
+$$</p>
+<p>Punto orale: il LAR non serve a "ricordare tutto il passato"; serve a isolare, tramite il massimo hit che ricorre infinite volte, l'insieme degli stati visti infinite volte.</p></article>
+</div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script defer src="assets/chat.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

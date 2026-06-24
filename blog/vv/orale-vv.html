@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orale V&amp;V - Tematiche principali</title>
+  <link rel="stylesheet" href="assets/teach.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Teach workspace / Orale</p>
+      <h1>Tematiche principali per passare l'orale di V&amp;V in AI</h1>
+      <p class="subtitle">Lezione guidata per trasformare la mappa del corso in risposte orali: prima orientamento rapido, poi spiegazioni dettagliate dei concetti fondamentali, algoritmi e collegamenti.</p>
+      <div class="meta-row">
+        <span class="pill">11 capitoli</span>
+        <span class="pill">algoritmi</span>
+        <span class="pill">automi</span>
+        <span class="pill">model checking</span>
+        <span class="pill">sintesi e planning</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <nav class="toolbar" aria-label="Filtri argomenti">
+      <p class="toolbar-label">Filtra blocchi</p>
+      <div class="segments">
+        <button class="seg" data-filter="all" aria-pressed="true">Tutti</button>
+        <button class="seg" data-filter="logic" aria-pressed="false">Logiche</button>
+        <button class="seg" data-filter="automata" aria-pressed="false">Automi</button>
+        <button class="seg" data-filter="mc" aria-pressed="false">Model checking</button>
+        <button class="seg" data-filter="games" aria-pressed="false">Sintesi/planning</button>
+      </div>
+    </nav>
+
+    <section class="grid" aria-label="Mappa principale">
+      <article class="card accent-logic" data-topic="logic">
+        <div class="card-header">
+          <span class="tag">Cap. 1</span>
+          <h2>Logica classica: SAT, validita', QBF</h2>
+        </div>
+        <div class="card-body">
+          <p>All'orale devi distinguere subito tre problemi: valutare una formula in un modello, chiedere se esiste un assegnamento, chiedere se tutti gli assegnamenti la soddisfano.</p>
+          <ul>
+            <li>SAT: esiste un modello.</li>
+            <li>Validita': tutti i modelli soddisfano.</li>
+            <li>QBF: SAT con quantificatori, quindi gioco tra esistenziale e universale.</li>
+          </ul>
+          <div class="answer">
+            <strong>Risposta da 60 secondi</strong>
+            "SAT cerca un assegnamento, la validita' li richiede tutti. QBF aggiunge ordine e dipendenza dei quantificatori: non posso scambiare $\\exists$ e $\\forall$ senza cambiare significato."
+          </div>
+          <div class="link-row">
+            <a href="cap01.html">Cap. 1</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card accent-automata" data-topic="automata">
+        <div class="card-header">
+          <span class="tag">Cap. 2</span>
+          <h2>Automi finiti e linguaggi regolari</h2>
+        </div>
+        <div class="card-body">
+          <p>Il punto chiave e' che un linguaggio regolare ha memoria finita. DFA, NFA, espressioni regolari e Myhill-Nerode sono quattro modi di vedere la stessa finitezza.</p>
+          <ul>
+            <li>Subset construction: trasforma insiemi di stati NFA in stati DFA.</li>
+            <li>Arden: risolve equazioni di linguaggi con $A^*B$.</li>
+            <li>Myhill-Nerode: stati minimi = residui distinguibili.</li>
+          </ul>
+          <div class="answer">
+            <strong>Trappola</strong>
+            Non dire solo "DFA e NFA sono equivalenti": spiega che l'equivalenza riguarda il potere espressivo, non il numero di stati.
+          </div>
+          <div class="link-row">
+            <a href="cap02.html">Cap. 2</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card accent-automata" data-topic="automata">
+        <div class="card-header">
+          <span class="tag">Cap. 3</span>
+          <h2>Apprendimento di automi: L*</h2>
+        </div>
+        <div class="card-body">
+          <p>L* impara un DFA interrogando un teacher. La tabella non e' un dettaglio tecnico: approssima i residui del linguaggio tramite prefissi e suffissi osservati.</p>
+          <ul>
+            <li>Membership query: decide se una parola e' nel linguaggio.</li>
+            <li>Equivalence query: chiede se l'ipotesi e' corretta.</li>
+            <li>Controesempio: aggiunge informazione per separare stati confusi.</li>
+          </ul>
+          <div class="answer">
+            <strong>Perche' funziona</strong>
+            Quando la tabella e' chiusa e consistente, le righe possono diventare stati di un DFA coerente con le osservazioni.
+          </div>
+          <div class="link-row">
+            <a href="cap03.html">Cap. 3</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card accent-mc" data-topic="mc">
+        <div class="card-header">
+          <span class="tag">Cap. 4</span>
+          <h2>FTS, SPL e fairness</h2>
+        </div>
+        <div class="card-body">
+          <p>Un Fair Transition System descrive stati, transizioni e vincoli di fairness per programmi reattivi. SPL serve a tradurre istruzioni in transizioni simboliche.</p>
+          <ul>
+            <li>Idling: il sistema puo' restare nello stesso stato.</li>
+            <li>Justice: se una transizione resta abilitata, prima o poi accade.</li>
+            <li>Compassion: infinite abilitazioni implicano infinite occorrenze.</li>
+          </ul>
+          <div class="answer">
+            <strong>Perche' serve</strong>
+            Senza fairness il model checking puo' considerare comportamenti infiniti tecnicamente possibili ma non realistici.
+          </div>
+          <div class="link-row">
+            <a href="cap04.html">Cap. 4</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card accent-automata" data-topic="automata">
+        <div class="card-header">
+          <span class="tag">Cap. 5</span>
+          <h2>Automi su parole infinite</h2>
+        </div>
+        <div class="card-body">
+          <p>Sulle parole infinite non basta arrivare in uno stato finale: bisogna imporre una condizione su cio' che accade infinitamente spesso.</p>
+          <ul>
+            <li>B&uuml;chi: visita stati finali infinite volte.</li>
+            <li>Muller: guarda l'insieme degli stati visti infinite volte.</li>
+            <li>Rabin/parity: condizioni piu' adatte a determinizzazione e giochi.</li>
+          </ul>
+          <div class="answer">
+            <strong>Trappola</strong>
+            NBA e DBA non sono equivalenti in potere espressivo; il nondeterminismo su parole infinite cambia davvero la classe riconosciuta.
+          </div>
+          <div class="link-row">
+            <a href="cap05.html">Cap. 5</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card accent-logic" data-topic="logic">
+        <div class="card-header">
+          <span class="tag">Cap. 6</span>
+          <h2>MSO: S1S, WS1S, S2S e alberi</h2>
+        </div>
+        <div class="card-body">
+          <p>La logica monadica del secondo ordine collega formule e automi. Il passaggio chiave e' costruire automi per formule e usare chiusura per operazioni logiche.</p>
+          <ul>
+            <li>S1S: omega-parole con successore.</li>
+            <li>WS1S: insiemi finiti.</li>
+            <li>S2S: due successori, quindi alberi binari.</li>
+          </ul>
+          <div class="answer">
+            <strong>Perche' funziona</strong>
+            La quantificazione esistenziale corrisponde a una proiezione del linguaggio riconosciuto dall'automa.
+          </div>
+          <div class="link-row">
+            <a href="cap06.html">Cap. 6</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card accent-logic" data-topic="logic">
+        <div class="card-header">
+          <span class="tag">Cap. 7</span>
+          <h2>LTL, CTL e CTL*</h2>
+        </div>
+        <div class="card-body">
+          <p>LTL parla lungo cammini lineari; CTL parla su alberi di computazione con quantificatori espliciti sui cammini; CTL* separa formule di stato e di cammino.</p>
+          <ul>
+            <li>LTL: $X$, $F$, $G$, $U$, $W$.</li>
+            <li>CTL: $EX$, $AX$, $EF$, $AF$, $EG$, $AG$, $E[U]$, $A[U]$.</li>
+            <li>Incomparabilita': non tutto cio' che esprime una esprime l'altra.</li>
+          </ul>
+          <div class="answer">
+            <strong>Richiamo</strong>
+            Ricorda sempre se stai valutando una formula su uno stato, su un cammino o su tutti i cammini.
+          </div>
+          <div class="link-row">
+            <a href="cap07.html">Cap. 7</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card accent-mc" data-topic="mc">
+        <div class="card-header">
+          <span class="tag">Cap. 8</span>
+          <h2>Procedure decisionali e model checking</h2>
+        </div>
+        <div class="card-body">
+          <p>Qui devi saper passare dalla formula all'algoritmo: closure, atomi, tableau, fulfilling path, behavior graph e labeling CTL.</p>
+          <ul>
+            <li>Tableau LTL: cerca un cammino che soddisfi le promesse temporali.</li>
+            <li>Behavior graph: combina sistema e tableau.</li>
+            <li>CTL labeling: calcola insiemi di stati per sottoformule.</li>
+          </ul>
+          <div class="answer">
+            <strong>Perche' serve</strong>
+            Il model checking diventa ricerca di un testimone o di una violazione dentro una struttura finita costruita dalla formula e dal sistema.
+          </div>
+          <div class="link-row">
+            <a href="cap08.html">Cap. 8</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card accent-mc" data-topic="mc">
+        <div class="card-header">
+          <span class="tag">Cap. 9</span>
+          <h2>State explosion, OBDD e BMC</h2>
+        </div>
+        <div class="card-body">
+          <p>Il problema non e' solo decidere, ma farlo su spazi di stato enormi. Le tecniche avanzate comprimono o limitano la ricerca.</p>
+          <ul>
+            <li>Partial-order reduction: evita interleaving equivalenti.</li>
+            <li>OBDD: rappresenta insiemi e relazioni simbolicamente.</li>
+            <li>BMC: cerca controesempi limitati tramite SAT.</li>
+          </ul>
+          <div class="answer">
+            <strong>Trappola</strong>
+            BMC e' ottimo per trovare bug entro $k$, ma da solo non prova assenza globale di bug se non hai una soglia completa.
+          </div>
+          <div class="link-row">
+            <a href="cap09.html">Cap. 9</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card accent-games" data-topic="games">
+        <div class="card-header">
+          <span class="tag">Cap. 10</span>
+          <h2>Sintesi: giochi, Church e Mealy</h2>
+        </div>
+        <div class="card-body">
+          <p>La verifica chiede se un sistema dato e' corretto; la sintesi costruisce un sistema corretto da una specifica. Per questo entrano giochi e strategie.</p>
+          <ul>
+            <li>Church: costruire output online da input rispettando una specifica.</li>
+            <li>B&uuml;chi-Landweber: decidibilita' e strategia finita.</li>
+            <li>Mealy: implementazione della strategia vincente.</li>
+          </ul>
+          <div class="answer">
+            <strong>Perche' giochi</strong>
+            Ambiente e sistema hanno scelte contrapposte: vincere significa garantire la specifica contro ogni comportamento ammesso dell'ambiente.
+          </div>
+          <div class="link-row">
+            <a href="cap10.html">Cap. 10</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card accent-games" data-topic="games">
+        <div class="card-header">
+          <span class="tag">Cap. 11</span>
+          <h2>Planning non deterministico</h2>
+        </div>
+        <div class="card-body">
+          <p>Il planning diventa model checking quando descrivi azioni, stati e obiettivi simbolicamente e cerchi strategie invece di sequenze fisse.</p>
+          <ul>
+            <li>Weak solution: esiste almeno una esecuzione buona.</li>
+            <li>Strong solution: tutte le esecuzioni arrivano al goal.</li>
+            <li>Strong-cyclic: cicli ammessi, ma con fairness sugli esiti.</li>
+          </ul>
+          <div class="answer">
+            <strong>Trappola</strong>
+            Non confondere nondeterminismo con ignoranza: una strategia deve gestire tutti gli esiti possibili dell'azione.
+          </div>
+          <div class="link-row">
+            <a href="cap11.html">Cap. 11</a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel deep-lessons">
+      <h2>Lezione guidata: come spiegare davvero i concetti fondamentali</h2>
+      <div class="panel-content">
+        <p class="lesson-intro">Obiettivo della lezione: non memorizzare una lista di argomenti, ma imparare a ricostruire il percorso del corso. All'orale una buona risposta fa tre cose: definisce l'oggetto, spiega perche' viene introdotto e collega l'algoritmo o l'automa alla proprieta' che deve decidere.</p>
+
+        <article class="deep-block accent-logic">
+          <h3>1. Prima base: logica, soddisfacibilita' e model checking</h3>
+          <p>Il corso parte dalla logica perche' la verifica formale e' sempre una domanda del tipo: "questa descrizione matematica del sistema soddisfa questa proprieta'?". La difficolta' e' che parole simili indicano problemi diversi. La <strong>soddisfacibilita'</strong> chiede se esiste almeno un'interpretazione che rende vera una formula. La <strong>validita'</strong> chiede se la formula e' vera in tutte le interpretazioni. Il <strong>model checking</strong>, invece, non varia liberamente il modello: il modello e' dato, e si controlla se la proprieta' vale in quello specifico sistema.</p>
+          <p>Questo chiarimento serve per non confondere SAT con verifica. SAT e' un motore decisionale molto utile, ma nel model checking prima costruisci una codifica del sistema e della proprieta'; poi puoi ridurre alcune domande a SAT. Per esempio nel Bounded Model Checking non chiedi genericamente se una formula logica e' soddisfacibile: chiedi se esiste un cammino di lunghezza limitata che rispetta la relazione di transizione e viola la proprieta'.</p>
+          <p>Quando entrano le QBF, devi aggiungere un livello: non basta piu' scegliere liberamente tutti i valori booleani, perche' alcune variabili sono scelte dall'esistenziale e altre dall'universale. La formula quantificata e' vera se l'esistenziale ha una strategia di scelta che funziona contro tutte le scelte dell'universale. Per questo l'ordine dei quantificatori conta: "esiste x per ogni y" non e' la stessa cosa di "per ogni y esiste x".</p>
+          <p>All'orale conviene anche ricordare il legame tra trasformazioni sintattiche e procedure decisionali. La negazione normale serve a spingere le negazioni vicino agli atomi; la CNF serve a parlare con SAT solver; la trasformazione di Tseitin introduce variabili ausiliarie per ottenere una formula equisoddisfacibile senza esplosione esponenziale. Equisoddisfacibile non significa equivalente: conserva l'esistenza di un modello, non necessariamente lo stesso valore per ogni assegnamento delle variabili estese.</p>
+          <p>Il capitolo contiene anche logica proposizionale, logica del primo ordine e limiti di decidibilita'. In inglese puoi trovarle come <em>propositional logic</em> e <em>first order logic</em>. La logica del primo ordine e' piu' espressiva perche' parla di oggetti, relazioni e quantificatori su domini potenzialmente infiniti, ma proprio questa ricchezza porta all'indecidibilita' generale di soddisfacibilita' e validita'. I tableaux sono un metodo proof-search: espandono una formula in casi fino a trovare un ramo coerente oppure chiudere tutti i rami.</p>
+          <p>Formule di Hintikka e giochi di Ehrenfeucht-Fraisse servono a capire il potere espressivo della logica, non solo a fare calcoli. Una formula di Hintikka descrive in modo completo cio' che una struttura puo' dire fino a una certa profondita' logica. Nel gioco di Ehrenfeucht-Fraisse, Spoiler prova a distinguere due strutture e Duplicator prova a mantenere una corrispondenza parziale. Se Duplicator vince per n mosse, le due strutture soddisfano le stesse formule di primo ordine fino a quantifier rank n.</p>
+          <div class="detail-steps">
+            <strong>Schema da ricostruire</strong>
+            <ol>
+              <li>Definisci l'input del problema: formula sola, modello fissato, oppure formula quantificata.</li>
+              <li>Distingui esistenza, universalita' e valutazione in un modello.</li>
+              <li>Spiega la riduzione tipica: validita' di phi equivale a insoddisfacibilita' di non phi.</li>
+              <li>Quando citi SAT, chiarisci quale oggetto e' stato codificato come formula booleana.</li>
+            </ol>
+          </div>
+          <div class="micro-example">
+            <strong>Esempio mentale</strong>
+            Una formula proposizionale e' come una domanda su una tabella di verita'. Una QBF e' come un gioco a turni su quella tabella. Il model checking e' diverso: la tabella non e' libera, perche' viene dal sistema che stai verificando.
+          </div>
+          <div class="why-box">
+            <strong>Perche' funziona questo modo di ragionare</strong>
+            Se riesci a rappresentare stati, transizioni e proprieta' come formule, puoi usare procedure decisionali logiche per rispondere a domande sui sistemi. La logica diventa quindi il linguaggio comune tra specifica e algoritmo.
+          </div>
+          <div class="oral-script">
+            <strong>Risposta orale pronta</strong>
+            "Distinguo tre livelli: SAT cerca un assegnamento che renda vera una formula; la validita' richiede verita' per tutti gli assegnamenti; il model checking prende un modello fissato e verifica se una proprieta' vale sui suoi stati o cammini. Le riduzioni a SAT sono strumenti, non la definizione del problema."
+          </div>
+        </article>
+
+        <article class="deep-block accent-automata">
+          <h3>2. Automi su parole finite: memoria finita e residui</h3>
+          <p>Un DFA e' un modello con memoria finita: dopo aver letto un prefisso, tutto cio' che serve sapere per decidere il futuro e' lo stato corrente. Questa e' l'idea dietro Myhill-Nerode. Due prefissi sono equivalenti se nessun suffisso futuro riesce a distinguerli rispetto al linguaggio. Se il numero di classi di equivalenza e' finito, basta uno stato per ogni classe: il linguaggio e' regolare.</p>
+          <p>Gli NFA non cambiano i linguaggi riconoscibili su parole finite, ma cambiano il modo di descriverli. Un NFA puo' tenere aperte piu' possibilita'; la subset construction trasforma queste possibilita' in uno stato DFA che rappresenta un insieme di stati NFA. Qui devi spiegare bene che l'equivalenza e' espressiva, non di dimensione: il DFA puo' avere fino a $2^n$ stati.</p>
+          <p>Il lemma di Arden e le espressioni regolari completano il quadro: invece di ragionare per stati, puoi scrivere equazioni di linguaggi e risolverle. La forma $X = AX \cup B$ ha soluzione $A^*B$ quando $A$ non contiene la parola vuota. L'intuizione e' che puoi ripetere $A$ zero o piu' volte e poi uscire con $B$.</p>
+          <p>Per spiegare la subset construction devi essere operativo. Se l'NFA ha epsilon-mosse, prima calcoli la epsilon-closure: tutti gli stati raggiungibili senza consumare simboli. Poi, per ogni insieme di stati e per ogni lettera, prendi tutte le mosse possibili dell'NFA e richiudi per epsilon. Uno stato del DFA e' accettante se contiene almeno uno stato accettante dell'NFA. Questa costruzione e' corretta perche' l'insieme memorizza esattamente tutte le computazioni NFA compatibili con il prefisso letto.</p>
+          <p>La minimizzazione del DFA e' l'altro lato della stessa idea. Parti separando stati finali e non finali, poi raffini le classi quando due stati hanno transizioni che finiscono in classi diverse. Alla fine due stati restano insieme solo se nessun suffisso riesce a distinguerli. Questo e' Myhill-Nerode visto come algoritmo: non stai solo comprimendo il grafo, stai identificando comportamenti futuri indistinguibili.</p>
+          <p>Quando devi dimostrare che un linguaggio non e' regolare, hai due strumenti tipici. Il pumping lemma dice che ogni linguaggio regolare sufficientemente lungo ha una parte centrale ripetibile senza uscire dal linguaggio; se trovi una parola che non puo' essere pompata, il linguaggio non e' regolare. Myhill-Nerode e' spesso piu' forte: se riesci a produrre infiniti prefissi distinguibili da suffissi opportuni, allora servirebbero infiniti stati e quindi il linguaggio non puo' essere un regular language.</p>
+          <div class="detail-steps">
+            <strong>Schema da ricostruire</strong>
+            <ol>
+              <li>DFA: uno stato corrente, una transizione deterministica per simbolo.</li>
+              <li>NFA: un insieme di computazioni possibili.</li>
+              <li>Subset construction: lo stato deterministico e' l'insieme degli stati non deterministici raggiungibili.</li>
+              <li>Minimizzazione: fondi solo stati con gli stessi futuri rispetto al linguaggio.</li>
+            </ol>
+          </div>
+          <div class="micro-example">
+            <strong>Esempio mentale</strong>
+            Se due prefissi portano allo stesso stato in un DFA, da quel punto in poi ogni suffisso verra' trattato allo stesso modo. Questo e' il motivo per cui lo stato rappresenta la memoria rilevante del prefisso.
+          </div>
+          <div class="why-box">
+            <strong>Perche' e' fondamentale</strong>
+            Quasi tutto il resto del corso riusa questa idea: riconoscere un comportamento significa costruire una macchina finita che conserva esattamente l'informazione necessaria.
+          </div>
+          <div class="oral-script">
+            <strong>Risposta orale pronta</strong>
+            "Un linguaggio regolare e' un linguaggio per cui i prefissi inducono solo finitamente molti futuri distinguibili. Il DFA minimo ha uno stato per ogni classe di Myhill-Nerode. Gli NFA sono equivalenti ai DFA sulle parole finite perche' un DFA puo' simulare l'insieme delle computazioni NFA."
+          </div>
+        </article>
+
+        <article class="deep-block accent-automata">
+          <h3>3. L* di Angluin: imparare stati osservando comportamenti</h3>
+          <p>L* e' importante perche' rovescia il punto di vista: invece di costruire l'automa da una definizione del linguaggio, lo impari tramite domande a un teacher. Le membership query chiedono se una parola appartiene al linguaggio; le equivalence query chiedono se l'ipotesi corrente e' corretta. Se non lo e', il teacher restituisce un controesempio.</p>
+          <p>La tabella di osservazione non va spiegata come una griglia meccanica. Le righe rappresentano prefissi, le colonne suffissi, e il valore dice se prefisso+suffisso appartiene al linguaggio. Quindi ogni riga e' una vista finita del residuo del linguaggio dopo quel prefisso. Se due righe sono uguali sui suffissi osservati, L* le tratta come lo stesso stato candidato.</p>
+          <p>Le due proprieta' chiave sono chiusura e consistenza. La chiusura garantisce che dopo una transizione da uno stato noto si arrivi a un comportamento gia' rappresentato. La consistenza garantisce che due righe considerate uguali reagiscano nello stesso modo a ogni lettera. Quando entrambe valgono, puoi costruire un DFA ipotesi. Se e' sbagliato, il controesempio aggiunge informazione e separa righe che prima sembravano uguali.</p>
+          <p>La tabella usa due insiemi: prefissi candidati agli stati e suffissi usati come test. I suffissi sono fondamentali perche' distinguono comportamenti futuri. Se due prefissi sembrano uguali rispetto ai suffissi noti, ma un controesempio mostra che in realta' producono esiti diversi, allora bisogna aggiungere nuovi suffissi che rendano visibile quella differenza. In altre parole, il controesempio non e' solo una parola sbagliata: e' informazione su quale futuro mancava nella tabella.</p>
+          <p>Le versioni degli appunti parlano anche di T-minimalita' e T-completezza: sono modi per dire che, rispetto ai test disponibili in T, non stai distinguendo troppo poco e non stai lasciando transizioni senza rappresentante. Questa e' una forma finita della teoria di Myhill-Nerode: l'algoritmo sta cercando le classi di equivalenza, ma le vede solo attraverso un insieme finito di esperimenti.</p>
+          <p>Le matrici di Hankel danno la vista piu' matematica della stessa idea. La matrice infinita ha righe indicizzate dai prefissi e colonne dai suffissi; il valore e' 1 se la concatenazione appartiene al linguaggio. Un linguaggio regolare ha rango/numero di righe distinte finito, perche' ha finitamente molti residui. La tabella di L* e' quindi un frammento finito della matrice di Hankel. I transduttori sequenziali estendono questa idea quando non vuoi solo riconoscere parole, ma produrre output: non basta chiedere appartenenza, devi confrontare funzioni da input a output.</p>
+          <div class="detail-steps">
+            <strong>Schema da ricostruire</strong>
+            <ol>
+              <li>Inizializza prefissi e suffissi piccoli.</li>
+              <li>Riempi la tabella con membership query.</li>
+              <li>Se non e' chiusa, aggiungi prefissi per rappresentare transizioni mancanti.</li>
+              <li>Se non e' consistente, aggiungi suffissi che separano righe ambigue.</li>
+              <li>Costruisci il DFA ipotesi e chiedi equivalence query.</li>
+              <li>Usa il controesempio per raffinare la tabella.</li>
+            </ol>
+          </div>
+          <div class="micro-example">
+            <strong>Esempio mentale</strong>
+            Pensa a due prefissi che oggi sembrano equivalenti perche' li hai provati solo con suffissi corti. Un controesempio lungo ti mostra un suffisso che li distingue: quel suffisso diventa una nuova colonna.
+          </div>
+          <div class="why-box">
+            <strong>Perche' funziona</strong>
+            Per i linguaggi regolari esistono solo finitamente molti residui. Ogni controesempio rivela una distinzione che mancava. Il processo converge perche' il DFA minimo ha un numero finito di stati/residui da scoprire.
+          </div>
+          <div class="oral-script">
+            <strong>Risposta orale pronta</strong>
+            "L* impara il DFA minimo osservando residui del linguaggio. La tabella approssima questi residui con prefissi e suffissi. Chiusura permette di definire transizioni; consistenza evita che due stati apparentemente uguali si comportino diversamente dopo una lettera."
+          </div>
+        </article>
+
+        <article class="deep-block accent-mc">
+          <h3>4. FTS, SPL e fairness: modellare sistemi reattivi realistici</h3>
+          <p>Un sistema reattivo non e' un programma che termina e restituisce un risultato; e' un sistema che continua a interagire con l'ambiente. Per questo lo si modella con stati e transizioni infinite. Un Fair Transition System specifica variabili, stati iniziali, relazione di transizione e condizioni di fairness. SPL e' il linguaggio semplice che permette di trasformare istruzioni di programma in transizioni formali.</p>
+          <p>Il punto delicato e' la fairness. Senza fairness, un modello puo' contenere cammini infiniti assurdi: per esempio una transizione resta sempre abilitata ma non viene mai scelta. Formalmente il cammino e' possibile, ma non rappresenta un'esecuzione realistica di uno scheduler corretto. Le condizioni di justice e compassion servono proprio a filtrare questi comportamenti.</p>
+          <p>Justice dice: se una certa condizione rimane vera continuamente da un certo punto in poi, allora l'evento atteso deve accadere prima o poi. Compassion e' piu' forte: se una condizione e' vera infinite volte, allora anche l'evento corrispondente deve accadere infinite volte. Questa distinzione e' frequente all'orale, perche' mostra se hai capito la differenza tra "sempre abilitato" e "abilitato infinite volte".</p>
+          <p>Quando traduci SPL in FTS, ogni istruzione produce una relazione tra variabili correnti e variabili next. Un assegnamento cambia una variabile e lascia invarianti le altre; una guardia o await abilita la transizione solo se la condizione e' vera; una sezione critica puo' essere modellata con variabili che rappresentano richiesta, attesa e possesso della risorsa. Questo passaggio e' importante perche' rende il programma verificabile: il codice diventa una formula di transizione.</p>
+          <p>Selection, cooperation e grouped instructions servono a controllare la granularita' delle mosse. Con l'interleaving standard, un processo compie una mossa atomica alla volta e gli altri restano fermi. Con istruzioni raggruppate, piu' aggiornamenti vengono visti come una singola transizione atomica. All'orale questa distinzione conta perche' cambiare granularita' cambia i comportamenti possibili e quindi puo' cambiare la verita' di una proprieta' temporale.</p>
+          <p>Per gli esempi di mutua esclusione devi separare safety e liveness. La safety dice che due processi non sono mai contemporaneamente nella sezione critica. La liveness/accessibility dice che una richiesta deve poter avanzare fino alla sezione critica. La communal accessibility e' piu' forte: non basta che un singolo processo possa entrare, ma il protocollo deve non bloccare l'accesso collettivo in modo patologico. Fairness e accessibility si parlano: spesso una proprieta' di progresso diventa vera solo dopo aver escluso scheduler non fair.</p>
+          <div class="detail-steps">
+            <strong>Schema da ricostruire</strong>
+            <ol>
+              <li>Identifica variabili di stato e stati iniziali.</li>
+              <li>Traduci ogni istruzione in una relazione tra stato corrente e stato next.</li>
+              <li>Aggiungi idling o interleaving se il modello lo richiede.</li>
+              <li>Definisci fairness per escludere cammini irrealistici.</li>
+              <li>Valuta proprieta' temporali solo sui comportamenti fair.</li>
+            </ol>
+          </div>
+          <div class="micro-example">
+            <strong>Esempio mentale</strong>
+            Se un processo chiede per sempre l'accesso a una risorsa e lo scheduler ignora sempre quel processo, hai un controesempio alla liveness. Ma potrebbe essere un controesempio artificiale se il modello intende uno scheduler fair.
+          </div>
+          <div class="why-box">
+            <strong>Perche' serve nel model checking</strong>
+            Le proprieta' temporali vengono valutate su cammini. Se il modello contiene cammini non fair, potresti dichiarare falsa una proprieta' solo per un comportamento che il sistema reale non dovrebbe generare.
+          </div>
+          <div class="oral-script">
+            <strong>Risposta orale pronta</strong>
+            "Un FTS modella sistemi non terminanti con stati e transizioni. Le condizioni di fairness restringono i cammini ammessi: justice riguarda qualcosa che resta continuamente abilitato, compassion qualcosa che si abilita infinite volte. Servono per evitare controesempi artificiali."
+          </div>
+        </article>
+
+        <article class="deep-block accent-automata">
+          <h3>5. Parole infinite e automi di Buchi: accettare cio' che ricorre</h3>
+          <p>Quando passi da parole finite a parole infinite cambia la nozione stessa di accettazione. Su una parola finita puoi dire se l'ultimo stato e' finale. Su una parola infinita non esiste un ultimo stato, quindi devi guardare il comportamento nel limite: quali stati vengono visitati infinite volte?</p>
+          <p>Un automa di Buchi accetta se esiste una computazione che visita stati finali infinite volte. Questa condizione cattura proprieta' di ricorrenza, come "ogni richiesta viene prima o poi soddisfatta" se tradotta nel modo opportuno. Gli automi di Muller generalizzano guardando l'insieme esatto degli stati che appaiono infinite volte; Rabin e parity sono forme utili soprattutto per determinizzazione, giochi e sintesi.</p>
+          <p>La trappola classica e' pensare che il nondeterminismo si comporti come nel caso finito. Non e' cosi': su parole infinite NBA e DBA non hanno lo stesso potere espressivo. Il motivo profondo e' che scegliere una computazione accettante su un oggetto infinito puo' richiedere indovinare un futuro che un automa deterministico non puo' conoscere.</p>
+          <p>Per il controllo di vuotezza di un automa di Buchi, l'idea e' cercare un ciclo raggiungibile che contenga uno stato accettante. Infatti una parola infinita accettata puo' essere vista come un prefisso finito che porta dentro una componente ciclica, poi una ripetizione infinita che visita finali. Questo e' il motivo per cui compaiono SCC e lassos anche in model checking e BMC: una computazione infinita significativa puo' essere rappresentata da una parte finita piu' un ciclo.</p>
+          <p>La differenza tra Buchi, generalized Buchi e Muller va spiegata in termini di condizione di accettazione. Un generalized Buchi richiede di visitare infinite volte piu' insiemi di stati; si puo' trasformare in Buchi tenendo memoria di quali insiemi sono stati gia' visitati in un ciclo. Muller guarda direttamente l'insieme degli stati visitati infinite volte, quindi e' piu' espressivo come forma di condizione e comodo nei giochi.</p>
+          <p>GNBA significa generalized Buchi automaton. Se un GNBA ha insiemi di accettazione $F_1,\dots,F_k$, una run e' accettante solo se visita ciascun $F_i$ infinite volte. La conversione GNBA -> NBA aggiunge una memoria ciclica: l'automa ricorda quale insieme di accettazione sta aspettando e passa al successivo quando lo visita. Questo rende esplicito che "soddisfare tutte le promesse infinite" puo' essere ridotto a una sola condizione di Buchi con memoria aggiuntiva.</p>
+          <div class="detail-steps">
+            <strong>Schema da ricostruire</strong>
+            <ol>
+              <li>Spiega perche' non esiste un ultimo stato.</li>
+              <li>Definisci accettazione in termini di visite infinite.</li>
+              <li>Per la vuotezza, cerca uno stato accettante raggiungibile dentro un ciclo.</li>
+              <li>Collega il ciclo al lasso: prefisso finito piu' ripetizione infinita.</li>
+            </ol>
+          </div>
+          <div class="micro-example">
+            <strong>Esempio mentale</strong>
+            Un requisito come "infinitamente spesso il sistema torna pronto" non e' un requisito di terminazione. Devi osservare il comportamento ricorrente, non l'ultimo stato.
+          </div>
+          <div class="why-box">
+            <strong>Collegamento con il resto del corso</strong>
+            LTL, S1S e model checking usano automi su parole infinite per rappresentare insiemi di comportamenti. Un comportamento di sistema e' una parola infinita di stati o etichette.
+          </div>
+          <div class="oral-script">
+            <strong>Risposta orale pronta</strong>
+            "Sugli omega-linguaggi l'accettazione riguarda cio' che accade infinite volte. Buchi richiede visite infinite a stati finali. Questo e' adatto ai sistemi reattivi, dove non interessa uno stato finale di terminazione ma la correttezza del comportamento senza fine."
+          </div>
+        </article>
+
+        <article class="deep-block accent-logic">
+          <h3>6. MSO, S1S, WS1S e S2S: logica e automi sono due facce della stessa cosa</h3>
+          <p>La logica monadica del secondo ordine permette di quantificare non solo su posizioni, ma anche su insiemi di posizioni. In S1S la struttura e' lineare e ha un successore: e' naturale per descrivere omega-parole. Il secondo teorema di Buchi dice, in sostanza, che cio' che puoi definire in S1S corrisponde ai linguaggi omega-regolari.</p>
+          <p>Il meccanismo tecnico da saper spiegare e' la costruzione induttiva: formule atomiche diventano automi semplici; connettivi logici corrispondono a operazioni di chiusura sugli automi; la quantificazione esistenziale corrisponde alla proiezione. Se una formula usa una variabile che poi viene quantificata, l'automa puo' "dimenticare" quella componente dell'alfabeto, mantenendo solo il fatto che esisteva una scelta adatta.</p>
+          <p>WS1S limita le variabili del secondo ordine a insiemi finiti; S2S passa da una struttura lineare a una struttura ad albero con due successori. Questo porta agli automi su alberi e alle logiche branching, perche' un albero rappresenta molti futuri possibili invece di un singolo cammino.</p>
+          <p>Una formula S1S puo' parlare di posizioni naturali, del successore e dell'appartenenza di una posizione a un insieme. Se codifichi una parola infinita come insiemi di posizioni in cui valgono le lettere o proposizioni atomiche, allora la formula descrive un linguaggio di omega-parole. Il teorema di Buchi e' potente proprio per questo: trasforma un problema logico in un problema automata-theoretic.</p>
+          <p>La proiezione e' il punto che spesso sembra magico. Immagina un automa che legge, per ogni posizione, anche un bit ausiliario corrispondente a una variabile di secondo ordine. Quantificare esistenzialmente quell'insieme significa dire: esiste una scelta di quei bit tale che la formula sia vera. Proiettare significa togliere quei bit dall'alfabeto e accettare la parola se almeno una loro annotazione avrebbe fatto accettare l'automa.</p>
+          <p>S2S estende l'idea agli alberi: ogni nodo ha due successori e quindi descrive computazioni ramificate. Qui entrano tree automata e Rabin automata, perche' accettare un albero infinito richiede condizioni sui rami o sull'intera struttura, non solo su una sequenza lineare. Questo e' il ponte naturale verso logiche branching e giochi.</p>
+          <p>Negli appunti compare anche il nome inglese <em>closure by projection</em>: e' la proprieta' di chiusura che rende decidibile la quantificazione esistenziale nella traduzione logica-automi. Star-free e first-order definable languages stanno nel lato parole finite: i linguaggi star-free sono quelli costruibili senza stella di Kleene e corrispondono ai linguaggi definibili nel primo ordine su parole con ordine. Questo chiarisce che non tutta la regolarita' ha lo stesso potere logico: star-free/FO e' un frammento dei regolari.</p>
+          <div class="detail-steps">
+            <strong>Schema da ricostruire</strong>
+            <ol>
+              <li>Codifica parole o alberi come strutture logiche.</li>
+              <li>Traduci formule atomiche in automi base.</li>
+              <li>Usa chiusure per connettivi booleani.</li>
+              <li>Usa proiezione per quantificatori esistenziali.</li>
+              <li>Riduci la decidibilita' della formula alla vuotezza dell'automa.</li>
+            </ol>
+          </div>
+          <div class="micro-example">
+            <strong>Esempio mentale</strong>
+            L'esistenziale su un insieme e' come colorare alcune posizioni della parola in modo conveniente. La proiezione elimina il colore dalla vista finale, ma conserva il fatto che una colorazione buona esisteva.
+          </div>
+          <div class="why-box">
+            <strong>Perche' funziona</strong>
+            Le operazioni logiche hanno controparti automata-theoretic: negazione/complemento, disgiunzione/unione, esistenziale/proiezione. La decidibilita' della logica deriva dalla decidibilita' del vuoto dell'automa costruito.
+          </div>
+          <div class="oral-script">
+            <strong>Risposta orale pronta</strong>
+            "S1S e automi omega-regolari sono equivalenti perche' posso tradurre formule in automi per induzione sulla formula. Il passaggio decisivo e' che la quantificazione esistenziale diventa proiezione: elimino una traccia dell'alfabeto mantenendo l'esistenza di una scelta."
+          </div>
+        </article>
+
+        <article class="deep-block accent-logic">
+          <h3>7. LTL, CTL e CTL*: lineare contro ramificato</h3>
+          <p>Le logiche temporali servono a parlare di proprieta' dei comportamenti. In LTL guardi un singolo cammino: gli operatori $X$, $F$, $G$, $U$ descrivono cosa accade nel prossimo stato, prima o poi, sempre, oppure fino a quando. Il quantificatore sui cammini e' implicito quando fai model checking: di solito chiedi che la proprieta' valga per tutti i cammini del sistema.</p>
+          <p>CTL invece distingue esplicitamente il tipo di futuro: $E$ significa "esiste un cammino", $A$ significa "per tutti i cammini". Gli operatori temporali devono essere accoppiati a questi quantificatori, per esempio $EF p$ vuol dire che esiste un cammino su cui prima o poi vale $p$, mentre $AF p$ vuol dire che su tutti i cammini prima o poi vale $p$.</p>
+          <p>CTL* generalizza entrambe separando formule di stato e formule di cammino. Questa separazione e' il modo piu' pulito per evitare errori: una formula di stato si valuta in uno stato; una formula di cammino si valuta lungo una sequenza di stati. All'orale, quando confronti LTL e CTL, non dire solo che sono diverse: spiega che sono incomparabili perche' alcune proprieta' lineari non si esprimono in CTL e alcune proprieta' branching non si esprimono in LTL.</p>
+          <p>La sintassi LTL va presentata in modo induttivo: le proposizioni atomiche sono formule; se phi e psi sono formule, allora non phi, phi and psi, X phi e phi U psi sono formule. Gli operatori F e G sono abbreviazioni: F phi significa "true U phi", G phi significa "non F non phi". Questa precisazione aiuta a evitare formule scritte male e a spiegare perche' Until e' l'operatore fondamentale.</p>
+          <p>La semantica va letta con un indice di tempo. X phi guarda la posizione successiva; F phi chiede che esista una posizione futura in cui phi vale; G phi chiede che phi valga in tutte le posizioni future; phi U psi chiede che psi diventi vera e che phi resti vera fino a quel momento. Weak until cambia proprio qui: permette che psi non arrivi mai, purche' phi resti sempre vera.</p>
+          <p>Per CTL devi essere altrettanto preciso: non puoi scrivere liberamente F o G senza quantificatore di cammino. EF p ed AF p sono molto diversi. EF p dice che c'e' almeno una scelta futura che porta a p; AF p dice che p e' inevitabile. Questa differenza e' il cuore del branching-time.</p>
+          <p>In CTL* questa distinzione viene formalizzata con due categorie sintattiche: <em>state formula</em> e <em>path formula</em>. Una state formula si valuta in uno stato, per esempio una proposizione atomica o una formula quantificata sui cammini. Una path formula si valuta lungo un cammino, per esempio X phi o phi U psi. CTL restringe la grammatica imponendo che gli operatori temporali siano sempre sotto un quantificatore di cammino; LTL elimina i quantificatori espliciti e ragiona direttamente su cammini.</p>
+          <div class="detail-steps">
+            <strong>Schema da ricostruire</strong>
+            <ol>
+              <li>Definisci se la formula e' lineare o branching.</li>
+              <li>Per LTL, valuta su una computazione infinita.</li>
+              <li>Per CTL, accoppia sempre quantificatore di cammino e operatore temporale.</li>
+              <li>Per CTL*, separa formule di stato e formule di cammino.</li>
+              <li>Concludi con l'incomparabilita' LTL/CTL.</li>
+            </ol>
+          </div>
+          <div class="micro-example">
+            <strong>Esempio mentale</strong>
+            "Esiste un modo per arrivare al goal" e "qualunque cosa accada arrivero' al goal" sono entrambe temporali, ma non sono la stessa proprieta'. Questa e' la differenza tra E e A.
+          </div>
+          <div class="why-box">
+            <strong>Richiamo utile</strong>
+            Un modello di Kripke genera un albero di computazione: ogni cammino e' una possibile esecuzione. LTL guarda i cammini; CTL ragiona direttamente sulla ramificazione dei futuri.
+          </div>
+          <div class="oral-script">
+            <strong>Risposta orale pronta</strong>
+            "LTL descrive proprieta' lungo cammini lineari; CTL combina quantificatori sui cammini e operatori temporali; CTL* li generalizza separando formule di stato e di cammino. La differenza essenziale e' lineare contro branching-time."
+          </div>
+        </article>
+
+        <article class="deep-block accent-mc">
+          <h3>8. Tableau LTL, behavior graph e labeling CTL: trasformare formule in algoritmi</h3>
+          <p>Il tableau LTL decide la soddisfacibilita' costruendo stati simbolici, chiamati atomi, che rappresentano insiemi coerenti di sottoformule. La closure contiene le sottoformule rilevanti; gli atomi scelgono in modo coerente quali sono vere. Gli operatori temporali impongono obblighi: se hai una formula until, devi assicurarti che la promessa venga prima o poi soddisfatta.</p>
+          <p>Per questo non basta trovare un ciclo qualunque nel tableau. Serve un cammino fulfilling: ogni obbligo temporale che rimane aperto deve essere effettivamente realizzato. Quando fai model checking LTL, spesso controlli la negazione della proprieta': cerchi un comportamento del sistema che soddisfi $\\neg \\varphi$. Il behavior graph combina stati del sistema e stati del tableau, cosi' un cammino accettante diventa un controesempio concreto.</p>
+          <p>CTL si presta invece al labeling algorithm. Si calcola, dal basso verso l'alto, l'insieme degli stati che soddisfano ogni sottoformula. Per $EX$ usi predecessori; per $EU$ e $EG$ usi punti fissi. L'idea e' che molte proprieta' CTL sono insiemi di stati caratterizzabili come il minimo o massimo insieme stabile rispetto alla relazione di transizione.</p>
+          <p>La closure di una formula LTL contiene le sottoformule e le loro negazioni rilevanti. Un atomo deve essere localmente coerente: non puo' contenere sia phi sia non phi, deve rispettare le regole booleane, e deve trattare gli operatori temporali in modo compatibile con il prossimo atomo. Per esempio X phi impone che phi sia vera nello stato successivo del tableau.</p>
+          <p>La parte non locale sono le promesse degli Until. Se in un atomo compare phi U psi e psi non e' ancora vera, allora phi deve valere ora e la promessa deve essere rinviata al futuro. Un ciclo che rinvia per sempre la promessa senza mai soddisfarla non e' accettabile. Per questo si cercano componenti fortemente connesse che soddisfano tutte le condizioni di fulfillment.</p>
+          <p>Nel behavior graph un nodo contiene insieme informazione sul sistema e informazione sulla formula. La transizione e' ammessa solo se il sistema puo' muoversi e il tableau puo' evolvere coerentemente. Se trovi un cammino accettante per la negazione della proprieta', hai un controesempio: non e' solo una prova astratta, ma una sequenza di stati del sistema che viola la specifica.</p>
+          <p>Gli appunti distinguono anche P-SAT e P-VALID. P-SAT chiede se esiste una computazione del programma che soddisfa una formula; P-VALID chiede se tutte le computazioni rilevanti la soddisfano. Il behavior graph serve a trasformare P-SAT in ricerca di un cammino accettante. Le MCSCS, cioe' maximal connected self-fulfilling subgraphs, sono sottografi fortemente connessi in cui le promesse temporali sono soddisfatte; se ne esiste uno raggiungibile, hai un testimone infinito. Gli adequate subgraphs sono riduzioni sufficienti del behavior graph: non devi tenere tutto il grafo se conservi cio' che basta per decidere la soddisfacibilita' temporale.</p>
+          <div class="detail-steps">
+            <strong>Schema da ricostruire</strong>
+            <ol>
+              <li>Costruisci closure della formula.</li>
+              <li>Definisci atomi localmente coerenti.</li>
+              <li>Aggiungi transizioni tra atomi rispettando X e Until.</li>
+              <li>Controlla fulfillment delle promesse temporali.</li>
+              <li>Per model checking, combina tableau della negazione con il sistema.</li>
+            </ol>
+          </div>
+          <div class="micro-example">
+            <strong>Esempio mentale</strong>
+            Until e' una promessa: "continuo a mantenere phi finche' arriva psi". Un ciclo che ripete "psi arrivera' dopo" ma non la fa mai arrivare non mantiene la promessa.
+          </div>
+          <div class="why-box">
+            <strong>Perche' gli algoritmi sono diversi</strong>
+            LTL parla di cammini, quindi cerchi cammini/cicli che soddisfano obblighi. CTL parla di stati con quantificazione esplicita sui futuri, quindi puoi etichettare stati con insiemi calcolati per punto fisso.
+          </div>
+          <div class="oral-script">
+            <strong>Risposta orale pronta</strong>
+            "Per LTL costruisco un tableau della formula, poi lo combino con il sistema nel behavior graph e cerco un cammino fulfilling per la negazione della proprieta'. Per CTL uso labeling: assegno a ogni sottoformula l'insieme degli stati che la soddisfano, usando preimmagini e punti fissi."
+          </div>
+        </article>
+
+        <article class="deep-block accent-mc">
+          <h3>9. OBDD e BMC: due risposte allo state explosion</h3>
+          <p>Lo state explosion nasce perche' un sistema con molte variabili ha un numero enorme di stati possibili. Il model checking esplicito enumera stati; quello simbolico rappresenta insiemi di stati e relazioni di transizione come funzioni booleane. Gli OBDD sono utili perche', fissato l'ordine delle variabili e applicate le regole di riduzione, danno una rappresentazione canonica della funzione.</p>
+          <p>Con gli OBDD puoi rappresentare un insieme di stati come una formula booleana sulle variabili correnti e la relazione di transizione come formula su variabili correnti e next. Le operazioni fondamentali diventano operazioni booleane: unione, intersezione, complemento, quantificazione esistenziale e relational product. Questo permette di calcolare preimmagini e punti fissi senza enumerare ogni stato singolarmente.</p>
+          <p>Il Bounded Model Checking prende una strada diversa. Invece di rappresentare tutto lo spazio di stato, fissa un bound $k$ e chiede se esiste un cammino di lunghezza $k$ che viola la proprieta'. Si fa unrolling della transizione e si ottiene una formula SAT. Per proprieta' su comportamenti infiniti si usa spesso una struttura a lasso: un prefisso finito seguito da un ciclo.</p>
+          <p>La canonicita' degli OBDD dipende dall'ordine delle variabili, spesso indicato anche negli appunti come problema dell'ordine variabili. Con ordine fissato, due funzioni equivalenti hanno lo stesso OBDD ridotto; quindi il test di equivalenza diventa un confronto strutturale. Il problema e' che un ordine cattivo puo' rendere enorme il diagramma. Quindi OBDD non elimina magicamente lo state explosion: lo rende gestibile quando la struttura booleana del sistema e l'ordine scelto permettono condivisione.</p>
+          <p>Nel symbolic CTL model checking, formule come EX phi si calcolano con una preimmagine: quali stati hanno almeno un successore in phi? Per EU si calcola un minimo punto fisso, allargando progressivamente gli stati da cui si puo' raggiungere il target mantenendo la condizione. Per EG si calcola un massimo punto fisso, eliminando stati che non riescono a restare per sempre dentro l'insieme richiesto.</p>
+          <p>Nel BMC la codifica contiene copie delle variabili per ogni istante 0, 1, ..., k. La relazione di transizione collega ogni istante al successivo. La proprieta' negata impone che lungo quel cammino compaia la violazione. Se serve una computazione infinita, il vincolo di loopback dice che uno stato precedente coincide con quello finale, creando un ciclo. Un modello SAT e' direttamente leggibile come trace di errore.</p>
+          <p>Le operazioni OBDD da nominare sono restrict, apply e quantificazione. Restrict fissa una variabile a un valore e semplifica la funzione; apply combina due OBDD con un operatore booleano, come and/or; la quantificazione esistenziale elimina variabili, tipicamente quelle next dopo aver calcolato una preimmagine. Nel BMC, la bounded semantics specifica come interpretare gli operatori temporali entro il bound k: una formula puo' risultare vera, falsa o non ancora definitivamente decisa se il bound non e' sufficiente, a meno che il lasso renda finita la rappresentazione dell'infinito.</p>
+          <div class="detail-steps">
+            <strong>Schema da ricostruire</strong>
+            <ol>
+              <li>Spiega lo state explosion come crescita combinatoria degli stati.</li>
+              <li>OBDD: rappresenta funzioni booleane canoniche con ordine fissato.</li>
+              <li>Symbolic MC: calcola preimmagini e punti fissi su insiemi simbolici.</li>
+              <li>BMC: fa unrolling fino a k e cerca un controesempio SAT.</li>
+              <li>Per l'infinito, aggiunge un lasso con vincolo di loop.</li>
+            </ol>
+          </div>
+          <div class="micro-example">
+            <strong>Esempio mentale</strong>
+            OBDD e' come comprimere tutta la mappa degli stati; BMC e' come cercare un sentiero di errore entro una certa lunghezza. Sono strumenti diversi per un problema comune.
+          </div>
+          <div class="why-box">
+            <strong>Differenza da dire all'orale</strong>
+            OBDD cerca di rappresentare simbolicamente grandi insiemi; BMC cerca controesempi limitati. Il primo puo' provare proprieta' tramite punti fissi, il secondo e' fortissimo nel trovare bug ma ha bisogno di un argomento di completezza per provare assenza globale di bug.
+          </div>
+          <div class="oral-script">
+            <strong>Risposta orale pronta</strong>
+            "Lo state explosion si affronta o comprimendo la rappresentazione, come negli OBDD, o limitando la ricerca, come nel BMC. Gli OBDD manipolano insiemi di stati con funzioni booleane canoniche; BMC traduce l'esistenza di un controesempio entro k in SAT."
+          </div>
+        </article>
+
+        <article class="deep-block accent-games">
+          <h3>10. Sintesi e planning: dalla verifica alla costruzione di strategie</h3>
+          <p>Nella verifica il sistema e' dato e chiedi se e' corretto. Nella sintesi vuoi costruire automaticamente un sistema che soddisfi una specifica. Questa inversione cambia tutto: non basta controllare cammini, devi scegliere azioni o output in modo da vincere contro ogni comportamento ammesso dell'ambiente.</p>
+          <p>Il problema di Church formalizza proprio questa idea: dato un flusso di input, costruire online un flusso di output che soddisfi la specifica. La soluzione finita e' spesso una macchina di Mealy: lo stato memorizza il passato rilevante, l'input corrente determina output e transizione. Il passaggio attraverso automi di Muller, LAR e giochi di parita' serve a trasformare specifiche omega-regolari in condizioni di vittoria risolvibili.</p>
+          <p>Il planning non deterministico e' vicino alla sintesi perche' anche li' cerchi una strategia, non una sequenza fissa. Una weak solution richiede che esista almeno un'esecuzione che raggiunge il goal; una strong solution garantisce il goal per tutti gli esiti; una strong-cyclic solution ammette cicli ma assume fairness sugli esiti, quindi se continui a provare prima o poi l'esito buono si manifesta.</p>
+          <p>Nel gioco di sintesi, l'ambiente sceglie input e il sistema risponde con output. Una strategia e' vincente se, qualunque sequenza di input ammessa venga scelta dall'ambiente, la sequenza combinata input/output soddisfa la specifica. L'automa di Mealy e' la forma implementabile di questa strategia: memoria finita, input corrente, output corrente e prossimo stato.</p>
+          <p>Il teorema di Buchi-Landweber e' importante perche' dice che, per specifiche S1S, il problema e' decidibile e una strategia finita puo' essere costruita quando esiste. La pipeline concettuale e': specifica logica, automa omega-regolare, gioco, regione vincente, strategia, macchina di Mealy. LAR e parity games entrano per trasformare condizioni di Muller in condizioni piu' gestibili algoritmicamente.</p>
+          <p>Nel planning, il confronto weak/strong/strong-cyclic va spiegato con gli esiti delle azioni. Se un'azione puo' avere piu' risultati, una soluzione weak e' ottimista: basta un ramo buono. Una strong e' pessimista/garantista: tutti i rami devono arrivare al goal. Una strong-cyclic accetta di ritentare, ma solo se l'ipotesi di fairness rende impossibile evitare per sempre l'esito favorevole.</p>
+          <p>Nel Church problem il vincolo bit-to-bit significa che il sistema produce l'output corrente usando solo il passato e l'input corrente, non il futuro. Nel gioco, le winning regions sono gli insiemi di posizioni da cui un giocatore ha una strategia vincente; l'attractor e' l'insieme di stati da cui puo' forzare l'arrivo a un target. Il Latest Appearance Record, abbreviato LAR, ricorda l'ordine recente di apparizione degli stati per trasformare condizioni di Muller in condizioni di parita'. L'hitting set entra quando si caratterizzano insiemi che devono essere intercettati per soddisfare o violare certe condizioni di Muller/parita'.</p>
+          <div class="detail-steps">
+            <strong>Schema da ricostruire</strong>
+            <ol>
+              <li>Verifica: controlla un sistema dato; sintesi: costruisce un sistema.</li>
+              <li>Formalizza l'interazione come gioco ambiente/sistema.</li>
+              <li>Trasforma la specifica in condizione di vittoria omega-regolare.</li>
+              <li>Calcola regione vincente e strategia.</li>
+              <li>Implementa la strategia come Mealy o come policy di planning.</li>
+            </ol>
+          </div>
+          <div class="micro-example">
+            <strong>Esempio mentale</strong>
+            Una sequenza di planning e' fragile se l'azione ha esiti imprevisti. Una strategia invece dice cosa fare dopo ogni esito possibile: per questo planning non deterministico e sintesi parlano entrambi di strategie.
+          </div>
+          <div class="why-box">
+            <strong>Collegamento finale</strong>
+            Sintesi e planning sono il punto in cui automi, logiche e model checking diventano costruttivi: non dimostri solo che un sistema funziona, ma estrai una strategia o un controllore.
+          </div>
+          <div class="oral-script">
+            <strong>Risposta orale pronta</strong>
+            "La sintesi costruisce una strategia vincente da una specifica, spesso rappresentata come automa o gioco omega-regolare. Il planning non deterministico cerca strategie su azioni con esiti multipli: weak, strong e strong-cyclic differiscono per quanta garanzia richiedono sugli esiti."
+          </div>
+        </article>
+
+        <article class="deep-block accent-games">
+          <h3>11. Planning simbolico: termini tecnici da non perdere</h3>
+          <p>Il capitolo finale usa due prospettive: <em>action-based planning</em> e <em>timeline-based planning</em>. Nell'action-based planning ragioni su azioni che trasformano stati; nel timeline-based planning ragioni su evoluzioni temporali di variabili e vincoli lungo una timeline. Nel corso l'attenzione e' soprattutto action-based, perche' si presta bene alla traduzione in model checking simbolico.</p>
+          <p>I fluents sono proposizioni o variabili che descrivono lo stato del mondo. Alcuni sono inerziali: se non vengono cambiati da un'azione, restano uguali. Altri possono essere derivati o non inerziali. Il linguaggio AR descrive azioni con regole come "A causes P if Q", "A possibly changes F if Q", vincoli always, condizioni initially e goal. Questa sintassi serve a generare una relazione di transizione simbolica.</p>
+          <p>La state-action table rappresenta quali azioni sono applicabili in quali stati e con quali esiti. L'execution structure raccoglie gli stati raggiungibili seguendo una strategia e gli esiti nondeterministici delle azioni. Gli extended goals possono essere piu' ricchi di un semplice insieme di stati finali: possono imporre condizioni temporali o vincoli sull'esecuzione.</p>
+          <p>Le determinizations trasformano un problema nondeterministico in piu' problemi deterministici scegliendo un esito per azione, ma sono solo una tecnica di approssimazione: una strategia valida nel dominio determinizzato puo' fallire quando ricompaiono tutti gli esiti. Le preimmagini distinguono il tipo di garanzia: la weak preimage include stati da cui almeno un esito porta nella regione buona; la strong preimage include stati da cui tutti gli esiti portano nella regione buona. La strong-cyclic preimage aggiunge la possibilita' di restare in una regione da cui si puo' ritentare sotto fairness.</p>
+          <div class="why-box">
+            <strong>Perche' questi dettagli contano</strong>
+            Le tre nozioni weak, strong e strong-cyclic non sono solo definizioni: cambiano l'algoritmo di calcolo della strategia, perche' cambiano la preimmagine usata per allargare la regione vincente.
+          </div>
+          <div class="oral-script">
+            <strong>Risposta orale pronta</strong>
+            "Nel planning simbolico descrivo fluents, azioni e goal con un linguaggio come AR, costruisco state-action table ed execution structure, poi cerco strategie tramite preimmagini. Weak usa esistenza di un esito buono, strong richiede tutti gli esiti buoni, strong-cyclic ammette cicli ma si appoggia a fairness."
+          </div>
+        </article>
+
+        <div class="learning-loop">
+          <h3>Feedback loop consigliato</h3>
+          <ol>
+            <li>Scegli uno dei dieci blocchi.</li>
+            <li>Copri la risposta orale pronta e prova a ricostruirla in 60 secondi.</li>
+            <li>Controlla se hai detto: definizione, perche' serve, algoritmo/costruzione, perche' funziona.</li>
+            <li>Se manca un punto, torna al blocco e trasformalo in una domanda: "perche' la proiezione corrisponde all'esistenziale?", "perche' BMC usa il lasso?", "perche' L* converge?".</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Algoritmi da saper ricostruire</h2>
+      <div class="panel-content">
+        <div class="algorithm-grid">
+          <article class="algo">
+            <h3>Subset construction</h3>
+            <dl>
+              <dt>Input</dt>
+              <dd>Un NFA, eventualmente con epsilon-mosse.</dd>
+              <dt>Idea</dt>
+              <dd>Uno stato DFA rappresenta un insieme di stati NFA raggiungibili.</dd>
+              <dt>Correttezza</dt>
+              <dd>Il DFA simula tutte le computazioni nondeterministiche in parallelo.</dd>
+            </dl>
+          </article>
+          <article class="algo">
+            <h3>L* di Angluin</h3>
+            <dl>
+              <dt>Input</dt>
+              <dd>Teacher con membership ed equivalence query.</dd>
+              <dt>Idea</dt>
+              <dd>Costruire una tabella chiusa e consistente che rappresenta residui.</dd>
+              <dt>Correttezza</dt>
+              <dd>Quando il teacher non trova controesempi, l'ipotesi riconosce il linguaggio target.</dd>
+            </dl>
+          </article>
+          <article class="algo">
+            <h3>Tableau LTL</h3>
+            <dl>
+              <dt>Input</dt>
+              <dd>Formula LTL.</dd>
+              <dt>Idea</dt>
+              <dd>Usare closure e atomi per costruire stati coerenti della formula.</dd>
+              <dt>Correttezza</dt>
+              <dd>Un cammino fulfilling soddisfa le promesse degli Until e quindi la formula.</dd>
+            </dl>
+          </article>
+          <article class="algo">
+            <h3>CTL labeling</h3>
+            <dl>
+              <dt>Input</dt>
+              <dd>Modello di Kripke e formula CTL.</dd>
+              <dt>Idea</dt>
+              <dd>Etichettare gli stati che soddisfano ogni sottoformula.</dd>
+              <dt>Correttezza</dt>
+              <dd>Le regole per EX, EU, EG coincidono con preimmagini e punti fissi.</dd>
+            </dl>
+          </article>
+          <article class="algo">
+            <h3>Symbolic CTL con OBDD</h3>
+            <dl>
+              <dt>Input</dt>
+              <dd>Relazione di transizione e insiemi di stati come funzioni booleane.</dd>
+              <dt>Idea</dt>
+              <dd>Sostituire enumerazione di stati con operazioni booleane canoniche.</dd>
+              <dt>Correttezza</dt>
+              <dd>Le operazioni OBDD rappresentano esattamente unione, intersezione e preimmagine.</dd>
+            </dl>
+          </article>
+          <article class="algo">
+            <h3>BMC</h3>
+            <dl>
+              <dt>Input</dt>
+              <dd>Sistema, proprieta' negata e bound $k$.</dd>
+              <dt>Idea</dt>
+              <dd>Codificare un cammino finito, eventualmente con lasso, come SAT.</dd>
+              <dt>Correttezza</dt>
+              <dd>Un modello SAT e' un controesempio concreto entro il bound.</dd>
+            </dl>
+          </article>
+          <article class="algo">
+            <h3>Risoluzione giochi di parita'</h3>
+            <dl>
+              <dt>Input</dt>
+              <dd>Grafo di gioco con proprietari e priorita'.</dd>
+              <dt>Idea</dt>
+              <dd>Calcolare regioni vincenti tramite attrattori e condizioni omega-regolari.</dd>
+              <dt>Correttezza</dt>
+              <dd>Una strategia vincente assicura la condizione di parita' contro ogni scelta avversaria.</dd>
+            </dl>
+          </article>
+          <article class="algo">
+            <h3>Planning strong/strong-cyclic</h3>
+            <dl>
+              <dt>Input</dt>
+              <dd>Azioni nondeterministiche, stati iniziali e goal.</dd>
+              <dt>Idea</dt>
+              <dd>Usare preimmagini per allargare gli stati da cui il goal e' garantibile.</dd>
+              <dt>Correttezza</dt>
+              <dd>La strategia conserva il sistema dentro una regione da cui il goal e' raggiungibile secondo la nozione scelta.</dd>
+            </dl>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Drill rapido da orale</h2>
+      <div class="panel-content quiz">
+        <article class="quiz-card">
+          <p>Perche' un automa di B&uuml;chi non accetta semplicemente arrivando in uno stato finale?</p>
+          <div class="quiz-options">
+            <button data-answer="false" data-no="No: sulle parole infinite non c'e' un ultimo simbolo." data-ok="">Perche' e' nondeterministico</button>
+            <button data-answer="true" data-ok="Corretto: serve una condizione ricorrente su una computazione infinita." data-no="">Perche' la parola non finisce</button>
+            <button data-answer="false" data-no="No: il problema e' la semantica infinita, non solo la determinizzazione." data-ok="">Perche' va determinizzato</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+        </article>
+
+        <article class="quiz-card">
+          <p>In L*, che cosa rappresentano concettualmente le righe della tabella?</p>
+          <div class="quiz-options">
+            <button data-answer="true" data-ok="Corretto: ogni riga approssima un residuo rispetto ai suffissi osservati." data-no="">Residui del linguaggio</button>
+            <button data-answer="false" data-no="No: gli stati arrivano dopo, quando la tabella e' pronta." data-ok="">Stati gia' finali del DFA</button>
+            <button data-answer="false" data-no="No: i controesempi servono ad arricchire la tabella." data-ok="">Solo controesempi</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+        </article>
+
+        <article class="quiz-card">
+          <p>Qual e' il limite naturale del Bounded Model Checking?</p>
+          <div class="quiz-options">
+            <button data-answer="false" data-no="No: BMC usa SAT proprio come motore decisionale." data-ok="">Non puo' usare SAT</button>
+            <button data-answer="true" data-ok="Corretto: trova bug entro k; l'assenza globale richiede un argomento di completezza." data-no="">Ragiona entro un bound</button>
+            <button data-answer="false" data-no="No: puo' rappresentare proprieta' temporali tramite codifiche finite/lasso." data-ok="">Non parla di tempo</button>
+          </div>
+          <div class="feedback" aria-live="polite"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Checklist prima di simulare l'orale</h2>
+      <div class="panel-content checklist">
+        <label class="check"><input type="checkbox" data-check-id="sat-validity"> So distinguere SAT, validita', model checking e QBF.</label>
+        <label class="check"><input type="checkbox" data-check-id="dfa-nfa"> So costruire un DFA da un NFA e spiegare il costo.</label>
+        <label class="check"><input type="checkbox" data-check-id="lstar"> So spiegare L* usando residui, non solo tabelle.</label>
+        <label class="check"><input type="checkbox" data-check-id="fairness"> So motivare justice e compassion con un esempio.</label>
+        <label class="check"><input type="checkbox" data-check-id="buchi"> So spiegare perche' B&uuml;chi richiede visite infinite.</label>
+        <label class="check"><input type="checkbox" data-check-id="mso"> So collegare S1S, proiezione e automi.</label>
+        <label class="check"><input type="checkbox" data-check-id="ltl-ctl"> So distinguere formula di stato e formula di cammino.</label>
+        <label class="check"><input type="checkbox" data-check-id="tableau"> So raccontare closure, atomi e fulfilling path.</label>
+        <label class="check"><input type="checkbox" data-check-id="obdd"> So dire perche' gli OBDD aiutano contro lo state explosion.</label>
+        <label class="check"><input type="checkbox" data-check-id="synthesis"> So spiegare sintesi come gioco tra sistema e ambiente.</label>
+        <label class="check"><input type="checkbox" data-check-id="planning"> So confrontare weak, strong e strong-cyclic solution.</label>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/teach.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

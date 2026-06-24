@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capitolo 6 — Logica monadica del secondo ordine (MSO)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/chat.css" />
+  
+</head>
+<body>
+
+<header class="site-header">
+  <h1>V&amp;V in AI — Appunti</h1>
+  <p class="subtitle">Settimana 3</p>
+  <div class="ornament">✦</div>
+</header>
+<div class="wrap">
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap05.html">← Precedente</a></span><span><a href="cap07.html">Successivo →</a></span></div>
+  
+<div class="chapter-opener">
+  <div class="label">Capitolo 6</div>
+  <h1>Capitolo 6 — Logica monadica del secondo ordine (MSO)</h1>
+  <p class="focus">S1S, WS1S, teorema di Büchi, S2S, automi su alberi e linguaggi star-free.</p>
+</div>
+
+  <article class="prose"><h1>Teoria monadica del secondo ordine con un successore - Riassunto</h1>
+<p><strong>Fonte</strong>: <code>raw/Monadic Second Order theory of One's Successor.md</code></p>
+<h2>Punti chiave</h2>
+<ul>
+<li><strong>S1S</strong> e' una logica su posizioni naturali, successore e variabili monadiche del secondo ordine.</li>
+<li>Le variabili del secondo ordine rappresentano insiemi di posizioni, quindi possono codificare lettere o bit in una parola infinita.</li>
+<li>La rappresentazione e' indipendente dall'alfabeto: i simboli possono essere codificati tramite componenti booleane.</li>
+<li>Il <strong>lemma di chiusura per proiezione</strong> dice che esistenzializzare una componente mantiene l'omega-regolarita.</li>
+<li>A livello di automi, proiettare significa ignorare una componente dell'alfabeto e lasciare che il nondeterminismo la scelga.</li>
+</ul>
+<h2>Concetti estratti</h2>
+<ul>
+<li>S1S</li>
+<li>Chiusura per proiezione</li>
+</ul>
+<hr />
+
+<h1>S1S debole - Riassunto</h1>
+<p><strong>Fonte</strong>: <code>raw/Weak S1S.md</code></p>
+<h2>Punti chiave</h2>
+<ul>
+<li><strong>WS1S</strong> e' la variante debole di S1S in cui le variabili del secondo ordine rappresentano solo insiemi finiti.</li>
+<li>E' utile per descrivere proprieta locali o finite all'interno di computazioni potenzialmente infinite.</li>
+<li>Mantiene il collegamento logica-automi, ma con una restrizione semantica importante sulle variabili insiemistiche.</li>
+</ul>
+<h2>Concetti estratti</h2>
+<ul>
+<li>WS1S</li>
+<li>S1S</li>
+</ul>
+<hr />
+
+<h1>Secondo teorema di Büchi - Riassunto</h1>
+<p><strong>Fonte</strong>: <code>raw/Secondo teorema di Büchi.md</code></p>
+<h2>Punti chiave</h2>
+<ul>
+<li>Il secondo teorema di Büchi afferma che un omega-linguaggio e' omega-regolare se e solo se e' definibile in S1S.</li>
+<li>Direzione automa -&gt; logica: si codificano in S1S lo stato iniziale, l'unicita dello stato corrente, le transizioni e la visita infinita di stati finali.</li>
+<li>Direzione logica -&gt; automa: si riduce S1S a una forma piu semplice e si costruisce induttivamente un automa di Büchi per la formula.</li>
+<li>Il teorema crea il ponte fondamentale tra logica, automi su parole infinite e verifica automatica.</li>
+</ul>
+<h2>Concetti estratti</h2>
+<ul>
+<li>Secondo teorema di Büchi</li>
+<li>S1S</li>
+<li>Automi di Büchi</li>
+</ul>
+<hr />
+
+<h1>S1S</h1>
+<p>S1S e' la teoria monadica del secondo ordine con un successore. Interpreta formule sui naturali, visti come posizioni di una parola infinita.</p>
+<h2>Elementi</h2>
+<ul>
+<li>costante $0$;</li>
+<li>funzione successore $+1$;</li>
+<li>variabili del primo ordine per posizioni;</li>
+<li>variabili monadiche del secondo ordine per insiemi di posizioni;</li>
+<li>quantificatori su entrambi i tipi di variabili.</li>
+</ul>
+<h2>Rappresentazione di parole</h2>
+<p>Una parola infinita puo essere codificata tramite insiemi di posizioni: ad esempio $X_a$ contiene le posizioni in cui compare il simbolo $a$.</p>
+<h2>Potere espressivo</h2>
+<p>Per il secondo teorema di Büchi, un omega-linguaggio e' definibile in S1S se e solo se e' omega-regolare.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Automi di Büchi</li>
+<li>Secondo teorema di Büchi</li>
+<li>Chiusura per proiezione</li>
+<li>WS1S</li>
+</ul>
+<hr />
+
+<h1>S1S debole</h1>
+<p>WS1S e' la variante debole di S1S in cui le variabili del secondo ordine sono limitate a insiemi finiti.</p>
+<h2>Differenza da S1S</h2>
+<p>S1S permette insiemi infiniti di posizioni; WS1S permette solo insiemi finiti. Questo rende WS1S adatta a esprimere proprieta finite o locali dentro una struttura temporale infinita.</p>
+<h2>Uso</h2>
+<p>WS1S mantiene il collegamento con automi e procedure decisionali, ed e' alla base di strumenti come MONA per ragionare su proprieta regolari.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>S1S</li>
+<li>Linguaggi regolari</li>
+<li>Linguaggi omega-regolari</li>
+</ul>
+<hr />
+
+<h1>Secondo teorema di Büchi</h1>
+<p>Il secondo teorema di Büchi afferma che un omega-linguaggio e' omega-regolare se e solo se e' definibile in S1S.</p>
+<h2>Direzione automi -&gt; logica</h2>
+<p>Dato un automa di Büchi, si costruisce una formula S1S che codifica:
+- stato iniziale;
+- appartenenza a un solo stato in ogni posizione;
+- rispetto della relazione di transizione;
+- visita infinita di almeno uno stato finale.</p>
+<h2>Direzione logica -&gt; automi</h2>
+<p>Ogni formula S1S puo essere trasformata, tramite costruzioni effettive, in un automa di Büchi che riconosce esattamente i suoi modelli.</p>
+<h2>Importanza</h2>
+<p>Il teorema stabilisce il ponte tra logica monadica, automi su parole infinite e model checking.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>S1S</li>
+<li>Automi di Büchi</li>
+<li>Linguaggi omega-regolari</li>
+</ul>
+<hr />
+
+<h1>Chiusura per proiezione</h1>
+<p>La <strong>chiusura per proiezione</strong> dice che eliminare esistenzialmente una componente da una formula S1S preserva l'omega-regolarita del linguaggio definito.</p>
+<p>In S1S una variabile del secondo ordine non e' un singolo valore: e' un insieme di posizioni. Se uso variabili:</p>
+<p>$$X_1,\ldots,X_n$$</p>
+<p>posso leggerle come una parola infinita su alfabeto $\lbrace 0,1\rbrace^n$: alla posizione $k$, il bit $i$ vale 1 se e solo se $k\in X_i$.</p>
+<p>Proiettare via $X_i$ significa cancellare il bit $i$ da ogni posizione della parola.</p>
+<h2>Interpretazione logica</h2>
+<p>Se una formula usa piu variabili del secondo ordine per rappresentare componenti di una parola, possiamo quantificare esistenzialmente una di queste variabili:</p>
+<p>$$
+\psi(X_1,\ldots,X_{i-1},X_{i+1},\ldots,X_n)
+=
+\exists X_i\;\varphi(X_1,\ldots,X_n).
+$$</p>
+<p>La parola visibile soddisfa $\psi$ se esiste almeno un modo di scegliere la componente nascosta $X_i$ che rende vera $\varphi$.</p>
+<p>Quindi:</p>
+<p>$$
+L(\psi)=\pi_i(L(\varphi)).
+$$</p>
+<p>Attenzione: la proiezione non ignora i vincoli della formula. Li soddisfa esistenzialmente scegliendo una componente nascosta adatta.</p>
+<h2>Interpretazione automata-theoretic</h2>
+<p>A livello di automi di Büchi, se:</p>
+<p>$$
+\mathcal{A}=(Q,\lbrace 0,1\rbrace^n,\Delta,q_0,F)
+$$</p>
+<p>riconosce il linguaggio prima della proiezione, costruisco:</p>
+<p>$$
+\mathcal{A}'=(Q,\lbrace 0,1\rbrace^{n-1},\Delta',q_0,F)
+$$</p>
+<p>dove:</p>
+<p>$$
+(p,c,q)\in\Delta'
+$$</p>
+<p>se e solo se esiste una lettera completa $b\in\lbrace 0,1\rbrace^n$ con $\pi_i(b)=c$ e:</p>
+<p>$$
+(p,b,q)\in\Delta.
+$$</p>
+<p>L'automa proiettato legge solo le componenti visibili e usa il nondeterminismo per indovinare la componente rimossa.</p>
+<p>Esempio: se la formula e' $\exists Y\;\varphi(X,Y)$, l'automa su $X$ accetta una parola se esiste una traccia $Y$ tale che la parola completa $(X,Y)$ sarebbe stata accettata dall'automa per $\varphi$.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>S1S</li>
+<li>Automi di Büchi</li>
+<li>Linguaggi omega-regolari</li>
+</ul>
+<hr />
+
+<h1>Approfondimento completo settimana 3 - S1S, WS1S e secondo teorema di Büchi</h1>
+<p>Questo documento espande il Capitolo 6. Qui il punto non è imparare un nuovo automa, ma capire il ponte tra automi e logica: le stesse proprietà sulle parole infinite possono essere viste come linguaggi riconosciuti da automi di Büchi oppure come formule della logica monadica del secondo ordine con un successore.</p>
+<hr>
+<h2>0. Idea guida: perché passare dagli automi alla logica?</h2>
+<p>Gli automi di Büchi sono potenti, ma quando le proprietà diventano grandi è scomodo disegnarli o ragionare direttamente sui loro stati. La logica serve come linguaggio più dichiarativo:</p>
+<ul>
+<li>con un automa descrivo <strong>come</strong> riconoscere una proprietà;</li>
+<li>con una formula descrivo <strong>che cosa</strong> deve valere.</li>
+</ul>
+<p>Esempio:</p>
+<blockquote>
+<p>"Ogni richiesta viene prima o poi seguita da una risposta."</p>
+</blockquote>
+<p>Come automa, questa proprietà richiede stati, transizioni e una condizione di accettazione. Come formula, posso parlare direttamente delle posizioni della parola infinita: per ogni posizione in cui c'è una richiesta, esiste una posizione futura in cui c'è una risposta.</p>
+<p>S1S è il formalismo logico che permette di parlare di:</p>
+<ul>
+<li>posizioni naturali $0,1,2,\ldots$;</li>
+<li>successore $x+1$;</li>
+<li>insiemi di posizioni;</li>
+<li>parole infinite codificate come insiemi di posizioni.</li>
+</ul>
+<p>Il risultato centrale è il secondo teorema di Büchi:</p>
+<blockquote>
+<p>Un omega-linguaggio è omega-regolare se e solo se è definibile in S1S.</p>
+</blockquote>
+<p>Quindi automi di Büchi e S1S hanno lo stesso potere espressivo sulle parole infinite.</p>
+<hr>
+<h2>1. Che cosa significa "monadica del secondo ordine"?</h2>
+<p>Spezzare il nome aiuta.</p>
+<h3>Primo ordine</h3>
+<p>Le variabili del primo ordine rappresentano singole posizioni:</p>
+<p>$$x,y,z,\ldots$$</p>
+<p>Se la struttura è $\mathbb{N}$, allora $x$ può essere 0, oppure 1, oppure 57, ecc.</p>
+<p>Esempi di proprietà su posizioni:</p>
+<ul>
+<li>$x=0$: x è la prima posizione;</li>
+<li>$y=x+1$: y è il successore immediato di x;</li>
+<li>$x&lt;y$: y è nel futuro di x.</li>
+</ul>
+<h3>Secondo ordine</h3>
+<p>Le variabili del secondo ordine rappresentano insiemi di posizioni:</p>
+<p>$$X,Y,Z,\ldots$$</p>
+<p>Esempio: $X$ può essere l'insieme delle posizioni in cui compare il simbolo $a$.</p>
+<h3>Monadico</h3>
+<p>"Monadico" significa che le variabili del secondo ordine sono insiemi di singole posizioni, non relazioni binarie o ternarie. Quindi $X$ è un predicato unario: posso scrivere $x\in X$, ma non $R(x,y)$ come relazione libera del secondo ordine.</p>
+<p>Questo mantiene la logica abbastanza espressiva per parlare di omega-parole, ma ancora decidibile.</p>
+<hr>
+<h2>2. Sintassi di S1S</h2>
+<p>S1S usa:</p>
+<ul>
+<li>la costante $0$;</li>
+<li>la funzione successore $+1$;</li>
+<li>variabili del primo ordine $x,y,z$;</li>
+<li>variabili monadiche del secondo ordine $X,Y,Z$;</li>
+<li>connettivi booleani $\neg,\land,\lor,\to$;</li>
+<li>quantificatori $\exists,\forall$ su variabili del primo e del secondo ordine.</li>
+</ul>
+<p>Le formule atomiche tipiche sono:</p>
+<ul>
+<li>$x=y$;</li>
+<li>$y=x+1$;</li>
+<li>$x&lt;y$;</li>
+<li>$x\in X$;</li>
+<li>$Q_a(x)$, se stiamo usando una versione dipendente dall'alfabeto dove $Q_a$ indica "in posizione x compare a".</li>
+</ul>
+<p>Alcuni simboli sono ridondanti. Per esempio $&lt;$ si può definire usando successore e quantificazione del secondo ordine, ma negli appunti viene spesso usato perché rende le formule più leggibili.</p>
+<p>Una formula senza variabili libere si chiama <strong>enunciato</strong>. Una formula con variabili libere definisce un linguaggio parametrico rispetto a quelle variabili.</p>
+<hr>
+<h2>3. Semantica: parole infinite come strutture logiche</h2>
+<p>Sia $\alpha \in A^\omega$ una parola infinita su alfabeto finito $A$.</p>
+<p>La interpretiamo come struttura:</p>
+<p>$$\underline{\alpha} = (\omega,0,+1,&lt;,\lbrace Q_a\rbrace_{a\in A})$$</p>
+<p>dove:</p>
+<ul>
+<li>il dominio è $\omega=\mathbb{N}$;</li>
+<li>$0$ è la prima posizione;</li>
+<li>$+1$ è il successore;</li>
+<li>$&lt;$ è l'ordine naturale;</li>
+<li>$Q_a$ è l'insieme delle posizioni in cui compare $a$.</li>
+</ul>
+<p>Formalmente:</p>
+<p>$$Q_a = \lbrace i\in\omega \mid \alpha(i)=a\rbrace$$</p>
+<p>Esempio:</p>
+<p>Se:</p>
+<p>$$\alpha = a b a a b b \ldots$$</p>
+<p>allora:</p>
+<ul>
+<li>$Q_a = \lbrace 0,2,3,\ldots\rbrace$;</li>
+<li>$Q_b = \lbrace 1,4,5,\ldots\rbrace$.</li>
+</ul>
+<p>Una formula S1S definisce un linguaggio:</p>
+<p>$$L(\varphi)=\lbrace \alpha\in A^\omega \mid \underline{\alpha}\models \varphi\rbrace$$</p>
+<p>Quindi una formula è vera o falsa su una parola infinita, e il linguaggio della formula è l'insieme delle parole su cui è vera.</p>
+<hr>
+<h2>4. Versione dipendente dall'alfabeto e versione alphabet-agnostic</h2>
+<p>Negli appunti compaiono due modi di vedere S1S.</p>
+<h3>S1S su un alfabeto $A$</h3>
+<p>In $S1S_A$ ho un predicato $Q_a$ per ogni simbolo $a\in A$.</p>
+<p>Se $A=\lbrace a,b,c\rbrace$, avrò:</p>
+<p>$$Q_a,Q_b,Q_c$$</p>
+<p>e posso scrivere formule come:</p>
+<p>$$\forall x(Q_a(x)\to \exists y(x&lt;y\land Q_b(y)))$$</p>
+<p>che dice: ogni $a$ è seguita, prima o poi, da una $b$.</p>
+<h3>S1S generica</h3>
+<p>Per rendere la rappresentazione indipendente dall'alfabeto, posso codificare i simboli in binario.</p>
+<p>Se l'alfabeto ha al massimo $2^n$ simboli, ogni lettera si rappresenta con $n$ bit. Una parola infinita diventa una parola su $\lbrace 0,1\rbrace^n$.</p>
+<p>Uso variabili del secondo ordine:</p>
+<p>$$P_1,\ldots,P_n$$</p>
+<p>dove $P_k$ contiene le posizioni in cui il k-esimo bit vale 1.</p>
+<p>Questa versione è più uniforme: non dipende dai nomi $a,b,c$, ma solo da insiemi di posizioni.</p>
+<hr>
+<h2>5. Formule S1S da saper scrivere</h2>
+<p>Qui conviene costruire un piccolo vocabolario di pattern. Sono formule da saper produrre all'orale.</p>
+<h3>P vale infinitamente spesso</h3>
+<p>$$\forall x \exists y (x&lt;y \land y\in P)$$</p>
+<p>Lettura: qualunque posizione x scelgo, esiste una posizione futura y in cui P vale. Quindi P non smette mai di ricomparire.</p>
+<h3>P vale solo un numero finito di volte</h3>
+<p>$$\exists x \forall y (x&lt;y \to y\notin P)$$</p>
+<p>Lettura: esiste un punto x dopo il quale P non compare più.</p>
+<h3>Ogni a è immediatamente seguita da b</h3>
+<p>$$\forall x(Q_a(x)\to Q_b(x+1))$$</p>
+<p>Questa formula parla del passo successivo immediato.</p>
+<h3>Ogni a è prima o poi seguita da b</h3>
+<p>$$\forall x(Q_a(x)\to \exists y(x&lt;y\land Q_b(y)))$$</p>
+<p>Questa formula non impone che b sia subito dopo a. Può essere in qualunque posizione futura.</p>
+<h3>Non ci sono due a consecutive</h3>
+<p>$$\forall x(Q_a(x)\to \neg Q_a(x+1))$$</p>
+<h3>a e b si alternano</h3>
+<p>Se l'alfabeto è solo $\lbrace a,b\rbrace$, una forma semplice è:</p>
+<p>$$\forall x((Q_a(x)\to Q_b(x+1))\land(Q_b(x)\to Q_a(x+1)))$$</p>
+<p>Questa impone alternanza perfetta.</p>
+<h3>Da un certo punto in poi solo b</h3>
+<p>$$\exists x\forall y(x&lt;y\to Q_b(y))$$</p>
+<p>Questa formula definisce parole che hanno una coda infinita di sole $b$.</p>
+<h3>Infinite a e infinite b</h3>
+<p>$$(\forall x\exists y(x&lt;y\land Q_a(y)))\land(\forall x\exists y(x&lt;y\land Q_b(y)))$$</p>
+<h3>0 e &lt; sono ridondanti: definirli da +1 (domanda classica)</h3>
+<p>Negli appunti viene mostrato che nella segnatura di S1S la costante $0$ e
+l'ordine $&lt;$ sono <strong>definibili</strong>, quindi in linea di principio ridondanti.</p>
+<p>Per $x = 0$, senza usare $&lt;$:</p>
+<p>$$\neg\exists y\,(y+1 = x)$$</p>
+<p>(zero è l'unico punto che non è successore di nessuno).</p>
+<p>Viceversa $+1$ si definisce da $&lt;$ <strong>al primo ordine</strong>:</p>
+<p>$$x+1 = y \quad\leadsto\quad x &lt; y \land \neg\exists z\,(x &lt; z \land z &lt; y).$$</p>
+<p>La direzione interessante è l'altra: definire $&lt;$ da $+1$. Al primo ordine
+<strong>non si può</strong> (è un fatto da citare all'orale). Serve la quantificazione del
+secondo ordine:</p>
+<p>$$x &lt; y \quad\leadsto\quad \forall X\,\big(x+1\in X \land \forall z\,(z\in X \to z+1\in X)\ \to\ y\in X\big)$$</p>
+<p>Lettura: ogni insieme $X$ che contiene $x+1$ ed è chiuso per successore deve
+contenere $y$. Il più piccolo insieme con quelle proprietà è
+$\{x+1, x+2, x+3,\ldots\}$: imporre $y\in X$ per <strong>tutti</strong> gli $X$ del genere
+forza $y$ a stare strettamente a destra di $x$.</p>
+<p>Perché $\forall X$ e non $\exists X$? Con $\exists X$ basterebbe esibire un
+$X$ che contiene $y$: ma posso sempre "barare" prendendo un $X$ più grande del
+necessario (per esempio uno che parte da un $t &lt; x$ ed è chiuso per
+successore), che finisce per contenere anche posizioni a sinistra di $x$. Il
+$\forall$ elimina i testimoni truccati: la condizione deve reggere anche per
+l'insieme minimo $\{x+1, x+2,\ldots\}$, e quello contiene solo punti a destra
+di $x$.</p>
+<h3>Contare modulo 2: il trucco dell'insieme alternante</h3>
+<p>Esempio svolto negli appunti: su $A = \{a,b,c\}$, il linguaggio delle ω-parole
+in cui <strong>tra due occorrenze consecutive di $a$ c'è un numero pari di $b$/$c$</strong>
+(lo stesso linguaggio dell'automa di Büchi del Capitolo 5).</p>
+<p>$$\forall x\forall y\Big(\big(x\in Q_a \land y\in Q_a \land x&lt;y \land \neg\exists z(z\in Q_a \land x&lt;z \land z&lt;y)\big) \to$$
+$$\exists X\big(x\in X \land \forall z\,(z\in X \leftrightarrow z+1\notin X) \land y\notin X\big)\Big)$$</p>
+<p>La premessa dice "$x$ e $y$ sono due $a$ <strong>consecutive</strong>" (nessuna $a$ in
+mezzo). La conclusione usa un insieme $X$ <strong>alternante</strong>: la condizione
+$z\in X \leftrightarrow z+1\notin X$ forza $X$ a contenere esattamente una
+posizione sì e una no. Partendo da $x\in X$, le posizioni in $X$ sono
+$x, x+2, x+4,\ldots$: chiedere $y\notin X$ significa che la distanza
+$y - x$ è <strong>dispari</strong>, cioè il numero di posizioni strettamente comprese (le
+$b$/$c$) è <strong>pari</strong>.</p>
+<p>Questo pattern — un insieme del secondo ordine usato come "contatore modulo
+$k$" — è esattamente ciò che separa MSO dal primo ordine: al primo ordine non
+si conta modulo, ed è il motivo per cui i linguaggi FO-definibili (star-free)
+sono una sottoclasse propria dei regolari.</p>
+<hr>
+<h2>6. Definire linguaggi con formule</h2>
+<p>Un linguaggio è definibile in S1S se esiste una formula che lo cattura esattamente.</p>
+<p>Esempio:</p>
+<p>$$L = \lbrace \alpha\in\lbrace a,b\rbrace^\omega \mid a \text{ compare infinite volte}\rbrace$$</p>
+<p>Formula:</p>
+<p>$$\varphi = \forall x\exists y(x&lt;y\land Q_a(y))$$</p>
+<p>Allora:</p>
+<p>$$L = L(\varphi)$$</p>
+<p>Esempio:</p>
+<p>$$L = \lbrace \alpha\mid \text{non compaiono mai due }a\text{ consecutive}\rbrace$$</p>
+<p>Formula:</p>
+<p>$$\varphi = \forall x(Q_a(x)\to \neg Q_a(x+1))$$</p>
+<p>Esempio:</p>
+<p>$$L = \lbrace \alpha\mid \text{ogni } request \text{ è seguita da un } grant\rbrace$$</p>
+<p>Formula:</p>
+<p>$$\forall x(Q_{request}(x)\to \exists y(x&lt;y\land Q_{grant}(y)))$$</p>
+<p>Questa è una proprietà di vivacità, spesso chiamata liveness: non dice che il grant arriva subito, ma che prima o poi arriva.</p>
+<hr>
+<h2>7. Chiusura per proiezione</h2>
+<p>In inglese la trovi spesso come <strong>closure by projection</strong>. E' il passaggio che
+collega direttamente quantificazione esistenziale e operazioni sugli automi.</p>
+<p>La proiezione è il ponte tecnico più importante tra formule e automi. Serve a formalizzare questa idea:</p>
+<blockquote>
+<p>osservo solo alcune componenti della parola e nascondo le altre; la parola osservata è accettata se esiste almeno un modo di riempire le componenti nascoste.</p>
+</blockquote>
+<p>In S1S le componenti nascoste sono variabili del secondo ordine.</p>
+<p>Supponi di avere una formula:</p>
+<p>$$\varphi(X_1,\ldots,X_i,\ldots,X_n)$$</p>
+<p>e di costruire:</p>
+<p>$$\psi(X_1,\ldots,X_{i-1},X_{i+1},\ldots,X_n)=\exists X_i\;\varphi(X_1,\ldots,X_n)$$</p>
+<p>La variabile $X_i$ sparisce dalle variabili libere, perché viene quantificata esistenzialmente.</p>
+<h3>Come una tupla di insiemi diventa una parola</h3>
+<p>Una tupla di variabili del secondo ordine:</p>
+<p>$$X_1,\ldots,X_n$$</p>
+<p>può essere vista come una parola infinita su alfabeto:</p>
+<p>$$\lbrace 0,1\rbrace^n.$$</p>
+<p>Alla posizione $k$, la lettera è il vettore di bit:</p>
+<p>$$b_k=(b_1,\ldots,b_n)$$</p>
+<p>dove:</p>
+<p>$$b_j=1 \iff k\in X_j.$$</p>
+<p>Quindi:</p>
+<ul>
+<li>$X_1$ è la traccia del primo bit lungo tutta la parola;</li>
+<li>$X_2$ è la traccia del secondo bit;</li>
+<li>in generale, una variabile del secondo ordine è una componente infinita della codifica.</li>
+</ul>
+<p>Questo è il punto che spesso crea confusione: non stiamo scegliendo un singolo valore per $X_i$, ma un intero insieme di posizioni, cioè una sequenza infinita di bit.</p>
+<h3>Interpretazione logica</h3>
+<p>Dire $\exists X_i$ significa: esiste una scelta dell'insieme $X_i$ che rende vera la formula.</p>
+<p>Quindi sto nascondendo la componente $i$ della parola, ma chiedo che esista almeno un modo di completarla.</p>
+<p>Formalmente, se $\pi_i$ cancella la componente $i$ da ogni lettera, allora:</p>
+<p>$$
+L(\exists X_i\;\varphi)
+=
+\pi_i(L(\varphi)).
+$$</p>
+<p>Questo significa:</p>
+<p>$$
+\beta\in L(\exists X_i\;\varphi)
+\iff
+\exists \alpha\in L(\varphi)\text{ tale che }\pi_i(\alpha)=\beta.
+$$</p>
+<p>La parola $\beta$ è la parola visibile, senza la componente $X_i$. La parola $\alpha$ è un completamento possibile di $\beta$ in cui la componente nascosta è stata reinserita.</p>
+<h3>Esempio minimo</h3>
+<p>Prendi due componenti $X$ e $Y$. Una posizione contiene una coppia di bit:</p>
+<p>$$
+(x_k,y_k)\in\lbrace 0,1\rbrace\times\lbrace 0,1\rbrace.
+$$</p>
+<p>Considera la formula:</p>
+<p>$$
+\varphi(X,Y)\equiv \forall z(z\in X\to z\in Y).
+$$</p>
+<p>Questa formula dice: tutte le posizioni marcate da $X$ sono marcate anche da $Y$.</p>
+<p>Ora proietto via $Y$:</p>
+<p>$$
+\psi(X)\equiv \exists Y\;\forall z(z\in X\to z\in Y).
+$$</p>
+<p>La formula $\psi$ è vera per ogni possibile $X$, perché posso sempre scegliere:</p>
+<p>$$
+Y=X.
+$$</p>
+<p>In termini di parole: se vedo solo la prima componente, posso sempre completare la seconda componente copiando la prima. Quindi la proiezione del linguaggio è tutto $\lbrace 0,1\rbrace^\omega$.</p>
+<h3>Esempio meno banale</h3>
+<p>Ora aggiungo un vincolo di finitezza:</p>
+<p>$$
+\varphi(X,Y)\equiv
+\forall z(z\in X\to z\in Y)
+\land
+\exists m\forall z(m&lt;z\to z\notin Y).
+$$</p>
+<p>La prima parte dice che $Y$ deve contenere tutte le posizioni di $X$. La seconda dice che $Y$ è finito.</p>
+<p>Proietto via $Y$:</p>
+<p>$$
+\exists Y\;\varphi(X,Y).
+$$</p>
+<p>Che proprietà resta su $X$?</p>
+<p>Resta: $X$ è finito.</p>
+<p>Perché:</p>
+<ul>
+<li>se $X$ è finito, posso scegliere $Y=X$ e la formula è vera;</li>
+<li>se $X$ è infinito, nessun $Y$ finito può contenere tutte le posizioni di $X$.</li>
+</ul>
+<p>Quindi l'esistenziale non significa "ignoro il vincolo": significa "deve esistere una componente nascosta che rende il vincolo soddisfatto".</p>
+<h3>Interpretazione automata-theoretic</h3>
+<p>Se l'automa legge simboli con più componenti, proiettare significa cancellare una componente dall'alfabeto.</p>
+<p>Supponi che:</p>
+<p>$$
+\mathcal{A}=(Q,\lbrace 0,1\rbrace^n,\Delta,q_0,F)
+$$</p>
+<p>riconosca $L(\varphi)$.</p>
+<p>Costruisco un automa proiettato:</p>
+<p>$$
+\mathcal{A}'=(Q,\lbrace 0,1\rbrace^{n-1},\Delta',q_0,F)
+$$</p>
+<p>con gli stessi stati, lo stesso stato iniziale e gli stessi finali. Cambio solo le transizioni.</p>
+<p>Metto:</p>
+<p>$$
+(p,c,q)\in\Delta'
+$$</p>
+<p>se e solo se esiste una lettera completa $b\in\lbrace 0,1\rbrace^n$ tale che:</p>
+<p>$$
+\pi_i(b)=c
+$$</p>
+<p>e:</p>
+<p>$$
+(p,b,q)\in\Delta.
+$$</p>
+<p>L'automa $\mathcal{A}'$ legge la parola senza la componente $i$. Quando deve fare una transizione, sceglie nondeterministicamente quale valore nascosto della componente $i$ usare.</p>
+<h3>Perché la costruzione è corretta</h3>
+<p>Dimostriamo le due inclusioni.</p>
+<p><strong>Da sinistra a destra.</strong></p>
+<p>Se una parola visibile $\beta$ è accettata da $\mathcal{A}'$, allora esiste una run accettante:</p>
+<p>$$
+q_0q_1q_2\ldots
+$$</p>
+<p>Ogni transizione della run:</p>
+<p>$$
+(q_k,\beta(k),q_{k+1})
+$$</p>
+<p>esiste in $\Delta'$ perché, per definizione di $\Delta'$, esiste almeno una lettera completa $b_k$ che proietta su $\beta(k)$ e rende valida la transizione in $\Delta$.</p>
+<p>Scegliendo uno di questi $b_k$ per ogni posizione $k$, ottengo una parola completa:</p>
+<p>$$
+\alpha=b_0b_1b_2\ldots
+$$</p>
+<p>tale che:</p>
+<p>$$
+\pi_i(\alpha)=\beta.
+$$</p>
+<p>La stessa run è accettante per $\mathcal{A}$ su $\alpha$. Quindi $\beta$ appartiene alla proiezione di $L(\mathcal{A})$.</p>
+<p><strong>Da destra a sinistra.</strong></p>
+<p>Se $\beta$ è la proiezione di una parola completa $\alpha$ accettata da $\mathcal{A}$, prendo una run accettante di $\mathcal{A}$ su $\alpha$.</p>
+<p>Ogni transizione:</p>
+<p>$$
+(q_k,\alpha(k),q_{k+1})\in\Delta
+$$</p>
+<p>genera, per definizione, una transizione:</p>
+<p>$$
+(q_k,\pi_i(\alpha(k)),q_{k+1})\in\Delta'.
+$$</p>
+<p>Ma $\pi_i(\alpha)=\beta$, quindi la stessa run accetta $\beta$ in $\mathcal{A}'$.</p>
+<p>Conclusione:</p>
+<p>$$
+L(\mathcal{A}')=\pi_i(L(\mathcal{A})).
+$$</p>
+<p>Quindi la proiezione di un omega-linguaggio regolare è ancora omega-regolare.</p>
+<h3>Punto orale</h3>
+<p>La frase da ricordare è:</p>
+<blockquote>
+<p>$\exists X$ in S1S corrisponde a cancellare la componente $X$ dall'alfabeto dell'automa; il nondeterminismo dell'automa proiettato indovina i valori cancellati posizione per posizione.</p>
+</blockquote>
+<p>Attenzione: la proiezione è esistenziale. Dopo aver cancellato $X$, una parola visibile è accettata se esiste almeno un completamento di $X$ che funzionava prima della cancellazione.</p>
+<hr>
+<h2>8. Secondo teorema di Büchi</h2>
+<p>Il teorema dice:</p>
+<p>$$L\subseteq A^\omega \text{ è omega-regolare} \iff L \text{ è definibile in S1S}$$</p>
+<p>Va capito in due direzioni.</p>
+<hr>
+<h2>9. Direzione automa -&gt; logica</h2>
+<p>Supponi di avere un automa di Büchi:</p>
+<p>$$\mathcal{A}=(Q,A,\Delta,q_0,F)$$</p>
+<p>con:</p>
+<p>$$Q=\lbrace q_0,\ldots,q_m\rbrace$$</p>
+<p>Voglio costruire una formula S1S che dice: "esiste una run accettante di $\mathcal{A}$ sulla parola".</p>
+<p>Introduco una variabile del secondo ordine $Y_i$ per ogni stato $q_i$.</p>
+<p>Interpretazione:</p>
+<p>$$x\in Y_i \quad \text{significa: alla posizione }x\text{ la run è nello stato }q_i$$</p>
+<p>La formula avrà forma:</p>
+<p>$$\exists Y_0\ldots\exists Y_m \; \Phi(Y_0,\ldots,Y_m)$$</p>
+<p>dove $\Phi$ deve imporre quattro cose.</p>
+<h3>1. Stato iniziale</h3>
+<p>Alla posizione 0 la run è in $q_0$:</p>
+<p>$$0\in Y_0$$</p>
+<h3>2. Esattamente uno stato a ogni posizione</h3>
+<p>Almeno uno stato:</p>
+<p>$$\forall x \bigvee_{i=0}^{m} x\in Y_i$$</p>
+<p>Al più uno stato:</p>
+<p>$$\forall x \bigwedge_{i\neq j}\neg(x\in Y_i\land x\in Y_j)$$</p>
+<p>Insieme dicono che ogni posizione della run ha uno e un solo stato.</p>
+<h3>3. Rispetto delle transizioni</h3>
+<p>Per ogni posizione x, se alla posizione x sono nello stato $q_i$ e leggo il simbolo $a$, allora alla posizione $x+1$ devo essere in uno stato $q_j$ tale che $(q_i,a,q_j)\in\Delta$.</p>
+<p>Formula schematica:</p>
+<p>$$\forall x \bigvee_{(q_i,a,q_j)\in\Delta}(x\in Y_i \land Q_a(x)\land x+1\in Y_j)$$</p>
+<p>Questa formula dice che ogni passo della run è giustificato da una transizione dell'automa.</p>
+<h3>4. Condizione di Büchi</h3>
+<p>Almeno uno stato finale viene visitato infinite volte:</p>
+<p>$$\bigvee_{q_i\in F}\forall x\exists y(x&lt;y\land y\in Y_i)$$</p>
+<p>Lettura: esiste uno stato finale $q_i$ tale che, qualunque punto x scelga, nel futuro trovo una posizione y in cui la run è in $q_i$.</p>
+<h3>Formula completa</h3>
+<p>Metto tutto insieme:</p>
+<p>$$\exists Y_0\ldots\exists Y_m(\Phi_{init}\land\Phi_{unique}\land\Phi_{trans}\land\Phi_{acc})$$</p>
+<p>Questa formula è vera su una parola $\alpha$ se e solo se $\mathcal{A}$ ha una run accettante su $\alpha$.</p>
+<p>Quindi ogni linguaggio riconosciuto da un automa di Büchi è definibile in S1S.</p>
+<hr>
+<h2>10. Direzione logica -&gt; automa</h2>
+<p>Ora bisogna mostrare l'opposto: data una formula S1S, posso costruire un automa di Büchi che riconosce esattamente i suoi modelli.</p>
+<p>L'idea della dimostrazione è induttiva:</p>
+<ol>
+<li>costruisco automi per formule atomiche;</li>
+<li>uso chiusure booleane per $\lor,\land,\neg$;</li>
+<li>uso proiezione per il quantificatore esistenziale del secondo ordine;</li>
+<li>traduco il resto della sintassi in una forma ridotta equivalente.</li>
+</ol>
+<p>Perché funziona?</p>
+<ul>
+<li>La disgiunzione corrisponde all'unione di linguaggi.</li>
+<li>La congiunzione corrisponde all'intersezione.</li>
+<li>La negazione corrisponde al complemento.</li>
+<li>L'esistenziale su una variabile del secondo ordine corrisponde alla proiezione.</li>
+</ul>
+<p>Dato che gli omega-regolari sono chiusi per unione, intersezione, complemento e proiezione, posso costruire automi lungo la struttura della formula.</p>
+<p>Per i quantificatori universali uso la dualità:</p>
+<p>$$
+\forall X\;\theta \equiv \neg\exists X\;\neg\theta.
+$$</p>
+<p>Quindi anche il quantificatore universale si gestisce con complementazione e proiezione.</p>
+<h3>Il ruolo di S1S0</h3>
+<p>Negli appunti compare $S1S_0$, una variante ridotta di S1S che usa essenzialmente:</p>
+<ul>
+<li>variabili del secondo ordine;</li>
+<li>relazione di successore tra insiemi singleton;</li>
+<li>inclusione $X\subseteq Y$.</li>
+</ul>
+<p>La dimostrazione tecnica mostra che $S1S$ e $S1S_0$ hanno lo stesso potere espressivo. Questo serve perché è più comodo costruire automi per un linguaggio logico minimale e poi dire che tutto S1S può essere riscritto lì.</p>
+<p>L'idea da ricordare è:</p>
+<ul>
+<li>una variabile del primo ordine $x$ può essere codificata come un insieme singleton $X$;</li>
+<li>$x=y$ diventa uguaglianza tra singleton;</li>
+<li>$x+1=y$ diventa una relazione di successore tra singleton;</li>
+<li>$\exists x$ diventa $\exists X$ con vincolo "X è singleton".</li>
+</ul>
+<p>Non serve memorizzare ogni formula tecnica, ma devi saper spiegare perché si può ridurre tutto a variabili monadiche del secondo ordine.</p>
+<hr>
+<h2>11. Decidibilità e costo</h2>
+<p>Il secondo teorema di Büchi implica che S1S è decidibile.</p>
+<p>Per decidere se un enunciato S1S è vero:</p>
+<ol>
+<li>trasformo la formula in un automa di Büchi;</li>
+<li>controllo se il linguaggio dell'automa è tutto/vuoto a seconda del problema;</li>
+<li>uso emptiness e complementazione degli automi.</li>
+</ol>
+<p>Ma c'è un prezzo: la procedura può avere complessità non-elementare. Il problema non è solo la lunghezza della formula, ma soprattutto il numero di alternanze tra quantificatori esistenziali e universali. Ogni negazione/complementazione e ogni proiezione può far esplodere la dimensione dell'automa.</p>
+<h3>La teoria di S1S e il conto preciso del costo</h3>
+<p>Due precisazioni dagli appunti che conviene saper enunciare.</p>
+<p><strong>La teoria di S1S</strong> è l'insieme degli enunciati (sentenze, formule chiuse) di
+S1S veri nella struttura $(\omega, 0, +1, &lt;)$. Esempi:</p>
+<ul>
+<li>$\forall X\exists Y\,\forall x(x\in X \to x\in Y)$ è <strong>nella teoria</strong> (basta
+  prendere $Y = X$);</li>
+<li>$\forall X\exists y\,\forall x(x\in X \to x &lt; y)$ <strong>non lo è</strong>: per un
+  insieme $X$ infinito non esiste un maggiorante.</li>
+</ul>
+<p>"S1S è decidibile" significa: c'è una procedura che, dato un enunciato, decide
+se appartiene alla teoria. La procedura è: formula → automa di Büchi
+(input-free, per una sentenza) → test di emptiness (un ciclo finale
+raggiungibile).</p>
+<p><strong>Il costo, con precisione.</strong> La membership nella teoria di S1S è
+<strong>non-elementare</strong>: definendo $\exp_0(n) = n$ e
+$\exp_{h+1}(n) = 2^{\exp_h(n)}$, per nessun $h$ fissato il problema sta in
+tempo $\exp_h(n)$. Il parametro che governa l'altezza della torre non è la
+lunghezza della formula ma il <strong>numero di alternanze</strong> $\exists/\forall$:
+portando la formula in forma prenessa
+$\exists\cdots\exists\,\forall\cdots\forall\,\exists\cdots$, ogni blocco
+$\forall$ si riscrive $\neg\exists\neg$, e ogni negazione è una
+complementazione di Büchi (esponenziale). Una torre alta quanto il numero di
+alternanze.</p>
+<p>Nota pratica degli appunti: è il <em>worst case</em> — strumenti come <strong>MONA</strong>
+(per WS1S) funzionano bene su molte formule reali.</p>
+<p>Messaggio pratico:</p>
+<ul>
+<li>S1S è molto espressiva e decidibile;</li>
+<li>la traduzione diretta in automi può essere enorme;</li>
+<li>per questo nelle applicazioni si usano logiche temporali o frammenti più gestibili.</li>
+</ul>
+<hr>
+<h2>12. WS1S: Weak S1S</h2>
+<p>Prima di definire WS1S conviene ricordare dove siamo arrivati, perché WS1S nasce esattamente come risposta a una domanda lasciata aperta dal secondo teorema di Büchi.</p>
+<h3>Richiamo: che cosa sappiamo già</h3>
+<p>Fino a qui abbiamo costruito questa catena di equivalenze, tutte sugli omega-linguaggi (linguaggi di parole infinite):</p>
+<p>$$L \text{ omega-regolare} \iff L \text{ riconosciuto da un NBA} \iff L \text{ definibile in S1S}$$</p>
+<p>L'ultima equivalenza è il secondo teorema di Büchi (sezioni 8-10). In S1S le variabili del secondo ordine $X,Y,\ldots$ sono insiemi <strong>qualsiasi</strong> di posizioni: possono essere finiti (es. $\lbrace 3,7\rbrace$) oppure infiniti (es. tutte le posizioni pari).</p>
+<p>La domanda che si è posto Büchi è: <em>e se obbligassi le variabili insiemistiche quantificate a rappresentare solo insiemi finiti?</em> La logica che si ottiene è WS1S, la versione <strong>debole</strong> (weak) di S1S. Storicamente Büchi lavorò proprio con WS1S, non con S1S piena.</p>
+<h3>Definizione</h3>
+<blockquote>
+<p><strong>WS1S</strong> = S1S in cui ogni variabile del secondo ordine <strong>quantificata</strong> ($\exists X$, $\forall X$) può rappresentare solo insiemi <strong>finiti</strong> di posizioni.</p>
+</blockquote>
+<p>C'è un punto che crea confusione e va chiarito subito, perché è la prima cosa che fa pensare "ma allora come parlo di parole infinite?":</p>
+<ul>
+<li>la parola infinita $\alpha$ di cui parliamo <strong>resta infinita</strong>: è codificata dai predicati $Q_a$ (o, nella versione binaria della sezione 4, dalle variabili $X_1,\ldots,X_n$ che fissano i bit delle lettere). Questi NON sono soggetti al vincolo di finitezza;</li>
+<li>il vincolo "finito" riguarda <strong>solo</strong> gli insiemi che la formula <strong>quantifica</strong> al suo interno, cioè gli insiemi ausiliari $X$ che vengono "indovinati" con $\exists X$ o controllati con $\forall X$.</li>
+</ul>
+<p>In breve: continuo ad analizzare parole infinite, ma gli unici insiemi che la formula può evocare come testimoni interni sono finiti. Intuitivamente WS1S parla di <strong>proprietà locali / finite</strong> dentro una parola infinita.</p>
+<h3>Perché "weak" e a cosa serve</h3>
+<p>L'aggettivo "debole" si riferisce proprio a questa restrizione: non posso quantificare liberamente su tutti gli insiemi infiniti di posizioni, ma solo su insiemi finiti.</p>
+<p>L'intuizione degli appunti: con S1S esprimo proprietà globali, per esempio "dopo ogni $a$ ci sono solo $b$"; con WS1S il taglio tipico è "dopo ogni $a$ c'è un certo numero (finito) di $b$", cioè parlo di porzioni finite di computazione.</p>
+<p>Si potrebbe obiettare: se mi interessano proprietà locali, perché non ritaglio il pezzo finito che mi serve e lo analizzo con i metodi sulle parole finite? Perché vogliamo comunque un formalismo che viva sulle parole infinite (le computazioni dei sistemi reattivi sono infinite) e che però sappia esprimere proprietà locali al loro interno. WS1S è esattamente questo compromesso.</p>
+<h3>Direzione facile: S1S è almeno espressiva quanto WS1S</h3>
+<p>Ogni formula WS1S è anche una formula S1S, a patto di aggiungere esplicitamente il vincolo "questo insieme è finito". E la finitezza <strong>è esprimibile in S1S</strong>: un insieme è finito se e solo se è vuoto oppure ha un elemento massimo.</p>
+<p>$$\mathrm{Fin}(X)\ \equiv\ X=\emptyset\ \lor\ \exists m\big(m\in X\land \forall y(y\in X\to y\le m)\big)$$</p>
+<p>(Equivalentemente, nella forma degli appunti: $X=\emptyset \lor \exists x(x\in X\land \forall y(x&lt;y\to y\notin X))$, "in $X$ c'è un elemento dopo il quale $X$ non contiene più niente".) Allora per simulare WS1S in S1S basta scrivere $\exists X(\mathrm{Fin}(X)\land\ldots)$ e $\forall X(\mathrm{Fin}(X)\to\ldots)$.</p>
+<p>Quindi <strong>S1S $\supseteq$ WS1S</strong>. La sorpresa è che vale anche il contrario.</p>
+<h3>Il risultato forte: WS1S e S1S hanno lo stesso potere espressivo</h3>
+<blockquote>
+<p><strong>Teorema (espressività di WS1S).</strong> Un omega-linguaggio $L\subseteq A^\omega$ è omega-regolare (equivalentemente, definibile in S1S) se e solo se è definibile in WS1S.</p>
+</blockquote>
+<p>A prima vista è strano: come può una logica che quantifica solo su insiemi finiti catturare proprietà genuinamente infinite come "$a$ compare infinite volte"? L'idea è elegante: invece di indovinare in un colpo solo un testimone infinito, <strong>controllo infiniti testimoni finiti</strong>, uno per ogni prefisso sempre più lungo. La dimostrazione (direzione S1S $\Rightarrow$ WS1S) mette insieme tre ingredienti, due dagli automi e uno dalla logica.</p>
+<h3>Ingrediente 1 (automi): l'operatore $\overrightarrow{W}$ (chiusura vettoriale / limite)</h3>
+<p>Dato un linguaggio di parole <strong>finite</strong> $W\subseteq A^\ast$, definiamo l'omega-linguaggio</p>
+<p>$$\overrightarrow{W}=\lbrace \alpha\in A^\omega \mid \alpha \text{ ha infiniti prefissi in } W\rbrace.$$</p>
+<p>Negli appunti questa operazione si scrive con una freccia, $W^{\rightarrow}$, e si chiama <strong>chiusura vettoriale</strong> (o limite) di $W$. "Infiniti prefissi in $W$" significa: nella sequenza dei prefissi $\alpha(0),\ \alpha(0)\alpha(1),\ \alpha(0)\alpha(1)\alpha(2),\ \ldots$ ce ne sono infiniti che appartengono a $W$.</p>
+<p>Il legame con gli automi è preciso:</p>
+<blockquote>
+<p>Un omega-linguaggio è riconosciuto da un <strong>automa di Büchi deterministico (DBA)</strong> se e solo se è della forma $\overrightarrow{W}$ per qualche $W$ regolare.</p>
+</blockquote>
+<p>L'idea della dimostrazione: prendo il DBA e lo guardo come un DFA $\mathcal{A}'$ con la stessa struttura; sia $W=L(\mathcal{A}')$ il linguaggio di parole finite che riconosce. La computazione su $\alpha$ è unica (l'automa è deterministico) ed è accettante per Büchi se e solo se tocca uno stato finale infinite volte, cioè se e solo se infiniti prefissi di $\alpha$ finiscono in uno stato finale, cioè se e solo se infiniti prefissi stanno in $W$. Quindi $L(\text{DBA})=\overrightarrow{W}$.</p>
+<h3>Ingrediente 2 (automi): il teorema di McNaughton</h3>
+<p>I DBA da soli sono troppo deboli (per esempio non riconoscono "$a$ compare solo un numero finito di volte", come visto nel confronto NBA vs DBA del capitolo 5). Servono gli automi di Müller deterministici (DMA), e qui entra il teorema di McNaughton:</p>
+<blockquote>
+<p><strong>Teorema (McNaughton).</strong> Un omega-linguaggio è omega-regolare se e solo se è riconosciuto da un automa di Müller <strong>deterministico</strong> (DMA). Inoltre i linguaggi riconosciuti da DMA sono esattamente le <strong>combinazioni booleane</strong> ($\cup,\cap$ e complemento) di linguaggi della forma $\overrightarrow{W}$ con $W$ regolare.</p>
+</blockquote>
+<p>La conseguenza che useremo è:</p>
+<p>$$L \text{ omega-regolare} \iff L=\text{combinazione booleana di } \overrightarrow{W_1},\ldots,\overrightarrow{W_k}\quad (W_i \text{ regolari}).$$</p>
+<p>Il quadro completo delle classi, da saper disegnare:</p>
+<p>$$\text{DBA} \subsetneq \text{NBA} \equiv \text{NMA} \equiv \text{DMA} \supsetneq \text{DBA}$$</p>
+<p>(NBA $\equiv$ NMA si vede passando per S1S: nella formula
+$\exists Y_0\cdots\exists Y_m(\varphi_1\land\varphi_2\land\varphi_3)$ che
+codifica un automa, $\varphi_1$ e $\varphi_2$ — stato iniziale, unicità dello
+stato, consequenzialità — restano identiche; cambia solo $\varphi_3$, che per
+Müller deve dire "gli stati di un certo $P\in\mathfrak{F}$ occorrono
+infinitamente spesso <strong>e</strong> quelli fuori da $P$ finitamente").</p>
+<h3>Perché la caratterizzazione è difficile: $U\cdot V^\omega$ vs $U\cdot\overrightarrow{V}$</h3>
+<p>Negli appunti c'è un'analisi fine che spiega <em>perché</em> il passaggio da NBA a
+DMA non è una semplice riscrittura. Sappiamo che gli ω-regolari sono unioni
+finite di $U\cdot V^\omega$; per McNaughton servono invece combinazioni
+booleane di $\overrightarrow{W}$. Verrebbe da sperare in identità semplici tra
+le due forme. <strong>Non valgono</strong>, e i controesempi sono istruttivi.</p>
+<p><strong>Primo tentativo</strong>: $U\cdot V^\omega = U\cdot\overrightarrow{V}$ assumendo
+$V\cdot V = V$?</p>
+<ul>
+<li>L'inclusione $\subseteq$ <strong>vale</strong>: se $\alpha = u\cdot v_1v_2v_3\ldots$ con
+  $v_i\in V$, per la chiusura $V\cdot V = V$ ogni blocco iniziale
+  $v_1\cdots v_k$ sta in $V$, quindi $\alpha$ ha infiniti prefissi in
+  $U\cdot V$.</li>
+<li>L'inclusione $\supseteq$ <strong>fallisce</strong>. Controesempio: $V = (ab^\ast)^\ast$
+  (e $U = \{\varepsilon\}$). Si verifica che $V\cdot V = V$. La parola
+  $\alpha = a\cdot b^\omega$ ha infiniti prefissi in $V$
+  ($ab, abb, abbb,\ldots$), quindi $\alpha\in\overrightarrow{V}$; ma
+  $\alpha\notin V^\omega$: dopo il primo blocco contenente la $a$, resterebbe
+  $b^\omega$ da spezzare in infiniti blocchi di $V$, e nessun blocco non vuoto
+  di sole $b$ sta in $V$ (ogni blocco non vuoto di $V$ inizia con $a$).</li>
+</ul>
+<p><strong>Secondo tentativo</strong>: $U\cdot\overrightarrow{V} = \overrightarrow{U\cdot V}$?</p>
+<ul>
+<li>$\subseteq$ <strong>vale</strong>: fisso il prefisso $u\in U$; ogni prefisso di $\alpha$
+  della forma $u\cdot(\text{prefisso in } V)$ sta in $U\cdot V$, e ce ne sono
+  infiniti.</li>
+<li>$\supseteq$ <strong>fallisce</strong>. Controesempio: $U = b^\ast$, $V = b$, e
+  $\alpha = b^\omega$. Ogni prefisso $b^{k+1}$ si spezza come
+  $b^k\in U$ seguito da $b\in V$, quindi
+  $b^\omega\in\overrightarrow{U\cdot V}$. Ma per stare in
+  $U\cdot\overrightarrow{V}$ dovrei fissare <strong>una volta per tutte</strong> un
+  prefisso $b^k\in U$ e trovare infiniti prefissi del suffisso in $V = b$:
+  impossibile, perché $V$ contiene solo la parola $b$ (un solo prefisso utile).</li>
+</ul>
+<p><strong>La lettura profonda</strong> (quella da dire all'orale): le due forme differiscono
+per l'<strong>ordine dei quantificatori</strong>.</p>
+<ul>
+<li>$U\cdot\overrightarrow{V}$ è un pattern $\exists\forall$: <em>esiste</em> un
+  prefisso in $U$, fissato il quale <em>infiniti</em> prefissi del resto stanno in $V$;</li>
+<li>$\overrightarrow{U\cdot V}$ è un pattern $\forall\exists$: per <em>ogni</em>
+  prefisso (di infiniti) <em>esiste</em> una spezzatura in $U$-parte e $V$-parte —
+  e la $U$-parte può <strong>cambiare</strong> da un prefisso all'altro.</li>
+</ul>
+<p>Il pattern $\forall\exists$ è più flessibile e non si riduce in generale a
+$\exists\forall$. È per questo che il lemma di caratterizzazione (ogni
+ω-regolare è unione finita di $\overrightarrow{U}\cap\neg\overrightarrow{V}$)
+è davvero difficile: la prova passa per gli automi di Rabin e la costruzione
+di Safra, e a lezione è stata data per enunciato.</p>
+<h3>Ingrediente 3 (logica): regolare = definibile, sulle parole finite</h3>
+<p>Sulle parole <strong>finite</strong> vale l'analogo del teorema di Büchi, noto come <strong>teorema di Büchi-Elgot-Trakhtenbrot</strong>:</p>
+<blockquote>
+<p>Un linguaggio di parole finite $W\subseteq A^\ast$ è regolare se e solo se è definibile in logica monadica del secondo ordine, cioè in S1S interpretata su parole finite.</p>
+</blockquote>
+<p>È la stessa corrispondenza logica $\leftrightarrow$ automi usata per Büchi, ma in versione finita. Conseguenza pratica: per ogni $W$ regolare esiste una formula $\varphi(X_1,\ldots,X_n)$ che lo definisce sulle parole finite (le $X_1,\ldots,X_n$ sono le componenti binarie delle lettere, come nella codifica della sezione 4).</p>
+<h3>Come si montano i tre pezzi</h3>
+<p>Sia $L$ omega-regolare.</p>
+<ol>
+<li>Per <strong>McNaughton</strong>, $L$ è una combinazione booleana di linguaggi $\overrightarrow{W_i}$ con $W_i$ regolari.</li>
+<li>Le operazioni booleane sui linguaggi diventano $\lor,\land,\neg$ tra formule. Quindi basta saper scrivere <strong>un solo</strong> $\overrightarrow{W}$ in WS1S, poi combino.</li>
+<li>Per <strong>Büchi-Elgot-Trakhtenbrot</strong>, $W$ ha una formula $\varphi(X_1,\ldots,X_n)$ sulle parole finite.</li>
+<li>"Avere infiniti prefissi in $W$" si scrive così: per ogni posizione esiste un prefisso più lungo che appartiene a $W$. La formula che definisce $\overrightarrow{W}$ è</li>
+</ol>
+<p>$$\forall x\,\exists y\big(x&lt;y\ \land\ \psi(X_1,\ldots,X_n,y)\big)$$</p>
+<p>dove $\psi(\ldots,y)$ dice "il prefisso fino alla posizione $y$ soddisfa $\varphi$", cioè "il prefisso fino a $y$ sta in $W$".</p>
+<p>Resta un solo nodo tecnico: come trasformo $\varphi$ (che parla di una parola finita intera) in $\psi(y)$ (che parla solo del prefisso fino a $y$ di una parola infinita)? E soprattutto: <strong>perché il risultato è una formula di WS1S</strong> e non di S1S piena? Questo è il cuore della sezione 13.</p>
+<hr>
+<h2>13. Relativizzare una formula a un prefisso (e perché esce WS1S)</h2>
+<p>Questo punto è il vero motore della dimostrazione di S1S $\Rightarrow$ WS1S e contiene l'osservazione che spesso sfugge.</p>
+<p>L'operazione si chiama <strong>relativizzazione</strong>: prendo una formula che ragiona su tutto $\mathbb{N}$ e la "rinchiudo" a ragionare solo sulle posizioni $&lt;y$, cioè sul prefisso di lunghezza $y$. Voglio passare da</p>
+<blockquote>
+<p>"$\varphi$: la parola finita soddisfa $\varphi$" (definisce $W$)</p>
+</blockquote>
+<p>a</p>
+<blockquote>
+<p>"$\psi(y)$: il prefisso fino a $y$ soddisfa $\varphi$" (cioè il prefisso fino a $y$ sta in $W$).</p>
+</blockquote>
+<h3>La regola</h3>
+<p>Si riscrive ogni quantificatore limitandolo alle posizioni minori di $y$. La differenza chiave è tra esistenziale e universale:</p>
+<ul>
+<li>esistenziale del primo ordine: $\exists x\,\theta$ diventa $\exists x(x&lt;y\land \theta)$;</li>
+<li>universale del primo ordine: $\forall x\,\theta$ diventa $\forall x(x&lt;y\to \theta)$;</li>
+<li>esistenziale del secondo ordine: $\exists X\,\theta(X)$ diventa $\exists X\big(\forall z(z\in X\to z&lt;y)\ \land\ \theta(X)\big)$;</li>
+<li>universale del secondo ordine: $\forall X\,\theta(X)$ diventa $\forall X\big(\forall z(z\in X\to z&lt;y)\ \to\ \theta(X)\big)$.</li>
+</ul>
+<p>Regola mnemonica: con $\exists$ si <strong>congiunge</strong> ($\land$) il vincolo "tutto sta nel prefisso", con $\forall$ lo si mette in <strong>premessa</strong> ($\to$). È lo stesso schema che si usa ogni volta che si relativizza un quantificatore a un sotto-dominio. Esempi concreti dagli appunti:</p>
+<p>$$\exists X(0\in X)\quad\leadsto\quad \exists X\big(\forall z(z\in X\to z&lt;y)\land 0\in X\big)$$</p>
+<p>$$\forall X(0\in X)\quad\leadsto\quad \forall X\big(\forall z(z\in X\to z&lt;y)\to 0\in X\big)$$</p>
+<p>Applicando la regola a <strong>tutti</strong> i quantificatori interni di $\varphi(X_1,\ldots,X_n)$ ottengo $\psi(X_1,\ldots,X_n,y)$: "il prefisso fino a $y$ soddisfa $\varphi$". Le variabili libere $X_1,\ldots,X_n$ (che codificano la parola infinita) restano libere e non vengono toccate; vengono relativizzati solo i quantificatori interni.</p>
+<h3>Il punto cruciale: perché $\psi$ è WS1S</h3>
+<p>Ecco l'osservazione che chiude tutto. Dopo la relativizzazione, <strong>ogni</strong> insieme $X$ quantificato dentro $\psi$ è obbligato a stare dentro $\lbrace 0,1,\ldots,y-1\rbrace$, perché abbiamo aggiunto proprio</p>
+<p>$$\forall z(z\in X\to z&lt;y).$$</p>
+<p>Ma $\lbrace 0,\ldots,y-1\rbrace$ è un insieme <strong>finito</strong>! Quindi tutte le variabili del secondo ordine quantificate spaziano solo su insiemi finiti: per definizione, $\psi$ è una formula di <strong>WS1S</strong>, non di S1S piena. (Le $X_1,\ldots,X_n$ libere codificano la parola infinita e possono restare infinite: in WS1S il vincolo di finitezza è solo sulle variabili <strong>quantificate</strong>, come chiarito nella sezione 12.)</p>
+<p>Di conseguenza anche</p>
+<p>$$\forall x\,\exists y\big(x&lt;y\land \psi(X_1,\ldots,X_n,y)\big)$$</p>
+<p>è in WS1S — i quantificatori $\forall x,\exists y$ sono del primo ordine, non insiemi — e definisce esattamente $\overrightarrow{W}$: "comunque scelga una posizione $x$, esiste un prefisso più lungo (fino a $y&gt;x$) che sta in $W$", cioè ci sono infiniti prefissi in $W$.</p>
+<p>Questa è la "magia" annunciata nella sezione 12: una proprietà infinita come "infiniti prefissi in $W$" viene catturata da una formula che internamente evoca solo testimoni <strong>finiti</strong>, un prefisso finito alla volta. Il "per ogni $x$ esiste $y&gt;x$" garantisce che i prefissi buoni siano infiniti, ma ogni singolo controllo è finito.</p>
+<h3>Chiusura del cerchio</h3>
+<p>Mettendo insieme con la sezione 12:</p>
+<ul>
+<li>ogni $\overrightarrow{W_i}$ è scrivibile in WS1S (appena visto);</li>
+<li>la combinazione booleana data da McNaughton si traduce in $\lor,\land,\neg$;</li>
+<li>quindi ogni omega-linguaggio omega-regolare è definibile in WS1S.</li>
+</ul>
+<p>Unendo questa direzione con quella facile (sezione 12) e con il secondo teorema di Büchi (S1S = omega-regolare), si chiude tutto:</p>
+<p>$$\boxed{\ \text{omega-regolare}\ \iff\ \text{S1S}\ \iff\ \text{WS1S}\ }$$</p>
+<hr>
+<h2>14. Estensioni e frammenti da ricordare</h2>
+<p>Una volta fissato il nucleo (S1S $\equiv$ WS1S $\equiv$ omega-regolare), gli appunti guardano ai bordi: cosa succede se rendo S1S più <strong>forte</strong>, e cosa succede se la <strong>indebolisco</strong>.</p>
+<h3>Estensioni che restano decidibili (e una che no)</h3>
+<p>Posso arricchire la struttura $(\omega,0,+1,&lt;)$ con predicati o funzioni extra. Alcune aggiunte preservano la decidibilità:</p>
+<ul>
+<li><strong>S1S + "potenza di 2"</strong>: un predicato unario vero esattamente sulle posizioni $1,2,4,8,16,\ldots$ (e falso altrove). La teoria $(\omega,0,+1,&lt;,\text{power})$ resta <strong>decidibile</strong>.</li>
+<li><strong>S1S + "fattoriale"</strong>: un predicato vero sui fattoriali $1,2,6,24,\ldots$. Anche $(\omega,0,+1,&lt;,\text{factorial})$ resta <strong>decidibile</strong>.</li>
+</ul>
+<p>Altre aggiunte rompono tutto:</p>
+<ul>
+<li><strong>S1S + raddoppio $x\mapsto 2x$</strong>: la teoria diventa <strong>indecidibile</strong>, perché diventa abbastanza forte da catturare l'intera aritmetica (addizione e moltiplicazione). Troppo espressiva.</li>
+</ul>
+<p>Morale: c'è una frontiera sottile tra "predicato extra inoffensivo" e "potenza che fa cadere la decidibilità". È lo stesso tipo di confine che separa l'aritmetica di Presburger (solo addizione, decidibile) dall'aritmetica di Peano (addizione e moltiplicazione, indecidibile): basta poter ricostruire la moltiplicazione per perdere la decidibilità.</p>
+<h3>S2S: dalla parola all'albero</h3>
+<p>S1S parla di <strong>una</strong> sequenza lineare di posizioni: una computazione alla volta. <strong>S2S</strong> è la teoria monadica del secondo ordine con <strong>due</strong> successori: il dominio non è più la retta $\mathbb{N}$ ma l'<strong>albero binario infinito</strong>, dove ogni posizione ha un figlio sinistro e un figlio destro.</p>
+<ul>
+<li>S1S: una computazione alla volta $\to$ parole infinite;</li>
+<li>S2S: tutte le computazioni insieme $\to$ albero infinito dei rami.</li>
+</ul>
+<p>S2S è ancora <strong>decidibile</strong> (risultato profondo di Rabin) ed è il formalismo giusto quando si vuole ragionare sull'intero ventaglio delle computazioni non deterministiche, non su un singolo ramo. Qualsiasi albero a ramificazione finita si riduce a quello binario. È lo sfondo teorico delle logiche temporali ad albero (CTL/CTL*, capitolo 7).</p>
+<h3>Alberi: il dominio di S2S</h3>
+<p>Per S2S l'albero binario infinito si può vedere come l'insieme $\lbrace 0,1\rbrace^\ast$ delle stringhe finite di 0 e 1:</p>
+<ul>
+<li>$\epsilon$ è la radice;</li>
+<li>se $x$ è un nodo, $x0$ è il figlio sinistro e $x1$ è il figlio destro;</li>
+<li>un ramo infinito è una sequenza infinita di scelte sinistra/destra.</li>
+</ul>
+<p>Un albero etichettato su un alfabeto $A$ assegna a ogni nodo un simbolo di $A$. Un <strong>linguaggio di alberi</strong> è quindi un insieme di alberi etichettati, esattamente come un linguaggio di parole è un insieme di parole.</p>
+<p>La differenza concettuale è questa:</p>
+<ul>
+<li>una parola infinita rappresenta <strong>una</strong> computazione;</li>
+<li>un albero infinito rappresenta <strong>tutte</strong> le computazioni possibili generate da scelte non deterministiche o branching-time.</li>
+</ul>
+<h3>Automi su alberi (tree automata)</h3>
+<p>Gli <strong>automi su alberi</strong> (<em>tree automata</em>) sono automi finiti che leggono alberi invece di parole. Nel caso binario infinito, una forma tipica è</p>
+<p>$$\mathcal{A}=(Q,A,\Delta,q_0,\mathcal{C})$$</p>
+<p>dove $Q$ è finito, $q_0$ è lo stato iniziale alla radice, $\Delta\subseteq Q\times A\times Q\times Q$ dice quali stati assegnare ai due figli, e $\mathcal{C}$ è una condizione di accettazione sui rami infiniti.</p>
+<p>Una run non è più una sequenza di stati, ma un'etichettatura dell'intero albero con stati. Se un nodo $x$ ha etichetta $a$ e stato $q$, allora i figli $x0,x1$ devono ricevere stati $q_0',q_1'$ tali che</p>
+<p>$$ (q,a,q_0',q_1')\in\Delta. $$</p>
+<p>Per gli alberi infiniti l'accettazione deve controllare <strong>ogni ramo infinito</strong>. Per questo si usano condizioni analoghe a quelle degli automi su parole infinite: Büchi, Muller, Rabin.</p>
+<h3>Automi di Rabin (Rabin automata)</h3>
+<p>Gli <strong>automi di Rabin</strong> (<em>Rabin automata</em>) usano una condizione di accettazione fatta di coppie di insiemi di stati:</p>
+<p>$$\Omega=\lbrace (L_1,U_1),\ldots,(L_n,U_n)\rbrace.$$</p>
+<p>L'idea di una coppia $(L_i,U_i)$ è:</p>
+<ul>
+<li>gli stati in $L_i$ devono comparire solo <strong>finitamente spesso</strong>;</li>
+<li>gli stati in $U_i$ devono comparire <strong>infinitamente spesso</strong>.</li>
+</ul>
+<p>Su un ramo $\pi$, se $Inf(\rho_\pi)$ è l'insieme degli stati visitati infinitamente spesso, la condizione di Rabin richiede che esista un indice $i$ tale che</p>
+<p>$$Inf(\rho_\pi)\cap L_i=\emptyset
+\quad\text{e}\quad
+Inf(\rho_\pi)\cap U_i\neq\emptyset.$$</p>
+<p>Per una run su un albero, questa condizione va soddisfatta lungo tutti i rami. Il punto teorico da ricordare è il teorema di Rabin:</p>
+<blockquote>
+<p>un linguaggio di alberi infiniti è riconoscibile da un automa di Rabin se e solo se è definibile in S2S.</p>
+</blockquote>
+<p>Quindi il ruolo di Rabin per S2S è analogo al ruolo di Büchi per S1S: collega logica e automi, ma ora sul dominio degli alberi invece che sulle parole.</p>
+<h3>WS2S: la versione debole su alberi</h3>
+<p>Come WS1S limita le variabili monadiche del secondo ordine a insiemi finiti di posizioni della parola, <strong>WS2S</strong> limita le variabili monadiche a insiemi finiti di nodi dell'albero binario.</p>
+<p>La relazione da ricordare è:</p>
+<ul>
+<li><strong>S2S</strong> parla di insiemi arbitrari di nodi dell'albero;</li>
+<li><strong>WS2S</strong> parla solo di insiemi finiti di nodi;</li>
+<li>gli automi di Rabin danno la caratterizzazione automatica forte per S2S;</li>
+<li>la variante weak è utile quando si vuole mantenere il ragionamento su porzioni finite dell'albero.</li>
+</ul>
+<p>Negli appunti compare come parallelo naturale di WS1S: stessa idea di "weak", ma sul dominio ramificato invece che sulla linea.</p>
+<h3>Il frammento del primo ordine e i linguaggi star-free</h3>
+<p>Indebolire S1S nell'altra direzione significa tenere solo i quantificatori del <strong>primo ordine</strong> (niente $\exists X,\forall X$ sugli insiemi). Si ottiene il <strong>frammento del primo ordine</strong> di $S1S_A$, cioè i linguaggi <strong>first-order definable</strong>, caratterizzato dal teorema di <strong>McNaughton-Papert</strong>:</p>
+<blockquote>
+<p>Un linguaggio $W\subseteq A^\ast$ è <strong>star-free</strong> (esprimibile con espressioni regolari senza stella di Kleene, ma con il complemento) se e solo se è definibile al primo ordine in $S1S_A$, con l'ordine $&lt;$ e i predicati $Q_a$.</p>
+</blockquote>
+<p>Una espressione star-free parte da linguaggi finiti e simboli dell'alfabeto, e usa unione, concatenazione e complemento. Non usa l'operatore $^*$ di Kleene. Quindi:</p>
+<ul>
+<li>ogni linguaggio star-free è regolare;</li>
+<li>non ogni linguaggio regolare è star-free.</li>
+</ul>
+<p>Una sottigliezza importante sulla firma logica, da ricordare:</p>
+<ul>
+<li>con la sola funzione successore $+1$, il primo ordine è <strong>più debole</strong>;</li>
+<li>con l'ordine $&lt;$, il primo ordine è <strong>strettamente più espressivo</strong>.</li>
+</ul>
+<p>Il motivo è che $&lt;$ <strong>non</strong> è definibile al primo ordine a partire da $+1$ (per dire "raggiungibile in un numero arbitrario di passi" servirebbe la quantificazione del secondo ordine). Quindi il primo ordine di $S1S_A(&lt;)$ è strettamente più espressivo del primo ordine di $S1S_A(+1)$.</p>
+<p>Caso infinito (teorema di Ladner): gli <strong>omega-linguaggi star-free</strong> coincidono con il primo ordine di $S1S_A$ sulle parole infinite, e sono un sottoinsieme <strong>proprio</strong> degli omega-regolari (strettamente meno espressivi). Questo frammento è importante perché coincide con il potere espressivo della <strong>logica temporale lineare LTL</strong> (capitolo 7): meno espressività, ma formule e algoritmi molto più maneggevoli. È anche il motivo per cui nelle applicazioni si preferiscono spesso le logiche temporali a S1S piena.</p>
+<hr>
+<h2>15. Errori comuni</h2>
+<ol>
+<li>Confondere posizione e simbolo. In S1S le variabili $x,y$ sono posizioni, non lettere.</li>
+<li>Confondere $Q_a(x)$ con $x=a$. La formula $Q_a(x)$ dice che alla posizione x compare la lettera a.</li>
+<li>Pensare che "infinitamente spesso" significhi "sempre". Non è così: $a$ può comparire infinite volte anche se tra due $a$ ci sono blocchi lunghi di $b$.</li>
+<li>Dimenticare l'unicità dello stato nella traduzione automa -&gt; S1S. Le variabili $Y_i$ devono formare una partizione delle posizioni della run.</li>
+<li>Confondere proiezione e cancellazione senza vincoli. Proiettare via $X$ non significa che la vecchia formula smette di contare: significa che deve esistere una scelta di $X$ che la soddisfa.</li>
+<li>Confondere S1S e WS1S: WS1S quantifica solo su insiemi finiti, ma sugli omega-linguaggi ha comunque lo stesso potere espressivo di S1S.</li>
+<li>Pensare che WS1S costringa tutto a essere finito. No: il vincolo "finito" vale solo per le variabili del secondo ordine <strong>quantificate</strong>. La parola infinita resta infinita (è data dai predicati $Q_a$ / dalle variabili libere). Per questo WS1S può ancora parlare di omega-linguaggi.</li>
+<li>Confondere $\overrightarrow{W}$ ("infiniti prefissi in $W$", che riguarda gli automi deterministici e i prefissi finiti) con $W^\omega$ ("concatenazione infinita di parole di $W$"). Sono operatori diversi: in generale $W^\omega \neq \overrightarrow{W}$.</li>
+<li>Dimenticare la differenza $\land$/$\to$ nella relativizzazione: con $\exists$ si congiunge il vincolo sul prefisso, con $\forall$ lo si mette in premessa. È esattamente questo vincolo "tutto sta nel prefisso $&lt;y$" che rende finiti gli insiemi quantificati, cioè che rende la formula WS1S.</li>
+</ol>
+<hr>
+<h2>16. Esercizi svolti</h2>
+<h3>Esercizio 1: formula per "P vale infinite volte"</h3>
+<p>Scrivere una formula che dice che $P$ vale infinite volte.</p>
+<p>Soluzione:</p>
+<p>$$\forall x\exists y(x&lt;y\land y\in P)$$</p>
+<p>Perché funziona: se dopo ogni posizione x riesco a trovare una posizione futura y in P, allora P non può esaurirsi. Quindi P compare infinite volte.</p>
+<h3>Esercizio 2: formula per "P vale solo un numero finito di volte"</h3>
+<p>Soluzione:</p>
+<p>$$\exists x\forall y(x&lt;y\to y\notin P)$$</p>
+<p>Perché funziona: esiste una soglia x dopo la quale P non compare più.</p>
+<h3>Esercizio 3: nessuna a consecutiva</h3>
+<p>Alfabeto $A=\lbrace a,b\rbrace$.</p>
+<p>Soluzione:</p>
+<p>$$\forall x(Q_a(x)\to \neg Q_a(x+1))$$</p>
+<p>Questa formula vieta il pattern $aa$ in posizioni consecutive.</p>
+<h3>Esercizio 4: ogni richiesta ha una risposta futura</h3>
+<p>Alfabeto con predicati $Q_{req}$ e $Q_{grant}$.</p>
+<p>Soluzione:</p>
+<p>$$\forall x(Q_{req}(x)\to \exists y(x&lt;y\land Q_{grant}(y)))$$</p>
+<p>Nota: questa formula non richiede che il grant corrisponda univocamente a quella request. Richiede solo che dopo ogni request esista almeno un grant futuro.</p>
+<h3>Esercizio 5: tradurre un automa di Büchi in S1S</h3>
+<p>Dato un automa con stati $q_0,q_1$ e finale $q_1$, introduci:</p>
+<ul>
+<li>$Y_0$: posizioni in cui la run è in $q_0$;</li>
+<li>$Y_1$: posizioni in cui la run è in $q_1$.</li>
+</ul>
+<p>Formula schematica:</p>
+<p>$$\exists Y_0\exists Y_1(\Phi_{init}\land\Phi_{unique}\land\Phi_{trans}\land\Phi_{acc})$$</p>
+<p>dove:</p>
+<ul>
+<li>$\Phi_{init}$ dice $0\in Y_0$;</li>
+<li>$\Phi_{unique}$ dice che ogni posizione è in uno e un solo $Y_i$;</li>
+<li>$\Phi_{trans}$ codifica le transizioni dell'automa;</li>
+<li>$\Phi_{acc}$ dice $\forall x\exists y(x&lt;y\land y\in Y_1)$.</li>
+</ul>
+<hr>
+<h2>17. Laboratorio pratico: formule e traduzioni complete</h2>
+<h3>Caso 1: "ogni request ha un grant successivo"</h3>
+<p>Formula:</p>
+<p>$$\forall x(Q_{req}(x)\to \exists y(x&lt;y\land Q_{grant}(y)))$$</p>
+<p>Lettura parola per parola:</p>
+<ul>
+<li>$\forall x$: prendo una posizione qualunque;</li>
+<li>$Q_{req}(x)$: se in quella posizione c'è una richiesta;</li>
+<li>$\exists y$: allora deve esistere una posizione;</li>
+<li>$x&lt;y$: questa posizione deve stare nel futuro;</li>
+<li>$Q_{grant}(y)$: e lì deve esserci un grant.</li>
+</ul>
+<p>Questa formula permette che un singolo grant risponda a più request precedenti. Se vuoi modellare una corrispondenza uno-a-uno tra request e grant, serve una formula più forte, con insiemi o vincoli aggiuntivi.</p>
+<h3>Caso 2: "ogni request ha un grant prima della prossima request"</h3>
+<p>Questa proprietà è più forte. Dice: se vedo una request in $x$, allora trovo un grant $y$ dopo $x$, e prima di quel grant non c'è una nuova request.</p>
+<p>Formula:</p>
+<p>$$\forall x\bigl(Q_{req}(x)\to \exists y(x&lt;y\land Q_{grant}(y)\land \forall z((x&lt;z\land z&lt;y)\to \neg Q_{req}(z)))\bigr)$$</p>
+<p>Lettura:</p>
+<ul>
+<li>scelgo una request in $x$;</li>
+<li>cerco un grant futuro $y$;</li>
+<li>per ogni posizione intermedia $z$, vieto una nuova request.</li>
+</ul>
+<p>Questa è una tipica formula in cui bisogna fare attenzione all'ordine dei quantificatori. Il grant $y$ dipende dalla request $x$.</p>
+<h3>Caso 3: "da un certo punto in poi vale sempre safe"</h3>
+<p>Formula:</p>
+<p>$$\exists x\forall y(x&lt;y\to Q_{safe}(y))$$</p>
+<p>Questa è una proprietà di stabilizzazione: può esserci un prefisso iniziale brutto, ma dopo una soglia tutto diventa safe.</p>
+<p>Se invece vuoi dire "safe vale sempre", la formula è più semplice:</p>
+<p>$$\forall x Q_{safe}(x)$$</p>
+<p>Quindi:</p>
+<ul>
+<li>"sempre" significa tutte le posizioni;</li>
+<li>"da un certo punto in poi sempre" significa esiste una soglia.</li>
+</ul>
+<h3>Caso 4: "p e q si alternano esattamente"</h3>
+<p>Supponiamo un alfabeto con due simboli $p$ e $q$, codificati da $Q_p$ e $Q_q$.</p>
+<p>Una parola alternante può iniziare con $p$ oppure con $q$. Qui imponiamo che inizi con $p$:</p>
+<p>$$Q_p(0)$$</p>
+<p>e poi:</p>
+<p>$$\forall x(Q_p(x)\to Q_q(x+1))$$</p>
+<p>$$\forall x(Q_q(x)\to Q_p(x+1))$$</p>
+<p>Formula completa:</p>
+<p>$$Q_p(0)\land \forall x(Q_p(x)\to Q_q(x+1))\land \forall x(Q_q(x)\to Q_p(x+1))$$</p>
+<p>Questa formula produce parole come:</p>
+<p>$$pqpqpq\ldots$$</p>
+<p>Se vuoi permettere anche:</p>
+<p>$$qpqpqp\ldots$$</p>
+<p>devi fare una disgiunzione tra i due casi iniziali.</p>
+<h3>Caso 5: automa semplice -&gt; formula S1S completa</h3>
+<p>Costruiamo una formula per l'NBA che accetta parole su $\lbrace a,b\rbrace$ con infinite $a$.</p>
+<p>Automa:</p>
+<ul>
+<li>stati $q_0,q_1$;</li>
+<li>$q_0$ iniziale;</li>
+<li>$q_1$ finale;</li>
+<li>leggendo $a$ vado in $q_1$;</li>
+<li>leggendo $b$ vado in $q_0$.</li>
+</ul>
+<p>Intuizione: $q_1$ significa "la posizione corrente legge $a$"; visitare $q_1$ infinite volte significa vedere infinite $a$.</p>
+<p>Introduco insiemi:</p>
+<ul>
+<li>$Y_0$: posizioni in cui la run è in $q_0$;</li>
+<li>$Y_1$: posizioni in cui la run è in $q_1$.</li>
+</ul>
+<p>Formula:</p>
+<p>$$\exists Y_0\exists Y_1(\Phi_{part}\land\Phi_{init}\land\Phi_{trans}\land\Phi_{acc})$$</p>
+<p>Partizione degli stati:</p>
+<p>$$\Phi_{part}\equiv \forall x((x\in Y_0\lor x\in Y_1)\land \neg(x\in Y_0\land x\in Y_1))$$</p>
+<p>Stato iniziale:</p>
+<p>$$\Phi_{init}\equiv 0\in Y_0$$</p>
+<p>Transizioni:</p>
+<p>$$\Phi_{trans}\equiv \forall x\bigl((Q_a(x)\to x+1\in Y_1)\land(Q_b(x)\to x+1\in Y_0)\bigr)$$</p>
+<p>Accettazione Büchi:</p>
+<p>$$\Phi_{acc}\equiv \forall x\exists y(x&lt;y\land y\in Y_1)$$</p>
+<p>Commento importante: questa è una versione didattica. In una codifica rigorosa, bisogna allineare con precisione se lo stato è considerato prima o dopo la lettura della posizione $x$. L'idea essenziale però è questa: la run è codificata con insiemi di posizioni, le transizioni diventano vincoli locali, e Büchi diventa "visito $Y_1$ infinite volte".</p>
+<h3>Caso 6: proiezione spiegata con bit nascosto</h3>
+<p>Supponi un alfabeto a due componenti:</p>
+<p>$$A=\lbrace 0,1\rbrace\times\lbrace 0,1\rbrace$$</p>
+<p>Una lettera è una coppia $(x,y)$. Immagina di avere un linguaggio che parla di entrambe le componenti:</p>
+<blockquote>
+<p>"la seconda componente vale 1 infinite volte".</p>
+</blockquote>
+<p>In S1S scrivo:</p>
+<p>$$
+\varphi(X,Y)\equiv \forall z\exists t(z&lt;t\land t\in Y).
+$$</p>
+<p>Ora proietto via la seconda componente:</p>
+<p>$$
+\exists Y\;\varphi(X,Y).
+$$</p>
+<p>Vuol dire che osservo solo la prima componente $X$ e mi chiedo:</p>
+<blockquote>
+<p>esiste una scelta della seconda componente che rende vera la proprietà?</p>
+</blockquote>
+<p>La risposta è sì per qualunque $X$: basta scegliere $Y=\mathbb{N}$. Quindi la proiezione è l'intero linguaggio $\lbrace 0,1\rbrace^\omega$ sulla prima componente.</p>
+<p>Questo esempio mostra perché la proiezione è esistenziale: la componente nascosta viene scelta nel modo più favorevole.</p>
+<p>Un esempio più informativo è:</p>
+<p>$$
+\theta(X,Y)\equiv
+\forall z(z\in X\to z\in Y)
+\land
+\exists m\forall z(m&lt;z\to z\notin Y).
+$$</p>
+<p>Qui $Y$ deve contenere $X$ ma deve essere finito. Dopo la proiezione:</p>
+<p>$$
+\exists Y\;\theta(X,Y)
+$$</p>
+<p>resta la proprietà "X è finito".</p>
+<p>In automi, il nondeterminismo indovina i valori della componente nascosta posizione per posizione. Se esiste una sequenza nascosta che porta a una run accettante, la parola proiettata viene accettata.</p>
+<h3>Caso 7: WS1S e prefissi finiti</h3>
+<p>In WS1S le variabili insiemistiche quantificate rappresentano insiemi finiti. Questo sembra più debole, ma sugli omega-linguaggi si recupera S1S usando un'idea di relativizzazione.</p>
+<p>Esempio: voglio parlare di una proprietà entro un prefisso finito delimitato da una posizione $z$.</p>
+<p>Un quantificatore:</p>
+<p>$$\exists x\;\psi(x)$$</p>
+<p>diventa:</p>
+<p>$$\exists x(x\le z\land \psi(x))$$</p>
+<p>Un quantificatore universale:</p>
+<p>$$\forall x\;\psi(x)$$</p>
+<p>diventa:</p>
+<p>$$\forall x(x\le z\to \psi(x))$$</p>
+<p>L'idea è: invece di far variare tutto su $\omega$, restringo temporaneamente la formula a un pezzo finito. Poi uso argomenti di automi e periodicità per collegare il comportamento finito al comportamento infinito.</p>
+<h3>Caso 8: da $W$ regolare a $\overrightarrow{W}$ in WS1S, esempio completo</h3>
+<p>Rendiamo concreto il meccanismo della sezione 13 con numeri. Alfabeto $A=\lbrace a,b\rbrace$. Riprendiamo il linguaggio del Caso 5: "$\alpha$ ha infinite $a$".</p>
+<p><strong>Passo 1 — scelgo $W$.</strong> Osservazione chiave: un prefisso $\alpha(0)\cdots\alpha(n-1)$ <strong>termina con $a$</strong> esattamente quando $\alpha(n-1)=a$. Quindi i prefissi che terminano con $a$ sono infiniti se e solo se $\alpha$ ha infinite $a$. Prendo allora il linguaggio di parole finite</p>
+<p>$$W=\lbrace w\in A^\ast \mid w \text{ termina con } a\rbrace = A^\ast\cdot a,$$</p>
+<p>che è regolare, e affermo che "infinite $a$" $=\overrightarrow{W}$.</p>
+<p><strong>Passo 2 — formula $\varphi$ per $W$ (parole finite).</strong> "L'ultima posizione porta $a$". L'ultima posizione è quella senza successore dentro la parola:</p>
+<p>$$\varphi \equiv \exists x\big(Q_a(x)\land \neg\exists w(x&lt;w)\big).$$</p>
+<p><strong>Passo 3 — relativizzo al prefisso fino a $y$</strong> (regola della sezione 13: "nessun successore" diventa "nessun successore $&lt;y$"):</p>
+<p>$$\psi(y)\equiv \exists x\big(x&lt;y\land Q_a(x)\land \neg\exists w(x&lt;w\land w&lt;y)\big).$$</p>
+<p>A parole: tra le posizioni $&lt;y$ ce n'è una con $a$ che è l'ultima del prefisso (non ha posizioni intermedie tra sé e $y$). Cioè la posizione immediatamente prima di $y$ porta $a$. Si vede bene che equivale a $\exists x(x+1=y\land Q_a(x))$.</p>
+<p><strong>Passo 4 — la formula di $\overrightarrow{W}$:</strong></p>
+<p>$$\forall x\,\exists y\big(x&lt;y\land \psi(y)\big).$$</p>
+<p>Sviluppata: $\forall x\,\exists y\big(x&lt;y\land \exists w(w+1=y\land Q_a(w))\big)$, cioè "comunque scelga $x$, più avanti c'è un prefisso che termina con $a$" = infinite $a$. Esattamente il linguaggio del Caso 5, ma ottenuto per via logica.</p>
+<p><strong>Perché è WS1S.</strong> Qui $\psi$ usa solo quantificatori del primo ordine, quindi è banalmente WS1S. In generale $\varphi$ può usare insiemi quantificati: la relativizzazione li costringe dentro $\lbrace 0,\ldots,y-1\rbrace$, cioè li rende <strong>finiti</strong>, ed è proprio questo che garantisce che la formula stia in WS1S (sezione 13). Le combinazioni booleane di più $\overrightarrow{W_i}$ (per McNaughton) si scrivono con $\lor,\land,\neg$, e si ottiene qualunque omega-linguaggio omega-regolare.</p>
+<hr>
+<h2>18. Domande da orale</h2>
+<ol>
+<li>Che cosa significa "monadica del secondo ordine"?</li>
+<li>Qual è la differenza tra variabili del primo ordine e del secondo ordine?</li>
+<li>Come si rappresenta una parola infinita come struttura logica?</li>
+<li>Che cosa sono i predicati $Q_a$?</li>
+<li>Scrivi una formula S1S per "a compare infinite volte".</li>
+<li>Scrivi una formula S1S per "dopo ogni request arriva un grant".</li>
+<li>Spiega il lemma di chiusura per proiezione in termini logici e in termini di automi.</li>
+<li>Enuncia il secondo teorema di Büchi.</li>
+<li>Spiega la direzione automa -&gt; logica.</li>
+<li>Spiega la direzione logica -&gt; automa.</li>
+<li>Che cos'è WS1S? In WS1S che cosa è obbligato a essere finito, e che cosa no?</li>
+<li>Perché S1S è decidibile ma costosa? (parametro: numero di alternanze di quantificatori)</li>
+<li>Definisci $\overrightarrow{W}$ e collega l'operatore agli automi di Büchi deterministici.</li>
+<li>Enuncia il teorema di McNaughton e spiega perché serve nella dimostrazione di S1S $\equiv$ WS1S.</li>
+<li>Spiega la relativizzazione a un prefisso e perché produce una formula di WS1S (e non di S1S piena).</li>
+<li>Perché WS1S, pur quantificando solo su insiemi finiti, ha lo stesso potere espressivo di S1S sugli omega-linguaggi?</li>
+<li>Qual è la differenza tra S1S e S2S? Fai un esempio di estensione di S1S che resta decidibile e una che diventa indecidibile.</li>
+</ol>
+<hr>
+<h2>19. Quiz interattivo</h2>
+<div id="quiz-container-6" style="background:#f9f9f9; padding:20px; border-radius:8px; border: 1px solid #ddd; margin-top:2rem;">
+  <h3 style="margin-top:0;">Quiz Capitolo 6 - S1S e WS1S</h3>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>1. In S1S, cosa rappresenta una variabile del secondo ordine X?</strong></p>
+    <label><input type="radio" name="q6_1" value="A"> A) Una singola lettera dell'alfabeto.</label><br>
+    <label><input type="radio" name="q6_1" value="B"> B) Un insieme di posizioni naturali.</label><br>
+    <label><input type="radio" name="q6_1" value="C"> C) Una transizione dell'automa.</label><br>
+    <button onclick="checkAnswer('q6_1', 'B', 'Esatto. Le variabili monadiche del secondo ordine sono insiemi di posizioni.', 'No. Le variabili del primo ordine sono singole posizioni; quelle del secondo ordine sono insiemi di posizioni.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q6_1-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>2. Quale formula esprime che P vale infinitamente spesso?</strong></p>
+    <label><input type="radio" name="q6_2" value="A"> A) $\exists x\forall y(x&lt;y \to y\notin P)$</label><br>
+    <label><input type="radio" name="q6_2" value="B"> B) $\forall x\exists y(x&lt;y \land y\in P)$</label><br>
+    <label><input type="radio" name="q6_2" value="C"> C) $\forall x(x\in P)$</label><br>
+    <button onclick="checkAnswer('q6_2', 'B', 'Corretto. Dopo ogni posizione trovo una posizione futura in P, quindi P ricompare infinite volte.', 'Non proprio. La formula giusta deve dire che P ricompare sempre più avanti, qualunque punto di partenza scelga.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q6_2-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>3. Che cosa afferma il secondo teorema di Büchi?</strong></p>
+    <label><input type="radio" name="q6_3" value="A"> A) Gli omega-linguaggi sono omega-regolari se e solo se sono definibili in S1S.</label><br>
+    <label><input type="radio" name="q6_3" value="B"> B) Ogni formula proposizionale è una QBF.</label><br>
+    <label><input type="radio" name="q6_3" value="C"> C) I DBA e gli NBA sono equivalenti.</label><br>
+    <button onclick="checkAnswer('q6_3', 'A', 'Perfetto. È il ponte fondamentale tra automi di Büchi e logica S1S.', 'No. Il teorema collega esattamente omega-regolarità e definibilità in S1S.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q6_3-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>4. A livello di automi, cosa corrisponde a esistenzializzare una variabile del secondo ordine?</strong></p>
+    <label><input type="radio" name="q6_4" value="A"> A) Proiezione di una componente dell'alfabeto.</label><br>
+    <label><input type="radio" name="q6_4" value="B"> B) Eliminazione di tutti gli stati finali.</label><br>
+    <label><input type="radio" name="q6_4" value="C"> C) Rendere deterministico l'automa.</label><br>
+    <button onclick="checkAnswer('q6_4', 'A', 'Esatto. Il nondeterminismo indovina la componente nascosta dalla proiezione.', 'No. Il quantificatore esistenziale su un insieme corrisponde al nascondere/proiettare una componente.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q6_4-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>5. Qual è la differenza semantica principale tra S1S e WS1S?</strong></p>
+    <label><input type="radio" name="q6_5" value="A"> A) WS1S non ha quantificatori.</label><br>
+    <label><input type="radio" name="q6_5" value="B"> B) In WS1S le variabili del secondo ordine quantificate sono insiemi finiti.</label><br>
+    <label><input type="radio" name="q6_5" value="C"> C) S1S parla solo di parole finite.</label><br>
+    <button onclick="checkAnswer('q6_5', 'B', 'Giusto. WS1S è weak perché restringe le variabili insiemistiche a insiemi finiti.', 'Non corretto. WS1S mantiene la forma logica, ma limita le variabili del secondo ordine a insiemi finiti.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q6_5-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+</div>
+
+<script>
+function checkAnswer(qName, correctVal, correctMsg, wrongMsg) {
+  var selected = document.querySelector('input[name="' + qName + '"]:checked');
+  var feedback = document.getElementById(qName + '-feedback');
+  if (!feedback) return;
+  if (!selected) {
+    feedback.style.display = 'block';
+    feedback.style.color = '#8a5a00';
+    feedback.textContent = 'Seleziona una risposta prima di verificare.';
+    return;
+  }
+  feedback.style.display = 'block';
+  if (selected.value === correctVal) {
+    feedback.style.color = '#126b2e';
+    feedback.textContent = correctMsg;
+  } else {
+    feedback.style.color = '#9b1c1c';
+    feedback.textContent = wrongMsg;
+  }
+}
+</script>
+
+<hr>
+<h2>20. Mini-scaletta di ripasso</h2>
+<ol>
+<li>Spiega perché S1S è utile dopo gli automi di Büchi.</li>
+<li>Distingui variabili di primo ordine e secondo ordine.</li>
+<li>Spiega come una omega-parola diventa una struttura logica.</li>
+<li>Scrivi le formule per "P vale infinite volte" e "P vale solo un numero finito di volte".</li>
+<li>Spiega proiezione come $\exists X$ e come nondeterminismo.</li>
+<li>Enuncia il secondo teorema di Büchi.</li>
+<li>Racconta automa -&gt; logica con gli insiemi $Y_i$.</li>
+<li>Racconta logica -&gt; automa usando chiusure booleane e proiezione.</li>
+<li>Spiega WS1S e perché ha lo stesso potere espressivo di S1S sugli omega-linguaggi.</li>
+<li>Ricostruisci la catena del risultato WS1S $\equiv$ S1S: $\overrightarrow{W}$ e DBA $\to$ McNaughton (omega-regolare = combinazione booleana di $\overrightarrow{W}$) $\to$ Büchi-Elgot-Trakhtenbrot ($\varphi$ per $W$ regolare) $\to$ relativizzazione al prefisso ($\Rightarrow$ insiemi finiti $\Rightarrow$ WS1S).</li>
+<li>Cita un'estensione decidibile e una indecidibile di S1S, e spiega cos'è S2S.</li>
+</ol></article>
+  <p class="section-label">Esercizi (piano di studio)</p>
+  
+<div class="exercises-block prose">
+<h2>Esercizi e domande — settimana 3</h2>
+<p><strong>Obiettivo della settimana:</strong> padroneggiare automi su parole infinite e il ponte logica-automi.</p>
+<h3>Esercizi scritti essenziali</h3>
+<ol>
+<li>
+<p><strong>NBA base.</strong> Costruisci un NBA su $\lbrace a,b\rbrace$ che accetta le parole con infinitamente molte $a$:
+   $$L=\lbrace \alpha\in\lbrace a,b\rbrace^\omega \mid a \text{ occorre infinite volte}\rbrace$$</p>
+</li>
+<li>
+<p><strong>Numero finito di occorrenze di a.</strong> Costruisci un NBA per:
+   $$L=\lbrace \alpha\in\lbrace a,b\rbrace^\omega \mid a \text{ occorre finitamente molte volte}\rbrace$$
+   Spiega perche il nondeterminismo e' naturale qui.</p>
+</li>
+<li>
+<p><strong>Limite dei DBA.</strong> Argomenta perche il linguaggio "solo un numero finito di $a$" non e' riconoscibile da un DBA. Non serve una prova topologica completa: basta una spiegazione orale convincente basata sull'impossibilita di sapere deterministicamente l'ultima $a$.</p>
+</li>
+<li>
+<p><strong>Espressioni omega-regolari.</strong> Scrivi un'espressione omega-regolare per:</p>
+</li>
+<li>infinitamente molte $a$;</li>
+<li>finitamente molte $a$;</li>
+<li>
+<p>parole in cui ogni blocco tra due $a$ consecutive contiene un numero pari di simboli diversi da $a$.</p>
+</li>
+<li>
+<p><strong>Equivalenza espressione -&gt; automa.</strong> Prendi $(b^*a)^\omega$ e costruisci un NBA che la riconosce. Indica perche gli stati finali vengono visitati infinite volte.</p>
+</li>
+<li>
+<p><strong>GNBA -&gt; NBA.</strong> Dato un GNBA con insiemi di accettazione $F_1,F_2,F_3$, descrivi la costruzione dell'NBA equivalente con contatore di obblighi. Poi applicala a un esempio piccolo.</p>
+</li>
+<li>
+<p><strong>Chiusura per intersezione.</strong> Costruisci il prodotto di due NBA per riconoscere:
+   "infinitamente molte $a$" e "infinitamente molte $b$".</p>
+</li>
+<li>
+<p><strong>Muller automata.</strong> Dai un automa di Muller deterministico molto semplice che distingue le parole in cui il set degli stati visitati infinitamente spesso appartiene a una famiglia $\mathcal{F}$. Spiega perche il complemento e' facile per Muller.</p>
+</li>
+<li>
+<p><strong>S1S: infinitamente spesso.</strong> Scrivi una formula S1S per dire che il predicato $P$ vale in infinite posizioni:
+   $$\forall x\exists y(x&lt;y \land y\in P)$$
+   Poi riscrivila spiegando il ruolo delle variabili di primo e secondo ordine.</p>
+</li>
+<li>
+<p><strong>S1S: alternanza.</strong> Scrivi una formula S1S per parole su $\lbrace a,b\rbrace$ in cui non compaiono mai due $a$ consecutive.</p>
+</li>
+<li>
+<p><strong>Chiusura per proiezione.</strong> Spiega con un esempio cosa significa proiettare via una componente dell'alfabeto. Traduci l'idea in una frase sugli automi di Büchi.</p>
+</li>
+<li>
+<p><strong>Secondo teorema di Büchi.</strong> Scrivi una dimostrazione-scheletro delle due direzioni:</p>
+</li>
+<li>automa di Büchi -&gt; formula S1S;</li>
+<li>formula S1S -&gt; automa di Büchi.</li>
+</ol>
+<h3>Domande orali secche</h3>
+<ol>
+<li>Perche per i sistemi reattivi servono parole infinite?</li>
+<li>Definizione formale di NBA e condizione di accettazione.</li>
+<li>Differenza tra NBA, DBA, GNBA e Muller automata.</li>
+<li>Che cosa dice il secondo teorema di Büchi?</li>
+<li>Differenza tra S1S e WS1S.</li>
+</ol>
+<h3>Controllo</h3>
+<p>Hai superato la settimana se sai costruire gli automi per "infinite occorrenze di a" e "solo un numero finito di a", e se sai raccontare il ponte S1S-Büchi senza perderti nei dettagli tecnici.</p>
+</div>
+
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap05.html">← Precedente</a></span><span><a href="cap07.html">Successivo →</a></span></div>
+</div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script defer src="assets/chat.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

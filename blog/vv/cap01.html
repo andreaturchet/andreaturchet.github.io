@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capitolo 1 — Introduzione a logica e sistemi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/chat.css" />
+  
+</head>
+<body>
+
+<header class="site-header">
+  <h1>V&amp;V in AI — Appunti</h1>
+  <p class="subtitle">Settimana 1</p>
+  <div class="ornament">✦</div>
+</header>
+<div class="wrap">
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span></span><span><a href="cap02.html">Successivo →</a></span></div>
+  
+<div class="chapter-opener">
+  <div class="label">Capitolo 1</div>
+  <h1>Capitolo 1 — Introduzione a logica e sistemi</h1>
+  <p class="focus">Logica proposizionale, QBF, logica del primo ordine; tableaux; giochi di Ehrenfeucht-Fraïssé.</p>
+</div>
+
+  <article class="prose"><h1>Logiche classiche - Riassunto</h1>
+<h2>Punti chiave</h2>
+<ul>
+<li><strong>Fondamenti della logica</strong>: sintassi, semantica e vocabolario della logica proposizionale e della logica del primo ordine.</li>
+<li><strong>Soddisfacibilita e validita</strong>: una formula e' soddisfacibile se e' vera in almeno un'interpretazione; e' valida se e' vera in tutte.</li>
+<li><strong>Riduzioni</strong>: molti problemi logici si riducono l'uno all'altro, ad esempio equivalenza e validita.</li>
+</ul>
+<h2>Argomenti centrali</h2>
+<ul>
+<li><strong>Espressivita vs decidibilita</strong>: aumentando l'espressivita del linguaggio spesso aumenta anche il costo computazionale, fino all'indecidibilita.</li>
+<li><strong>Base per i formalismi avanzati</strong>: LTL, CTL, S1S e altri linguaggi di specifica poggiano sui concetti della logica classica.</li>
+</ul>
+<h2>Rilevanza per V&amp;V in AI</h2>
+<p>La logica fornisce il linguaggio matematico con cui formalizzare proprieta, requisiti e vincoli dei sistemi da verificare.</p>
+<hr />
+
+<h1>Logica proposizionale</h1>
+<p>La logica proposizionale usa variabili booleane e connettivi per costruire formule vere o false rispetto a un'interpretazione.</p>
+<h2>Sintassi</h2>
+<p>Le formule si costruiscono da proposizioni atomiche tramite:
+$$
+\neg,\land,\lor,\rightarrow,\leftrightarrow$$</p>
+<h2>Semantica</h2>
+<p>Un'interpretazione assegna vero o falso a ogni proposizione. Una formula e' soddisfatta se valuta a vero sotto quell'assegnamento.</p>
+<h2>Problemi principali</h2>
+<ul>
+<li><strong>Model checking</strong>: valutare una formula su una struttura data.</li>
+<li><strong>SAT</strong>: decidere se esiste un'interpretazione che rende vera la formula.</li>
+<li><strong>Validita</strong>: decidere se la formula e' vera in tutte le interpretazioni.</li>
+</ul>
+<h2>Forme normali</h2>
+<ul>
+<li><strong>NNF</strong>: negazioni solo davanti agli atomi.</li>
+<li><strong>CNF</strong>: congiunzione di clausole.</li>
+</ul>
+<h2>Rilevanza</h2>
+<p>SAT e le formule booleane sono alla base di BMC, QBF e molte tecniche simboliche.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Formule booleane quantificate (QBF)</li>
+<li>Algoritmo dei tableaux</li>
+<li>Model checking limitato</li>
+</ul>
+<hr />
+
+<h1>Formule booleane quantificate</h1>
+<p>Le QBF estendono la logica proposizionale con quantificatori su variabili booleane.</p>
+<h2>Sintassi e semantica</h2>
+<p>Si possono scrivere formule come:
+$$\exists p\;\varphi \quad\text{e}\quad \forall p\;\varphi$$</p>
+<ul>
+<li>$\exists p\;\varphi$ e' vera se almeno una scelta di valore per $p$ rende vera $\varphi$.</li>
+<li>$\forall p\;\varphi$ e' vera se entrambe le scelte di valore per $p$ rendono vera $\varphi$.</li>
+</ul>
+<h2>Complessita</h2>
+<p>La verita di una QBF completamente quantificata e' PSPACE-completa, piu difficile del SAT proposizionale.</p>
+<h2>Uso</h2>
+<p>Le QBF permettono di rappresentare in modo succinto problemi di gioco, reachability e verifica con alternanza di scelte esistenziali e universali.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Logica proposizionale</li>
+<li>Model checking simbolico</li>
+</ul>
+<hr />
+
+<h1>Logica del primo ordine</h1>
+<p>La logica del primo ordine estende la logica proposizionale introducendo variabili su oggetti, predicati, funzioni e quantificatori.</p>
+<h2>Elementi</h2>
+<ul>
+<li>variabili individuali come $x,y,z$;</li>
+<li>predicati e relazioni;</li>
+<li>quantificatori $\forall$ ed $\exists$;</li>
+<li>connettivi booleani.</li>
+</ul>
+<h2>Espressivita e decidibilita</h2>
+<p>La logica del primo ordine e' molto espressiva, ma il ragionamento generale su di essa e' indecidibile. Per questo la verifica formale usa spesso frammenti decidibili o logiche specializzate come LTL, CTL e S1S.</p>
+<h2>Giochi e formule di Hintikka</h2>
+<p>I giochi di Ehrenfeucht-Fraisse e le formule di Hintikka permettono di studiare quali strutture sono distinguibili da formule di una certa profondita.</p>
+<h2>Uso in V&amp;V</h2>
+<p>FOL fornisce il linguaggio per esprimere invarianti, relazioni tra stati e proprieta strutturali, ma in pratica va controllata la trattabilita del frammento scelto.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Logica proposizionale</li>
+<li>Formule booleane quantificate (QBF)</li>
+<li>Giochi di Ehrenfeucht-Fraïssé</li>
+<li>Formule di Hintikka</li>
+</ul>
+<hr />
+
+<h1>Algoritmo dei tableaux</h1>
+<p>L'algoritmo dei tableaux e' una procedura per decidere la soddisfacibilita di formule logiche decomponendole in sottoformule.</p>
+<h2>Idea</h2>
+<p>Invece di indovinare direttamente un modello, si scompone la formula fino a ottenere rami fatti di letterali. Un ramo aperto rappresenta un possibile modello; un ramo chiuso contiene una contraddizione.</p>
+<h2>Regole principali</h2>
+<ul>
+<li>Congiunzioni: entrambi i congiunti devono stare nello stesso ramo.</li>
+<li>Disgiunzioni: il ramo si divide in alternative.</li>
+<li>Contraddizione: un ramo con $p$ e $\neg p$ viene chiuso.</li>
+</ul>
+<h2>LTL</h2>
+<p>Nel caso LTL, il tableau deve gestire anche obblighi temporali, ad esempio eventualita che devono essere realizzate lungo un cammino infinito.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Logica proposizionale</li>
+<li>Logica temporale lineare (LTL)</li>
+</ul>
+<hr />
+
+<h1>Giochi di Ehrenfeucht-Fraisse</h1>
+<p>I giochi di Ehrenfeucht-Fraisse forniscono una caratterizzazione ludica dell'equivalenza logica tra strutture.</p>
+<h2>Meccanica</h2>
+<p>Il gioco si svolge tra Spoiler e Duplicator su due strutture. A ogni turno Spoiler sceglie un elemento in una struttura e Duplicator risponde scegliendo un elemento nell'altra.</p>
+<p>Duplicator vince dopo $n$ round se gli elementi scelti preservano le relazioni rilevanti, cioe' formano un isomorfismo parziale.</p>
+<h2>Significato logico</h2>
+<p>Due strutture sono indistinguibili da formule del primo ordine di profondita quantificazionale $n$ se e solo se Duplicator ha una strategia vincente nel gioco di $n$ round.</p>
+<h2>Uso</h2>
+<p>Questi giochi servono a mostrare limiti espressivi della logica: se Duplicator puo sempre vincere, nessuna formula del frammento considerato distingue le due strutture.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Logica del primo ordine</li>
+<li>Formule di Hintikka</li>
+</ul>
+<hr />
+
+<h1>Formule di Hintikka</h1>
+<p>Le formule di Hintikka descrivono completamente cio' che una struttura soddisfa fino a una certa profondita quantificazionale.</p>
+<h2>Idea</h2>
+<p>Per ogni livello $n$, la formula di Hintikka rappresenta la classe di equivalenza logica della struttura rispetto alle formule di profondita al massimo $n$.</p>
+<h2>Relazione con EF games</h2>
+<p>Due strutture soddisfano la stessa formula di Hintikka di livello $n$ se e solo se Duplicator ha una strategia vincente nel gioco di Ehrenfeucht-Fraisse di $n$ round.</p>
+<h2>Importanza</h2>
+<p>Sono uno strumento teorico per studiare espressivita, equivalenza e limiti della logica del primo ordine.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Logica del primo ordine</li>
+<li>Giochi di Ehrenfeucht-Fraïssé</li>
+</ul>
+<hr />
+
+<h1>Approfondimento Completo Settimana 1 - Logica, Formule e Ragionamento Automatico</h1>
+<p>Questo documento costituisce un'espansione dettagliata e teorica (passo per passo) degli argomenti introduttivi della prima settimana di V&amp;V. Sostituisce il riassunto precedente con una trattazione approfondita necessaria per la comprensione rigorosa dei concetti formali su cui si basano il model checking e le altre tecniche di verifica.</p>
+<h2>1. Logica Proposizionale: Fondamenti e Definizioni Formali</h2>
+<p>La logica proposizionale è il linguaggio matematico più semplice per ragionare sulla verità e falsità di affermazioni elementari. Nonostante la sua semplicità, i problemi algoritmici associati (come il SAT) sono fondamentali nell'informatica teorica e nella verifica dei sistemi.</p>
+<h3>1.1 Sintassi</h3>
+<p>La <strong>sintassi</strong> definisce quali sequenze di simboli sono "formule ben formate" (WFF, <em>Well-Formed Formulas</em>).
+Partiamo da un insieme infinito numerabile di <strong>variabili proposizionali</strong> (o atomi): $\mathcal{P} = \{p_1, p_2, q, r, \dots\}$.
+A queste uniamo i <strong>connettivi logici</strong> classici e le parentesi.</p>
+<p>L'insieme delle formule proposizionali $\mathcal{F}$ è definito induttivamente (o ricorsivamente) come segue:
+1. <strong>Caso base</strong>: Ogni variabile proposizionale $p \in \mathcal{P}$ è una formula ($p \in \mathcal{F}$). Anche le costanti speciali $\top$ (Vero) e $\bot$ (Falso) sono in $\mathcal{F}$.
+2. <strong>Passo induttivo</strong>: Se $\varphi$ e $\psi$ sono formule in $\mathcal{F}$, allora lo sono anche:
+   - $\neg \varphi$ (Negazione, "non $\varphi$")
+   - $(\varphi \land \psi)$ (Congiunzione, "$\varphi$ e $\psi$")
+   - $(\varphi \lor \psi)$ (Disgiunzione, "$\varphi$ o $\psi$")
+   - $(\varphi \rightarrow \psi)$ (Implicazione, "se $\varphi$ allora $\psi$")
+   - $(\varphi \leftrightarrow \psi)$ (Doppia implicazione, "$\varphi$ se e solo se $\psi$")
+3. <strong>Chiusura</strong>: Nient'altro è una formula.</p>
+<p><em>Nota teorica</em>: L'uso delle parentesi è cruciale per evitare ambiguità sintattiche. Nella pratica, adottiamo regole di precedenza (ad esempio $\neg$ lega più forte di $\land$ e $\lor$, che a loro volta legano più di $\rightarrow$) per omettere parentesi superflue.</p>
+<h3>1.2 Semantica</h3>
+<p>La <strong>semantica</strong> attribuisce un significato (un valore di verità) alle formule sintatticamente corrette. Nella logica classica, il principio di bivalenza stabilisce che ogni proposizione è o vera o falsa.</p>
+<p>Un'<strong>interpretazione</strong> (o assegnamento, o modello) è una funzione $\mathcal{I}: \mathcal{P} \rightarrow \{0, 1\}$ (dove $1$ sta per Vero e $0$ per Falso) che mappa ogni atomo a un valore di verità.
+Data un'interpretazione $\mathcal{I}$, il valore di verità di una formula complessa $\varphi$ sotto $\mathcal{I}$, denotato con $\mathcal{I} \models \varphi$ (letto "$\mathcal{I}$ modella $\varphi$" o "$\varphi$ è vera in $\mathcal{I}$"), si calcola in modo ricorsivo strutturale:
+- $\mathcal{I} \models p$ se e solo se $\mathcal{I}(p) = 1$ (per $p \in \mathcal{P}$).
+- $\mathcal{I} \models \neg \varphi$ se e solo se $\mathcal{I} \not\models \varphi$.
+- $\mathcal{I} \models \varphi \land \psi$ se e solo se $\mathcal{I} \models \varphi$ e $\mathcal{I} \models \psi$.
+- $\mathcal{I} \models \varphi \lor \psi$ se e solo se $\mathcal{I} \models \varphi$ oppure $\mathcal{I} \models \psi$.
+- $\mathcal{I} \models \varphi \rightarrow \psi$ se e solo se $\mathcal{I} \not\models \varphi$ oppure $\mathcal{I} \models \psi$. (Nota: l'implicazione materiale è falsa <em>solo</em> quando la premessa è vera e la conseguenza è falsa).
+- $\mathcal{I} \models \varphi \leftrightarrow \psi$ se e solo se $\mathcal{I} \models \varphi \rightarrow \psi$ e $\mathcal{I} \models \psi \rightarrow \varphi$.</p>
+<h3>1.3 Soddisfacibilità, Validità ed Equivalenza Logica</h3>
+<p>Dalla semantica derivano le definizioni dei principali problemi decisionali della logica:</p>
+<ol>
+<li><strong>Soddisfacibilità (SAT)</strong>: Una formula $\varphi$ è soddisfacibile se esiste <em>almeno</em> un'interpretazione $\mathcal{I}$ tale che $\mathcal{I} \models \varphi$. Questa $\mathcal{I}$ è chiamata un <strong>modello</strong> per $\varphi$. Se non esiste, $\varphi$ è detta <em>insoddisfacibile</em> (o contraddizione).</li>
+<li><strong>Validità (Tautologia)</strong>: Una formula $\varphi$ è valida se per <em>ogni</em> interpretazione $\mathcal{I}$ si ha $\mathcal{I} \models \varphi$. La validità è indicata scrivendo semplicemente $\models \varphi$.</li>
+<li><strong>Equivalenza logica</strong>: Due formule $\varphi$ e $\psi$ sono logicamente equivalenti, scritto $\varphi \equiv \psi$, se per ogni interpretazione $\mathcal{I}$, $\mathcal{I} \models \varphi$ se e solo se $\mathcal{I} \models \psi$. Questo significa che le loro tavole di verità sono identiche.</li>
+</ol>
+<p><strong>Teorema fondamentale (Relazione Validità-Insoddisfacibilità)</strong>:
+Una formula $\varphi$ è valida se e solo se la sua negazione $\neg \varphi$ è insoddisfacibile.
+<em>Dimostrazione passo-passo</em>: 
+- Supponiamo che $\varphi$ sia valida. Ciò significa che ogni interpretazione rende $\varphi$ vera. Di conseguenza, nessuna interpretazione può rendere falsa $\varphi$. Per definizione della semantica della negazione, nessuna interpretazione può rendere vera $\neg \varphi$. Dunque $\neg \varphi$ è insoddisfacibile.
+- Viceversa, supponiamo $\neg \varphi$ sia insoddisfacibile. Nessuna interpretazione rende vera $\neg \varphi$. Pertanto, ogni interpretazione deve rendere falsa $\neg \varphi$, il che significa che ogni interpretazione rende vera $\varphi$. Quindi $\varphi$ è valida.</p>
+<p>Questa relazione è il pilastro del ragionamento automatico (come nei risolutori SAT): per dimostrare che un sistema è corretto (una proprietà $\varphi$ è sempre valida), il solver tenta di trovare un controesempio, ossia un modello per $\neg \varphi$. Se fallisce, il sistema è sicuro.</p>
+<hr>
+<h2>2. Forme Normali e Trasformazioni</h2>
+<p>Lavorare con la sintassi completa della logica proposizionale è scomodo per gli algoritmi. Spesso occorre normalizzare le formule.</p>
+<h3>2.1 Negation Normal Form (NNF)</h3>
+<p>Una formula è in <strong>NNF</strong> se l'operatore di negazione $\neg$ viene applicato <em>esclusivamente</em> alle variabili proposizionali (atomi) e non compaiono gli operatori $\rightarrow$ e $\leftrightarrow$. In NNF si usano solo $\land, \lor$ e $\neg$ (solo sugli atomi).
+<em>Esempio</em>: $\neg p \lor (q \land \neg r)$ è in NNF. $\neg(p \lor q)$ non lo è.</p>
+<p><strong>Algoritmo per la conversione in NNF</strong>:
+1. Eliminare le doppie implicazioni: sostituire $\varphi \leftrightarrow \psi$ con $(\varphi \rightarrow \psi) \land (\psi \rightarrow \varphi)$.
+2. Eliminare le implicazioni: sostituire $\varphi \rightarrow \psi$ con $\neg \varphi \lor \psi$.
+3. Spingere le negazioni verso l'interno usando le leggi di De Morgan:
+   - $\neg(\varphi \land \psi) \equiv \neg\varphi \lor \neg\psi$
+   - $\neg(\varphi \lor \psi) \equiv \neg\varphi \land \neg\psi$
+4. Eliminare le doppie negazioni: $\neg\neg\varphi \equiv \varphi$.</p>
+<p><em>Esempio passo-passo</em>: Convertire $\neg(p \rightarrow (q \land \neg r))$ in NNF.
+- Passo 2 (elimino implicazione): $\neg(\neg p \lor (q \land \neg r))$
+- Passo 3 (De Morgan sul $\lor$): $\neg\neg p \land \neg(q \land \neg r)$
+- Passo 4 (doppia negazione): $p \land \neg(q \land \neg r)$
+- Passo 3 (De Morgan sul $\land$): $p \land (\neg q \lor \neg\neg r)$
+- Passo 4 (doppia negazione): $p \land (\neg q \lor r)$. (Forma finale in NNF).</p>
+<h3>2.2 Conjunctive Normal Form (CNF) e Disjunctive Normal Form (DNF)</h3>
+<ul>
+<li>Un <strong>letterale</strong> è un atomo ($p$) o la negazione di un atomo ($\neg p$).</li>
+<li>Una formula è in <strong>CNF</strong> se è una congiunzione di disgiunzioni di letterali. (Un "AND di OR"). Le disgiunzioni di letterali sono chiamate <em>clausole</em>.
+  Esempio: $(p \lor \neg q) \land (\neg r \lor s \lor t)$. Molti SAT solver (es. basati sull'algoritmo DPLL/CDCL) accettano input solo in CNF.</li>
+<li>Una formula è in <strong>DNF</strong> se è una disgiunzione di congiunzioni di letterali. (Un "OR di AND").
+  Esempio: $(p \land \neg q) \lor (\neg r \land s \land t)$.</li>
+</ul>
+<p>Per convertire in CNF, dopo aver ottenuto la NNF, si applica ripetutamente la proprietà distributiva dell'OR rispetto all'AND:
+- $\varphi \lor (\psi \land \chi) \equiv (\varphi \lor \psi) \land (\varphi \lor \chi)$.
+<em>Attenzione</em>: Questa distribuzione può portare a un'esplosione esponenziale delle dimensioni della formula. In applicazioni reali (es. in SAT solving) si usa la <em>Trasformazione di Tseitin</em>, che introduce variabili ausiliarie per convertire una formula in CNF in tempo e spazio lineari, preservando la soddisfacibilità.</p>
+<hr>
+<h2>3. Algoritmo dei Tableaux Semantici</h2>
+<p>L'algoritmo dei tableaux è un metodo di deduzione che verifica la soddisfacibilità di una formula cercando di costruire sistematicamente un modello per essa. Funziona decomponendo la formula originaria secondo regole semantiche.</p>
+<h3>3.1 Funzionamento del Tableau</h3>
+<p>Il tableau assume la forma di un albero. La radice dell'albero è la formula da verificare.
+Si procede applicando regole di espansione ai nodi, decomponendo le formule in base al loro connettivo principale. Le regole si dividono in due tipi (assumendo la formula sia già ridotta usando $\neg, \land, \lor$):</p>
+<ul>
+<li><strong>Regole $\alpha$ (espansione lineare o and-rule)</strong>: Decompongono congiunzioni.
+  Se un ramo contiene $\varphi \land \psi$, il ramo viene esteso inserendo sia $\varphi$ che $\psi$ uno sotto l'altro (poiché entrambi devono essere veri per rendere vera la congiunzione).</li>
+<li><strong>Regole $\beta$ (espansione ramificata o or-rule)</strong>: Decompongono disgiunzioni.
+  Se un ramo contiene $\varphi \lor \psi$, il ramo si biforca in due nuovi sotto-rami: uno contenente $\varphi$ e l'altro contenente $\psi$. Questo rappresenta un punto di scelta non deterministica (almeno uno dei due deve essere vero).</li>
+</ul>
+<p>Per usare il tableau con tutti i connettivi senza convertirli, esistono regole anche per le negazioni:
+- $\neg(\varphi \land \psi)$ diventa una regola $\beta$ biforcando in $\neg\varphi$ e $\neg\psi$ (per De Morgan).
+- $\neg(\varphi \lor \psi)$ diventa una regola $\alpha$ aggiungendo $\neg\varphi$ e $\neg\psi$ sullo stesso ramo.
+- $\neg\neg\varphi$ viene semplicemente semplificato in $\varphi$.</p>
+<h3>3.2 Rami Aperti, Rami Chiusi e Conclusione</h3>
+<ul>
+<li><strong>Ramo chiuso</strong>: Un ramo in cui compaiono simultaneamente una formula $\varphi$ e la sua negazione esatta $\neg\varphi$ (o comunemente un atomo $p$ e $\neg p$). Si contrassegna con una "X". Questo significa che il percorso ha portato a una contraddizione: non è possibile trovare un modello seguendo quelle scelte.</li>
+<li><strong>Ramo aperto</strong>: Un ramo in cui sono state decomposte tutte le formule complesse e non sono state trovate contraddizioni (contiene solo letterali compatibili).</li>
+</ul>
+<p><strong>Teoremi di completezza e correttezza</strong>:
+- Una formula $\varphi$ è <strong>insoddisfacibile</strong> se e solo se esiste un tableau per $\varphi$ in cui <em>tutti</em> i rami si chiudono. (Il tableau diventa una dimostrazione di contraddizione).
+- Una formula $\varphi$ è <strong>soddisfacibile</strong> se e solo se il suo tableau completamente sviluppato presenta <em>almeno un ramo aperto</em>. I letterali su quel ramo aperto definiscono l'assegnamento (modello) che soddisfa la formula.</p>
+<h3>3.3 Esempio Guidato Passo-Passo</h3>
+<p>Vogliamo dimostrare la validità del <em>Modus Tollens</em>: $((p \rightarrow q) \land \neg q) \rightarrow \neg p$.
+Per verificare se è valida, ne cerchiamo un controesempio testando l'insoddisfacibilità della sua <strong>negazione</strong>:
+Formula da testare: $\neg [((p \rightarrow q) \land \neg q) \rightarrow \neg p]$</p>
+<p><strong>Passo 1: Regola $\alpha$ sull'implicazione negata.</strong>
+L'implicazione negata $\neg(A \rightarrow B)$ equivale ad $A \land \neg B$. Il ramo si espande con:
+1. $((p \rightarrow q) \land \neg q)$
+2. $\neg\neg p$</p>
+<p><strong>Passo 2: Semplificazione e regola $\alpha$ sulla congiunzione (riga 1).</strong>
+Riga 2 si semplifica in $p$. Riga 1 si decompone mettendo sullo stesso ramo:
+3. $(p \rightarrow q)$
+4. $\neg q$
+A questo punto il nostro ramo lineare contiene: $\{p, (p \rightarrow q), \neg q\}$.</p>
+<p><strong>Passo 3: Regola $\beta$ sull'implicazione (riga 3).</strong>
+L'implicazione $(p \rightarrow q)$ equivale a $\neg p \lor q$. Pertanto, la regola $\beta$ fa biforcare il ramo corrente in due:
+- <strong>Ramo Sinistro</strong>: aggiungiamo $\neg p$.
+  Ora questo ramo contiene $\{p, \neg q, \neg p\}$. È presente sia $p$ che $\neg p$. Il ramo <strong>si chiude</strong> (X).
+- <strong>Ramo Destro</strong>: aggiungiamo $q$.
+  Ora questo ramo contiene $\{p, \neg q, q\}$. È presente sia $q$ che $\neg q$. Il ramo <strong>si chiude</strong> (X).</p>
+<p><strong>Conclusione:</strong>
+Poiché <em>tutti</em> i rami si sono chiusi, la formula in input $\neg [((p \rightarrow q) \land \neg q) \rightarrow \neg p]$ è insoddisfacibile. Di conseguenza, la formula originale è logicamente <strong>valida</strong> (una tautologia).</p>
+<hr>
+<h2>4. Formule Booleane Quantificate (QBF)</h2>
+<p>Mentre la logica proposizionale lavora solo su variabili libere implicitamente quantificate a un livello base, le <strong>QBF</strong> (Quantified Boolean Formulas) estendono il linguaggio introducendo i quantificatori universali ($\forall$) ed esistenziali ($\exists$) che agiscono su variabili booleane.</p>
+<h3>4.1 Sintassi e Semantica Intuitiva</h3>
+<p>Una QBF ha la forma tipica: $Q_1 x_1 \dots Q_n x_n \ \varphi$, dove $Q_i \in \{\exists, \forall\}$ e $\varphi$ è una formula proposizionale senza quantificatori. Tutte le variabili in $\varphi$ devono essere quantificate (si parla di QBF <em>chiuse</em> o formule fully-quantified). Poiché non ci sono variabili libere, il valore di verità di una QBF chiusa non dipende da un'interpretazione, è assolutamente Vero o Falso.</p>
+<ul>
+<li>$\exists x \ \varphi(x)$ si interpreta come "esiste un valore booleano per $x$ tale per cui $\varphi(x)$ sia vera". Matematicamente, equivale a $\varphi(0) \lor \varphi(1)$.</li>
+<li>$\forall x \ \varphi(x)$ si interpreta come "per ogni valore booleano assegnato ad $x$, $\varphi(x)$ è vera". Equivale a $\varphi(0) \land \varphi(1)$.</li>
+</ul>
+<p><em>Nota sulla complessità</em>: Valutare la verità di una QBF chiusa (il problema TQBF - True Quantified Boolean Formula) è un problema <strong>PSPACE-completo</strong>. È computazionalmente più "difficile" del problema SAT (che è "solo" NP-completo). SAT si può vedere come un caso particolare di QBF in cui tutti i quantificatori sono esistenziali ($\exists x_1 \exists x_2 \dots \varphi$).</p>
+<h3>4.2 La prospettiva della Teoria dei Giochi</h3>
+<p>L'intuizione più profonda per le QBF, vitale per la verifica formale, è concepirle come un <strong>gioco a due giocatori</strong>.
+Supponiamo di avere la QBF: $\forall x \ \exists y \ \forall z \ \varphi(x, y, z)$.</p>
+<ul>
+<li>Il giocatore Universale (la natura o l'ambiente non deterministico) sceglie i valori per le variabili quantificate universalmente ($x, z$). Questo giocatore vince se riesce a rendere falsa la matrice proposizionale $\varphi$.</li>
+<li>Il giocatore Esistenziale (il controllore o il risolutore) sceglie i valori per le variabili esistenziali ($y$). Questo giocatore vince se riesce a rendere vera $\varphi$.</li>
+<li>L'ordine dei quantificatori definisce la sequenza dei turni, che implica chi ha informazioni su quali scelte precedentemente effettuate.</li>
+</ul>
+<p>Esempio:
+Confrontiamo $\forall x \exists y \ (x \leftrightarrow y)$ e $\exists y \forall x \ (x \leftrightarrow y)$.
+1. <strong>$\forall x \exists y \ (x \leftrightarrow y)$</strong>: Inizia l'ambiente scegliendo $x$. Poi, conoscendo $x$, il controllore sceglie $y$. Il controllore può semplicemente copiare il valore di $x$ in $y$. La formula originale sarà vera ($1 \leftrightarrow 1$ o $0 \leftrightarrow 0$). Il controllore ha una strategia vincente. La QBF è <strong>Vera</strong>.
+2. <strong>$\exists y \forall x \ (x \leftrightarrow y)$</strong>: Il controllore deve scegliere un valore per $y$ per primo, al buio. Se sceglie $y=1$, l'ambiente al turno dopo (vedendo $y$) sceglie maliziosamente $x=0$, falsificando la formula ($0 \leftrightarrow 1$ è falso). Se il controllore sceglie $y=0$, l'ambiente sceglie $x=1$, vincendo ancora. Il controllore non ha una strategia vincente. La QBF è <strong>Falsa</strong>.</p>
+<p>Questo paradigma a "mosse alternate" è esattamente il meccanismo su cui si basa il Bounded Model Checking e la pianificazione nei giochi a somma zero (parità) e la sintesi dei controllori.</p>
+<hr>
+<h2>5. Logica del Primo Ordine (FOL)</h2>
+<p>La logica del primo ordine, o calcolo dei predicati, permette una formalizzazione molto più ricca della realtà superando i limiti della logica proposizionale "piatta". Permette di parlare di entità, loro proprietà relazionali, e di fare affermazioni universali o esistenziali su elementi di un dominio infinito.</p>
+<h3>5.1 Elementi Sintattici</h3>
+<p>La FOL si basa su un "vocabolario" o "segnatura" che comprende:
+- <strong>Variabili individuali</strong>: $x, y, z, \dots$
+- <strong>Simboli di costante</strong>: $c_1, c_2, \dots$ (oggetti specifici).
+- <strong>Simboli di funzione</strong>: $f, g, h \dots$ (con una certa arità o numero di argomenti, es. il successore di un numero).
+- <strong>Simboli di predicato (o relazione)</strong>: $P, Q, R, \dots$ (anch'essi con un'arità definita).
+- Connettivi logici e i quantificatori $\forall$ e $\exists$.</p>
+<p>Un <strong>termine</strong> è un'espressione che si riferisce a un oggetto (es. costanti, variabili, e l'applicazione di funzioni a termini, come $f(x)$).
+Una formula atomica è ottenuta applicando un predicato a termini (es. $P(x, f(y))$). L'uguaglianza ($x = y$) è solitamente inclusa come predicato speciale standard binario con semantica fissa.</p>
+<h3>5.2 Semantica della FOL (Strutture Relazionali)</h3>
+<p>Per stabilire se una formula FOL è vera, non basta più la tavola di verità. Abbiamo bisogno di una <strong>Struttura (o Modello)</strong> $\mathcal{M} = (D, \mathcal{I})$ formata da:
+- Un insieme non vuoto $D$, il <strong>dominio di discorso</strong> (l'universo degli oggetti).
+- Una funzione di interpretazione $\mathcal{I}$ che assegna significato ai simboli:
+  - Ad ogni costante $c$, $\mathcal{I}$ associa un elemento $c^\mathcal{M} \in D$.
+  - Ad ogni funzione $n$-aria $f$, $\mathcal{I}$ associa una vera funzione matematica $f^\mathcal{M} : D^n \rightarrow D$.
+  - Ad ogni predicato $n$-ario $P$, $\mathcal{I}$ associa una relazione $P^\mathcal{M} \subseteq D^n$.</p>
+<p>Inoltre serve un <strong>assegnamento</strong> $\mu$ che associa ogni variabile $x$ a un elemento del dominio $d \in D$.</p>
+<p>La verità di $\forall x \ \varphi(x)$ nella struttura $\mathcal{M}$ significa che per <em>qualunque</em> elemento $d$ del dominio che decidiamo di assegnare alla variabile $x$, la formula $\varphi$ risulta vera.</p>
+<p><strong>Espressività e Indecidibilità</strong>:
+Il grande pregio della FOL è l'infinita potenza descrittiva, il poter parlare di grafi infiniti, aritmetica, ecc. Il prezzo da pagare è l'<strong>indecidibilità</strong> del problema della validità e della soddisfacibilità (Teorema di Church-Turing). Non esiste nessun algoritmo generale garantito a terminare che possa dirci in tempo finito se una generica formula FOL è valida.
+Per l'uso in V&amp;V, ci si affida a frammenti decidibili o logiche che sono astrazioni specifiche (es. LTL per percorsi discreti), per cui esistono algoritmi ad-hoc.</p>
+<hr>
+<h2>6. Giochi di Ehrenfeucht-Fraïssé e Formule di Hintikka</h2>
+<p>Questi due concetti formano un ponte tra la teoria dei giochi e la teoria dei modelli, e vengono impiegati per studiare l'espressività e i limiti della logica del primo ordine.</p>
+<h3>6.1 Profondità Quantificazionale (Quantifier Rank)</h3>
+<p>La profondità quantificazionale ($qr$) di una formula FOL indica il livello massimo di annidamento dei quantificatori:
+- Formule proposizionali atomiche: $qr = 0$.
+- $qr(\neg\varphi) = qr(\varphi)$.
+- $qr(\varphi \lor \psi) = \max(qr(\varphi), qr(\psi))$.
+- $qr(\exists x \ \varphi) = qr(\forall x \ \varphi) = qr(\varphi) + 1$.</p>
+<p>L'interesse si pone nell'analizzare se due diverse strutture matematiche (es. due grafi, o due stringhe di transizione di uno stato) non possano essere distinte da <em>nessuna</em> formula FOL che abbia al massimo un certo $qr = n$.</p>
+<h3>6.2 Il Gioco di Ehrenfeucht-Fraïssé (EF Games)</h3>
+<p>È un gioco matematico che serve a dimostrare formalmente che due strutture $\mathcal{A}$ e $\mathcal{B}$ sono elementarmente equivalenti fino a profondità $n$.
+Il gioco $G_n(\mathcal{A}, \mathcal{B})$ si svolge tra due giocatori per $n$ turni (round):
+- <strong>Spoiler (Sfidante)</strong>: Tenta di dimostrare che le due strutture sono <em>diverse</em>. In ogni turno, sceglie una struttura (ad esempio $\mathcal{A}$) e seleziona un elemento dal suo dominio.
+- <strong>Duplicator (Difensore)</strong>: Tenta di dimostrare che le due strutture sono <em>simili</em>. Deve rispondere scegliendo un elemento dall'altra struttura ($\mathcal{B}$).</p>
+<p>Dopo $n$ turni, sono state selezionate due sequenze di elementi: $a_1, \dots, a_n \in \mathcal{A}$ e $b_1, \dots, b_n \in \mathcal{B}$.
+Il <strong>Duplicator vince</strong> la partita se la mappatura $a_i \mapsto b_i$ costituisce un <strong>isomorfismo parziale</strong>; in pratica, se qualsiasi relazione o uguaglianza valga per le selezioni in $\mathcal{A}$, deve valere identicamente per le selezioni in $\mathcal{B}$, e viceversa.</p>
+<p><strong>Teorema di Ehrenfeucht-Fraïssé</strong>:
+Le strutture $\mathcal{A}$ e $\mathcal{B}$ soddisfano esattamente le stesse formule FOL di profondità quantificazionale $n$ (scritto $\mathcal{A} \equiv_n \mathcal{B}$) se e solo se il Duplicator ha una strategia vincente nel gioco a $n$ round $G_n(\mathcal{A}, \mathcal{B})$.</p>
+<p><em>Utilizzo pratico</em>: Nella verifica, se riesco a trovare una strategia vincente per Duplicator, dimostro matematicamente un limite dell'espressività della mia logica: il linguaggio non ha formule "abbastanza complesse" per distinguere uno stato di errore (struttura $\mathcal{A}$) da uno stato sicuro (struttura $\mathcal{B}$).</p>
+<h3>6.3 Formule di Hintikka</h3>
+<p>Le formule di Hintikka sono il corrispettivo sintattico (le formule stesse) dell'equivalenza semantica dimostrata dai giochi EF.
+Data una struttura finita $\mathcal{A}$ e un livello $n$, esiste un'unica (a meno di equivalenza logica) formula $\tau_{\mathcal{A}}^n$, detta Formula di Hintikka per $\mathcal{A}$ al livello $n$, che "descrive tutto il possibile descrivibile" di quella struttura usando esattamente profondità $n$.</p>
+<p>Il teorema si completa con questa equivalenza trina:
+1. Duplicator ha una strategia vincente nel gioco EF a $n$ round su $\mathcal{A}$ e $\mathcal{B}$.
+2. $\mathcal{A}$ e $\mathcal{B}$ non sono distinguibili da alcuna formula di profondità $n$ ($\mathcal{A} \equiv_n \mathcal{B}$).
+3. $\mathcal{B} \models \tau_{\mathcal{A}}^n$ (e viceversa).</p>
+<p>Le Formule di Hintikka sono lunghe e complesse e difficilmente costruite a mano, ma forniscono la base per algoritmi di minimizzazione degli automi e per decisioni di equivalenza comportamentale.</p>
+<hr>
+<h2>7. Model checking, SAT e validita': non confonderli</h2>
+<p>Negli appunti la logica proposizionale viene usata subito per distinguere tre
+problemi che sembrano simili ma hanno input diversi.</p>
+<h3>Model checking proposizionale</h3>
+<p>Il model checking proposizionale ha come input:</p>
+<ul>
+<li>una formula $\varphi$;</li>
+<li>una struttura/interpretazione $S$.</li>
+</ul>
+<p>La domanda e':</p>
+<p>$$S\models \varphi?$$</p>
+<p>Qui la struttura e' gia' data. Non bisogna cercarla. L'algoritmo valuta la
+formula ricorsivamente sull'albero sintattico:</p>
+<ul>
+<li>se la formula e' un atomo, guarda il valore assegnato da $S$;</li>
+<li>se e' una congiunzione, valuta entrambe le parti;</li>
+<li>se e' una disgiunzione, valuta almeno una parte;</li>
+<li>se e' una negazione, inverte il risultato.</li>
+</ul>
+<p>Per questo il problema e' concettualmente piu' semplice di SAT: non c'e' scelta
+di modello, c'e' solo valutazione.</p>
+<h3>SAT</h3>
+<p>SAT ha come input solo:</p>
+<p>$$\varphi.$$</p>
+<p>La domanda e':</p>
+<blockquote>
+<p>esiste almeno una interpretazione $S$ tale che $S\models\varphi$?</p>
+</blockquote>
+<p>Quindi SAT deve cercare una struttura. Se la formula contiene $n$ variabili, in
+brute force ci sono:</p>
+<p>$$2^n$$</p>
+<p>assegnamenti possibili.</p>
+<p>Questo spiega perche' SAT e' piu' difficile del semplice model checking
+proposizionale.</p>
+<h3>Validita'</h3>
+<p>La validita' chiede:</p>
+<blockquote>
+<p>tutte le interpretazioni soddisfano $\varphi$?</p>
+</blockquote>
+<p>Formalmente:</p>
+<p>$$\models\varphi.$$</p>
+<p>Quindi:</p>
+<ul>
+<li>SAT cerca un modello;</li>
+<li>validita' cerca assenza di controesempi;</li>
+<li>model checking controlla un modello specifico.</li>
+</ul>
+<p>Questa distinzione ritorna in tutto il corso:</p>
+<ul>
+<li>in LTL, la soddisfacibilita' cerca un cammino/modello;</li>
+<li>nel model checking, si controllano le computazioni di un programma;</li>
+<li>in BMC, si cerca un controesempio finito tramite SAT;</li>
+<li>nella sintesi, si cerca una strategia/controller.</li>
+</ul>
+<h2>8. Riduzioni tra problemi logici</h2>
+<p>Un passaggio degli appunti che vale la pena rendere esplicito e':</p>
+<p>$$\varphi \text{ valida}\quad\Longleftrightarrow\quad \neg\varphi \text{ insoddisfacibile}.$$</p>
+<p>Questo non e' solo un fatto teorico: e' il modo standard con cui si usano i
+solver.</p>
+<p>Se voglio dimostrare una proprieta' $\varphi$, cerco un modello di
+$\neg\varphi$.</p>
+<ul>
+<li>se esiste, ho trovato un controesempio;</li>
+<li>se non esiste, $\varphi$ e' valida.</li>
+</ul>
+<p>Anche l'equivalenza logica si riduce alla validita':</p>
+<p>$$\varphi\equiv\psi
+\quad\Longleftrightarrow\quad
+\models(\varphi\leftrightarrow\psi).$$</p>
+<p>E si puo' ridurre a SAT cercando un assegnamento che distingue le due formule:</p>
+<p>$$\varphi\not\equiv\psi
+\quad\Longleftrightarrow\quad
+(\varphi\land\neg\psi)\lor(\neg\varphi\land\psi)
+\text{ e' soddisfacibile}.$$</p>
+<p>Questa formula e' la differenza simmetrica dei modelli: e' vera esattamente
+quando una delle due formule e' vera e l'altra e' falsa.</p>
+<h3>La riduzione inversa: dalla validità all'equivalenza</h3>
+<p>Negli appunti viene osservato che la riduzione funziona anche nell'altro verso:
+il problema della validità si riduce al problema dell'equivalenza.</p>
+<p>Data una formula $\varphi$ di cui voglio testare la validità, costruisco due
+formule da confrontare:</p>
+<ul>
+<li>$\varphi_1 = \varphi$;</li>
+<li>$\varphi_2 = \top$ (una formula sempre vera, per esempio $p \lor \neg p$).</li>
+</ul>
+<p>Allora:</p>
+<p>$$\varphi \text{ valida} \quad\Longleftrightarrow\quad \varphi \equiv \top.$$</p>
+<p>Il motivo è immediato: $\varphi \equiv \top$ significa che in ogni struttura
+$\varphi$ ha lo stesso valore di $\top$, cioè è vera ovunque. Quindi un oracolo
+per l'equivalenza risolve anche la validità. Le due riduzioni insieme dicono che
+validità ed equivalenza sono <strong>inter-riducibili</strong>: dal punto di vista della
+calcolabilità sono lo stesso problema.</p>
+<h2>9. Perche' servono le forme normali</h2>
+<p>Le forme normali non cambiano il significato della logica. Servono agli
+algoritmi.</p>
+<p>Un algoritmo e' piu' semplice se riceve formule con una struttura regolare. Per
+esempio, un SAT solver lavora bene con formule in CNF:</p>
+<p>$$C_1\land C_2\land\cdots\land C_m,$$</p>
+<p>dove ogni $C_i$ e' una clausola, cioe' una disgiunzione di letterali.</p>
+<h3>Eliminare implicazione e doppia implicazione</h3>
+<p>Gli operatori $\to$ e $\leftrightarrow$ non aumentano il potere espressivo.</p>
+<p>Si eliminano con:</p>
+<p>$$\varphi\to\psi \equiv \neg\varphi\lor\psi.$$</p>
+<p>E:</p>
+<p>$$\varphi\leftrightarrow\psi
+\equiv
+(\varphi\land\psi)\lor(\neg\varphi\land\neg\psi).$$</p>
+<p>Attenzione: eliminare $\leftrightarrow$ duplicando sottoformule puo' aumentare la
+dimensione della formula. Questo e' il primo punto in cui si vede il tema dello
+state/formula explosion.</p>
+<h3>NNF</h3>
+<p>La NNF, negation normal form, porta le negazioni solo davanti agli atomi.</p>
+<p>Esempio:</p>
+<p>$$\neg(p\lor(q\land r))$$</p>
+<p>diventa:</p>
+<p>$$\neg p\land(\neg q\lor\neg r).$$</p>
+<p>Perche' funziona? Perche' le leggi di De Morgan preservano la verita' in ogni
+interpretazione.</p>
+<h3>CNF: equivalenza vs equisoddisfacibilita'</h3>
+<p>Qui c'e' un punto importante.</p>
+<p>Una trasformazione puo' essere:</p>
+<ul>
+<li><strong>equivalente</strong>, se preserva gli stessi modelli sulle stesse variabili;</li>
+<li><strong>equisoddisfacibile</strong>, se preserva solo l'esistenza di almeno un modello.</li>
+</ul>
+<p>La trasformazione di Tseitin introduce variabili ausiliarie. Per questo non
+preserva necessariamente gli stessi modelli sulle variabili nuove, ma preserva
+SAT:</p>
+<p>$$\varphi \text{ soddisfacibile}
+\quad\Longleftrightarrow\quad
+Tseitin(\varphi) \text{ soddisfacibile}.$$</p>
+<p>Per SAT basta. Se invece sto ragionando sull'equivalenza logica esatta, devo
+essere piu' prudente.</p>
+<h3>DNF e tableaux</h3>
+<p>Una formula in DNF rende SAT facile: basta controllare se almeno un termine e'
+coerente, cioe' non contiene insieme $p$ e $\neg p$.</p>
+<p>Il problema e' che trasformare in DNF puo' essere esponenziale.</p>
+<p>Il tableau puo' essere visto come una costruzione ad albero che esplora
+implicitamente una DNF: le ramificazioni rappresentano alternative, i rami
+lineari rappresentano congiunzioni. Non serve materializzare tutta la DNF come
+formula piatta.</p>
+<h2>10. QBF: variabili libere, legate e ordine dei quantificatori</h2>
+<p>In QBF bisogna distinguere:</p>
+<ul>
+<li>occorrenze libere;</li>
+<li>occorrenze legate.</li>
+</ul>
+<p>In:</p>
+<p>$$\neg p\lor \exists p\,(p\land q)$$</p>
+<p>la prima occorrenza di $p$ e' libera, mentre la seconda e' legata dal
+quantificatore $\exists p$.</p>
+<p>Se sostituisco la variabile libera $p$ con $\alpha$, ottengo:</p>
+<p>$$\neg \alpha\lor \exists p\,(p\land q).$$</p>
+<p>Non devo sostituire anche il $p$ dentro $\exists p$, perche' quello e' locale al
+quantificatore.</p>
+<h3>Renaming</h3>
+<p>Il nome di una variabile legata non e' importante, purche' non catturi variabili
+libere.</p>
+<p>Per esempio:</p>
+<p>$$\exists p\,\varphi$$</p>
+<p>e' equivalente a:</p>
+<p>$$\exists q\,\varphi[p/q]$$</p>
+<p>se $q$ non compare libera in $\varphi$.</p>
+<p>Questo dettaglio diventa importante nelle traduzioni logica-automi: spesso si
+rinominano variabili per evitare collisioni.</p>
+<h3>Ordine dei quantificatori</h3>
+<p>L'ordine cambia il significato.</p>
+<p>Con:</p>
+<p>$$\forall x\exists y\,(x\leftrightarrow y)$$</p>
+<p>$y$ puo' dipendere da $x$. L'esistenziale vede la scelta dell'universale e puo'
+copiarla.</p>
+<p>Con:</p>
+<p>$$\exists y\forall x\,(x\leftrightarrow y)$$</p>
+<p>$y$ viene scelto prima. Non puo' adattarsi a $x$. La formula e' falsa.</p>
+<p>Questo e' il primo esempio di <strong>strategia</strong> nel corso: una QBF vera non dice solo
+che esistono valori, ma che il giocatore esistenziale ha una strategia coerente
+con l'ordine dell'informazione.</p>
+<h2>11. Hintikka ed Ehrenfeucht-Fraisse: cosa devi davvero capire</h2>
+<p>La parte su Hintikka e EF games e' facile da sottovalutare, ma serve per capire i
+limiti espressivi delle logiche.</p>
+<p>La domanda tipica e':</p>
+<blockquote>
+<p>con formule di profondita' quantificazionale al massimo $n$, riesco a
+distinguere due strutture?</p>
+</blockquote>
+<p>Se no, le due strutture sono $n$-equivalenti.</p>
+<h3>Formula di Hintikka a livello 0</h3>
+<p>A livello 0 non posso usare quantificatori. Posso solo descrivere fatti atomici
+sulle variabili gia' assegnate.</p>
+<p>La formula di Hintikka di livello 0 contiene:</p>
+<ul>
+<li>tutti gli atomi veri;</li>
+<li>la negazione di tutti gli atomi falsi.</li>
+</ul>
+<p>Quindi e' la descrizione atomica completa della struttura espansa con le
+variabili gia' interpretate.</p>
+<h3>Passo induttivo</h3>
+<p>A livello $n+1$, la formula deve descrivere cosa succede se aggiungo una nuova
+variabile e la interpreto con un elemento del dominio.</p>
+<p>Per questo compaiono congiunzioni di formule del livello precedente, precedute
+da quantificatori. L'idea e':</p>
+<blockquote>
+<p>tutte le mosse possibili del gioco a un round vengono codificate con formule di
+livello inferiore.</p>
+</blockquote>
+<p>Questo spiega il legame con EF games.</p>
+<h3>Perche' i giochi sono piu' maneggevoli</h3>
+<p>Le formule di Hintikka crescono enormemente. Negli appunti viene sottolineato
+che la dimensione puo' crescere come una torre di esponenziali.</p>
+<p>Il gioco EF e' spesso piu' leggibile:</p>
+<ul>
+<li>Spoiler prova a distinguere le strutture;</li>
+<li>Duplicator prova a mantenere un isomorfismo parziale;</li>
+<li>se Duplicator sopravvive $n$ round, nessuna formula FO di quantifier rank $n$
+  distingue le due strutture.</li>
+</ul>
+<h3>Esempio su parole</h3>
+<p>Una parola finita come <code>abbb</code> puo' essere vista come struttura:</p>
+<ul>
+<li>dominio: posizioni $\{0,1,2,3\}$;</li>
+<li>ordine $&lt;$ sulle posizioni;</li>
+<li>predicato $A(x)$ per le posizioni con lettera <code>a</code>;</li>
+<li>predicato $B(x)$ per le posizioni con lettera <code>b</code>.</li>
+</ul>
+<p>Con un solo quantificatore posso dire:</p>
+<blockquote>
+<p>esiste una posizione con <code>a</code>;
+esiste una posizione con <code>b</code>.</p>
+</blockquote>
+<p>Ma non posso ancora distinguere bene tutte le configurazioni d'ordine.</p>
+<p>Aumentando il numero di round/quantificatori, Spoiler puo' chiedere piu'
+posizioni e provare a distinguere lunghezze, ordine e distribuzione delle
+etichette.</p>
+<h3>Le partizioni indotte sulle parole, livello per livello</h3>
+<p>Negli appunti questo viene mostrato concretamente: poiché due strutture con la
+stessa formula di Hintikka di livello $n$ sono $n$-equivalenti, ogni livello
+$n$ <strong>partiziona</strong> l'universo delle parole in classi di equivalenza, e le
+classi diventano più fini al crescere di $n$.</p>
+<p>A livello $n = 1$ (un solo quantificatore, nessun annidamento) posso solo dire
+"esiste una posizione con $a$", "esiste una posizione con $b$", "ogni posizione
+è $a$ o $b$". Le classi sono quattro:</p>
+<table>
+<thead>
+<tr>
+<th>Classe</th>
+<th>Parole</th>
+<th>Formula caratteristica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vuota</td>
+<td>$\varepsilon$</td>
+<td>$\neg\exists x\,(x = x)$</td>
+</tr>
+<tr>
+<td>solo $a$</td>
+<td>$a, aa, aaa, \ldots$</td>
+<td>$\exists x\,A(x) \land \forall x\,A(x)$</td>
+</tr>
+<tr>
+<td>solo $b$</td>
+<td>$b, bb, bbb, \ldots$</td>
+<td>$\exists x\,B(x) \land \forall x\,B(x)$</td>
+</tr>
+<tr>
+<td>miste</td>
+<td>$ab, ba, aabb, abbb, \ldots$</td>
+<td>$\exists x\,A(x) \land \exists x\,B(x)$</td>
+</tr>
+</tbody>
+</table>
+<p>Nota che a questo livello non posso usare l'ordine: per confrontare due
+posizioni con $&lt;$ servono <strong>due</strong> variabili quantificate insieme, quindi $ab$ e
+$ba$ stanno nella stessa classe.</p>
+<p>A livello $n = 2$ (due quantificatori annidati) la partizione si raffina:
+posso parlare di coppie di posizioni, del loro ordine e delle loro etichette.
+Per esempio:</p>
+<ul>
+<li>separo $a$ da $aa$: in $aa$ vale $\exists x \exists y\,(x &lt; y \land A(x)
+  \land A(y))$, in $a$ no;</li>
+<li>separo $ab$ da $aabbb$ (numero di $a$ maggiore di 1) e $aabb$ da $abbb$
+  (numero di $b$);</li>
+<li><strong>non</strong> separo $aa$ da $aaa$: con due sole variabili non posso "contare"
+  fino a tre posizioni distinte. Duplicator sopravvive 2 round nel gioco EF
+  tra $aa$ e $aaa$.</li>
+</ul>
+<p>La regola generale: con quantifier rank $n$ si riesce a contare al massimo
+"fino a $n$", e ogni incremento di $n$ spacca alcune classi in classi più
+fini. Vale anche il viceversa in negativo: se due parole hanno la stessa
+Hintikka di livello 3, ce l'hanno anche ai livelli 2, 1, 0 (le formule di
+livello inferiore sono implicate da quelle di livello superiore).</p>
+<h3>Come si usa per dimostrare non definibilita'</h3>
+<p>Per dimostrare che una proprieta' $P$ non e' definibile in FO, la strategia e':</p>
+<blockquote>
+<p>per ogni $n$, trovare due strutture $\mathcal{A}_n$ e $\mathcal{B}_n$ tali che
+una soddisfa $P$, l'altra no, ma Duplicator vince il gioco EF a $n$ round.</p>
+</blockquote>
+<p>Allora nessuna formula FO di profondita' $n$ distingue quelle due strutture. Se
+questo accade per ogni $n$, nessuna formula FO definisce $P$.</p>
+<p>Questo schema ritorna indirettamente quando il corso parla di linguaggi
+first-order definable, star-free e limiti espressivi.</p>
+<hr>
+<h2>12. Il quadro del corso: verificare = controllare un'inclusione di linguaggi</h2>
+<p>Gli appunti aprono con un esempio che vale la pena tenere a mente per tutto il
+corso, perché anticipa esattamente la pipeline del model checking (Capitolo 8).</p>
+<p>Immagina una macchina del caffè modellata come macchina a stati finiti $S$:
+inserisci monete (5¢, 10¢), ottieni un caffè, oppure premi reset. Ogni
+esecuzione del sistema è una sequenza di eventi, e l'insieme di tutte le
+esecuzioni possibili è un <strong>linguaggio</strong>:</p>
+<p>$$Lang(S) = \{\,10\text{¢ } reset \text{ } 5\text{¢}\ldots,\; 5\text{¢ } 5\text{¢ } 10\text{¢}\ldots,\;\ldots\,\}$$</p>
+<p>Una <strong>specifica</strong> è una formula logica $\varphi$ che descrive le esecuzioni
+"buone", per esempio:</p>
+<p>$$\varphi = \text{"}(10\text{¢} \lor 5\text{¢}) \text{ UNTIL } (coffee \lor reset \lor kick)\text{"}$$</p>
+<p>La domanda "tutte le esecuzioni del modello soddisfano la specifica?" diventa
+un'inclusione tra linguaggi:</p>
+<p>$$Lang(S) \subseteq Lang(\varphi).$$</p>
+<p>Il trucco fondamentale è riscrivere l'inclusione come un problema di
+<strong>vuotezza</strong>:</p>
+<p>$$Lang(S) \subseteq Lang(\varphi)
+\quad\Longleftrightarrow\quad
+Lang(S) \cap Lang(\neg\varphi) = \emptyset.$$</p>
+<p>La procedura quindi è:</p>
+<ol>
+<li><strong>compilare la specifica negata</strong> $\neg\varphi$ in un automa (per l'esempio:
+   $\neg\varphi$ = "per sempre solo monete, senza mai caffè/reset/kick");</li>
+<li>costruire il <strong>prodotto</strong> tra il modello e l'automa di $\neg\varphi$;</li>
+<li>controllare la <strong>vuotezza</strong> del prodotto: se è vuoto, nessuna esecuzione
+   viola la specifica.</li>
+</ol>
+<p>Questo spiega perché la logica è centrale nel corso: è il linguaggio di alto
+livello in cui scriviamo le proprietà, e tutte le tecniche che vedremo
+(automi, S1S, LTL, tableau, OBDD) servono a <strong>compilare la logica in oggetti
+a basso livello</strong> su cui la vuotezza si decide algoritmicamente. Nota anche il
+problema di fondo: i sistemi reattivi hanno esecuzioni <strong>infinite</strong>, e non si
+può testare passo passo qualcosa di infinito in tempo finito — serviranno
+automi su parole infinite (Capitolo 5).</p>
+<hr>
+<h2>13. Riduzioni, complessità, espressività e succintezza</h2>
+<p>Prima di studiare le singole logiche, gli appunti fissano il vocabolario con cui
+le confronteremo per tutto il corso.</p>
+<h3>Riduzioni</h3>
+<p>Una <strong>riduzione</strong> da un problema $P$ a un problema $Q$ (intuitivamente: "$P$ è
+più facile di $Q$") è un algoritmo $F$ che risolve $P$ usando un <strong>oracolo</strong>
+che restituisce soluzioni di $Q$.</p>
+<p>Il caso particolare più usato è la riduzione <strong>many-to-one</strong>: una funzione $F$
+che trasforma le istanze in modo che</p>
+<p>$$\forall x,\quad P(x) \iff Q(F(x)).$$</p>
+<p>Per risolvere $P$ su $x$, calcolo $F(x)$ e chiedo all'oracolo se $Q(F(x))$.
+Esempi già visti: validità $\to$ insoddisfacibilità ($F(\varphi) = \neg\varphi$),
+equivalenza $\to$ validità ($F(\varphi_1,\varphi_2) = \varphi_1
+\leftrightarrow \varphi_2$).</p>
+<h3>Complessità</h3>
+<p>Un algoritmo $Alg$ è limitato in TEMPO/SPAZIO da una funzione
+$f:\mathbb{N}\to\mathbb{N}$ se $Alg(input)$ usa al più $f(|input|)$ unità di
+tempo/spazio. Da qui le classi di complessità usate nel corso: P, NP,
+PSPACE, EXP. Ricorda i punti fissi del capitolo: EVAL è P-completo, SAT è
+NP-completo, TQBF è PSPACE-completo.</p>
+<h3>Espressività</h3>
+<blockquote>
+<p>Quali proprietà si possono esprimere in una data logica? Questa logica è
+più o meno espressiva di quest'altra?</p>
+</blockquote>
+<p>Più una logica è espressiva, più proprietà posso formalizzare — ma il prezzo è
+la <strong>decidibilità</strong> o la complessità: l'espressività si paga sempre. Questo
+trade-off torna ovunque: FOL è più espressiva della proposizionale ma
+indecidibile; S1S è decidibile ma con complessità non elementare; LTL e CTL
+sono frammenti che barattano espressività per algoritmi efficienti.</p>
+<h3>Succintezza</h3>
+<p>Due logiche possono esprimere <strong>le stesse proprietà</strong> ma con costi diversi: la
+stessa proprietà può richiedere 10 simboli in una e un milione nell'altra.</p>
+<p>L'analogia degli appunti: Python e Assembly calcolano le stesse funzioni, ma
+Python è molto più <strong>succinto</strong> (lo stesso programma richiede molti meno
+simboli), mentre Assembly è molto più efficiente da eseguire. Allo stesso modo
+una logica più succinta tende ad avere algoritmi più costosi: la succintezza si
+paga in complessità.</p>
+<h3>Definibilità tra logiche</h3>
+<p>Ultimo problema del quadro: date due logiche $L_1$ e $L_2$ e una formula
+$\varphi_1 \in L_1$, posso riscriverla come $\varphi_2 \in L_2$ equivalente in
+ogni struttura?</p>
+<p>Il caso interessante è quando $L_2$ è un <strong>frammento</strong> di $L_1$: meno
+espressivo, ma con miglior comportamento computazionale. Se la mia proprietà è
+definibile nel frammento, conviene usare il frammento. È esattamente quello che
+faremo con star-free $\subseteq$ regolari, LTL vs S1S, CTL vs CTL*.</p>
+<hr>
+<h2>14. Due esempi che preparano il resto del corso</h2>
+<p>Gli appunti introducono due esempi di formalizzazione che sembrano digressioni
+ma anticipano due capitoli interi. Vale la pena capirli ora.</p>
+<h3>14.1 Il lemma di Kőnig in logica (anteprima di MSO)</h3>
+<p>Il lemma di Kőnig dice:</p>
+<blockquote>
+<p>ogni albero infinito a ramificazione finita ha un cammino infinito.</p>
+</blockquote>
+<p>Per formalizzarlo serve parlare di alberi, antenati e insiemi: gli appunti
+usano la relazione $A(x,y)$ = "$x$ è antenato di $y$" e variabili di <strong>sorte</strong>
+diversa (sorted logic: ogni variabile spazia su un universo di tipo diverso,
+come ordini e istanti di tempo nell'esempio "ogni ordine verrà processato in
+un istante futuro" con $t &lt; t'$).</p>
+<p>I pezzi della formalizzazione:</p>
+<ul>
+<li>"essere un albero": se $y$ e $z$ sono entrambi antenati di $x$
+  ($A(y,x) \land A(z,x)$), allora sono confrontabili tra loro
+  ($A(y,z) \lor A(z,y)$) — gli antenati di un nodo formano una catena, non ci
+  sono "rombi";</li>
+<li>"ramificazione finita": per ogni nodo, l'insieme dei figli è finito,
+  espresso con un quantificatore su insiemi <strong>finiti</strong> ($\exists Y_{finite}$);</li>
+<li>"cammino infinito": esiste un insieme <strong>infinito</strong> di nodi
+  ($\exists Z_{infinite}$) totalmente ordinato da $A$ — una <strong>catena</strong>
+  infinita (attenzione: una catena è un sottoinsieme di un cammino, i suoi
+  elementi devono solo essere a due a due confrontabili).</li>
+</ul>
+<p>Il punto importante è la differenza tra i due tipi di variabili:</p>
+<ul>
+<li>variabili del <strong>primo ordine</strong> ($x, y, z$): interpretate da singoli elementi;</li>
+<li>variabili del <strong>secondo ordine</strong> ($Y_{finite}$, $Z_{infinite}$): interpretate
+  da insiemi (finiti o infiniti) di elementi.</li>
+</ul>
+<p>Quantificare su insiemi è ciò che la logica <strong>monadica del secondo ordine</strong>
+(MSO) aggiunge alla FOL: è la logica S1S del Capitolo 6. Questo esempio mostra
+perché serve: proprietà come "esiste un cammino infinito" non sono esprimibili
+restando al primo ordine.</p>
+<h3>14.2 Raggiungibilità di un circuito con SAT (anteprima di BMC)</h3>
+<p>Considera un dispositivo il cui stato interno è codificato da $k$ bit. Lo
+descriviamo con tre formule proposizionali:</p>
+<ul>
+<li>$\varphi_{init}(\bar p)$: descrive l'insieme degli stati iniziali. Con
+  $\bar p = p_1,\ldots,p_k$, lo stato $1011$ si scrive
+  $p_1 \land \neg p_2 \land p_3 \land p_4$; una formula generica può
+  descrivere <strong>molti</strong> stati iniziali insieme;</li>
+<li>$\varphi_{target}(\bar p)$: descrive gli stati obiettivo;</li>
+<li>$\varphi_{step}(\bar p, \bar p\,')$: descrive la relazione di transizione,
+  usando <strong>due copie</strong> delle variabili — $\bar p$ per lo stato corrente,
+  $\bar p\,'$ per il successivo.</li>
+</ul>
+<blockquote>
+<p>Problema: il dispositivo ammette un'esecuzione dallo stato iniziale a quello
+obiettivo?</p>
+</blockquote>
+<p>Osservazione chiave sulla lunghezza: con $k$ bit ci sono al più $2^k$
+configurazioni, quindi se un cammino esiste, ne esiste uno di lunghezza al più
+$n = 2^k$. Possiamo anzi assumere lunghezza <strong>esattamente</strong> $n$: basta che
+$\varphi_{step}$ ammetta anche il passo "non fare nulla" ($\bar p = \bar p\,'$),
+così i cammini corti si allungano con passi vuoti senza cambiare la
+raggiungibilità.</p>
+<p>La soluzione è una formula con $n$ tuple di variabili
+$\bar p^{(1)},\ldots,\bar p^{(n)}$ (una per ogni istante):</p>
+<p>$$\varphi_{reach} = \varphi_{init}(\bar p^{(1)}) \land \varphi_{target}(\bar p^{(n)}) \land \bigwedge_{i=1}^{n-1} \varphi_{step}(\bar p^{(i)}, \bar p^{(i+1)})$$</p>
+<p>ed è <strong>soddisfacibile se e solo se</strong> esiste un'esecuzione dallo stato iniziale
+al target: un modello di $\varphi_{reach}$ è esattamente un cammino, letto
+assegnamento per assegnamento.</p>
+<p>Questo schema — srotolare la relazione di transizione per $n$ passi e chiedere
+a un SAT solver se esiste un cammino — è esattamente il <strong>Bounded Model
+Checking</strong> del Capitolo 9, dove l'unica differenza è che il bound viene tenuto
+piccolo e incrementato, invece di essere fissato a $2^k$.</p>
+<hr>
+<h2>15. QBF: un esempio valutato con la semantica ricorsiva</h2>
+<p>Oltre alla lettura "a gioco" della sezione 10, conviene saper valutare una QBF
+applicando meccanicamente la semantica, come negli appunti.</p>
+<p>Formula da controllare, partendo dalla struttura vuota $S = \emptyset$:</p>
+<p>$$S \models \forall p\,\exists q\,\big((p \lor \neg q) \land (\neg p \lor q)\big)?$$</p>
+<p><strong>Passo 1 — il $\forall p$.</strong> Per la semantica, $S \models \forall p\,\psi$ vale
+se $\psi$ vale per <strong>entrambe</strong> le espansioni di $S$:</p>
+<ul>
+<li>$S_1 = [p := tt] \models \exists q\,(p \lor \neg q) \land (\neg p \lor q)$, e</li>
+<li>$S_2 = [p := ff] \models \exists q\,(p \lor \neg q) \land (\neg p \lor q)$.</li>
+</ul>
+<p><strong>Passo 2 — il $\exists q$ dentro $S_1$.</strong> Per la semantica dell'esistenziale
+basta che <strong>una</strong> delle due espansioni funzioni:</p>
+<ul>
+<li>$S_1' = [p := tt,\, q := tt] \models (p \lor \neg q) \land (\neg p \lor q)$?
+  Con $p$ vero il primo congiunto è vero; il secondo, $\neg p \lor q$, richiede
+  $q$ vero — ed è il nostro caso. <strong>Sì.</strong></li>
+<li>(non serve nemmeno provare $S_1'' = [p := tt,\, q := ff]$.)</li>
+</ul>
+<p><strong>Passo 3 — il $\exists q$ dentro $S_2$.</strong> Simmetrico: con $p$ falso il secondo
+congiunto è vero, e il primo, $p \lor \neg q$, richiede $q$ falso. Quindi
+$S_2' = [p := ff,\, q := ff]$ funziona. <strong>Sì.</strong></p>
+<p>Entrambi i rami del $\forall$ hanno successo: la formula è <strong>vera</strong>. Nota che
+la valutazione ha trovato la strategia del giocatore esistenziale della sezione
+10: "copia il valore di $p$".</p>
+<h3>L'algoritmo di model checking per QBF</h3>
+<p>La procedura usata sopra è esattamente l'estensione ricorsiva del ModelCheck
+proposizionale:</p>
+<ul>
+<li>$\varphi = \exists p\,\varphi'$: ritorna
+  $ModelCheck(\varphi', S[p := tt])$ <strong>or</strong> $ModelCheck(\varphi', S[p := ff])$;</li>
+<li>$\varphi = \forall p\,\varphi'$: ritorna
+  $ModelCheck(\varphi', S[p := tt])$ <strong>and</strong> $ModelCheck(\varphi', S[p := ff])$.</li>
+</ul>
+<p>Ogni quantificatore raddoppia le chiamate: con $n$ quantificatori annidati il
+tempo è $O(2^n)$, ma lo <strong>spazio</strong> è polinomiale (la ricorsione è profonda
+quanto la formula, e ogni livello memorizza solo un'espansione di $S$). È il
+motivo intuitivo per cui TQBF sta in PSPACE — e ne è anzi il problema
+completo.</p>
+<hr>
+<hr>
+
+<h2>16. Quiz Interattivo per l'Autovalutazione</h2>
+<div id="quiz-container" style="background:#f9f9f9; padding:20px; border-radius:8px; border: 1px solid #ddd; margin-top:2rem;">
+  <h3 style="margin-top:0;">Quiz Settimana 1: Mettiti alla prova</h3>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>1. Qual è l'esatta relazione tra la validità di una formula e la sua soddisfacibilità?</strong></p>
+    <label><input type="radio" name="q1" value="A"> A) Una formula è valida se e solo se è anche soddisfacibile.</label><br>
+    <label><input type="radio" name="q1" value="B"> B) Una formula $\varphi$ è valida se e solo se $\neg\varphi$ è insoddisfacibile.</label><br>
+    <label><input type="radio" name="q1" value="C"> C) Una formula valida è una formula per cui nessun modello può esistere.</label><br>
+    <button onclick="checkAnswer('q1', 'B', 'Corretto! Cercare un controesempio significa cercare un modello per la negazione.', 'Sbagliato. Rivedi il Teorema fondamentale nella sezione 1.3.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q1-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>2. Applicando l'algoritmo dei Tableaux alla formula $(p \land q) \lor \neg p$, quale regola applichi come primissima mossa partendo dalla radice?</strong></p>
+    <label><input type="radio" name="q2" value="A"> A) Regola $\alpha$ (and-rule) per dividere $p$ e $q$.</label><br>
+    <label><input type="radio" name="q2" value="B"> B) Regola $\beta$ (or-rule) per creare un ramo sinistro con $(p \land q)$ e un ramo destro con $\neg p$.</label><br>
+    <label><input type="radio" name="q2" value="C"> C) Chiudo immediatamente il tableau a causa di $\neg p$.</label><br>
+    <button onclick="checkAnswer('q2', 'B', 'Corretto! L\'operatore principale a livello più alto è l\'OR (la disgiunzione), che genera due rami di scelta (regola β).', 'Sbagliato. L\'operatore principale è la disgiunzione. Devi prima applicare la regola per dividere la formula nei due or-branch.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q2-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>3. Relativamente alle QBF e ai giochi di valutazione, valuta la verità di $\exists x \forall y \ (x \rightarrow y)$. Quale delle seguenti è vera?</strong></p>
+    <label><input type="radio" name="q3" value="A"> A) È VERA. Il giocatore Esistenziale può scegliere $x=0$, rendendo l'implicazione sempre vera, indipendentemente dalla scelta dell'Universale per $y$.</label><br>
+    <label><input type="radio" name="q3" value="B"> B) È FALSA. L'Universale gioca per primo, quindi saprà sempre contrastare il giocatore Esistenziale.</label><br>
+    <label><input type="radio" name="q3" value="C"> C) È FALSA. Se il giocatore Esistenziale sceglie $x=1$, l'Universale sceglierà $y=0$ falsificando la formula.</label><br>
+    <button onclick="checkAnswer('q3', 'A', 'Eccellente! Se il primo giocatore (Esistenziale) fissa x a falso (0), l\'implicazione è garantita per falsità della premessa. Ha una strategia vincente.', 'Sbagliato. Rivedi l\'implicazione materiale. Se x è falso, l\'implicazione è sempre vera.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q3-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>4. Quale affermazione sui Giochi di Ehrenfeucht-Fraïssé è corretta?</strong></p>
+    <label><input type="radio" name="q4" value="A"> A) Sfidano il giocatore Universale a trovare un modello valido per una QBF.</label><br>
+    <label><input type="radio" name="q4" value="B"> B) Se il Duplicator vince un gioco a n-round, le due strutture in esame non sono distinguibili da alcuna formula FOL di profondità quantificazionale n.</label><br>
+    <label><input type="radio" name="q4" value="C"> C) Uno Spoiler vincente dimostra che le strutture sono perfettamente identiche.</label><br>
+    <button onclick="checkAnswer('q4', 'B', 'Esatto. È il nucleo del Teorema di Ehrenfeucht-Fraïssé che collega il gioco all\'equivalenza logica (e profondità).', 'Sbagliato. Leggi attentamente la sezione 6.2 per comprendere le conseguenze della vittoria del Duplicator.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q4-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+</div>
+
+<script>
+function checkAnswer(qName, correctVal, correctMsg, wrongMsg) {
+  const options = document.getElementsByName(qName);
+  let selected = null;
+  for(let opt of options) { if(opt.checked) selected = opt.value; }
+  const fb = document.getElementById(qName + '-feedback');
+  fb.style.display = 'block';
+
+  if(!selected) { 
+      fb.innerText = 'Seleziona una risposta!'; 
+      fb.style.color = '#d35400';
+      return; 
+  }
+
+  if(selected === correctVal) { 
+      fb.innerText = '✅ ' + correctMsg; 
+      fb.style.color = '#27ae60';
+  }
+  else { 
+      fb.innerText = '❌ ' + wrongMsg; 
+      fb.style.color = '#c0392b';
+  }
+}
+</script></article>
+  <p class="section-label">Esercizi (piano di studio)</p>
+  
+<div class="exercises-block prose">
+<h2>Esercizi e domande — settimana 1</h2>
+<p><strong>Obiettivo della settimana:</strong> diventare solido sulle basi: formule, satisfiability/validity, DFA/NFA, chiusure, decidibilita, Myhill-Nerode.</p>
+<h3>Esercizi scritti essenziali</h3>
+<ol>
+<li>
+<p><strong>Tableau proposizionale.</strong> Porta in NNF e usa il tableau per decidere la soddisfacibilita di:
+   $$\neg((p \rightarrow q) \leftrightarrow (\neg p \lor q))$$
+   Poi spiega in una frase perche il risultato era prevedibile.</p>
+</li>
+<li>
+<p><strong>CNF equisoddisfacibile.</strong> Trasforma in CNF equisoddisfacibile, introducendo variabili ausiliarie se serve:
+   $$((p \land q) \lor (r \land \neg s)) \rightarrow (q \lor r)$$
+   Scrivi chiaramente quali passaggi preservano equivalenza e quali solo equisoddisfacibilita.</p>
+</li>
+<li>
+<p><strong>QBF.</strong> Valuta la verita della formula:
+   $$\forall p \exists q ((p \lor q) \land (\neg p \lor q))$$
+   Poi valuta la variante con quantificatori invertiti:
+   $$\exists q \forall p ((p \lor q) \land (\neg p \lor q))$$
+   Confronta i due risultati.</p>
+</li>
+<li>
+<p><strong>Determinizzazione.</strong> Dato l'NFA con stati $\lbrace q_0,q_1,q_2\rbrace$, iniziale $q_0$, finale $q_2$, transizioni:
+   $$\Delta(q_0,0)=\lbrace q_0,q_1\rbrace,\quad \Delta(q_0,1)=\lbrace q_0\rbrace,\quad \Delta(q_1,1)=\lbrace q_2\rbrace$$
+   costruisci il DFA equivalente con subset construction. Indica stati raggiungibili e finali.</p>
+</li>
+<li>
+<p><strong>DFA da specifica.</strong> Costruisci un DFA su $\lbrace 0,1\rbrace$ che riconosce le stringhe che contengono <code>101</code> come sottostringa. Poi costruisci il complemento.</p>
+</li>
+<li>
+<p><strong>Chiusure.</strong> Dimostra costruttivamente che i linguaggi regolari sono chiusi per:
+   union, intersezione, complemento, concatenazione. Per intersezione usa sia prodotto sia De Morgan.</p>
+</li>
+<li>
+<p><strong>Decidibilita.</strong> Spiega un algoritmo per decidere:
+   vuotezza, infinitudine, equivalenza e inclusione per DFA. Per ognuno scrivi input, idea, condizione di stop.</p>
+</li>
+<li>
+<p><strong>Myhill-Nerode positivo.</strong> Per il linguaggio:
+   $$L=\lbrace w\in\lbrace a,b\rbrace^* \mid w \text{ termina con } a\rbrace$$
+   trova le classi di equivalenza di $\approx_L$ e disegna il DFA minimo.</p>
+</li>
+<li>
+<p><strong>Myhill-Nerode negativo.</strong> Usa Myhill-Nerode per dimostrare che:
+   $$L=\lbrace a^n b^n \mid n\ge 0\rbrace$$
+   non e' regolare. Scrivi esplicitamente la famiglia infinita di prefissi distinguibili.</p>
+</li>
+<li>
+<p><strong>Domanda ponte.</strong> Scrivi mezza pagina: perche la logica serve come linguaggio di specifica e gli automi come oggetto algoritmico?</p>
+</li>
+</ol>
+<h3>Domande orali secche</h3>
+<ol>
+<li>Differenza tra satisfiability, validity, model checking e equivalenza logica.</li>
+<li>Perche FOL e' piu espressiva della logica proposizionale ma meno trattabile?</li>
+<li>Perche NFA e DFA hanno lo stesso potere espressivo sulle parole finite?</li>
+<li>Perche il complemento di un NFA non si ottiene semplicemente scambiando finali e non finali?</li>
+<li>Enuncia Myhill-Nerode in modo pulito e spiega il legame con il DFA minimo.</li>
+</ol>
+<h3>Controllo</h3>
+<p>Hai superato la settimana se riesci a fare subset construction e Myhill-Nerode senza guardare le note, e se sai spiegare a voce cosa significa "right-invariant relation of finite index".</p>
+</div>
+
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span></span><span><a href="cap02.html">Successivo →</a></span></div>
+</div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script defer src="assets/chat.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

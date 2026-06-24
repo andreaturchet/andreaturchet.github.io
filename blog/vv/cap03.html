@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capitolo 3 — Apprendimento di automi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/chat.css" />
+  
+</head>
+<body>
+
+<header class="site-header">
+  <h1>V&amp;V in AI — Appunti</h1>
+  <p class="subtitle">Settimana 2</p>
+  <div class="ornament">✦</div>
+</header>
+<div class="wrap">
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap02.html">← Precedente</a></span><span><a href="cap04.html">Successivo →</a></span></div>
+  
+<div class="chapter-opener">
+  <div class="label">Capitolo 3</div>
+  <h1>Capitolo 3 — Apprendimento di automi</h1>
+  <p class="focus">Algoritmo L* di Angluin, MAT, matrici di Hankel.</p>
+</div>
+
+  <article class="prose"><h1>Apprendimento di automi - Riassunto</h1>
+<p><strong>Fonte</strong>: <code>raw/Learning Automata.md</code></p>
+<h2>Punti chiave</h2>
+<ul>
+<li>Nell'<strong>apprendimento di automi</strong> un Learner cerca di ricostruire un linguaggio regolare noto a un Teacher.</li>
+<li>Le query principali sono:</li>
+<li><strong>Membership Query (MQ)</strong>: chiede se una parola appartiene al linguaggio;</li>
+<li><strong>Equivalence Query (EQ)</strong>: propone un automa e chiede se riconosce esattamente il linguaggio target.</li>
+<li>L'equivalenza di Myhill-Nerode e' alla base dell'identificazione degli stati del DFA minimo.</li>
+<li>L'algoritmo <strong>L*</strong> di Angluin organizza le informazioni in una tabella di osservazione, collegata alle matrici di Hankel.</li>
+<li>Quando la tabella e' completa e minimale, il Learner costruisce un'ipotesi e la sottopone al Teacher.</li>
+</ul>
+<h2>Concetti collegati</h2>
+<ul>
+<li>Apprendimento di automi</li>
+<li>Algoritmo L* di Angluin</li>
+<li>Matrici di Hankel</li>
+</ul>
+<hr />
+
+<h1>Apprendimento di automi</h1>
+<p>L'apprendimento di automi consiste nell'inferire un automa che riconosce un linguaggio target. Nel modello attivo, un Learner puo interrogare un Teacher che conosce il linguaggio.</p>
+<h2>Modello MAT</h2>
+<p>Nel modello del <strong>Minimally Adequate Teacher</strong>, il Learner puo usare:
+- <strong>membership query</strong>: chiede se una parola e' nel linguaggio;
+- <strong>equivalence query</strong>: propone un automa e riceve conferma o un controesempio.</p>
+<p>Le membership query da sole non bastano a garantire l'identificazione del linguaggio, perche' dopo un numero finito di esempi restano molti linguaggi compatibili. Le equivalence query da sole basterebbero enumerando automi, ma con costo brute-force. La forza di <code>L*</code> sta nel combinare le due: le MQ raffinano localmente la tabella, le EQ danno un controllo globale e un controesempio utile.</p>
+<h2>Connessione con Myhill-Nerode</h2>
+<p>Le righe della tabella di osservazione raggruppano parole che non sono distinguibili dai suffissi testati. Quando la tabella e' abbastanza raffinata, questi gruppi diventano gli stati del DFA minimo.</p>
+<h2>Rilevanza</h2>
+<p>L'apprendimento di automi e' utile in V&amp;V quando il sistema e' trattato come black box e si vuole costruire un modello finito su cui verificare proprieta.</p>
+<p>Nel mondo reale il MAT e' idealizzato: una EQ viene spesso approssimata con testing, fuzzing o conformance testing. Se si trova un controesempio, lo si usa per raffinare il modello; se non lo si trova, l'ipotesi resta una buona approssimazione, non una prova assoluta.</p>
+<h2>Fonti</h2>
+<ul>
+<li>Apprendimento di automi - Riassunto</li>
+</ul>
+<hr />
+
+<h1>Algoritmo L* di Angluin</h1>
+<p>L'algoritmo <code>L*</code> e' un algoritmo classico per l'apprendimento attivo di linguaggi regolari. Il Learner interagisce con un Teacher che conosce il linguaggio target.</p>
+<h2>Query</h2>
+<ul>
+<li><strong>Membership query</strong>: il Learner chiede se una parola $w$ appartiene al linguaggio.</li>
+<li><strong>Equivalence query</strong>: il Learner propone un DFA; il Teacher risponde si oppure fornisce un controesempio.</li>
+</ul>
+<h2>Meccanismo</h2>
+<p>Il Learner mantiene una tabella di osservazione basata su prefissi e suffissi. Le righe rappresentano comportamenti rispetto ai suffissi di test e tendono a corrispondere alle classi di Myhill-Nerode.</p>
+<p>La tabella deve diventare:
+- <strong>chiusa / T-completa</strong>: ogni transizione da uno stato rappresentato resta rappresentabile nella tabella;
+- <strong>consistente / T-minimale</strong>: righe uguali non possono divergere dopo l'aggiunta dello stesso simbolo.</p>
+<p>Quando queste condizioni valgono, si costruisce un DFA ipotesi. Se l'equivalence query fallisce, il controesempio viene usato per raffinare la tabella.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Apprendimento di automi</li>
+<li>Matrici di Hankel</li>
+<li>Teorema di Myhill-Nerode</li>
+</ul>
+<hr />
+
+<h1>Matrici di Hankel</h1>
+<p>La matrice di Hankel di un linguaggio ha righe indicizzate da prefissi e colonne indicizzate da suffissi. L'elemento $(u,v)$ indica se $uv$ appartiene al linguaggio.</p>
+<h2>Ruolo nell'apprendimento</h2>
+<p>Righe uguali rappresentano prefissi indistinguibili rispetto ai suffissi osservati. Questo collega le matrici di Hankel alle classi di Myhill-Nerode e agli stati del DFA minimo.</p>
+<p>L'algoritmo <code>L*</code> manipola solo una finestra finita della matrice: righe $S$, righe di frontiera $S \cdot \Sigma$ e colonne $T$. Aggiungere suffissi a $T$ significa aggiungere colonne e rendere piu' fine il test; aggiungere prefissi a $S$ significa introdurre nuovi rappresentanti di stati.</p>
+<p>La chiusura della tabella richiede che ogni riga di frontiera sia gia' rappresentata in $S$; la consistenza richiede che righe uguali restino uguali dopo l'estensione con lo stesso simbolo.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Apprendimento di automi</li>
+<li>Algoritmo L* di Angluin</li>
+<li>Teorema di Myhill-Nerode</li>
+</ul>
+<hr />
+
+<h1>Transduttori sequenziali</h1>
+<p>Un transduttore sequenziale e' un automa finito che produce una parola di output mentre legge una parola di input.</p>
+<h2>Definizione intuitiva</h2>
+<p>A ogni transizione non e' associato solo uno stato successivo, ma anche una porzione di output.</p>
+<h2>Uso</h2>
+<p>I transduttori modellano funzioni su parole e sono vicini agli automi di Mealy usati nella sintesi di controllori.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Automi di Mealy</li>
+<li>Apprendimento di automi</li>
+</ul>
+<hr />
+
+<h1>Approfondimento completo settimana 2 - Apprendimento di automi, MAT, L* e Hankel</h1>
+<blockquote>
+<p>Questa e' la versione estesa e autocontenuta del capitolo 3. E' pensata come
+punto di partenza per la domanda a scelta dell'orale: prima costruisce
+l'intuizione, poi formalizza MAT, Myhill-Nerode relativizzato, L*, Hankel e
+transduttori. Ogni definizione importante viene riletta in parole.</p>
+</blockquote>
+<h2>Di cosa parla davvero questo capitolo</h2>
+<p>Il capitolo 3 risponde a una domanda molto concreta:</p>
+<blockquote>
+<p>se una macchina si comporta come un automa finito, ma non vedo i suoi stati
+interni, posso ricostruire un modello finito del suo comportamento facendo
+esperimenti?</p>
+</blockquote>
+<p>Questa e' l'idea dell'<strong>automata learning</strong>. Non stiamo addestrando una rete
+neurale con tanti esempi etichettati. Stiamo cercando di identificare una
+struttura discreta:</p>
+<ul>
+<li>stati;</li>
+<li>transizioni;</li>
+<li>stati finali;</li>
+<li>comportamento su tutte le parole.</li>
+</ul>
+<p>Il capitolo ruota attorno all'algoritmo <strong>L*</strong> di Angluin, che impara un
+linguaggio regolare interagendo con un teacher tramite due tipi di domande:</p>
+<ul>
+<li>membership query;</li>
+<li>equivalence query.</li>
+</ul>
+<p>La mappa del capitolo e':</p>
+<ol>
+<li>Parte I: perche' apprendere automi e' diverso da classificare esempi.</li>
+<li>Parte II: il modello MAT e le due query.</li>
+<li>Parte III: Myhill-Nerode come fondamento dell'apprendimento.</li>
+<li>Parte IV: equivalenza relativizzata, insiemi $S$ e $T$.</li>
+<li>Parte V: observation table e matrice di Hankel.</li>
+<li>Parte VI: algoritmo L* riga per riga.</li>
+<li>Parte VII: esempio completo sul linguaggio $(ab)^\ast$.</li>
+<li>Parte VIII: perche' l'algoritmo termina e perche' e' efficiente.</li>
+<li>Parte IX: black-box learning e uso in V&amp;V/security.</li>
+<li>Parte X: transduttori sequenziali e generalizzazioni.</li>
+<li>Parte XI: errori tipici, esercizi e mappa orale.</li>
+</ol>
+<h3>0. Richiami minimi</h3>
+<p><strong>DFA.</strong> Un automa finito deterministico e':</p>
+<p>$$\mathcal{A}=(Q,\Sigma,\delta,q_0,F).$$</p>
+<p>Riconosce un linguaggio regolare $L(\mathcal{A})\subseteq\Sigma^\ast$.</p>
+<p><strong>Linguaggio target.</strong> Nel learning supponiamo che esista un linguaggio segreto:</p>
+<p>$$L_0\subseteq\Sigma^\ast.$$</p>
+<p>Il teacher lo conosce. Il learner conosce inizialmente solo l'alfabeto
+$\Sigma$.</p>
+<p><strong>Funzione caratteristica.</strong> Un linguaggio e' una funzione:</p>
+<p>$$\chi_{L_0}:\Sigma^\ast\to\{0,1\}$$</p>
+<p>dove $\chi_{L_0}(w)=1$ se $w\in L_0$ e 0 altrimenti.</p>
+<p><strong>Obiettivo.</strong> Il learner deve costruire un DFA $\mathcal{A}$ tale che:</p>
+<p>$$L(\mathcal{A})=L_0.$$</p>
+<p>Non serve trovare lo stesso automa fisico del teacher. Serve trovare un automa
+equivalente, cioe' che riconosce lo stesso linguaggio.</p>
+<hr>
+<h2>Parte I - Perche imparare automi</h2>
+<h3>1. Learning di funzioni semplici</h3>
+<p>Negli appunti viene fatto un confronto utile.</p>
+<p>Una rete neurale puo' imparare funzioni molto complesse, ad esempio:</p>
+<p>$$f:\mathbb{R}^k\to\{0,1\}$$</p>
+<p>che decide se un'immagine rappresenta un cane.</p>
+<p>Un automa finito, invece, riconosce funzioni piu' strutturate:</p>
+<p>$$f:\Sigma^\ast\to\{0,1\}.$$</p>
+<p>L'input non e' un vettore reale, ma una parola. L'output dice se la parola
+appartiene a un linguaggio.</p>
+<p>Questa differenza cambia tutto:</p>
+<table>
+<thead>
+<tr>
+<th>Machine learning usuale</th>
+<th>Automata learning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>spesso struttura fissata prima</td>
+<td>struttura da scoprire</td>
+</tr>
+<tr>
+<td>parametri numerici</td>
+<td>stati e transizioni</td>
+</tr>
+<tr>
+<td>esempi etichettati</td>
+<td>query attive</td>
+</tr>
+<tr>
+<td>approssimazione statistica</td>
+<td>identificazione esatta nel modello MAT</td>
+</tr>
+</tbody>
+</table>
+<h3>2. Struttura fissata contro struttura appresa</h3>
+<p>In molti modelli neurali scegliamo prima l'architettura:</p>
+<ul>
+<li>quanti layer;</li>
+<li>quanti nodi;</li>
+<li>quali connessioni.</li>
+</ul>
+<p>Poi impariamo i pesi.</p>
+<p>Nel learning di automi, invece, vogliamo scoprire anche la struttura:</p>
+<ul>
+<li>quanti stati servono;</li>
+<li>quali transizioni ci sono;</li>
+<li>quali stati sono finali.</li>
+</ul>
+<p>Questo e' il motivo per cui Myhill-Nerode diventa centrale: il numero minimo di
+stati non e' arbitrario. E' il numero di classi della relazione di
+Myhill-Nerode.</p>
+<h3>3. Apprendimento passivo e apprendimento attivo</h3>
+<p><strong>Apprendimento passivo.</strong> Il learner riceve esempi, cioe' parole gia'
+etichettate come positive o negative.</p>
+<p><strong>Apprendimento attivo.</strong> Il learner sceglie quali parole chiedere. Fa
+esperimenti.</p>
+<p>Moore, nel lavoro sui "Gedanken-experiments on sequential machines", poneva
+proprio questa idea: interagisco con una macchina sconosciuta, osservo le
+risposte, e costruisco un modello astratto del suo comportamento.</p>
+<p>L* e' attivo:</p>
+<ul>
+<li>il learner non aspetta esempi casuali;</li>
+<li>costruisce parole mirate;</li>
+<li>usa le risposte per raffinare il modello.</li>
+</ul>
+<h3>4. Breve storia da usare all'orale</h3>
+<p>Una mini-storia utile:</p>
+<ol>
+<li><strong>Moore 1956</strong>: esperimenti su macchine sequenziali; l'idea di interrogare
+   una macchina come black box.</li>
+<li><strong>Gold 1967</strong>: learning in the limit, soprattutto passivo.</li>
+<li><strong>Angluin 1987</strong>: learning regolare efficiente con query, algoritmo L*.</li>
+<li><strong>Pitt e altri, anni '90</strong>: collegamenti con PAC learning e difficolta'
+   computazionale.</li>
+<li><strong>Maler e altri 1995</strong>: estensione verso linguaggi omega-regolari.</li>
+</ol>
+<p>Non devi ricordare date come elenco sterile. Servono a dire:</p>
+<blockquote>
+<p>il problema nasce come identificazione di macchine finite tramite esperimenti,
+e Angluin fornisce il primo algoritmo efficiente nel modello con query.</p>
+</blockquote>
+<hr>
+<h2>Parte II - MAT: Minimally Adequate Teacher</h2>
+<h3>5. Il gioco fra learner e teacher</h3>
+<p>Nel modello MAT:</p>
+<ul>
+<li>il teacher conosce un linguaggio regolare segreto $L_0$;</li>
+<li>il learner conosce solo l'alfabeto $\Sigma$;</li>
+<li>il learner puo' fare domande;</li>
+<li>il teacher risponde sempre correttamente;</li>
+<li>alla fine il learner deve proporre un DFA equivalente al target.</li>
+</ul>
+<p>La parola "adequate" significa che il teacher e' perfetto:</p>
+<ul>
+<li>sa rispondere a ogni membership query;</li>
+<li>sa decidere se un DFA ipotesi e' equivalente al target;</li>
+<li>se non e' equivalente, sa dare un controesempio.</li>
+</ul>
+<p>Questo e' idealizzato. Nelle applicazioni black-box reali si approssima.</p>
+<h3>6. Membership query</h3>
+<p>Una membership query ha forma:</p>
+<p>$$w\in L_0?$$</p>
+<p>Il learner sceglie una parola $w\in\Sigma^\ast$ e chiede se appartiene al
+linguaggio target.</p>
+<p>Il teacher risponde:</p>
+<ul>
+<li>si', se $w\in L_0$;</li>
+<li>no, se $w\notin L_0$.</li>
+</ul>
+<p>In pratica, la membership query riempie una singola cella della tabella:</p>
+<p>$$Membership(w)=\chi_{L_0}(w).$$</p>
+<h3>7. Equivalence query</h3>
+<p>Una equivalence query ha forma:</p>
+<p>$$L(\mathcal{A})=L_0?$$</p>
+<p>Il learner propone un DFA $\mathcal{A}$. Il teacher risponde:</p>
+<ul>
+<li>si', se il linguaggio dell'automa e' corretto;</li>
+<li>no, altrimenti, e fornisce un controesempio.</li>
+</ul>
+<p>Il controesempio e' una parola:</p>
+<p>$$w\in (L_0-L(\mathcal{A}))\cup(L(\mathcal{A})-L_0).$$</p>
+<p>Quindi $w$ e' nella differenza simmetrica: una parola su cui learner e teacher
+non sono d'accordo.</p>
+<h3>8. Perche non bastano solo membership query</h3>
+<p>Con sole membership query, in un numero finito di passi hai visto solo un numero
+finito di parole.</p>
+<p>Ma i linguaggi possibili sono infiniti. Esistono sempre molti linguaggi regolari
+che concordano su tutti gli esempi visti e divergono su una parola non ancora
+testata.</p>
+<p>Quindi non puoi sapere di aver finito.</p>
+<p>L'equivalence query serve come controllo globale:</p>
+<blockquote>
+<p>questa ipotesi e' davvero corretta su tutte le parole?</p>
+</blockquote>
+<h3>9. Perche solo equivalence query sono troppo lente</h3>
+<p>In teoria, con sole equivalence query potresti enumerare tutti i DFA possibili:</p>
+<ol>
+<li>proponi il primo DFA;</li>
+<li>se e' sbagliato, proponi il secondo;</li>
+<li>prima o poi arrivi a un DFA corretto.</li>
+</ol>
+<p>Ma questa e' ricerca brute force. Il numero di automi cresce enormemente con il
+numero di stati.</p>
+<p>Il punto di L* e':</p>
+<blockquote>
+<p>membership query e equivalence query insieme permettono una strategia
+efficiente.</p>
+</blockquote>
+<h3>10. Teorema informale di Angluin</h3>
+<p>Nel modello MAT, se il linguaggio target e' riconosciuto da un DFA minimo con
+$n$ stati, il learner ha una strategia che identifica il linguaggio in un numero
+di passi polinomiale in:</p>
+<ul>
+<li>$n$;</li>
+<li>la dimensione dell'alfabeto;</li>
+<li>la lunghezza dei controesempi forniti.</li>
+</ul>
+<p>Questa strategia e' l'algoritmo L*.</p>
+<hr>
+<h2>Parte III - Myhill-Nerode come motore del learning</h2>
+<h3>11. La relazione giusta non e' "stanno entrambi nel linguaggio"</h3>
+<p>Una relazione troppo grossolana sarebbe:</p>
+<p>$$u =_{L_0} v
+\quad\Longleftrightarrow\quad
+(u\in L_0 \Leftrightarrow v\in L_0).$$</p>
+<p>Questa relazione distingue solo parole accettate e parole rifiutate.</p>
+<p>Non basta per costruire un DFA minimo, perche' due parole entrambe accettate
+possono avere futuri diversi.</p>
+<p>Serve sapere cosa succede dopo ogni suffisso.</p>
+<h3>12. Equivalenza di Myhill-Nerode</h3>
+<p>La relazione di Myhill-Nerode e':</p>
+<p>$$
+u\sim_{L_0} v
+\quad\Longleftrightarrow\quad
+\forall t\in\Sigma^\ast,\ ut\in L_0 \Leftrightarrow vt\in L_0.
+$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>due prefissi sono equivalenti se nessun suffisso futuro riesce a distinguerli.</p>
+</blockquote>
+<p>Quindi $u$ e $v$ sono nello stesso stato del DFA minimo se hanno lo stesso
+comportamento rispetto a tutti i possibili futuri.</p>
+<h3>13. Perche raffina l'appartenenza al linguaggio</h3>
+<p>Se:</p>
+<p>$$u\sim_{L_0} v,$$</p>
+<p>allora prendendo $t=\varepsilon$ otteniamo:</p>
+<p>$$u\in L_0 \Leftrightarrow v\in L_0.$$</p>
+<p>Quindi ogni classe di Myhill-Nerode e' uniformemente accettante o rifiutante:
+non puo' contenere sia parole dentro il linguaggio sia parole fuori.</p>
+<p>In parole:</p>
+<blockquote>
+<p>se due parole sono indistinguibili da tutti i futuri, allora sono
+indistinguibili anche guardando il presente.</p>
+</blockquote>
+<h3>14. Invarianza a destra</h3>
+<p>La relazione di Myhill-Nerode e' invariante a destra:</p>
+<p>$$u\sim_{L_0} v \Rightarrow ua\sim_{L_0} va.$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>se due prefissi rappresentano lo stesso stato, leggere la stessa lettera da
+entrambi porta ancora a prefissi equivalenti.</p>
+</blockquote>
+<p>Questa proprieta' e' esattamente cio' che permette di definire transizioni
+deterministiche fra classi.</p>
+<h3>15. Indice finito e DFA minimo</h3>
+<p>Il teorema di Myhill-Nerode dice:</p>
+<blockquote>
+<p>$L_0$ e' regolare se e solo se $\sim_{L_0}$ ha indice finito.</p>
+</blockquote>
+<p>L'indice e' il numero di classi di equivalenza. Nel DFA minimo:</p>
+<ul>
+<li>ogni stato corrisponde a una classe di Myhill-Nerode;</li>
+<li>lo stato iniziale e' $[\varepsilon]$;</li>
+<li>la transizione su $a$ manda $[u]$ in $[ua]$;</li>
+<li>gli stati finali sono le classi contenute in $L_0$.</li>
+</ul>
+<p>L* puo' essere letto cosi':</p>
+<blockquote>
+<p>il learner cerca di scoprire le classi di Myhill-Nerode usando solo un numero
+finito di test.</p>
+</blockquote>
+<hr>
+<h2>Parte IV - Relativizzare Myhill-Nerode: il ruolo di T</h2>
+<h3>16. Perche serve una versione finita</h3>
+<p>La definizione vera usa tutti i suffissi:</p>
+<p>$$t\in\Sigma^\ast.$$</p>
+<p>Ma $\Sigma^\ast$ e' infinito. Il learner non puo' testare tutti i suffissi.</p>
+<p>Allora mantiene un insieme finito:</p>
+<p>$$T\subseteq\Sigma^\ast.$$</p>
+<p>Gli elementi di $T$ sono suffissi di test.</p>
+<h3>17. Equivalenza relativizzata</h3>
+<p>Definiamo:</p>
+<p>$$
+u\sim_{L_0,T} v
+\quad\Longleftrightarrow\quad
+\forall t\in T,\ ut\in L_0 \Leftrightarrow vt\in L_0.
+$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>$u$ e $v$ sembrano uguali rispetto ai test che ho raccolto finora.</p>
+</blockquote>
+<p>Questa relazione e' una approssimazione di Myhill-Nerode:</p>
+<ul>
+<li>se $T$ e' piccolo, l'equivalenza e' grossolana;</li>
+<li>se aggiungo suffissi a $T$, l'equivalenza diventa piu' fine;</li>
+<li>nel limite, con suffissi sufficienti, separa le classi giuste.</li>
+</ul>
+<h3>18. Esempi di T</h3>
+<p>Se:</p>
+<p>$$T=\emptyset,$$</p>
+<p>allora ogni coppia di parole e' equivalente, perche' la condizione universale e'
+vacuamente vera. E' l'equivalenza piu' grossolana possibile.</p>
+<p>Se:</p>
+<p>$$T=\{\varepsilon\},$$</p>
+<p>allora:</p>
+<p>$$u\sim_{L_0,T}v
+\quad\Longleftrightarrow\quad
+u\in L_0 \Leftrightarrow v\in L_0.$$</p>
+<p>Quindi distingui solo accettazione/rifiuto immediati.</p>
+<p>Se aggiungi piu' suffissi, inizi a distinguere parole che ora sembrano uguali
+ma reagiscono diversamente a qualche futuro.</p>
+<h3>19. Gli insiemi S e T</h3>
+<p>L* mantiene due insiemi finiti:</p>
+<ul>
+<li>$S\subseteq\Sigma^\ast$: rappresentanti candidati degli stati;</li>
+<li>$T\subseteq\Sigma^\ast$: suffissi usati per testare le differenze.</li>
+</ul>
+<p>Intuizione:</p>
+<ul>
+<li>$S$ contiene "pebbles", cioe' parole che rappresentano stati;</li>
+<li>$T$ contiene esperimenti per capire se due pebbles sono davvero diversi.</li>
+</ul>
+<p>Ogni elemento di $S$ dovrebbe rappresentare una classe distinta di
+$\sim_{L_0,T}$.</p>
+<h3>20. T-minimalita'</h3>
+<p>$S$ e' <strong>T-minimale</strong> se due elementi distinti di $S$ non hanno la stessa riga:</p>
+<p>$$
+\forall s\neq s'\in S,\quad s\not\sim_{L_0,T}s'.
+$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>non ho due rappresentanti per la stessa classe osservata.</p>
+</blockquote>
+<p>T-minimalita' evita stati duplicati nell'ipotesi.</p>
+<h3>21. T-completezza</h3>
+<p>$S$ e' <strong>T-completo</strong> se per ogni rappresentante e per ogni lettera, il prefisso
+esteso e' gia' rappresentato da qualche elemento di $S$:</p>
+<p>$$
+\forall s\in S,\ \forall a\in\Sigma,\ \exists s'\in S
+\text{ tale che } s'\sim_{L_0,T}sa.
+$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>se da uno stato leggo una lettera, so gia' in quale stato rappresentante devo
+andare.</p>
+</blockquote>
+<p>T-completezza permette di definire la transizione del DFA ipotesi.</p>
+<h3>22. Perche queste due proprieta' sono opposte</h3>
+<p>T-minimalita':</p>
+<blockquote>
+<p>non avere troppi stati.</p>
+</blockquote>
+<p>T-completezza:</p>
+<blockquote>
+<p>avere abbastanza stati per rappresentare tutte le transizioni.</p>
+</blockquote>
+<p>L* alterna questi due movimenti:</p>
+<ul>
+<li>se manca un rappresentante, aggiunge elementi a $S$;</li>
+<li>se un controesempio mostra che due righe erano confuse, aggiunge suffissi a
+  $T$.</li>
+</ul>
+<hr>
+<h2>Parte V - Observation table e matrice di Hankel</h2>
+<h3>23. Riga di una parola</h3>
+<p>Per una parola $s$, definiamo la sua riga rispetto a $T$:</p>
+<p>$$
+\langle s\rangle_T:T\to\{0,1\}
+$$</p>
+<p>con:</p>
+<p>$$
+\langle s\rangle_T(t)=Membership(st).
+$$</p>
+<p>Quindi $\langle s\rangle_T$ e' il vettore delle risposte del teacher su tutti i
+suffissi di test.</p>
+<p>Due parole sono equivalenti rispetto a $T$ se e solo se hanno la stessa riga:</p>
+<p>$$
+s\sim_{L_0,T}s'
+\quad\Longleftrightarrow\quad
+\langle s\rangle_T=\langle s'\rangle_T.
+$$</p>
+<h3>24. Observation table</h3>
+<p>La tabella ha:</p>
+<ul>
+<li>righe indicizzate da parole in $S$ e da parole di frontiera $S\cdot\Sigma$;</li>
+<li>colonne indicizzate da $T$;</li>
+<li>celle date da membership query.</li>
+</ul>
+<p>La cella $(u,t)$ contiene:</p>
+<p>$$Membership(ut).$$</p>
+<p>Questa e' una finestra finita della matrice di Hankel infinita del linguaggio.</p>
+<h3>25. Che cosa rappresentano le righe</h3>
+<p>Una riga non e' solo una lista di 0 e 1. E' una approssimazione del linguaggio
+residuo:</p>
+<p>$$u^{-1}L_0=\{t\in\Sigma^\ast\mid ut\in L_0\}.$$</p>
+<p>Due prefissi hanno lo stesso residuo se hanno la stessa classe di
+Myhill-Nerode.</p>
+<p>L* non vede tutto il residuo. Vede solo la sua restrizione a $T$.</p>
+<h3>26. Chiusura della tabella</h3>
+<p>La tabella e' chiusa, o $S$ e' T-completo, se ogni riga di frontiera
+$sa$ con $s\in S$ e $a\in\Sigma$ coincide con una riga gia' presente in $S$.</p>
+<p>In formula:</p>
+<p>$$
+\forall s\in S,\forall a\in\Sigma,\exists s'\in S:
+\langle sa\rangle_T=\langle s'\rangle_T.
+$$</p>
+<p>Se manca $s'$, aggiungiamo $sa$ a $S$.</p>
+<h3>27. Consistenza della tabella</h3>
+<p>Nella formulazione classica di L*, oltre alla chiusura si usa anche la
+consistenza:</p>
+<blockquote>
+<p>se due righe di $S$ sono uguali, allora restano uguali dopo ogni estensione
+con la stessa lettera.</p>
+</blockquote>
+<p>Formula:</p>
+<p>$$
+\langle s\rangle_T=\langle s'\rangle_T
+\Rightarrow
+\forall a\in\Sigma,\ \langle sa\rangle_T=\langle s'a\rangle_T.
+$$</p>
+<p>Nel taglio degli appunti, T-minimalita' e T-completezza sono il modo principale
+di raccontare l'invariante. La consistenza e' la versione tabellare dello stesso
+bisogno: le transizioni devono essere ben definite.</p>
+<h3>28. Matrice di Hankel</h3>
+<p>La matrice di Hankel completa del linguaggio ha:</p>
+<ul>
+<li>righe = prefissi $u\in\Sigma^\ast$;</li>
+<li>colonne = suffissi $v\in\Sigma^\ast$;</li>
+<li>cella $(u,v)$ = 1 se $uv\in L_0$, 0 altrimenti.</li>
+</ul>
+<p>L* lavora su una sottomatrice finita:</p>
+<p>$$S\cup S\Sigma \quad\text{per le righe},\qquad T\quad\text{per le colonne}.
+$$</p>
+<p>Il significato e':</p>
+<ul>
+<li>aggiungere righe a $S$ = scoprire nuovi stati;</li>
+<li>aggiungere colonne a $T$ = scoprire nuovi test che separano stati.</li>
+</ul>
+<h3>29. Lettura visuale</h3>
+<p>Se due righe sono uguali, il learner non ha ancora un test per distinguerle.</p>
+<p>Se un controesempio rivela che l'automa sbaglia, allora c'e' una distinzione non
+vista. Aggiungere suffissi del controesempio a $T$ aggiunge colonne. Quelle
+colonne possono separare righe prima uguali.</p>
+<p>Questa e' la dinamica centrale:</p>
+<blockquote>
+<p>colonne nuove raffinano le classi; righe nuove aggiungono stati.</p>
+</blockquote>
+<hr>
+<h2>Parte VI - Algoritmo L*</h2>
+<h3>30. Pseudocodice</h3>
+<p>Una versione coerente con gli appunti:</p>
+<pre><code class="language-text">S = T = {epsilon}
+
+loop:
+  while S non e' T-completo:
+    scegli s in S e a in Sigma tali che
+      nessun s1 in S soddisfa s1 ~_{L0,T} s a
+    S = S union {s a}
+
+  costruisci il DFA A:
+    stati = S
+    stato iniziale = epsilon
+    finali = {s in S | Membership(s)=1}
+    delta(s,a) = l'unico s1 in S tale che s1 ~_{L0,T} s a
+
+  chiedi Equivalence(A)
+  se il teacher risponde si':
+    restituisci A
+  altrimenti:
+    ricevi controesempio w
+    T = T union {suffissi di w}
+</code></pre>
+<h3>31. Step 1: rendere S T-completo</h3>
+<p>Cerchiamo un problema di chiusura:</p>
+<p>$$s\in S,\quad a\in\Sigma,$$</p>
+<p>tale che:</p>
+<p>$$
+\nexists s_1\in S:\ s_1\sim_{L_0,T}sa.
+$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>leggendo $a$ da $s$, finisco in una classe che non ha ancora un
+rappresentante in $S$.</p>
+</blockquote>
+<p>Allora aggiungo:</p>
+<p>$$S:=S\cup\{sa\}.$$</p>
+<p>Questo aggiunge uno stato candidato.</p>
+<h3>32. Perche aggiungere sa non rompe T-minimalita'</h3>
+<p>Quando aggiungo $sa$, l'ho scelto proprio perche':</p>
+<p>$$
+\nexists s_1\in S:\ s_1\sim_{L_0,T}sa.
+$$</p>
+<p>Quindi $sa$ non e' equivalente a nessun vecchio rappresentante.</p>
+<p>Percio' non sto duplicando uno stato gia' rappresentato. Sto aggiungendo una
+classe nuova rispetto ai test attuali.</p>
+<h3>33. Step 2: costruire il DFA ipotesi</h3>
+<p>Quando $S$ e' T-completo e T-minimale, posso costruire un DFA.</p>
+<p>Stati:</p>
+<p>$$Q=S.$$</p>
+<p>Stato iniziale:</p>
+<p>$$q_0=\varepsilon.$$</p>
+<p>Stati finali:</p>
+<p>$$F=\{s\in S\mid Membership(s)=1\}.$$</p>
+<p>Transizione:</p>
+<p>$$\delta(s,a)=s_1$$</p>
+<p>dove $s_1$ e' l'unico elemento di $S$ tale che:</p>
+<p>$$s_1\sim_{L_0,T}sa.$$</p>
+<h3>34. Perche la transizione esiste ed e' unica</h3>
+<p>Esistenza:</p>
+<ul>
+<li>viene da T-completezza.</li>
+<li>per ogni $s$ e $a$, qualche $s_1\in S$ rappresenta $sa$.</li>
+</ul>
+<p>Unicita':</p>
+<ul>
+<li>viene da T-minimalita'.</li>
+<li>non possono esserci due elementi distinti di $S$ nella stessa classe
+  osservata.</li>
+</ul>
+<p>Quindi $\delta$ e' ben definita.</p>
+<h3>35. Step 3: equivalence query</h3>
+<p>Il learner chiede:</p>
+<p>$$L(\mathcal{A})=L_0?$$</p>
+<p>Se si', l'algoritmo termina.</p>
+<p>Se no, il teacher restituisce:</p>
+<p>$$w\in L(\mathcal{A})\triangle L_0.$$</p>
+<p>Il simbolo $\triangle$ indica differenza simmetrica.</p>
+<h3>36. Step 4: usare il controesempio</h3>
+<p>Se $w$ e' un controesempio, allora l'equivalenza attuale era troppo grossolana:
+ha confuso due situazioni che il linguaggio target distingue.</p>
+<p>L* aggiunge a $T$ i suffissi di $w$:</p>
+<p>$$T:=T\cup Suff(w).$$</p>
+<p>Perche' suffissi?</p>
+<p>Perche' Myhill-Nerode distingue prefissi osservando suffissi futuri. Un
+controesempio e' una parola completa su cui l'ipotesi sbaglia; i suoi suffissi
+sono i test naturali per scoprire dove, lungo la computazione, due stati sono
+stati fusi erroneamente.</p>
+<h3>37. Cosa succede dopo un controesempio</h3>
+<p>Aggiungere suffissi a $T$ aggiunge colonne alla tabella. Due righe prima uguali
+possono diventare diverse.</p>
+<p>Gli appunti sottolineano un fatto chiave:</p>
+<blockquote>
+<p>dopo un controesempio, $S$ diventa T-incompleto e nella prossima fase dovra'
+crescere.</p>
+</blockquote>
+<p>Quindi ogni equivalence query fallita forza progresso strutturale: prima o poi
+si aggiungono nuovi rappresentanti a $S$.</p>
+<h3>38. Perche l'algoritmo non cresce all'infinito</h3>
+<p>Ogni elemento di $S$ rappresenta una classe distinta di
+$\sim_{L_0,T}$.</p>
+<p>Questa equivalenza e' piu' grossolana della vera equivalenza di Myhill-Nerode.
+Quindi il numero di classi osservate non puo' superare il numero di classi vere.</p>
+<p>Se il DFA minimo di $L_0$ ha $n$ stati, allora:</p>
+<p>$$|S|\le n.$$</p>
+<p>Ogni controesempio utile porta, dopo la fase di completamento, ad aumentare
+$|S|$. Quindi non si puo' fallire per sempre.</p>
+<h3>39. Complessita' intuitiva</h3>
+<p>La complessita' e' polinomiale nel modello MAT rispetto a:</p>
+<ul>
+<li>numero di stati del DFA minimo;</li>
+<li>dimensione dell'alfabeto;</li>
+<li>lunghezza massima dei controesempi.</li>
+</ul>
+<p>La ragione e':</p>
+<ul>
+<li>ogni ciclo interno fa controlli su $S$, $\Sigma$, $S$ e $T$;</li>
+<li>ogni controllo usa membership query;</li>
+<li>il numero di volte in cui $S$ cresce e' limitato dal numero di stati minimi;</li>
+<li>le equivalence query fallite forniscono controesempi che raffinano $T$.</li>
+</ul>
+<hr>
+<h2>Parte VII - Esempio completo: imparare $(ab)^\ast$</h2>
+<h3>40. Linguaggio target</h3>
+<p>Sia:</p>
+<p>$$L_0=(ab)^\ast.$$</p>
+<p>Quindi:</p>
+<ul>
+<li>$\varepsilon\in L_0$;</li>
+<li>$ab\in L_0$;</li>
+<li>$abab\in L_0$;</li>
+<li>$a\notin L_0$;</li>
+<li>$b\notin L_0$;</li>
+<li>$bb\notin L_0$.</li>
+</ul>
+<p>Alfabeto:</p>
+<p>$$\Sigma=\{a,b\}.$$</p>
+<h3>41. Inizializzazione</h3>
+<p>Partiamo da:</p>
+<p>$$S=T=\{\varepsilon\}.$$</p>
+<p>Calcoliamo le righe per $S$ e per la frontiera $S\Sigma=\{a,b\}$.</p>
+<table>
+<thead>
+<tr>
+<th>riga</th>
+<th>$\varepsilon$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$\varepsilon$</td>
+<td>1</td>
+</tr>
+<tr>
+<td>$a$</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$b$</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>La riga di $\varepsilon$ e' diversa dalla riga di $a$ e $b$.</p>
+<p>Quindi $S$ non e' T-completo: da $\varepsilon$ leggendo $a$ si arriva a una
+classe non rappresentata.</p>
+<p>Aggiungiamo:</p>
+<p>$$S=\{\varepsilon,a\}.$$</p>
+<h3>42. Controllo con S = {epsilon, a}</h3>
+<p>Con:</p>
+<p>$$S=\{\varepsilon,a\},\qquad T=\{\varepsilon\},$$</p>
+<p>calcoliamo anche $aa$ e $ab$.</p>
+<table>
+<thead>
+<tr>
+<th>riga</th>
+<th>$\varepsilon$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$\varepsilon$</td>
+<td>1</td>
+</tr>
+<tr>
+<td>$a$</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$b$</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$aa$</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$ab$</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>Ora:</p>
+<ul>
+<li>$b$ ha la stessa riga di $a$;</li>
+<li>$aa$ ha la stessa riga di $a$;</li>
+<li>$ab$ ha la stessa riga di $\varepsilon$.</li>
+</ul>
+<p>Quindi, rispetto al test attuale, $S$ e' T-completo.</p>
+<h3>43. Primo DFA ipotesi</h3>
+<p>Stati:</p>
+<p>$$\varepsilon,\ a.$$</p>
+<p>Stato iniziale:</p>
+<p>$$\varepsilon.$$</p>
+<p>Finale:</p>
+<p>$$\varepsilon$$</p>
+<p>perche' $\varepsilon\in(ab)^\ast$.</p>
+<p>Transizioni:</p>
+<table>
+<thead>
+<tr>
+<th>da</th>
+<th>leggo</th>
+<th>vado a</th>
+<th>motivo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$\varepsilon$</td>
+<td>$a$</td>
+<td>$a$</td>
+<td>riga di $a$</td>
+</tr>
+<tr>
+<td>$\varepsilon$</td>
+<td>$b$</td>
+<td>$a$</td>
+<td>riga di $b$ uguale a riga di $a$</td>
+</tr>
+<tr>
+<td>$a$</td>
+<td>$a$</td>
+<td>$a$</td>
+<td>riga di $aa$ uguale a riga di $a$</td>
+</tr>
+<tr>
+<td>$a$</td>
+<td>$b$</td>
+<td>$\varepsilon$</td>
+<td>riga di $ab$ uguale a riga di $\varepsilon$</td>
+</tr>
+</tbody>
+</table>
+<p>Questo DFA accetta parole come:</p>
+<p>$$bb.$$</p>
+<p>Infatti:</p>
+<p>$$\varepsilon \xrightarrow{b} a \xrightarrow{b} \varepsilon.$$</p>
+<p>Ma:</p>
+<p>$$bb\notin(ab)^\ast.$$</p>
+<p>Quindi il teacher risponde no e fornisce controesempio:</p>
+<p>$$w=bb.$$</p>
+<h3>44. Aggiornare T con i suffissi di bb</h3>
+<p>I suffissi non vuoti e quello vuoto sono:</p>
+<p>$$bb,\ b,\ \varepsilon.$$</p>
+<p>Aggiorniamo:</p>
+<p>$$T=\{\varepsilon,b,bb\}.$$</p>
+<p>Ora la tabella diventa:</p>
+<table>
+<thead>
+<tr>
+<th>riga</th>
+<th>$\varepsilon$</th>
+<th>$b$</th>
+<th>$bb$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$\varepsilon$</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$a$</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$b$</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$aa$</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$ab$</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>Ora $b$ non ha piu' la stessa riga di $a$. Il controesempio ha separato una
+classe che prima era fusa.</p>
+<p>S non e' piu' T-completo, perche' da $\varepsilon$ leggendo $b$ otteniamo una
+riga non rappresentata in $S$.</p>
+<p>Aggiungiamo:</p>
+<p>$$S=\{\varepsilon,a,b\}.$$</p>
+<h3>45. Secondo DFA ipotesi</h3>
+<p>Con $S=\{\varepsilon,a,b\}$, le transizioni sono:</p>
+<table>
+<thead>
+<tr>
+<th>da</th>
+<th>leggo</th>
+<th>vado a</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$\varepsilon$</td>
+<td>$a$</td>
+<td>$a$</td>
+</tr>
+<tr>
+<td>$\varepsilon$</td>
+<td>$b$</td>
+<td>$b$</td>
+</tr>
+<tr>
+<td>$a$</td>
+<td>$a$</td>
+<td>$b$</td>
+</tr>
+<tr>
+<td>$a$</td>
+<td>$b$</td>
+<td>$\varepsilon$</td>
+</tr>
+<tr>
+<td>$b$</td>
+<td>$a$</td>
+<td>$b$</td>
+</tr>
+<tr>
+<td>$b$</td>
+<td>$b$</td>
+<td>$b$</td>
+</tr>
+</tbody>
+</table>
+<p>Stato finale:</p>
+<p>$$\varepsilon.$$</p>
+<p>Questo e' il DFA minimo di $(ab)^\ast$:</p>
+<ul>
+<li>$\varepsilon$ = sono allineato su blocchi completi;</li>
+<li>$a$ = ho letto una $a$ e aspetto $b$;</li>
+<li>$b$ = stato pozzo/errore.</li>
+</ul>
+<p>Il teacher risponde si'. L'algoritmo termina.</p>
+<h3>46. Che cosa insegna l'esempio</h3>
+<p>L'esempio mostra il ciclo completo:</p>
+<ol>
+<li>pochi test fanno sembrare uguali $a$ e $b$;</li>
+<li>l'ipotesi sbaglia su $bb$;</li>
+<li>il controesempio aggiunge suffissi a $T$;</li>
+<li>le colonne nuove separano $a$ e $b$;</li>
+<li>$S$ cresce;</li>
+<li>l'automa corretto emerge.</li>
+</ol>
+<p>La frase da dire all'orale:</p>
+<blockquote>
+<p>i controesempi non vengono solo memorizzati come esempi negativi; vengono
+spezzati in suffissi che raffinano la capacita' della tabella di distinguere
+stati.</p>
+</blockquote>
+<hr>
+<h2>Parte VIII - Perche L* e' corretto</h2>
+<h3>47. Invariante 1: T-minimalita'</h3>
+<p>Durante l'algoritmo, $S$ resta T-minimale.</p>
+<p>Quando aggiungiamo $sa$, lo facciamo solo perche' nessun elemento di $S$ e'
+equivalente a $sa$ rispetto a $T$.</p>
+<p>Quindi non introduciamo duplicati osservati.</p>
+<h3>48. Invariante 2: T-completezza prima della query</h3>
+<p>Prima di costruire il DFA, il ciclo interno garantisce T-completezza.</p>
+<p>Questo assicura che ogni transizione:</p>
+<p>$$\delta(s,a)$$</p>
+<p>abbia una destinazione in $S$.</p>
+<h3>49. Se il teacher accetta, il DFA e' corretto</h3>
+<p>Questo e' immediato dal significato dell'equivalence query:</p>
+<p>$$Equivalence(\mathcal{A})=\text{si'}$$</p>
+<p>vuol dire:</p>
+<p>$$L(\mathcal{A})=L_0.$$</p>
+<p>Quindi l'algoritmo puo' restituire $\mathcal{A}$.</p>
+<h3>50. Se il teacher rifiuta, c'e' progresso</h3>
+<p>Se il teacher restituisce un controesempio $w$, allora la tabella non distingueva
+abbastanza.</p>
+<p>Aggiungendo suffissi di $w$ a $T$, rendiamo piu' fine
+$\sim_{L_0,T}$. Alla prossima fase, almeno una transizione prima "coperta" puo'
+non esserlo piu', e $S$ dovra' crescere.</p>
+<p>Questo e' il cuore della terminazione.</p>
+<h3>51. Perche il limite e' il DFA minimo</h3>
+<p>Nel caso peggiore, L* scopre tutte le classi di Myhill-Nerode.</p>
+<p>Quando $S$ contiene un rappresentante per ogni classe vera, la tabella ha
+abbastanza stati per costruire il DFA minimo.</p>
+<p>In quel momento l'equivalence query deve rispondere si'.</p>
+<hr>
+<h2>Parte IX - Black-box learning e V&amp;V</h2>
+<h3>52. MAT ideale contro pratica reale</h3>
+<p>Nel MAT, il teacher e' perfetto.</p>
+<p>In pratica, se il sistema e' una black box:</p>
+<ul>
+<li>una membership query si puo' implementare eseguendo il sistema su input $w$;</li>
+<li>una equivalence query perfetta e' quasi mai disponibile.</li>
+</ul>
+<p>Allora si approssima:</p>
+<ul>
+<li>testing random;</li>
+<li>conformance testing;</li>
+<li>fuzzing;</li>
+<li>ricerca sistematica di controesempi.</li>
+</ul>
+<p>Se non trovi controesempi, non hai una prova assoluta di equivalenza. Hai
+evidenza sperimentale.</p>
+<h3>53. Perche interessa alla verifica</h3>
+<p>In V&amp;V, automata learning viene spesso chiamato:</p>
+<ul>
+<li>model learning;</li>
+<li>system identification;</li>
+<li>protocol state fuzzing;</li>
+<li>grammar inference.</li>
+</ul>
+<p>L'idea:</p>
+<blockquote>
+<p>ho un sistema reale o una black box, e costruisco un modello automata-based
+del suo comportamento osservabile.</p>
+</blockquote>
+<p>Poi posso:</p>
+<ul>
+<li>ispezionare il modello;</li>
+<li>confrontarlo con una specifica;</li>
+<li>fare model checking sul modello appreso;</li>
+<li>generare test migliori.</li>
+</ul>
+<h3>54. Esempio: protocol state fuzzing</h3>
+<p>Un protocollo di rete puo' avere stati interni:</p>
+<ul>
+<li>handshake non iniziato;</li>
+<li>autenticato;</li>
+<li>sessione aperta;</li>
+<li>errore;</li>
+<li>chiuso.</li>
+</ul>
+<p>Non vedo direttamente questi stati. Posso pero' inviare sequenze di messaggi e
+osservare risposte.</p>
+<p>Ogni sequenza di messaggi e' una parola. La risposta del sistema permette di
+classificarla o di costruire un transduttore.</p>
+<p>Learning automata serve a ricostruire una macchina finita che approssima il
+protocollo.</p>
+<h3>55. Limite pratico</h3>
+<p>Il punto debole e':</p>
+<blockquote>
+<p>senza equivalence query perfetta, non ho garanzia assoluta di aver imparato il
+modello vero.</p>
+</blockquote>
+<p>Pero' anche un modello approssimato puo' essere utile:</p>
+<ul>
+<li>scopre stati inattesi;</li>
+<li>evidenzia transizioni non documentate;</li>
+<li>trova bug;</li>
+<li>guida test successivi.</li>
+</ul>
+<hr>
+<h2>Parte X - Da linguaggi a funzioni: transduttori</h2>
+<h3>56. Perche parlare di transduttori</h3>
+<p>Un DFA riconosce un linguaggio:</p>
+<p>$$f:\Sigma^\ast\to\{0,1\}.$$</p>
+<p>Ma molti sistemi non rispondono solo si/no. Producono output.</p>
+<p>Un transduttore sequenziale modella funzioni:</p>
+<p>$$f:\Sigma^\ast\to\Gamma^\ast.$$</p>
+<p>L'input e' una parola, l'output e' una parola.</p>
+<h3>57. Transduttore sequenziale</h3>
+<p>Un transduttore sequenziale e' un automa finito in cui le transizioni producono
+anche output.</p>
+<p>Lettura:</p>
+<blockquote>
+<p>mentre leggo input, accumulo output.</p>
+</blockquote>
+<p>Questo e' vicino agli automi di Mealy del capitolo 10, dove ogni input produce
+un output e la macchina implementa una strategia.</p>
+<h3>58. Relazione con Myhill-Nerode per funzioni</h3>
+<p>Per le funzioni, non basta chiedere se $ut$ e $vt$ sono accettati.</p>
+<p>Bisogna confrontare il comportamento residuo dell'output dopo aver letto un
+prefisso.</p>
+<p>Gli appunti indicano una relazione del tipo:</p>
+<p>$$
+u\sim_{f_0,T}v
+\quad\Longleftrightarrow\quad
+\forall t\in T,\ f(ut)-f(u)=f(vt)-f(v).
+$$</p>
+<p>Lettura intuitiva:</p>
+<blockquote>
+<p>dopo aver letto $u$ o $v$, i futuri test $t$ producono lo stesso output
+residuo.</p>
+</blockquote>
+<p>La forma precisa dipende dal modello di output, ma l'idea resta la stessa:
+stati = residui del comportamento futuro.</p>
+<h3>59. Perche ricordarlo per l'orale</h3>
+<p>Learning automata non e' solo un algoritmo isolato su DFA.</p>
+<p>E' un paradigma:</p>
+<ol>
+<li>identificare stati come classi di comportamento futuro;</li>
+<li>usare query per distinguere classi;</li>
+<li>costruire una macchina finita;</li>
+<li>raffinarla con controesempi.</li>
+</ol>
+<p>Questo paradigma riappare:</p>
+<ul>
+<li>nei transduttori;</li>
+<li>nei protocolli;</li>
+<li>nella sintesi;</li>
+<li>nei modelli reattivi.</li>
+</ul>
+<hr>
+<h2>Parte XI - Quadro finale</h2>
+<h3>60. Errori tipici</h3>
+<h4>Confondere membership ed equivalence query</h4>
+<p>Membership chiede:</p>
+<p>$$w\in L_0?$$</p>
+<p>Equivalence chiede:</p>
+<p>$$L(\mathcal{A})=L_0?$$</p>
+<p>La prima e' locale. La seconda e' globale.</p>
+<h4>Pensare che il learner debba trovare lo stesso automa del teacher</h4>
+<p>No. Deve trovare un automa equivalente.</p>
+<p>Se il teacher usa un DFA non minimo e il learner trova il minimo, va benissimo.</p>
+<h4>Confondere $=_{L_0}$ e $\sim_{L_0}$</h4>
+<p>$=_{L_0}$ guarda solo se due parole sono entrambe dentro o fuori.</p>
+<p>$\sim_{L_0}$ guarda tutti i suffissi futuri.</p>
+<p>La seconda e' molto piu' fine ed e' quella che produce gli stati del DFA minimo.</p>
+<h4>Pensare che T-completezza significhi correttezza globale</h4>
+<p>No. T-completezza significa solo che la tabella e' chiusa rispetto ai test
+attuali.</p>
+<p>L'equivalence query serve proprio a controllare se l'ipotesi e' corretta
+globalmente.</p>
+<h4>Pensare che il controesempio sia solo un esempio in piu'</h4>
+<p>Il controesempio serve a generare suffissi da aggiungere a $T$.</p>
+<p>Quindi cambia le colonne della tabella e puo' separare stati prima confusi.</p>
+<h4>Dimenticare il collegamento con Myhill-Nerode</h4>
+<p>L* non e' magia tabellare. E' Myhill-Nerode imparato progressivamente tramite
+test finiti.</p>
+<h3>61. Mini-esercizi guidati</h3>
+<h4>Esercizio 1: membership o equivalence?</h4>
+<p>Domanda:</p>
+<blockquote>
+<p>"La parola $abba$ appartiene al linguaggio target?"</p>
+</blockquote>
+<p>Risposta: membership query.</p>
+<h4>Esercizio 2: membership o equivalence?</h4>
+<p>Domanda:</p>
+<blockquote>
+<p>"Questo DFA riconosce esattamente il linguaggio target?"</p>
+</blockquote>
+<p>Risposta: equivalence query.</p>
+<h4>Esercizio 3: distinguere due prefissi</h4>
+<p>Sia $L=(ab)^\ast$. $a$ e $b$ sono distinguibili?</p>
+<p>Si'. Basta il suffisso:</p>
+<p>$$t=b.$$</p>
+<p>Infatti:</p>
+<p>$$ab\in L,$$</p>
+<p>ma:</p>
+<p>$$bb\notin L.$$</p>
+<p>Quindi:</p>
+<p>$$a\not\sim_L b.$$</p>
+<h4>Esercizio 4: T piccolo</h4>
+<p>Con $T=\{\varepsilon\}$, nel linguaggio $(ab)^\ast$, $a$ e $b$ sono
+distinguibili?</p>
+<p>No, perche':</p>
+<p>$$a\notin L,\qquad b\notin L.$$</p>
+<p>Rispetto al solo test $\varepsilon$, hanno entrambi riga 0.</p>
+<h4>Esercizio 5: suffisso che separa</h4>
+<p>Dopo il controesempio $bb$, perche' aggiungere il suffisso $b$ aiuta?</p>
+<p>Perche':</p>
+<p>$$ab\in(ab)^\ast$$</p>
+<p>ma:</p>
+<p>$$bb\notin(ab)^\ast.$$</p>
+<p>Quindi il suffisso $b$ separa i prefissi $a$ e $b$.</p>
+<h4>Esercizio 6: T-completezza</h4>
+<p>Se esiste $s\in S$ e $a\in\Sigma$ tale che la riga di $sa$ non coincide con
+nessuna riga di $S$, che cosa fai?</p>
+<p>Risposta:</p>
+<p>$$S:=S\cup\{sa\}.$$</p>
+<h4>Esercizio 7: ruolo di Hankel</h4>
+<p>Che cosa rappresenta una riga della matrice di Hankel?</p>
+<p>Risposta: il comportamento di un prefisso rispetto ai suffissi, cioe' una
+approssimazione del linguaggio residuo.</p>
+<h3>62. Mappa per l'orale</h3>
+<p>Per partire bene con Learning Automata:</p>
+<ol>
+<li>Apri con l'idea: ricostruire una macchina finita tramite esperimenti.</li>
+<li>Distingui passive learning e active learning.</li>
+<li>Presenta MAT: teacher perfetto, linguaggio target regolare, learner.</li>
+<li>Definisci membership query ed equivalence query.</li>
+<li>Spiega perche servono entrambe.</li>
+<li>Collega tutto a Myhill-Nerode: stati = classi di comportamento futuro.</li>
+<li>Definisci $\sim_{L_0,T}$ come approssimazione finita.</li>
+<li>Spiega $S$ come rappresentanti di stati e $T$ come suffissi di test.</li>
+<li>Definisci T-minimalita' e T-completezza.</li>
+<li>Introduci la observation table/Hankel.</li>
+<li>Descrivi L*: completa $S$, costruisci DFA, chiedi equivalence, usa
+    controesempio.</li>
+<li>Fai l'esempio di $(ab)^\ast$ almeno fino al controesempio $bb$.</li>
+<li>Spiega terminazione: $S$ cresce ma non supera le classi Myhill-Nerode.</li>
+<li>Chiudi con applicazioni V&amp;V: model learning, protocol state fuzzing,
+    black-box testing.</li>
+</ol>
+<h3>63. Risposta orale pronta</h3>
+<p>Una risposta compatta:</p>
+<blockquote>
+<p>L'automata learning studia come ricostruire un automa finito che riconosce un
+linguaggio target, partendo solo dall'alfabeto e da interazioni con un teacher.
+Nel modello MAT il teacher conosce il linguaggio regolare $L_0$ e risponde a
+membership query, cioe' domande del tipo $w\in L_0?$, ed equivalence query,
+cioe' domande del tipo $L(\mathcal{A})=L_0?$. Se l'ipotesi e' sbagliata, il
+teacher fornisce un controesempio nella differenza simmetrica.</p>
+<p>L'algoritmo L* di Angluin si basa su Myhill-Nerode. Due prefissi rappresentano
+lo stesso stato se nessun suffisso futuro li distingue. Siccome non possiamo
+testare tutti i suffissi, manteniamo un insieme finito $T$ di suffissi di test
+e un insieme $S$ di rappresentanti di stati. La tabella di osservazione, o
+finestra della matrice di Hankel, contiene i valori $Membership(st)$. Quando
+$S$ e' T-completo e T-minimale, si costruisce un DFA ipotesi. Se
+l'equivalence query fallisce, i suffissi del controesempio vengono aggiunti a
+$T$, raffinando le classi osservate. Il processo termina perche' $S$ puo'
+crescere al massimo fino al numero di classi di Myhill-Nerode, cioe' agli stati
+del DFA minimo.</p>
+</blockquote>
+<h3>64. Riassunto finale</h3>
+<p>Learning Automata e' Myhill-Nerode trasformato in un processo interattivo.</p>
+<p>La teoria dice:</p>
+<p>$$\text{stati minimi}=\text{classi di Myhill-Nerode}.$$</p>
+<p>L'algoritmo dice:</p>
+<blockquote>
+<p>non conosco le classi, quindi le approssimo con test finiti, costruisco
+ipotesi, e uso controesempi per raffinarle.</p>
+</blockquote>
+<p>La catena da ricordare e':</p>
+<p>$$
+\text{membership query}
+\to
+\text{righe Hankel}
+\to
+\text{classi osservate}
+\to
+\text{DFA ipotesi}
+\to
+\text{equivalence query}
+\to
+\text{controesempio}
+\to
+\text{nuovi suffissi in }T.
+$$</p>
+<p>Per l'orale, il messaggio forte e':</p>
+<blockquote>
+<p>L* impara il DFA minimo non enumerando automi, ma scoprendo progressivamente
+le classi di comportamento futuro del linguaggio.</p>
+</blockquote></article>
+  <p class="section-label">Esercizi (piano di studio)</p>
+  
+<div class="exercises-block prose">
+<h2>Esercizi e domande — settimana 2</h2>
+<p><strong>Obiettivo della settimana:</strong> capire come si impara un automa e come si modellano sistemi reattivi con fairness.</p>
+<h3>Esercizi scritti essenziali</h3>
+<ol>
+<li>
+<p><strong>MAT framework.</strong> Scrivi un esempio completo di dialogo Learner/Teacher per il linguaggio:
+   $$L=\lbrace w\in\lbrace a,b\rbrace^* \mid w \text{ contiene almeno una } a\rbrace$$
+   Includi almeno 5 membership query, una equivalence query sbagliata e un controesempio.</p>
+</li>
+<li>
+<p><strong>Observation table L*.</strong> Per:
+   $$L=\lbrace w\in\lbrace a,b\rbrace^* \mid w \text{ termina con } a\rbrace$$
+   costruisci una tabella iniziale con $S=\lbrace \epsilon\rbrace$ e $T=\lbrace \epsilon\rbrace$. Espandila finche diventa chiusa e consistente. Disegna il DFA ipotesi.</p>
+</li>
+<li>
+<p><strong>Controesempio L*.</strong> Supponi che l'ipotesi per il linguaggio precedente accetti tutte le stringhe. Trova un controesempio e mostra come aggiorna la tabella.</p>
+</li>
+<li>
+<p><strong>T-complete e T-minimal.</strong> Prendi una tabella a tua scelta e verifica formalmente se e' T-complete e T-minimal. Se non lo e', indica quale riga o transizione forza l'espansione.</p>
+</li>
+<li>
+<p><strong>Hankel matrix.</strong> Costruisci una porzione della matrice di Hankel per:
+   $$L=\lbrace w\in\lbrace 0,1\rbrace^* \mid \#1(w) \text{ e' pari}\rbrace$$
+   usando prefissi e suffissi fino a lunghezza 2. Identifica quante righe distinte servono.</p>
+</li>
+<li>
+<p><strong>Confronto.</strong> Scrivi una tabella a due colonne: Myhill-Nerode vs L*. Metti: obiettivo, informazione usata, output, criterio di stop.</p>
+</li>
+<li>
+<p><strong>FTS formale.</strong> Definisci un FTS per un contatore modulo 3 con variabile $x\in\lbrace 0,1,2\rbrace$, iniziale $x=0$, transizione <code>inc</code>, e idling. Specifica $\mathcal{V},\Theta,\mathcal{T},\mathcal{J},\mathcal{C}$.</p>
+</li>
+<li>
+<p><strong>Justice vs compassion.</strong> Costruisci una computazione infinita in cui una transizione e' abilitata infinite volte ma non continuamente abilitata. Usa l'esempio per spiegare perche compassion e' piu forte di justice.</p>
+</li>
+<li>
+<p><strong>SPL -&gt; FTS.</strong> Scrivi un mini programma SPL con due processi:
+   <code>P1: await x=0; x:=1</code> e <code>P2: await x=1; x:=0</code>.
+   Modellalo come FTS con stati di controllo e transizioni.</p>
+</li>
+<li>
+<p><strong>Starvation.</strong> Descrivi una computazione unfair in cui un processo resta affamato. Poi aggiungi una condizione di fairness che la esclude.</p>
+</li>
+</ol>
+<h3>Domande orali secche</h3>
+<ol>
+<li>Perche le membership query da sole non bastano in modo efficiente?</li>
+<li>Che cosa contiene una observation table?</li>
+<li>Che rapporto c'e' tra righe della tabella e stati del DFA?</li>
+<li>Differenza tra sistema terminante e sistema reattivo.</li>
+<li>Differenza tra justice e compassion con un esempio.</li>
+</ol>
+<h3>Controllo</h3>
+<p>Hai superato la settimana se riesci a simulare a mano un giro di L* e a spiegare fairness senza confondere "sempre abilitata da un certo punto" con "abilitata infinite volte".</p>
+</div>
+
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap02.html">← Precedente</a></span><span><a href="cap04.html">Successivo →</a></span></div>
+</div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script defer src="assets/chat.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

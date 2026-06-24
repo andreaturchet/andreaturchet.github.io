@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capitolo 5 — Automi su parole infinite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/chat.css" />
+  
+</head>
+<body>
+
+<header class="site-header">
+  <h1>V&amp;V in AI — Appunti</h1>
+  <p class="subtitle">Settimana 3</p>
+  <div class="ornament">✦</div>
+</header>
+<div class="wrap">
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap04.html">← Precedente</a></span><span><a href="cap06.html">Successivo →</a></span></div>
+  
+<div class="chapter-opener">
+  <div class="label">Capitolo 5</div>
+  <h1>Capitolo 5 — Automi su parole infinite</h1>
+  <p class="focus">Linguaggi ω-regolari; automi di Büchi (NBA vs DBA); GNBA.</p>
+</div>
+
+  <article class="prose"><h1>Automi a stati finiti su parole infinite - Riassunto</h1>
+<p><strong>Fonte</strong>: <code>raw/Automi a stati finiti su parole infinite.md</code></p>
+<h2>Punti chiave</h2>
+<ul>
+<li><strong>Automi di Büchi</strong>: automi che leggono parole infinite. Una parola e' accettata se durante una computazione uno stato finale viene visitato infinitamente spesso.</li>
+<li><strong>Linguaggi omega-regolari</strong>: classe dei linguaggi riconosciuti da automi di Büchi non deterministici. Sono chiusi per unione, intersezione e complemento.</li>
+<li><strong>DBA vs NBA</strong>: gli automi di Büchi deterministici sono meno espressivi di quelli non deterministici; in particolare non bastano per tutti i linguaggi omega-regolari.</li>
+<li><strong>Automi di Muller</strong>: usano come condizione di accettazione una famiglia di insiemi di stati. Una run e' accettante se l'insieme degli stati visitati infinitamente spesso appartiene alla famiglia indicata.</li>
+<li><strong>Congruenza e saturazione</strong>: strumenti tecnici usati per dimostrare proprieta di chiusura e caratterizzazioni dei linguaggi omega-regolari.</li>
+</ul>
+<h2>Concetti collegati</h2>
+<ul>
+<li>Automi di Büchi</li>
+<li>Linguaggi omega-regolari</li>
+<li>Automi di Muller</li>
+</ul>
+<hr />
+
+<h1>Automi di Büchi</h1>
+<p>Un automa di Büchi e' un automa finito che legge parole infinite, cioe' elementi di $\Sigma^\omega$. E' centrale nella verifica di sistemi reattivi, perche questi sistemi producono computazioni non terminanti.</p>
+<h2>Condizione di accettazione</h2>
+<p>Una parola infinita e' accettata se esiste una run in cui almeno uno stato finale viene visitato <strong>infinitamente spesso</strong>.</p>
+<h2>Determinismo e non determinismo</h2>
+<p>Sulle parole finite DFA e NFA hanno lo stesso potere espressivo. Sulle parole infinite, invece, gli automi di Büchi deterministici (DBA) sono strettamente meno espressivi degli automi di Büchi non deterministici (NBA).</p>
+<ul>
+<li>Gli NBA riconoscono tutti i linguaggi omega-regolari.</li>
+<li>I DBA non sono chiusi per complemento e non riconoscono tutti gli omega-linguaggi riconoscibili da NBA.</li>
+</ul>
+<p>Per recuperare determinismo pieno si usano condizioni di accettazione piu ricche, come Muller o Rabin.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Linguaggi omega-regolari</li>
+<li>Automi di Muller</li>
+<li>Automi di Rabin</li>
+<li>S1S</li>
+<li>Secondo teorema di Büchi</li>
+</ul>
+<hr />
+
+<h1>Automi di Büchi generalizzati</h1>
+<p>Un GNBA e' un automa di Büchi con piu insiemi di accettazione $F_1,\ldots,F_k$.</p>
+<p>Una run e' accettante se visita infinitamente spesso almeno uno stato di ciascun insieme $F_i$.</p>
+<h2>Conversione in NBA</h2>
+<p>Un GNBA si trasforma in un NBA aggiungendo memoria finita che tiene traccia dell'insieme di accettazione attualmente da soddisfare.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Automi di Büchi</li>
+<li>Linguaggi omega-regolari</li>
+</ul>
+<hr />
+
+<h1>Linguaggi omega-regolari</h1>
+<p>I linguaggi omega-regolari estendono i linguaggi regolari alle parole infinite.</p>
+<h2>Definizione</h2>
+<p>Un omega-linguaggio puo essere definito come unione finita di espressioni del tipo:
+$$U\cdot V^\omega$$</p>
+<p>dove $U$ e $V$ sono linguaggi regolari su parole finite e $V^\omega$ indica concatenazione infinita di parole di $V$.</p>
+<h2>Caratterizzazione</h2>
+<p>Sono esattamente i linguaggi riconosciuti da automi di Büchi non deterministici, e anche da automi di Muller.</p>
+<h2>Proprieta</h2>
+<p>Sono chiusi per:
+- unione;
+- intersezione;
+- complemento.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Automi di Büchi</li>
+<li>Automi di Muller</li>
+<li>Automi di Rabin</li>
+<li>S1S</li>
+</ul>
+<hr />
+
+<h1>Automi di Muller</h1>
+<p>Gli automi di Muller sono automi su parole infinite con una condizione di accettazione basata sull'insieme degli stati visitati infinitamente spesso.</p>
+<h2>Condizione di accettazione</h2>
+<p>Data una famiglia $\mathcal{F}\subseteq 2^Q$, una run e' accettante se:
+$$Inf(\rho)\in\mathcal{F}$$</p>
+<h2>Importanza</h2>
+<p>Gli automi di Muller deterministici sono abbastanza espressivi da riconoscere tutti gli omega-linguaggi regolari e sono chiusi per complemento in modo semplice: basta complementare la famiglia $\mathcal{F}$.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Automi di Büchi</li>
+<li>Automi di Rabin</li>
+<li>Linguaggi omega-regolari</li>
+<li>Giochi di parità</li>
+</ul>
+<hr />
+
+<h1>Approfondimento completo settimana 3 - Automi su parole infinite e Buchi</h1>
+<blockquote>
+<p>Questa e' la versione estesa e autocontenuta del capitolo 5. Il focus e':
+capire perche' servono automi su parole infinite, come funziona la condizione
+di Buchi, perche' NBA e DBA non hanno lo stesso potere, come si usano GNBA,
+emptiness, parole ultimamente periodiche e automi di Muller.</p>
+</blockquote>
+<h2>Di cosa parla davvero questo capitolo</h2>
+<p>I DFA/NFA dei capitoli precedenti leggono parole finite. Una parola finita ha
+un ultimo simbolo: quando la lettura termina, guardo se lo stato corrente e'
+finale.</p>
+<p>Nei sistemi reattivi, pero', le computazioni non terminano:</p>
+<ul>
+<li>un server continua a rispondere;</li>
+<li>un protocollo continua a interagire;</li>
+<li>un controller continua a ricevere input;</li>
+<li>un sistema concorrente continua a fare passi.</li>
+</ul>
+<p>Quindi servono automi che leggono parole infinite:</p>
+<p>$$\alpha=\alpha(0)\alpha(1)\alpha(2)\ldots$$</p>
+<p>Il punto delicato e':</p>
+<blockquote>
+<p>se la parola non finisce mai, cosa significa "accettare"?</p>
+</blockquote>
+<p>Gli automi di Buchi rispondono cosi':</p>
+<blockquote>
+<p>una run e' accettante se visita stati finali infinitamente spesso.</p>
+</blockquote>
+<p>La mappa del capitolo e':</p>
+<ol>
+<li>Parte I: parole infinite e notazione.</li>
+<li>Parte II: NBA, run infinite e condizione di Buchi.</li>
+<li>Parte III: linguaggi omega-regolari ed esempi base.</li>
+<li>Parte IV: operazioni $W^\omega$ e $\overrightarrow{W}$.</li>
+<li>Parte V: chiusure e GNBA.</li>
+<li>Parte VI: espressioni omega-regolari.</li>
+<li>Parte VII: emptiness, SCC e parole ultimamente periodiche.</li>
+<li>Parte VIII: complementazione e perche' non basta invertire finali.</li>
+<li>Parte IX: DBA vs NBA.</li>
+<li>Parte X: automi di Muller.</li>
+<li>Parte XI: esercizi, errori tipici e risposta orale.</li>
+</ol>
+<h3>0. Richiami minimi</h3>
+<p><strong>NFA su parole finite.</strong> Un NFA accetta una parola finita se esiste una run che,
+dopo aver letto tutta la parola, finisce in uno stato finale.</p>
+<p><strong>Sistemi reattivi.</strong> Producono computazioni infinite. Per questo non basta una
+condizione sullo stato "alla fine".</p>
+<p><strong>LTL e model checking.</strong> Le formule temporali parlano spesso di proprieta' su
+computazioni infinite. Gli automi di Buchi saranno il ponte fra formule LTL e
+verifica automatica.</p>
+<hr>
+<h2>Parte I - Parole infinite</h2>
+<h3>1. Omega-parole</h3>
+<p>Dato un alfabeto finito $A$, una parola infinita su $A$ e' una sequenza:</p>
+<p>$$\alpha=\alpha(0)\alpha(1)\alpha(2)\ldots$$</p>
+<p>dove:</p>
+<p>$$\alpha(i)\in A$$</p>
+<p>per ogni $i\ge 0$.</p>
+<p>L'insieme di tutte le parole infinite su $A$ e':</p>
+<p>$$A^\omega.$$</p>
+<p>Useremo:</p>
+<ul>
+<li>$u,v,w\in A^\ast$ per parole finite;</li>
+<li>$\alpha,\beta,\gamma\in A^\omega$ per parole infinite.</li>
+</ul>
+<h3>2. Sottoparole e suffissi</h3>
+<p>Se:</p>
+<p>$$n\le m,$$</p>
+<p>allora:</p>
+<p>$$\alpha(n,m)=\alpha(n)\alpha(n+1)\cdots\alpha(m-1)$$</p>
+<p>e' una parola finita.</p>
+<p>Il suffisso infinito da $n$ in poi e':</p>
+<p>$$\alpha(n,\omega)=\alpha(n)\alpha(n+1)\alpha(n+2)\ldots$$</p>
+<p>Questa notazione serve per parlare di cio' che accade "da un certo punto in
+poi".</p>
+<h3>3. Infinitamente spesso e finitamente spesso</h3>
+<p>Scriviamo:</p>
+<p>$$\exists^\omega n.\ P(n)$$</p>
+<p>per dire:</p>
+<blockquote>
+<p>esistono infiniti indici $n$ tali che $P(n)$ vale.</p>
+</blockquote>
+<p>E:</p>
+<p>$$\exists^{&lt;\omega} n.\ P(n)$$</p>
+<p>per dire:</p>
+<blockquote>
+<p>esistono solo finitamente molti indici $n$ tali che $P(n)$ vale.</p>
+</blockquote>
+<p>Esempio:</p>
+<p>$$\exists^\omega n.\ \alpha(n)=a$$</p>
+<p>significa:</p>
+<blockquote>
+<p>nella parola $\alpha$, la lettera $a$ compare infinitamente spesso.</p>
+</blockquote>
+<h3>4. L'insieme In(alpha)</h3>
+<p>Per una parola infinita $\alpha$, definiamo:</p>
+<p>$$In(\alpha)=\{a\in A\mid \exists^\omega n.\ \alpha(n)=a\}.$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>$In(\alpha)$ contiene le lettere che compaiono infinitamente spesso in
+$\alpha$.</p>
+</blockquote>
+<p>Poiche' $A$ e' finito e $\alpha$ e' infinita, $In(\alpha)$ non puo' essere vuoto:
+almeno una lettera deve ripetersi infinite volte.</p>
+<p>Questa idea ritornera' negli automi di Muller, dove guardiamo gli stati visitati
+infinitamente spesso.</p>
+<hr>
+<h2>Parte II - Automi di Buchi non deterministici</h2>
+<h3>5. Definizione di NBA</h3>
+<p>Un automa di Buchi non deterministico, NBA, e':</p>
+<p>$$\mathcal{A}=(Q,A,\Delta,q_0,F).$$</p>
+<p>Dove:</p>
+<ul>
+<li>$Q$ e' un insieme finito di stati;</li>
+<li>$A$ e' l'alfabeto;</li>
+<li>$\Delta\subseteq Q\times A\times Q$ e' la relazione di transizione;</li>
+<li>$q_0$ e' lo stato iniziale;</li>
+<li>$F\subseteq Q$ e' l'insieme degli stati finali.</li>
+</ul>
+<p>La struttura sembra quella di un NFA. Cambia la semantica di accettazione.</p>
+<h3>6. Run su una omega-parola</h3>
+<p>Data una parola:</p>
+<p>$$\alpha=\alpha(0)\alpha(1)\alpha(2)\ldots,$$</p>
+<p>una run di $\mathcal{A}$ su $\alpha$ e' una sequenza infinita di stati:</p>
+<p>$$\sigma=q_0q_1q_2\ldots$$</p>
+<p>tale che per ogni $i\ge 0$:</p>
+<p>$$(q_i,\alpha(i),q_{i+1})\in\Delta.$$</p>
+<p>Quindi la run consuma un simbolo per ogni passo, ma non finisce mai.</p>
+<h3>7. Condizione di accettazione di Buchi</h3>
+<p>Una run e' accettante se visita stati finali infinitamente spesso:</p>
+<p>$$In(\sigma)\cap F\ne\emptyset.$$</p>
+<p>Equivalentemente:</p>
+<p>$$\exists q\in F.\ \exists^\omega i.\ q_i=q.$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>almeno uno stato finale viene visto infinite volte lungo la run.</p>
+</blockquote>
+<p>L'automa accetta $\alpha$ se esiste almeno una run accettante su $\alpha$.</p>
+<h3>8. Differenza con NFA su parole finite</h3>
+<p>In un NFA su parole finite:</p>
+<blockquote>
+<p>conta dove sei quando la parola finisce.</p>
+</blockquote>
+<p>In un NBA:</p>
+<blockquote>
+<p>conta quali stati ricompaiono infinitamente spesso.</p>
+</blockquote>
+<p>Uno stato finale in un NBA non significa "ho finito". Significa:</p>
+<blockquote>
+<p>questo stato deve essere visitato ancora e ancora, senza limite.</p>
+</blockquote>
+<h3>9. Perche il non determinismo conta</h3>
+<p>Come negli NFA, l'NBA accetta se <strong>esiste</strong> una run accettante.</p>
+<p>Questo e' cruciale. Il non determinismo puo' "indovinare" un punto della parola
+in cui iniziare un comportamento accettante.</p>
+<p>Esempio che tornera':</p>
+<blockquote>
+<p>parole con solo finitely many $a$.</p>
+</blockquote>
+<p>Un NBA puo' indovinare l'ultima $a$ e poi controllare che da li' in poi compaiano
+solo $b$.</p>
+<p>Un DBA, invece, non puo' indovinare: ha una sola run.</p>
+<hr>
+<h2>Parte III - Linguaggi omega-regolari</h2>
+<h3>10. Definizione</h3>
+<p>Un linguaggio:</p>
+<p>$$L\subseteq A^\omega$$</p>
+<p>e' <strong>omega-regolare</strong> se esiste un automa di Buchi che lo riconosce.</p>
+<p>In simboli:</p>
+<p>$$L=L(\mathcal{A})$$</p>
+<p>per qualche NBA $\mathcal{A}$.</p>
+<h3>11. Esempio: infinite occorrenze di a</h3>
+<p>Linguaggio:</p>
+<p>$$L_{\infty a}=\{\alpha\in\{a,b\}^\omega\mid a\text{ compare infinitamente spesso}\}.$$</p>
+<p>NBA, anzi anche DBA, semplice:</p>
+<ul>
+<li>stato $q_a$ finale quando l'ultimo simbolo letto e' $a$;</li>
+<li>stato $q_b$ non finale quando l'ultimo simbolo letto e' $b$.</li>
+</ul>
+<p>Transizioni:</p>
+<table>
+<thead>
+<tr>
+<th>stato</th>
+<th>leggo $a$</th>
+<th>leggo $b$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$q_a$</td>
+<td>$q_a$</td>
+<td>$q_b$</td>
+</tr>
+<tr>
+<td>$q_b$</td>
+<td>$q_a$</td>
+<td>$q_b$</td>
+</tr>
+</tbody>
+</table>
+<p>Finale:</p>
+<p>$$F=\{q_a\}.$$</p>
+<p>La run visita $q_a$ infinitamente spesso se e solo se legge $a$ infinitamente
+spesso.</p>
+<h3>12. Esempio: finitely many a</h3>
+<p>Linguaggio:</p>
+<p>$$L_{fin\,a}=\{\alpha\in\{a,b\}^\omega\mid a\text{ compare solo finitely many times}\}.$$</p>
+<p>Un NBA puo' riconoscerlo cosi':</p>
+<ol>
+<li>finche' vuole, resta in una fase iniziale;</li>
+<li>a un certo punto indovina: "da qui in poi non compariranno piu' $a$";</li>
+<li>passa a uno stato finale che accetta solo $b$;</li>
+<li>se vede una $a$ dopo l'indovinata, quella run muore.</li>
+</ol>
+<p>Se la parola ha davvero solo finite $a$, esiste una scelta corretta: indovinare
+dopo l'ultima $a$.</p>
+<p>Se la parola ha infinite $a$, ogni scelta viene prima o poi smentita.</p>
+<h3>13. Linguaggio con vincolo fra due a</h3>
+<p>Negli appunti compare un esempio su:</p>
+<p>$$A=\{a,b,c\}.$$</p>
+<p>Vincolo:</p>
+<blockquote>
+<p>fra due occorrenze consecutive di $a$ deve comparire un numero pari di simboli
+diversi da $a$.</p>
+</blockquote>
+<p>L'idea dell'automa:</p>
+<ul>
+<li>prima di vedere $a$, si puo' leggere $b$ o $c$ liberamente;</li>
+<li>dopo una $a$, bisogna ricordare la parita' del numero di $b/c$ visti;</li>
+<li>una nuova $a$ e' permessa solo quando la parita' e' pari;</li>
+<li>se si viola il vincolo, quella run non puo' accettare.</li>
+</ul>
+<p>Questo esempio serve a fissare un punto:</p>
+<blockquote>
+<p>gli stati finali non indicano "terminazione", ma situazioni che devono
+ricorrere infinite volte o comunque rimanere compatibili con una run infinita.</p>
+</blockquote>
+<hr>
+<h2>Parte IV - Due operazioni su linguaggi finiti</h2>
+<h3>14. Omega-chiusura $W^\omega$</h3>
+<p>Dato:</p>
+<p>$$W\subseteq A^\ast,$$</p>
+<p>definiamo:</p>
+<p>$$W^\omega=\{\alpha\in A^\omega\mid \alpha=w_0w_1w_2\ldots,\ w_i\in W\}.$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>parole infinite ottenute concatenando infinitamente molte parole finite prese
+da $W$.</p>
+</blockquote>
+<p>Esempio:</p>
+<p>$$W=\{ab\}.$$</p>
+<p>Allora:</p>
+<p>$$W^\omega=(ab)^\omega=ababab\ldots$$</p>
+<h3>15. Chiusura vettoriale $\overrightarrow{W}$</h3>
+<p>Dato:</p>
+<p>$$W\subseteq A^\ast,$$</p>
+<p>definiamo:</p>
+<p>$$\overrightarrow{W}=\{\alpha\in A^\omega\mid \exists^\omega n.\ \alpha(0,n)\in W\}.$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>parole infinite che hanno infinitamente molti prefissi appartenenti a $W$.</p>
+</blockquote>
+<p>Esempio:</p>
+<p>Se:</p>
+<p>$$W=A^\ast a,$$</p>
+<p>cioe' parole finite che terminano con $a$, allora:</p>
+<p>$$\overrightarrow{W}$$</p>
+<p>e' il linguaggio delle parole infinite con infinite occorrenze di $a$.</p>
+<h3>16. Perche queste operazioni sono importanti</h3>
+<p>Sono due modi diversi di descrivere infinito:</p>
+<ul>
+<li>$W^\omega$ divide la parola infinita in blocchi finiti;</li>
+<li>$\overrightarrow{W}$ guarda prefissi buoni che ricompaiono infinite volte.</li>
+</ul>
+<p>Queste operazioni anticipano due idee:</p>
+<ul>
+<li>omega-regex;</li>
+<li>condizioni di accettazione basate su visite infinite.</li>
+</ul>
+<hr>
+<h2>Parte V - Chiusure e GNBA</h2>
+<h3>17. Se V e' regolare, allora $V^\omega$ e' omega-regolare</h3>
+<p>Sia:</p>
+<p>$$V\subseteq A^\ast$$</p>
+<p>regolare.</p>
+<p>Vogliamo riconoscere:</p>
+<p>$$V^\omega.$$</p>
+<p>Intuizione:</p>
+<ol>
+<li>uso un automa finito per riconoscere un blocco di $V$;</li>
+<li>quando raggiungo un finale, posso tornare all'inizio;</li>
+<li>devo farlo infinitamente spesso;</li>
+<li>quindi rendo l'inizio, o il punto di reset, finale nel senso di Buchi.</li>
+</ol>
+<p>La run accettante passa infinitamente spesso dal punto di reset, cioe' riconosce
+infiniti blocchi di $V$.</p>
+<h3>18. Se V regolare e L omega-regolare, allora $V\cdot L$ e' omega-regolare</h3>
+<p>Qui:</p>
+<p>$$V\subseteq A^\ast,\qquad L\subseteq A^\omega.$$</p>
+<p>Il linguaggio:</p>
+<p>$$V\cdot L$$</p>
+<p>contiene parole infinite con un prefisso finito in $V$ seguito da una parola in
+$L$.</p>
+<p>Costruzione intuitiva:</p>
+<ul>
+<li>una parte finita riconosce il prefisso in $V$;</li>
+<li>poi si passa all'NBA che riconosce $L$;</li>
+<li>l'accettazione dipende dalla parte infinita.</li>
+</ul>
+<h3>19. Unione</h3>
+<p>Se $L_1$ e $L_2$ sono omega-regolari, allora:</p>
+<p>$$L_1\cup L_2$$</p>
+<p>e' omega-regolare.</p>
+<p>Con NBA, basta usare nondeterminismo:</p>
+<ul>
+<li>una run simula l'automa per $L_1$;</li>
+<li>un'altra simula l'automa per $L_2$;</li>
+<li>se una delle due ha una run accettante, la parola e' accettata.</li>
+</ul>
+<h3>20. Perche l'intersezione non e' il prodotto banale</h3>
+<p>Per parole finite, il prodotto per intersezione usa finali:</p>
+<p>$$F_1\times F_2.$$</p>
+<p>Per NBA non basta. Infatti, una parola deve far visitare:</p>
+<ul>
+<li>finali del primo automa infinitamente spesso;</li>
+<li>finali del secondo automa infinitamente spesso.</li>
+</ul>
+<p>Ma queste visite non devono accadere nello stesso istante.</p>
+<p>Esempio:</p>
+<ul>
+<li>il primo automa visita un finale nei tempi pari;</li>
+<li>il secondo nei tempi dispari.</li>
+</ul>
+<p>Entrambi accettano, ma il prodotto potrebbe non visitare mai una coppia
+$(F_1,F_2)$ simultaneamente.</p>
+<p>Serve una condizione piu' generale.</p>
+<h3>21. GNBA</h3>
+<p>Un Generalized Buchi Automaton, GNBA, ha una famiglia di insiemi finali:</p>
+<p>$$\mathcal{F}=\{F_1,\ldots,F_k\}.$$</p>
+<p>Una run e' accettante se visita ogni $F_i$ infinitamente spesso:</p>
+<p>$$\forall i,\ \exists^\omega n.\ q_n\in F_i.$$</p>
+<p>Quindi una GNBA puo' dire:</p>
+<blockquote>
+<p>visita infinitamente spesso finali del primo tipo, del secondo tipo, ecc.</p>
+</blockquote>
+<h3>22. Intersezione tramite GNBA</h3>
+<p>Dati due NBA:</p>
+<p>$$\mathcal{A}_1,\quad \mathcal{A}_2,$$</p>
+<p>costruiamo il prodotto:</p>
+<p>$$Q=Q_1\times Q_2.$$</p>
+<p>La condizione GNBA e':</p>
+<p>$$\mathcal{F}=\{F_1\times Q_2,\ Q_1\times F_2\}.$$</p>
+<p>Lettura:</p>
+<ul>
+<li>visita infinitamente spesso stati in cui la prima componente e' finale;</li>
+<li>visita infinitamente spesso stati in cui la seconda componente e' finale.</li>
+</ul>
+<p>Questo riconosce:</p>
+<p>$$L(\mathcal{A}_1)\cap L(\mathcal{A}_2).$$</p>
+<h3>23. Da GNBA a NBA</h3>
+<p>GNBA e NBA hanno lo stesso potere espressivo.</p>
+<p>Se:</p>
+<p>$$\mathcal{F}=\{F_1,\ldots,F_k\},$$</p>
+<p>costruiamo $k$ copie dell'automa. La copia corrente indica quale insieme finale
+stiamo aspettando.</p>
+<p>Schema:</p>
+<ol>
+<li>nella copia 1 cerco una visita a $F_1$;</li>
+<li>quando la trovo, passo alla copia 2;</li>
+<li>nella copia 2 cerco $F_2$;</li>
+<li>...</li>
+<li>dopo $F_k$, torno alla copia 1.</li>
+</ol>
+<p>Se completo questo ciclo infinitamente spesso, ho visitato tutti gli $F_i$
+infinitamente spesso.</p>
+<p>La dimensione cresce di un fattore circa $k$.</p>
+<hr>
+<h2>Parte VI - Espressioni omega-regolari</h2>
+<h3>24. Forma delle omega-espressioni</h3>
+<p>Una espressione omega-regolare ha forma finita:</p>
+<p>$$\bigcup_{i=1}^n U_i\cdot V_i^\omega,$$</p>
+<p>dove $U_i,V_i\subseteq A^\ast$ sono linguaggi regolari.</p>
+<p>Lettura:</p>
+<blockquote>
+<p>scelgo un prefisso finito in $U_i$, poi concateno infinitamente molti blocchi
+presi da $V_i$.</p>
+</blockquote>
+<h3>25. Da Buchi a omega-espressione</h3>
+<p>Dato un NBA:</p>
+<p>$$\mathcal{A}=(Q,A,\Delta,q_0,F),$$</p>
+<p>per ogni coppia di stati $s,s'$ definiamo:</p>
+<p>$$W_{ss'}=\{w\in A^\ast\mid s\xrightarrow{w}s'\}.$$</p>
+<p>Questo linguaggio e' regolare, perche' si riconosce con un automa finito che
+parte da $s$ e ha finale $s'$.</p>
+<p>Se una run accettante visita infinitamente spesso uno stato finale $f$, allora:</p>
+<ul>
+<li>c'e' un prefisso che porta da $q_0$ a $f$;</li>
+<li>poi ci sono infiniti cicli da $f$ a $f$.</li>
+</ul>
+<p>Quindi:</p>
+<p>$$L(\mathcal{A})=\bigcup_{f\in F} W_{q_0f}\cdot (W_{ff})^\omega.$$</p>
+<p>Questa formula e' una lettura potente:</p>
+<blockquote>
+<p>una parola accettata ha un prefisso fino a un finale e poi ritorna
+infinitamente spesso a quel finale.</p>
+</blockquote>
+<h3>26. Da omega-espressione a Buchi</h3>
+<p>Per:</p>
+<p>$$U\cdot V^\omega,$$</p>
+<p>costruiamo:</p>
+<ol>
+<li>un automa finito per $U$;</li>
+<li>un automa per $V$;</li>
+<li>una struttura che, dopo il prefisso $U$, riconosce infiniti blocchi in $V$;</li>
+<li>una condizione di Buchi che forza il ritorno infinitamente spesso al punto di
+   reset dei blocchi.</li>
+</ol>
+<p>La chiusura per unione gestisce la somma finita:</p>
+<p>$$\bigcup_i U_i\cdot V_i^\omega.$$</p>
+<p>Quindi:</p>
+<blockquote>
+<p>linguaggi omega-regolari = linguaggi riconosciuti da NBA = linguaggi descritti
+da omega-espressioni regolari.</p>
+</blockquote>
+<hr>
+<h2>Parte VII - Emptiness, lasso e parole ultimamente periodiche</h2>
+<h3>27. Parole ultimamente periodiche</h3>
+<p>Una parola infinita e' ultimamente periodica se:</p>
+<p>$$\alpha=u\cdot v^\omega$$</p>
+<p>con:</p>
+<p>$$u,v\in A^\ast,\qquad v\ne\varepsilon.$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>dopo un prefisso finito $u$, ripete per sempre lo stesso blocco $v$.</p>
+</blockquote>
+<p>Questa forma si chiama anche lasso:</p>
+<ul>
+<li>$u$ = manico;</li>
+<li>$v$ = ciclo.</li>
+</ul>
+<h3>28. Ogni omega-regolare non vuoto contiene un lasso</h3>
+<p>Se un linguaggio omega-regolare non e' vuoto, contiene almeno una parola
+ultimamente periodica.</p>
+<p>Intuizione da automi:</p>
+<ul>
+<li>una run accettante visita infiniti stati;</li>
+<li>gli stati sono finiti;</li>
+<li>qualche stato finale ricorre;</li>
+<li>fra due visite allo stesso stato finale c'e' un ciclo;</li>
+<li>quel ciclo puo' essere ripetuto per sempre.</li>
+</ul>
+<p>Quindi se un NBA accetta qualcosa, accetta anche una parola del tipo:</p>
+<p>$$u\cdot v^\omega.$$</p>
+<h3>29. Emptiness problem</h3>
+<p>Il problema di vuotezza chiede:</p>
+<p>$$L(\mathcal{A})=\emptyset?$$</p>
+<p>Per un NBA, la risposta e' no se e solo se esiste:</p>
+<ul>
+<li>uno stato finale $f\in F$;</li>
+<li>raggiungibile da $q_0$;</li>
+<li>che appartiene a un ciclo raggiungibile da se stesso.</li>
+</ul>
+<p>Equivalentemente:</p>
+<blockquote>
+<p>esiste una SCC raggiungibile che contiene almeno uno stato finale e ha un ciclo
+infinito.</p>
+</blockquote>
+<h3>30. Algoritmo di emptiness</h3>
+<p>Procedura:</p>
+<ol>
+<li>calcola gli stati raggiungibili da $q_0$;</li>
+<li>calcola le SCC del grafo delle transizioni;</li>
+<li>cerca una SCC raggiungibile che contiene uno stato finale;</li>
+<li>verifica che la SCC permetta una run infinita, cioe' contenga un ciclo.</li>
+</ol>
+<p>Se esiste, il linguaggio non e' vuoto.</p>
+<p>Se non esiste, il linguaggio e' vuoto.</p>
+<p>Questa e' una riduzione a raggiungibilita' e SCC su grafo finito.</p>
+<h3>31. Perche emptiness e' centrale nel model checking</h3>
+<p>Nel model checking automata-theoretic si controlla spesso:</p>
+<p>$$L(S)\cap L(\neg\varphi)=\emptyset.$$</p>
+<p>Lettura:</p>
+<blockquote>
+<p>non esiste un comportamento del sistema che violi la proprieta'.</p>
+</blockquote>
+<p>Quindi l'emptiness degli automi di Buchi diventa il motore della verifica LTL.</p>
+<hr>
+<h2>Parte VIII - Complementazione</h2>
+<h3>32. L'errore: invertire gli stati finali</h3>
+<p>Per DFA su parole finite, il complemento si ottiene invertendo finali e non
+finali.</p>
+<p>Per NBA questo non funziona.</p>
+<p>Perche'?</p>
+<p>Un NBA accetta se:</p>
+<blockquote>
+<p>esiste una run che visita $F$ infinitamente spesso.</p>
+</blockquote>
+<p>La negazione e':</p>
+<blockquote>
+<p>tutte le run non visitano $F$ infinitamente spesso.</p>
+</blockquote>
+<p>Invertire $F$ controlla invece:</p>
+<blockquote>
+<p>esiste una run che visita stati non finali infinitamente spesso.</p>
+</blockquote>
+<p>Questa non e' la negazione corretta.</p>
+<h3>33. Esempio intuitivo del fallimento</h3>
+<p>Una parola puo' avere:</p>
+<ul>
+<li>una run che visita finali infinitamente spesso;</li>
+<li>un'altra run che visita non-finali infinitamente spesso.</li>
+</ul>
+<p>Allora l'automa originale accetta, ma anche l'automa con finali invertiti
+potrebbe accettare.</p>
+<p>Questo e' il problema del non determinismo.</p>
+<h3>34. Chiusura per complemento</h3>
+<p>Gli omega-linguaggi regolari sono chiusi per complemento, ma la costruzione e'
+molto piu' difficile rispetto al caso DFA.</p>
+<p>Gli appunti introducono strumenti come:</p>
+<ul>
+<li>congruenze su parole finite;</li>
+<li>saturazione;</li>
+<li>comportamento rispetto a cammini che attraversano finali.</li>
+</ul>
+<p>L'idea concettuale:</p>
+<blockquote>
+<p>per complementare un NBA bisogna catturare globalmente tutte le run, non solo
+cambiare etichetta ai finali.</p>
+</blockquote>
+<p>Per l'orale, la cosa fondamentale e' sapere:</p>
+<ul>
+<li>la classe e' chiusa per complemento;</li>
+<li>la costruzione non e' banale;</li>
+<li>invertire finali e non finali e' sbagliato.</li>
+</ul>
+<h3>35. Congruenza e saturazione, lettura leggera</h3>
+<p>Una congruenza su $A^\ast$ raggruppa parole finite che si comportano allo stesso
+modo rispetto alla concatenazione.</p>
+<p>Dire che una congruenza satura un omega-linguaggio significa:</p>
+<blockquote>
+<p>su ogni blocco del tipo $U\cdot V^\omega$, o tutto il blocco sta nel
+linguaggio, o nessuna parola rilevante del blocco lo attraversa parzialmente.</p>
+</blockquote>
+<p>Il punto tecnico degli appunti e':</p>
+<blockquote>
+<p>se una congruenza satura $L$, allora satura anche il complemento.</p>
+</blockquote>
+<p>Questo permette di ragionare sul complemento con un numero finito di classi.</p>
+<hr>
+<h2>Parte IX - DBA vs NBA</h2>
+<h3>36. Definizione di DBA</h3>
+<p>Un DBA e' un automa di Buchi deterministico:</p>
+<ul>
+<li>una sola transizione possibile per ogni stato e simbolo;</li>
+<li>una sola run per ogni parola;</li>
+<li>accettazione ancora basata su visite infinite a $F$.</li>
+</ul>
+<h3>37. NBA e DBA non hanno lo stesso potere</h3>
+<p>Sulle parole finite:</p>
+<p>$$DFA \equiv NFA$$</p>
+<p>come potere espressivo.</p>
+<p>Sulle parole infinite:</p>
+<p>$$DBA \subsetneq NBA.$$</p>
+<p>Il non determinismo aggiunge potere espressivo.</p>
+<h3>38. Linguaggio "finitely many a"</h3>
+<p>Il linguaggio:</p>
+<p>$$L_{fin\,a}=\{\alpha\mid a\text{ compare finitely many times}\}$$</p>
+<p>e' riconoscibile da un NBA:</p>
+<ul>
+<li>indovina il punto dopo l'ultima $a$;</li>
+<li>da li' accetta solo $b$;</li>
+<li>resta in uno stato finale su $b$.</li>
+</ul>
+<p>Ma non e' riconoscibile da un DBA.</p>
+<p>Intuizione:</p>
+<blockquote>
+<p>un deterministico non puo' sapere quando ha visto l'ultima $a$, perche' una
+nuova $a$ potrebbe sempre arrivare piu' avanti.</p>
+</blockquote>
+<h3>39. Complemento e DBA</h3>
+<p>Il complemento di "finitely many a" e':</p>
+<p>$$L_{\infty a}=\{\alpha\mid a\text{ compare infinitely often}\}.$$</p>
+<p>Questo e' riconoscibile da un DBA semplice, come visto prima.</p>
+<p>Se i DBA fossero chiusi per complemento, allora anche "finitely many a" sarebbe
+DBA. Ma non lo e'. Quindi i DBA non sono chiusi per complemento come i DFA.</p>
+<p>Per recuperare chiusure robuste in forma deterministica servono condizioni piu'
+ricche, come Muller o Rabin.</p>
+<h3>40. Caratterizzazione utile dei DBA</h3>
+<p>Gli appunti collegano i DBA a linguaggi del tipo:</p>
+<p>$$\overrightarrow{W}$$</p>
+<p>dove $W$ e' regolare.</p>
+<p>Intuizione:</p>
+<blockquote>
+<p>un DBA accetta se lungo la sua unica run incontra stati finali infinitamente
+spesso; quindi i prefissi che portano a finali formano un linguaggio regolare
+visto infinitamente spesso.</p>
+</blockquote>
+<p>Questa caratterizzazione spiega perche' i DBA sono meno espressivi degli NBA.</p>
+<hr>
+<h2>Parte X - Automi di Muller</h2>
+<h3>41. Perche introdurre Muller</h3>
+<p>Gli automi di Buchi guardano se almeno uno stato finale viene visitato
+infinitamente spesso.</p>
+<p>Gli automi di Muller guardano l'intero insieme degli stati visitati
+infinitamente spesso.</p>
+<p>Questo e' piu' espressivo e funziona meglio con determinismo.</p>
+<h3>42. Definizione</h3>
+<p>Un automa di Muller e':</p>
+<p>$$\mathcal{A}=(Q,A,q_0,\delta,\mathcal{F})$$</p>
+<p>dove:</p>
+<p>$$\mathcal{F}\subseteq 2^Q.$$</p>
+<p>Data una run:</p>
+<p>$$\rho=q_0q_1q_2\ldots,$$</p>
+<p>definiamo:</p>
+<p>$$Inf(\rho)=\{q\in Q\mid \exists^\omega i.\ q_i=q\}.$$</p>
+<p>La run e' accettante se:</p>
+<p>$$Inf(\rho)\in\mathcal{F}.$$</p>
+<h3>43. Buchi come caso particolare di Muller</h3>
+<p>Un automa di Buchi con finali $F$ accetta se:</p>
+<p>$$Inf(\rho)\cap F\ne\emptyset.$$</p>
+<p>Questo si traduce in Muller ponendo:</p>
+<p>$$\mathcal{F}=\{P\subseteq Q\mid P\cap F\ne\emptyset\}.$$</p>
+<p>Quindi Buchi e' un caso particolare di Muller.</p>
+<h3>44. Complemento nei Muller automata</h3>
+<p>Per un automa di Muller deterministico, complementare e' semplice:</p>
+<p>$$\mathcal{F}'=2^Q-\mathcal{F}.$$</p>
+<p>Stessa struttura, stessa run unica, ma accetti gli insiemi ricorrenti che prima
+erano rifiutati.</p>
+<p>Questo e' uno dei motivi per cui Muller e' utile:</p>
+<blockquote>
+<p>mantiene determinismo ed e' chiuso per complemento in modo diretto.</p>
+</blockquote>
+<h3>45. Collegamento col capitolo 10</h3>
+<p>Nel capitolo 10, Buchi-Landweber usa automi deterministici di Muller per
+trasformare specifiche logiche in giochi.</p>
+<p>Ora dovrebbe essere chiaro perche':</p>
+<ul>
+<li>servono parole infinite;</li>
+<li>serve determinismo;</li>
+<li>serve una condizione espressiva;</li>
+<li>Muller permette di parlare di insiemi ricorrenti.</li>
+</ul>
+<hr>
+<h2>Parte XI - Automata per fairness</h2>
+<h3>46. Justice come proprieta' omega</h3>
+<p>Una condizione di justice dice:</p>
+<blockquote>
+<p>se una transizione resta abilitata da un certo punto in poi, allora deve essere
+presa infinitamente spesso.</p>
+</blockquote>
+<p>Questa e' una proprieta' su computazioni infinite, quindi e' naturale
+rappresentarla con automi di Buchi.</p>
+<h3>47. Stato critico della justice</h3>
+<p>Negli appunti, per una transizione $a_i$, si distingue:</p>
+<ul>
+<li>enabled: la transizione e' abilitata nello stato corrente;</li>
+<li>taken: la transizione e' stata presa.</li>
+</ul>
+<p>Lo stato problematico e':</p>
+<blockquote>
+<p>enabled ma non taken.</p>
+</blockquote>
+<p>Se resto per sempre in una situazione in cui $a_i$ e' abilitata e non la prendo
+mai, violo justice.</p>
+<p>Un automa di Buchi puo' avere come unico stato non finale proprio lo stato
+critico "enabled-not-taken". Accettare significa non restare per sempre bloccati
+in quella violazione.</p>
+<h3>48. Perche questo esercizio e' importante</h3>
+<p>Collega tre parti del corso:</p>
+<ul>
+<li>fairness dei Fair Transition Systems;</li>
+<li>automi su parole infinite;</li>
+<li>model checking LTL/automata-theoretic.</li>
+</ul>
+<p>All'orale, se ti chiedono "perche servono gli automi di Buchi?", puoi rispondere
+anche:</p>
+<blockquote>
+<p>perche' condizioni come fairness e liveness non parlano di una fine, ma di
+cio' che accade infinitamente spesso lungo una computazione.</p>
+</blockquote>
+<hr>
+<h2>Parte XII - Errori tipici</h2>
+<h3>49. Pensare che finale significhi "ultimo stato"</h3>
+<p>Nelle parole infinite non c'e' ultimo stato.</p>
+<p>Uno stato finale di Buchi deve essere visitato infinitamente spesso.</p>
+<h3>50. Confondere esiste una run con tutte le run</h3>
+<p>Un NBA accetta se esiste una run accettante.</p>
+<p>Non richiede che tutte le run siano accettanti.</p>
+<h3>51. Usare il prodotto finito per l'intersezione</h3>
+<p>Il prodotto con finali $F_1\times F_2$ non basta, perche' le visite finali dei
+due automi possono non essere sincronizzate.</p>
+<p>Serve GNBA o una costruzione equivalente.</p>
+<h3>52. Invertire i finali per complementare un NBA</h3>
+<p>Sbagliato. La negazione di "esiste una run buona" e' "tutte le run non sono
+buone", non "esiste una run che visita finali invertiti".</p>
+<h3>53. Pensare che DBA e NBA siano equivalenti</h3>
+<p>Sulle parole infinite il non determinismo aumenta il potere espressivo.</p>
+<p>L'esempio standard e' "finitely many $a$": NBA si', DBA no.</p>
+<h3>54. Confondere Occ e Inf</h3>
+<p>$$Occ(\rho)$$</p>
+<p>conta gli stati visitati almeno una volta.</p>
+<p>$$Inf(\rho)$$</p>
+<p>conta gli stati visitati infinitamente spesso.</p>
+<p>Per Buchi/Muller conta $Inf$, non solo $Occ$.</p>
+<hr>
+<h2>Parte XIII - Mini-esercizi guidati</h2>
+<h3>Esercizio 1: accettazione Buchi</h3>
+<p>Una run visita uno stato finale alle posizioni:</p>
+<p>$$2,5,9,14,20,\ldots$$</p>
+<p>ed esistono infinite posizioni di questo tipo. E' accettante?</p>
+<p>Si'. Serve una visita finale infinitamente spesso, non periodica o regolare.</p>
+<h3>Esercizio 2: visite finite</h3>
+<p>Una run visita finali solo alle posizioni:</p>
+<p>$$3,7,10.$$</p>
+<p>Poi mai piu'. E' accettante?</p>
+<p>No. Le visite finali sono finite.</p>
+<h3>Esercizio 3: infinite a</h3>
+<p>Costruisci un DBA per infinite occorrenze di $a$.</p>
+<p>Soluzione:</p>
+<ul>
+<li>stato finale $q_a$ quando leggo $a$;</li>
+<li>stato non finale $q_b$ quando leggo $b$;</li>
+<li>su $a$ vado a $q_a$;</li>
+<li>su $b$ vado a $q_b$.</li>
+</ul>
+<h3>Esercizio 4: finitely many a</h3>
+<p>Perche' un NBA riconosce finitely many $a$?</p>
+<p>Perche' puo' indovinare il punto dopo l'ultima $a$ e poi controllare che da li'
+in poi compaiano solo $b$.</p>
+<h3>Esercizio 5: emptiness</h3>
+<p>Un NBA ha uno stato finale raggiungibile, ma nessun ciclo che lo contiene.
+Il linguaggio e' non vuoto?</p>
+<p>No. Per accettare bisogna tornare a un finale infinitamente spesso; serve un
+ciclo con finale raggiungibile.</p>
+<h3>Esercizio 6: GNBA</h3>
+<p>Un GNBA ha:</p>
+<p>$$\mathcal{F}=\{F_1,F_2,F_3\}.$$</p>
+<p>Che cosa deve fare una run accettante?</p>
+<p>Deve visitare ciascuno dei tre insiemi $F_1,F_2,F_3$ infinitamente spesso.</p>
+<h3>Esercizio 7: Muller</h3>
+<p>Se:</p>
+<p>$$Inf(\rho)=\{q_2,q_4\}$$</p>
+<p>e:</p>
+<p>$$\mathcal{F}=\{\{q_2,q_4\},\{q_1\}\},$$</p>
+<p>la run e' accettante?</p>
+<p>Si', perche' l'insieme degli stati visitati infinitamente spesso appartiene a
+$\mathcal{F}$.</p>
+<h3>Esercizio 8: Occ vs Inf</h3>
+<p>Per:</p>
+<p>$$\rho=q_0,q_1,q_2,q_1,q_2,q_1,q_2,\ldots$$</p>
+<p>calcola:</p>
+<p>$$Occ(\rho),\qquad Inf(\rho).$$</p>
+<p>Soluzione:</p>
+<p>$$Occ(\rho)=\{q_0,q_1,q_2\},$$</p>
+<p>$$Inf(\rho)=\{q_1,q_2\}.$$</p>
+<hr>
+<h2>Parte XIV - Mappa per l'orale</h2>
+<h3>55. Percorso consigliato</h3>
+<p>Per rispondere bene:</p>
+<ol>
+<li>Parti dai sistemi reattivi: computazioni infinite.</li>
+<li>Spiega perche' NFA/DFA su parole finite non bastano.</li>
+<li>Definisci omega-parole e $A^\omega$.</li>
+<li>Definisci NBA.</li>
+<li>Spiega run infinita e condizione di Buchi.</li>
+<li>Sottolinea: accetta se esiste una run con finali infinitamente spesso.</li>
+<li>Fai l'esempio "infinite occorrenze di $a$".</li>
+<li>Fai l'esempio "finitely many $a$" e spiega il ruolo del non determinismo.</li>
+<li>Definisci linguaggio omega-regolare.</li>
+<li>Spiega $W^\omega$ e $\overrightarrow{W}$.</li>
+<li>Spiega perche' l'intersezione richiede GNBA.</li>
+<li>Spiega GNBA e conversione a NBA.</li>
+<li>Spiega omega-espressioni regolari.</li>
+<li>Spiega emptiness via SCC con finale raggiungibile.</li>
+<li>Spiega lasso/ultimately periodic.</li>
+<li>Spiega perche' la complementazione non e' invertire finali.</li>
+<li>Spiega DBA vs NBA.</li>
+<li>Chiudi con Muller e collegamento al capitolo 10.</li>
+</ol>
+<h3>56. Risposta orale pronta</h3>
+<p>Una risposta compatta:</p>
+<blockquote>
+<p>Gli automi di Buchi estendono gli automi finiti alle parole infinite, che sono
+necessarie per modellare sistemi reattivi e computazioni non terminanti. La
+struttura di un NBA e' simile a quella di un NFA, ma cambia l'accettazione: una
+run infinita e' accettante se visita stati finali infinitamente spesso, cioe'
+se $In(\sigma)\cap F\ne\emptyset$. L'automa accetta una parola se esiste una
+run accettante.</p>
+<p>I linguaggi riconosciuti da NBA sono gli omega-regolari. Si possono descrivere
+anche con espressioni omega-regolari del tipo $\bigcup_i U_iV_i^\omega$.
+L'emptiness e' decidibile cercando una SCC raggiungibile che contenga uno stato
+finale: se esiste, posso costruire un lasso $uv^\omega$ accettato. Le chiusure
+richiedono attenzione: l'unione e' semplice, l'intersezione richiede GNBA
+perche' le visite finali dei due automi non devono essere sincronizzate, e la
+complementazione non si ottiene invertendo i finali. Inoltre NBA e DBA non
+hanno lo stesso potere: per esempio "finitely many $a$" e' NBA ma non DBA.
+Per recuperare determinismo pieno si introducono condizioni piu' ricche, come
+Muller, che guardano l'insieme degli stati visitati infinitamente spesso.</p>
+</blockquote>
+<h3>57. Riassunto finale</h3>
+<p>Il capitolo 5 introduce il modo standard di ragionare sulle computazioni
+infinite:</p>
+<p>$$
+\text{parole infinite}
+\to
+\text{run infinite}
+\to
+\text{visite infinitamente spesso}
+\to
+\text{accettazione Buchi}.
+$$</p>
+<p>La frase da ricordare e':</p>
+<blockquote>
+<p>su parole infinite non accetto arrivando alla fine; accetto se il comportamento
+buono ricorre infinitamente spesso.</p>
+</blockquote>
+<p>La catena tecnica e':</p>
+<p>$$
+\text{NBA}
+\leftrightarrow
+\text{omega-regolari}
+\leftrightarrow
+\text{omega-espressioni}
+\to
+\text{emptiness via SCC/lasso}
+\to
+\text{GNBA per intersezione}
+\to
+\text{Muller per determinismo e complemento}.
+$$</p></article>
+  <p class="section-label">Esercizi (piano di studio)</p>
+  
+<div class="exercises-block prose">
+<h2>Esercizi e domande — settimana 3</h2>
+<p><strong>Obiettivo della settimana:</strong> padroneggiare automi su parole infinite e il ponte logica-automi.</p>
+<h3>Esercizi scritti essenziali</h3>
+<ol>
+<li>
+<p><strong>NBA base.</strong> Costruisci un NBA su $\lbrace a,b\rbrace$ che accetta le parole con infinitamente molte $a$:
+   $$L=\lbrace \alpha\in\lbrace a,b\rbrace^\omega \mid a \text{ occorre infinite volte}\rbrace$$</p>
+</li>
+<li>
+<p><strong>Numero finito di occorrenze di a.</strong> Costruisci un NBA per:
+   $$L=\lbrace \alpha\in\lbrace a,b\rbrace^\omega \mid a \text{ occorre finitamente molte volte}\rbrace$$
+   Spiega perche il nondeterminismo e' naturale qui.</p>
+</li>
+<li>
+<p><strong>Limite dei DBA.</strong> Argomenta perche il linguaggio "solo un numero finito di $a$" non e' riconoscibile da un DBA. Non serve una prova topologica completa: basta una spiegazione orale convincente basata sull'impossibilita di sapere deterministicamente l'ultima $a$.</p>
+</li>
+<li>
+<p><strong>Espressioni omega-regolari.</strong> Scrivi un'espressione omega-regolare per:</p>
+</li>
+<li>infinitamente molte $a$;</li>
+<li>finitamente molte $a$;</li>
+<li>
+<p>parole in cui ogni blocco tra due $a$ consecutive contiene un numero pari di simboli diversi da $a$.</p>
+</li>
+<li>
+<p><strong>Equivalenza espressione -&gt; automa.</strong> Prendi $(b^*a)^\omega$ e costruisci un NBA che la riconosce. Indica perche gli stati finali vengono visitati infinite volte.</p>
+</li>
+<li>
+<p><strong>GNBA -&gt; NBA.</strong> Dato un GNBA con insiemi di accettazione $F_1,F_2,F_3$, descrivi la costruzione dell'NBA equivalente con contatore di obblighi. Poi applicala a un esempio piccolo.</p>
+</li>
+<li>
+<p><strong>Chiusura per intersezione.</strong> Costruisci il prodotto di due NBA per riconoscere:
+   "infinitamente molte $a$" e "infinitamente molte $b$".</p>
+</li>
+<li>
+<p><strong>Muller automata.</strong> Dai un automa di Muller deterministico molto semplice che distingue le parole in cui il set degli stati visitati infinitamente spesso appartiene a una famiglia $\mathcal{F}$. Spiega perche il complemento e' facile per Muller.</p>
+</li>
+<li>
+<p><strong>S1S: infinitamente spesso.</strong> Scrivi una formula S1S per dire che il predicato $P$ vale in infinite posizioni:
+   $$\forall x\exists y(x&lt;y \land y\in P)$$
+   Poi riscrivila spiegando il ruolo delle variabili di primo e secondo ordine.</p>
+</li>
+<li>
+<p><strong>S1S: alternanza.</strong> Scrivi una formula S1S per parole su $\lbrace a,b\rbrace$ in cui non compaiono mai due $a$ consecutive.</p>
+</li>
+<li>
+<p><strong>Chiusura per proiezione.</strong> Spiega con un esempio cosa significa proiettare via una componente dell'alfabeto. Traduci l'idea in una frase sugli automi di Büchi.</p>
+</li>
+<li>
+<p><strong>Secondo teorema di Büchi.</strong> Scrivi una dimostrazione-scheletro delle due direzioni:</p>
+</li>
+<li>automa di Büchi -&gt; formula S1S;</li>
+<li>formula S1S -&gt; automa di Büchi.</li>
+</ol>
+<h3>Domande orali secche</h3>
+<ol>
+<li>Perche per i sistemi reattivi servono parole infinite?</li>
+<li>Definizione formale di NBA e condizione di accettazione.</li>
+<li>Differenza tra NBA, DBA, GNBA e Muller automata.</li>
+<li>Che cosa dice il secondo teorema di Büchi?</li>
+<li>Differenza tra S1S e WS1S.</li>
+</ol>
+<h3>Controllo</h3>
+<p>Hai superato la settimana se sai costruire gli automi per "infinite occorrenze di a" e "solo un numero finito di a", e se sai raccontare il ponte S1S-Büchi senza perderti nei dettagli tecnici.</p>
+</div>
+
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap04.html">← Precedente</a></span><span><a href="cap06.html">Successivo →</a></span></div>
+</div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script defer src="assets/chat.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

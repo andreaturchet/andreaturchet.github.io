@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chiusure e closure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/chat.css" />
+  
+</head>
+<body>
+
+<header class="site-header">
+  <h1>Chiusure e closure</h1>
+  <p class="subtitle">Dimostrazioni complete di tutte le chiusure negli appunti</p>
+  <div class="ornament">✦</div>
+</header>
+<div class="wrap">
+  <div class="nav-row"><a href="index.html">← Indice</a></div>
+  <article class="prose"><h1>Chiusure e closure: dimostrazioni complete</h1>
+<p>Questa pagina raccoglie, in forma studiabile per l'orale, tutte le "closure"
+che compaiono negli appunti. Ho separato due usi diversi della parola:</p>
+<ol>
+<li><strong>chiusura come proprieta' di una classe di linguaggi</strong>: parto da oggetti
+   della classe e, dopo un'operazione, resto nella stessa classe;</li>
+<li><strong>closure come insieme generato da una costruzione</strong>: epsilon-closure,
+   closure LTL, chiusura della tabella in L*.</li>
+</ol>
+<p>Fonti locali principali: <code>formal_proofs.md</code>,
+<code>expansions/week01_finite_automata_deepening.md</code>,
+<code>expansions/week03_infinite_automata_deepening.md</code>,
+<code>expansions/week03_mso_s1s_deepening.md</code>,
+<code>expansions/week04_model_checking_procedures_deepening.md</code>,
+<code>raw/Automi a stati finiti su parole finite.md</code>,
+<code>raw/Automi a stati finiti su parole infinite.md</code>,
+<code>raw/Linear Temporal Logic.md</code> e <code>concepts/Closure_by_Projection.md</code>.</p>
+<h2>Mappa rapida</h2>
+<table>
+<thead>
+<tr>
+<th>Oggetto</th>
+<th>Closure</th>
+<th>Risultato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linguaggi regolari finiti</td>
+<td>unione, concatenazione, stella, complemento, intersezione, differenza</td>
+<td>restano regolari</td>
+</tr>
+<tr>
+<td>epsilon-NFA</td>
+<td>epsilon-closure degli stati</td>
+<td>elimina le epsilon-mosse senza cambiare linguaggio</td>
+</tr>
+<tr>
+<td>Tabella L*</td>
+<td>chiusura della tabella</td>
+<td>ogni transizione dello stato ipotesi e' rappresentata</td>
+</tr>
+<tr>
+<td>Omega-regolari / NBA</td>
+<td>$V^\omega$, $V\cdot L$, unione, intersezione, complemento</td>
+<td>restano omega-regolari</td>
+</tr>
+<tr>
+<td>DBA</td>
+<td>unione e intersezione</td>
+<td>restano DBA-riconoscibili</td>
+</tr>
+<tr>
+<td>DBA</td>
+<td>complemento</td>
+<td>non chiusi</td>
+</tr>
+<tr>
+<td>Muller deterministici</td>
+<td>complemento, unione, intersezione</td>
+<td>chiusura booleana diretta</td>
+</tr>
+<tr>
+<td>S1S / omega-regolari</td>
+<td>proiezione</td>
+<td>esistenzializzazione di una variabile del secondo ordine</td>
+</tr>
+<tr>
+<td>Star-free</td>
+<td>unione, concatenazione, complemento</td>
+<td>chiusi per definizione sintattica</td>
+</tr>
+<tr>
+<td>LTL tableau</td>
+<td>closure LTL della formula</td>
+<td>insieme finito di sottoformule e negazioni rilevanti</td>
+</tr>
+</tbody>
+</table>
+<h2>1. Che cosa significa "essere chiusi"</h2>
+<p>Una classe $\mathcal{C}$ e' <strong>chiusa</strong> rispetto a un'operazione $\circ$ quando,
+se prendo elementi della classe e applico l'operazione, il risultato appartiene
+ancora alla classe.</p>
+<p>Esempio:</p>
+<p>$$
+L_1,L_2\in\mathcal{C}
+\quad\Longrightarrow\quad
+L_1\cup L_2\in\mathcal{C}.
+$$</p>
+<p>Per dimostrarlo in automata theory si fa quasi sempre una dimostrazione
+costruttiva:</p>
+<ol>
+<li>assumo di avere automi per i linguaggi di partenza;</li>
+<li>costruisco un nuovo automa per il linguaggio ottenuto;</li>
+<li>dimostro le due inclusioni, cioe' che il nuovo automa accetta esattamente
+   quello che deve accettare.</li>
+</ol>
+<p>Il punto da ricordare e' che "chiuso" non significa "l'operazione e' banale":
+per il complemento degli NBA, ad esempio, la chiusura vale ma la costruzione e'
+tecnica.</p>
+<h2>2. Linguaggi regolari finiti</h2>
+<p>Siano $L_1,L_2\subseteq\Sigma^\ast$ linguaggi regolari.</p>
+<h3>2.1 Unione</h3>
+<p>Prendo due automi per $L_1$ e $L_2$:</p>
+<p>$$
+\mathcal{A}_1=(Q_1,\Sigma,\Delta_1,q^1_0,F_1),
+\qquad
+\mathcal{A}_2=(Q_2,\Sigma,\Delta_2,q^2_0,F_2).
+$$</p>
+<p>Costruisco un epsilon-NFA con un nuovo stato iniziale $q_0$ e due
+epsilon-transizioni:</p>
+<p>$$
+q_0\xrightarrow{\varepsilon}q^1_0,
+\qquad
+q_0\xrightarrow{\varepsilon}q^2_0.
+$$</p>
+<p>Gli stati finali sono $F_1\cup F_2$.</p>
+<p><strong>Correttezza.</strong> Se $w\in L_1\cup L_2$, allora $w$ e' accettata da almeno uno
+dei due automi. Il nuovo epsilon-NFA sceglie con una epsilon-mossa la componente
+giusta e segue quella run accettante.</p>
+<p>Viceversa, se il nuovo automa accetta $w$, dopo la prima epsilon-mossa ha
+simulato o $\mathcal{A}_1$ o $\mathcal{A}_2$. Quindi $w$ appartiene a $L_1$
+oppure a $L_2$.</p>
+<p>Conclusione:</p>
+<p>$$
+L(\mathcal{A})=L_1\cup L_2.
+$$</p>
+<h3>2.2 Concatenazione</h3>
+<p>Per $L_1\cdot L_2$ collego ogni finale del primo automa all'iniziale del
+secondo con una epsilon-mossa:</p>
+<p>$$
+f\xrightarrow{\varepsilon}q^2_0
+\qquad\text{per ogni }f\in F_1.
+$$</p>
+<p>Gli stati finali del nuovo automa sono quelli del secondo automa.</p>
+<p><strong>Correttezza.</strong> Se $w\in L_1L_2$, allora $w=uv$ con $u\in L_1$ e
+$v\in L_2$. L'automa legge $u$ nella prima componente, usa l'epsilon-mossa da
+un finale di $\mathcal{A}_1$ all'iniziale di $\mathcal{A}_2$, poi legge $v$.</p>
+<p>Viceversa, ogni run accettante deve prima raggiungere un finale del primo
+automa e poi un finale del secondo. La parola letta si spezza quindi come
+$uv$, con $u\in L_1$ e $v\in L_2$.</p>
+<h3>2.3 Stella di Kleene</h3>
+<p>Per $L^\ast$ aggiungo:</p>
+<ul>
+<li>una epsilon-mossa dal nuovo iniziale al nuovo finale, per accettare
+  $\varepsilon$;</li>
+<li>una epsilon-mossa dal nuovo iniziale all'iniziale dell'automa di $L$;</li>
+<li>epsilon-mosse dai finali dell'automa di $L$ al nuovo finale;</li>
+<li>epsilon-mosse dai finali dell'automa di $L$ di nuovo all'iniziale, per
+  ripetere il blocco.</li>
+</ul>
+<p><strong>Correttezza.</strong> Una run accettante sceglie zero o piu' attraversamenti
+dell'automa per $L$. Ogni attraversamento completo produce un blocco in $L$,
+quindi la parola e' in $L^\ast$.</p>
+<p>Viceversa, se $w=u_1\cdots u_k$ con ogni $u_i\in L$, l'automa legge ogni blocco
+con la componente di $L$ e usa le epsilon-mosse di ritorno per cominciare il
+blocco successivo. Se $k=0$, usa direttamente la epsilon-mossa per
+$\varepsilon$.</p>
+<h3>2.4 Complemento</h3>
+<p>Qui gli appunti grezzi vanno letti con una correzione importante: non si
+scambiano "iniziali e finali". Si parte da un <strong>DFA completo</strong> e si scambiano
+finali e non finali.</p>
+<p>Sia:</p>
+<p>$$
+\mathcal{A}=(Q,\Sigma,\delta,q_0,F)
+$$</p>
+<p>un DFA completo per $L$. Costruisco:</p>
+<p>$$
+\overline{\mathcal{A}}=(Q,\Sigma,\delta,q_0,Q\setminus F).
+$$</p>
+<p>Per ogni parola $w$, essendo il DFA deterministico e completo, esiste una sola
+computazione:</p>
+<p>$$
+\hat{\delta}(q_0,w).
+$$</p>
+<p>Allora:</p>
+<p>$$
+w\in L(\overline{\mathcal{A}})
+\iff
+\hat{\delta}(q_0,w)\in Q\setminus F
+\iff
+\hat{\delta}(q_0,w)\notin F
+\iff
+w\notin L(\mathcal{A}).
+$$</p>
+<p>Quindi:</p>
+<p>$$
+L(\overline{\mathcal{A}})=\Sigma^\ast\setminus L.
+$$</p>
+<p>La completezza serve perche' nel complemento ogni parola deve essere classificata.
+Se una transizione manca, aggiungo prima uno stato pozzo.</p>
+<h3>2.5 Intersezione</h3>
+<p>Ci sono due prove.</p>
+<p><strong>Via De Morgan.</strong></p>
+<p>$$
+L_1\cap L_2=
+\overline{\overline{L_1}\cup\overline{L_2}}.
+$$</p>
+<p>Poiche' i regolari sono chiusi per complemento e unione, sono chiusi per
+intersezione.</p>
+<p><strong>Via prodotto.</strong> Prendo due DFA completi:</p>
+<p>$$
+\mathcal{A}_1=(Q_1,\Sigma,\delta_1,q^1_0,F_1),
+\qquad
+\mathcal{A}_2=(Q_2,\Sigma,\delta_2,q^2_0,F_2).
+$$</p>
+<p>Costruisco:</p>
+<p>$$
+\mathcal{P}=(Q_1\times Q_2,\Sigma,\delta,(q^1_0,q^2_0),F_1\times F_2)
+$$</p>
+<p>con:</p>
+<p>$$
+\delta((p,r),a)=(\delta_1(p,a),\delta_2(r,a)).
+$$</p>
+<p>Per induzione su $w$:</p>
+<p>$$
+\hat{\delta}((q^1_0,q^2_0),w)
+=
+(\hat{\delta}_1(q^1_0,w),\hat{\delta}_2(q^2_0,w)).
+$$</p>
+<p>Dunque il prodotto e' finale se e solo se entrambe le componenti sono finali:</p>
+<p>$$
+L(\mathcal{P})=L_1\cap L_2.
+$$</p>
+<h3>2.6 Differenza</h3>
+<p>La differenza non e' una nuova costruzione:</p>
+<p>$$
+L_1\setminus L_2=L_1\cap\overline{L_2}.
+$$</p>
+<p>Quindi i regolari sono chiusi per differenza perche' sono chiusi per
+complemento e intersezione.</p>
+<h2>3. Epsilon-closure</h2>
+<p>La <strong>epsilon-closure</strong> di uno stato $q$ in un epsilon-NFA e':</p>
+<p>$$
+E(q)=\{p\mid q\xrightarrow{\varepsilon^\ast}p\}.
+$$</p>
+<p>Per un insieme di stati:</p>
+<p>$$
+E(S)=\bigcup_{q\in S}E(q).
+$$</p>
+<p>Serve a eliminare le epsilon-mosse. Se:</p>
+<p>$$
+\mathcal{A}=(Q,\Sigma,\Delta,q_0,F)
+$$</p>
+<p>e' un epsilon-NFA, costruisco un NFA senza epsilon con:</p>
+<p>$$
+\Delta'(q,a)=E\left(\bigcup_{p\in E(q)}\Delta(p,a)\right).
+$$</p>
+<p>I finali diventano:</p>
+<p>$$
+F'=\{q\in Q\mid E(q)\cap F\neq\emptyset\}.
+$$</p>
+<p><strong>Correttezza.</strong> Prima di leggere un simbolo posso fare un numero arbitrario di
+epsilon-mosse; poi leggo il simbolo; poi posso fare ancora epsilon-mosse.
+Questa e' esattamente la definizione di $\Delta'$. I nuovi finali catturano il
+caso in cui, finito l'input, posso raggiungere un vecchio finale solo con
+epsilon-mosse.</p>
+<p>Quindi ogni run dell'epsilon-NFA viene simulata dall'NFA e ogni passo dell'NFA
+corrisponde a un blocco epsilon-simbolo-epsilon dell'automa originale.</p>
+<h2>4. Chiusura della tabella in L*</h2>
+<p>Negli appunti di automata learning una tabella di osservazione ha righe
+indicizzate da prefissi e colonne indicizzate da suffissi. La riga di $s$ e':</p>
+<p>$$
+row(s)(e)=T(se).
+$$</p>
+<p>La tabella e' <strong>chiusa</strong> quando per ogni $s\in S$ e ogni lettera $a\in\Sigma$
+esiste $s'\in S$ tale che:</p>
+<p>$$
+row(sa)=row(s').
+$$</p>
+<p><strong>Perche' serve.</strong> Gli elementi di $S$ rappresentano gli stati del DFA ipotesi.
+La transizione da $row(s)$ con lettera $a$ dovrebbe andare a $row(sa)$. Se
+$row(sa)$ non e' rappresentata da nessuna riga in $S$, la transizione uscirebbe
+dall'insieme degli stati ipotesi.</p>
+<p><strong>Dimostrazione dell'utilita'.</strong> Se la tabella e' chiusa, definisco il DFA
+ipotesi:</p>
+<p>$$
+Q=\{row(s)\mid s\in S\}
+$$</p>
+<p>e:</p>
+<p>$$
+\delta(row(s),a)=row(sa).
+$$</p>
+<p>La chiusura garantisce che $row(sa)$ e' uguale alla riga di qualche elemento di
+$S$, quindi $\delta$ atterra ancora in $Q$. In altre parole, la tabella chiusa
+rende la funzione di transizione totale sugli stati ipotesi.</p>
+<p>La consistenza della tabella serve poi a garantire che questa definizione non
+dipenda dal rappresentante scelto: se $row(s_1)=row(s_2)$, allora anche
+$row(s_1a)=row(s_2a)$.</p>
+<h2>5. Chiusure base degli omega-regolari</h2>
+<p>Ora l'input non e' piu' una parola finita, ma una parola infinita in
+$A^\omega$. I linguaggi riconosciuti da NBA sono gli <strong>omega-regolari</strong>.</p>
+<h3>5.1 Se $V$ e' regolare, allora $V^\omega$ e' omega-regolare</h3>
+<p>Sia $V\subseteq A^\ast$ regolare e sia:</p>
+<p>$$
+\mathcal{D}=(Q,A,\Delta,q_0,F)
+$$</p>
+<p>un automa finito per $V$. Possiamo assumere $\varepsilon\notin V$, perche'
+togliere il blocco vuoto non cambia la parola infinita generata.</p>
+<p>Costruisco un NBA che simula $\mathcal{D}$ e, ogni volta che completa un blocco
+di $V$, puo' tornare a $q_0$. Per ogni transizione:</p>
+<p>$$
+(s,a,f)\in\Delta
+\qquad\text{con }f\in F
+$$</p>
+<p>aggiungo anche:</p>
+<p>$$
+(s,a,q_0).
+$$</p>
+<p>Uso $q_0$ come stato finale Büchi.</p>
+<p><strong>Correttezza.</strong> Se $\alpha\in V^\omega$, allora:</p>
+<p>$$
+\alpha=v_0v_1v_2\cdots
+$$</p>
+<p>con ogni $v_i\in V$. L'automa legge ogni blocco simulando $\mathcal{D}$ e torna
+a $q_0$ alla fine di ogni blocco. Quindi visita $q_0$ infinite volte.</p>
+<p>Viceversa, se l'NBA accetta, visita $q_0$ infinite volte. Tra due visite
+successive a $q_0$ ha letto un blocco non vuoto che porta un finale di
+$\mathcal{D}$ al reset. Ogni blocco appartiene a $V$, quindi la parola e'
+concatenazione infinita di blocchi di $V$.</p>
+<h3>5.2 Se $V$ e' regolare e $L$ omega-regolare, allora $V\cdot L$ e' omega-regolare</h3>
+<p>Sia $\mathcal{D}$ un automa finito per $V$ e sia $\mathcal{A}$ un NBA per $L$.</p>
+<p>Costruisco un NBA che:</p>
+<ol>
+<li>simula $\mathcal{D}$ per leggere un prefisso finito;</li>
+<li>quando $\mathcal{D}$ raggiunge un finale, passa nondeterministicamente allo
+   stato iniziale di $\mathcal{A}$;</li>
+<li>da quel momento simula $\mathcal{A}$;</li>
+<li>usa come stati finali Büchi quelli di $\mathcal{A}$.</li>
+</ol>
+<p>Se $\alpha\in V\cdot L$, allora $\alpha=u\beta$ con $u\in V$ e $\beta\in L$.
+Il nuovo automa legge $u$ nella parte finita e poi segue una run accettante di
+$\mathcal{A}$ su $\beta$.</p>
+<p>Viceversa, se il nuovo automa accetta, prima di entrare nella componente Büchi
+deve aver letto una parola di $V$; il suffisso infinito viene accettato da
+$\mathcal{A}$, quindi appartiene a $L$.</p>
+<h3>5.3 Unione di omega-regolari</h3>
+<p>Siano $\mathcal{A}_1$ e $\mathcal{A}_2$ NBA per $L_1$ e $L_2$.</p>
+<p>Costruisco un nuovo NBA con un nuovo iniziale che sceglie
+nondeterministicamente quale automa simulare. Gli stati finali sono quelli
+della componente scelta.</p>
+<p>Se una parola appartiene a $L_1\cup L_2$, esiste una run accettante in almeno
+uno dei due automi, e il nuovo NBA puo' sceglierla. Se il nuovo NBA accetta, ha
+simulato una delle due componenti con una run accettante, quindi la parola e'
+in $L_1$ oppure in $L_2$.</p>
+<h3>5.4 Intersezione di omega-regolari</h3>
+<p>Per gli NBA il prodotto con finali $F_1\times F_2$ <strong>non basta</strong>: le due
+componenti possono visitare i propri finali infinite volte in istanti diversi.</p>
+<p>La costruzione corretta passa da un GNBA.</p>
+<p>Siano:</p>
+<p>$$
+\mathcal{A}_1=(Q_1,A,\Delta_1,q^1_0,F_1),
+\qquad
+\mathcal{A}_2=(Q_2,A,\Delta_2,q^2_0,F_2).
+$$</p>
+<p>Costruisco il prodotto:</p>
+<p>$$
+\mathcal{G}=(Q_1\times Q_2,A,\Delta,(q^1_0,q^2_0),\mathcal{F})
+$$</p>
+<p>dove:</p>
+<p>$$
+((p_1,p_2),a,(r_1,r_2))\in\Delta
+$$</p>
+<p>se e solo se:</p>
+<p>$$
+(p_1,a,r_1)\in\Delta_1
+\quad\text{e}\quad
+(p_2,a,r_2)\in\Delta_2.
+$$</p>
+<p>La famiglia di accettazione e':</p>
+<p>$$
+\mathcal{F}=\{F_1\times Q_2,\ Q_1\times F_2\}.
+$$</p>
+<p>Una run e' accettante se visita infinite volte entrambi gli insiemi della
+famiglia.</p>
+<p><strong>Correttezza.</strong> Se $\alpha$ e' accettata da entrambi gli automi, prendo due
+run accettanti e le metto in prodotto. La run prodotto visita infinite volte
+$F_1\times Q_2$ perche' la prima componente visita $F_1$ infinite volte, e
+visita infinite volte $Q_1\times F_2$ perche' la seconda visita $F_2$ infinite
+volte.</p>
+<p>Viceversa, se il GNBA accetta, proietto la run prodotto sulle due componenti.
+La prima proiezione e' una run accettante di $\mathcal{A}_1$, la seconda e' una
+run accettante di $\mathcal{A}_2$.</p>
+<p>Un GNBA si riconverte in NBA con un contatore che aspetta ciclicamente
+$F_1,F_2,\ldots,F_k$. Se completa il ciclo infinite volte, ha visitato ogni
+insieme finale infinite volte.</p>
+<h3>5.5 Complemento degli omega-regolari</h3>
+<p>Gli omega-regolari sono chiusi per complemento, ma non basta invertire stati
+finali e non finali di un NBA.</p>
+<p>La dimostrazione degli appunti usa congruenze e saturazione.</p>
+<p>Una congruenza finita $\sim$ su $A^\ast$ <strong>satura</strong> un linguaggio
+$L\subseteq A^\omega$ se, per ogni coppia di classi $U,V$:</p>
+<p>$$
+UV^\omega\cap L\neq\emptyset
+\quad\Longrightarrow\quad
+UV^\omega\subseteq L.
+$$</p>
+<p>I passaggi sono:</p>
+<ol>
+<li>se $L$ e' riconosciuto da un NBA $\mathcal{A}$, si costruisce una
+   congruenza finita $\approx_{\mathcal{A}}$ che satura $L$;</li>
+<li>se una congruenza finita satura $L$, allora satura anche
+   $\overline{L}$;</li>
+<li>se una congruenza finita satura un linguaggio, quel linguaggio e' unione
+   finita di pezzi $UV^\omega$;</li>
+<li>ogni $UV^\omega$ e' omega-regolare;</li>
+<li>un'unione finita di omega-regolari e' omega-regolare.</li>
+</ol>
+<p>Quindi:</p>
+<p>$$
+L\text{ omega-regolare}
+\quad\Longrightarrow\quad
+\overline{L}\text{ omega-regolare}.
+$$</p>
+<p>Punto da orale: il complemento Büchi esiste, ma la ragione e' globale. Bisogna
+controllare l'insieme delle run, non solo cambiare il nome degli stati finali.</p>
+<h2>6. DBA: unione, intersezione e non-chiusura per complemento</h2>
+<p>Un DBA e' un automa di Büchi deterministico: su ogni parola infinita ha una sola
+run.</p>
+<h3>6.1 Chiusura per unione</h3>
+<p>Siano:</p>
+<p>$$
+\mathcal{A}_1=(Q_1,\Sigma,\delta_1,q^1_0,F_1),
+\qquad
+\mathcal{A}_2=(Q_2,\Sigma,\delta_2,q^2_0,F_2).
+$$</p>
+<p>Costruisco il prodotto deterministico:</p>
+<p>$$
+Q=Q_1\times Q_2
+$$</p>
+<p>con:</p>
+<p>$$
+\delta((p_1,p_2),a)=(\delta_1(p_1,a),\delta_2(p_2,a)).
+$$</p>
+<p>Per l'unione scelgo:</p>
+<p>$$
+F^\cup=(F_1\times Q_2)\cup(Q_1\times F_2).
+$$</p>
+<p>La run prodotto visita $F^\cup$ infinite volte se e solo se la prima run visita
+$F_1$ infinite volte oppure la seconda visita $F_2$ infinite volte. Quindi:</p>
+<p>$$
+L(\mathcal{A}^\cup)=L(\mathcal{A}_1)\cup L(\mathcal{A}_2).
+$$</p>
+<h3>6.2 Chiusura per intersezione</h3>
+<p>Per l'intersezione il prodotto con $F_1\times F_2$ non basta, per lo stesso
+motivo visto per gli NBA: le visite finali possono alternarsi.</p>
+<p>Si aggiunge un turno:</p>
+<p>$$
+Q'=Q_1\times Q_2\times\{1,2\}.
+$$</p>
+<p>Il turno $1$ significa "aspetto un finale del primo automa"; il turno $2$
+significa "aspetto un finale del secondo automa".</p>
+<p>Quando vedo un finale del primo automa passo al turno $2$; quando vedo un
+finale del secondo passo al turno $1$. Accetto se completo questo ciclo
+infinite volte, ad esempio scegliendo come finali:</p>
+<p>$$
+F^\cap=Q_1\times F_2\times\{2\}.
+$$</p>
+<p><strong>Correttezza.</strong> Se entrambe le componenti sono accettanti, allora vedo
+infinitamente spesso finali del primo e del secondo automa. Il turno riesce a
+completare il ciclo $1\to2\to1$ infinite volte.</p>
+<p>Viceversa, se il prodotto con turno accetta, il ciclo viene completato infinite
+volte. Per completarlo infinite volte devo aver visto infinite volte finali
+della prima componente e infinite volte finali della seconda. Quindi la parola
+appartiene a entrambi i linguaggi.</p>
+<h3>6.3 I DBA non sono chiusi per complemento</h3>
+<p>Uso la caratterizzazione degli appunti:</p>
+<p>$$
+L\text{ e' riconosciuto da un DBA}
+\iff
+L=\overrightarrow{W}
+$$</p>
+<p>per qualche regolare $W\subseteq A^\ast$, dove:</p>
+<p>$$
+\overrightarrow{W}
+=
+\{\alpha\in A^\omega\mid \exists^\omega n,\ \alpha(0,n)\in W\}.
+$$</p>
+<p>Considero:</p>
+<p>$$
+L_{fin}=
+\{\alpha\in\{a,b\}^\omega\mid \alpha\text{ contiene solo finite }a\}.
+$$</p>
+<p>Questo linguaggio e' riconoscibile da un NBA: l'automa indovina il punto dopo
+l'ultima $a$ e poi accetta solo $b$.</p>
+<p>Mostro che non e' riconoscibile da DBA. Suppongo per assurdo:</p>
+<p>$$
+L_{fin}=\overrightarrow{W}
+$$</p>
+<p>per un regolare $W$.</p>
+<p>La parola $b^\omega$ appartiene a $L_{fin}$, quindi ha infiniti prefissi in
+$W$. Scelgo $m_0$ con:</p>
+<p>$$
+b^{m_0}\in W.
+$$</p>
+<p>Anche $b^{m_0}ab^\omega$ appartiene a $L_{fin}$, quindi scelgo $m_1$ con:</p>
+<p>$$
+b^{m_0}ab^{m_1}\in W.
+$$</p>
+<p>Ripetendo, costruisco:</p>
+<p>$$
+\beta=b^{m_0}ab^{m_1}ab^{m_2}a\cdots.
+$$</p>
+<p>La parola $\beta$ contiene infinite $a$, quindi non appartiene a $L_{fin}$.
+Pero' per costruzione ha infiniti prefissi in $W$, quindi:</p>
+<p>$$
+\beta\in\overrightarrow{W}=L_{fin},
+$$</p>
+<p>contraddizione.</p>
+<p>Il complemento di $L_{fin}$ e' il linguaggio delle parole con infinite $a$,
+che e' riconoscibile da un DBA semplice: uno stato finale viene visitato ogni
+volta che si legge $a$. Se i DBA fossero chiusi per complemento, anche
+$L_{fin}$ sarebbe riconoscibile da DBA. Contraddizione.</p>
+<h2>7. Muller deterministici</h2>
+<p>Un automa di Muller deterministico e':</p>
+<p>$$
+\mathcal{M}=(Q,\Sigma,\delta,q_0,\mathcal{F})
+$$</p>
+<p>dove $\mathcal{F}\subseteq 2^Q$. Su una run unica $\rho$ si guarda:</p>
+<p>$$
+Inf(\rho)=\{q\in Q\mid q\text{ compare infinite volte in }\rho\}.
+$$</p>
+<p>La parola e' accettata se:</p>
+<p>$$
+Inf(\rho)\in\mathcal{F}.
+$$</p>
+<h3>7.1 Complemento</h3>
+<p>Se $\mathcal{M}$ riconosce $L$, costruisco:</p>
+<p>$$
+\overline{\mathcal{M}}=(Q,\Sigma,\delta,q_0,2^Q\setminus\mathcal{F}).
+$$</p>
+<p>La run e' la stessa, perche' l'automa e' deterministico. Allora:</p>
+<p>$$
+\alpha\in L(\overline{\mathcal{M}})
+\iff
+Inf(\rho)\in 2^Q\setminus\mathcal{F}
+\iff
+Inf(\rho)\notin\mathcal{F}
+\iff
+\alpha\notin L(\mathcal{M}).
+$$</p>
+<p>Quindi i Muller deterministici sono chiusi per complemento.</p>
+<h3>7.2 Unione e intersezione</h3>
+<p>Per due Muller deterministici costruisco il prodotto:</p>
+<p>$$
+Q=Q_1\times Q_2.
+$$</p>
+<p>Se $\rho$ e' la run prodotto, allora:</p>
+<p>$$
+\pi_1(Inf(\rho))=Inf(\rho_1),
+\qquad
+\pi_2(Inf(\rho))=Inf(\rho_2).
+$$</p>
+<p>La prova usa il fatto che gli stati sono finiti: se uno stato $p$ compare
+infinite volte nella prima componente, allora tra le molte ma finite possibili
+seconde componenti ce n'e' una che compare infinite volte insieme a $p$.</p>
+<p>Per l'intersezione scelgo:</p>
+<p>$$
+\mathcal{F}_\cap=
+\{R\subseteq Q_1\times Q_2
+\mid
+\pi_1(R)\in\mathcal{F}_1
+\text{ e }
+\pi_2(R)\in\mathcal{F}_2\}.
+$$</p>
+<p>Per l'unione scelgo:</p>
+<p>$$
+\mathcal{F}_\cup=
+\{R\subseteq Q_1\times Q_2
+\mid
+\pi_1(R)\in\mathcal{F}_1
+\text{ oppure }
+\pi_2(R)\in\mathcal{F}_2\}.
+$$</p>
+<p>Con queste famiglie:</p>
+<p>$$
+L(\mathcal{P}_\cap)=L(\mathcal{M}_1)\cap L(\mathcal{M}_2),
+\qquad
+L(\mathcal{P}_\cup)=L(\mathcal{M}_1)\cup L(\mathcal{M}_2).
+$$</p>
+<h2>8. Chiusura per proiezione in S1S</h2>
+<p>Questa e' la closure che collega direttamente quantificazione esistenziale e
+automi.</p>
+<p>Una tupla di variabili monadiche:</p>
+<p>$$
+X_1,\ldots,X_n
+$$</p>
+<p>si puo' codificare come una parola infinita su:</p>
+<p>$$
+\{0,1\}^n.
+$$</p>
+<p>Alla posizione $k$, il bit $i$ vale $1$ se e solo se $k\in X_i$.</p>
+<p>Supponiamo che una formula:</p>
+<p>$$
+\varphi(X_1,\ldots,X_i,\ldots,X_n)
+$$</p>
+<p>definisca un omega-linguaggio $L(\varphi)$ riconosciuto da:</p>
+<p>$$
+\mathcal{A}=(Q,\{0,1\}^n,\Delta,q_0,F).
+$$</p>
+<p>Voglio eliminare $X_i$:</p>
+<p>$$
+\psi(X_1,\ldots,X_{i-1},X_{i+1},\ldots,X_n)
+=
+\exists X_i\ \varphi.
+$$</p>
+<p>Sul lato automi, cancello la componente $i$ da ogni simbolo. Sia $\pi_i$ la
+proiezione che elimina quel bit. Costruisco:</p>
+<p>$$
+\mathcal{A}'=(Q,\{0,1\}^{n-1},\Delta',q_0,F)
+$$</p>
+<p>con:</p>
+<p>$$
+(p,c,q)\in\Delta'
+\iff
+\exists b\in\{0,1\}^n
+\text{ tale che }
+\pi_i(b)=c
+\text{ e }
+(p,b,q)\in\Delta.
+$$</p>
+<p><strong>Correttezza.</strong></p>
+<p>Se $\beta$ e' accettata da $\mathcal{A}'$, ogni transizione usata su
+$\beta(k)$ esiste perche' c'e' almeno una lettera completa $b_k$ che proietta
+su $\beta(k)$. Scegliendo un tale $b_k$ per ogni posizione ottengo una parola
+completa $\alpha$ con $\pi_i(\alpha)=\beta$. La stessa run accetta $\alpha$ in
+$\mathcal{A}$.</p>
+<p>Viceversa, se $\beta=\pi_i(\alpha)$ per una parola completa $\alpha$ accettata
+da $\mathcal{A}$, ogni transizione di $\mathcal{A}$ su $\alpha(k)$ induce una
+transizione di $\mathcal{A}'$ su $\pi_i(\alpha(k))$. La stessa run accetta
+$\beta$.</p>
+<p>Conclusione:</p>
+<p>$$
+L(\mathcal{A}')=\pi_i(L(\mathcal{A})).
+$$</p>
+<p>Quindi la proiezione di un omega-regolare e' omega-regolare. In logica:</p>
+<p>$$
+\exists X_i
+$$</p>
+<p>corrisponde a nascondere la componente $X_i$ e lasciare che il nondeterminismo
+dell'automa indovini i bit nascosti posizione per posizione.</p>
+<h2>9. Star-free</h2>
+<p>Nei tuoi appunti i linguaggi star-free sono descritti usando:</p>
+<ul>
+<li>unione;</li>
+<li>concatenazione;</li>
+<li>complemento;</li>
+<li>linguaggi base.</li>
+</ul>
+<p>Non usano la stella di Kleene. La chiusura per queste tre operazioni e' quindi
+quasi sintattica.</p>
+<p><strong>Dimostrazione per induzione strutturale.</strong> Definisco la classe star-free come
+la piu' piccola classe che contiene i linguaggi base ed e' chiusa per unione,
+concatenazione e complemento. Se $E_1$ ed $E_2$ sono espressioni star-free,
+allora anche:</p>
+<p>$$
+E_1\cup E_2,
+\qquad
+E_1E_2,
+\qquad
+\overline{E_1}
+$$</p>
+<p>sono espressioni star-free per definizione della grammatica. Quindi il
+linguaggio denotato resta nella classe star-free.</p>
+<p>Il collegamento con il primo ordine si dimostra poi traducendo queste
+operazioni in connettivi logici e tagli di posizione.</p>
+<h2>10. Closure LTL della formula</h2>
+<p>Qui "closure" non significa proprieta' di chiusura di una classe, ma insieme
+finito di formule necessario per costruire gli atomi del tableau.</p>
+<p>Dato una formula LTL $\varphi$, la closure $cl(\varphi)$ contiene:</p>
+<ol>
+<li>$\varphi$;</li>
+<li>tutte le sottoformule di $\varphi$;</li>
+<li>le negazioni delle formule rilevanti;</li>
+<li>le espansioni temporali necessarie, ad esempio per $U$, $F$, $G$ e $X$,
+   secondo le regole usate nel tableau.</li>
+</ol>
+<p>Esempio: se la formula contiene:</p>
+<p>$$
+G(p\to Fq),
+$$</p>
+<p>la closure contiene almeno:</p>
+<p>$$
+G(p\to Fq),\quad p\to Fq,\quad p,\quad Fq,\quad q,
+$$</p>
+<p>e le negazioni necessarie.</p>
+<h3>Dimostrazione: la closure LTL e' finita</h3>
+<p>La formula $\varphi$ e' una stringa finita. Quindi ha un numero finito di
+sottoformule. Per ogni sottoformula aggiungo al massimo un numero finito di
+oggetti: la negazione e, per gli operatori temporali, le formule di espansione
+che compaiono nella regola del tableau.</p>
+<p>Una unione finita di insiemi finiti e' finita. Dunque:</p>
+<p>$$
+cl(\varphi)\text{ e' finita}.
+$$</p>
+<p>Questo e' il passaggio che rende il tableau un grafo finito: gli atomi sono
+sottoinsiemi coerenti di $cl(\varphi)$, quindi ce ne sono al massimo
+$2^{|cl(\varphi)|}$.</p>
+<h3>Atomi e coerenza</h3>
+<p>Un atomo decide, per ogni formula nella closure, se tenerla o tenerne la
+negazione, rispettando le regole booleane:</p>
+<ul>
+<li>non contiene sia $\psi$ sia $\neg\psi$;</li>
+<li>contiene $\psi\land\theta$ se e solo se contiene entrambe;</li>
+<li>contiene $\psi\lor\theta$ se contiene almeno una delle due;</li>
+<li>rispetta le espansioni temporali.</li>
+</ul>
+<p>La closure e' quindi la base finita su cui il tableau ragiona; gli atomi sono
+le fotografie coerenti di una posizione temporale.</p>
+<h2>11. Chiusura di un ramo nei tableaux proposizionali</h2>
+<p>Negli appunti sui tableaux compare anche la chiusura di un ramo. Un ramo si
+chiude quando contiene una contraddizione esplicita:</p>
+<p>$$
+\psi
+\quad\text{e}\quad
+\neg\psi.
+$$</p>
+<p><strong>Perche' e' corretto chiudere il ramo.</strong> Un ramo rappresenta un tentativo di
+costruire un modello in cui tutte le formule del ramo siano vere
+simultaneamente. Nessuna interpretazione puo' rendere vera sia $\psi$ sia
+$\neg\psi$. Quindi quel ramo non puo' produrre un modello e puo' essere
+eliminato.</p>
+<p>Per satisfiability, una formula e' soddisfacibile se resta almeno un ramo
+aperto e coerente. Per validity, si applica il tableau alla negazione della
+formula e si controlla che tutti i rami si chiudano.</p>
+<h2>12. Errori tipici da evitare all'orale</h2>
+<ul>
+<li>Per il complemento dei linguaggi regolari finiti non invertire iniziali e
+  finali: rendi il DFA completo e scambia finali/non finali.</li>
+<li>Per l'intersezione degli NBA non usare solo $F_1\times F_2$: servono GNBA o
+  un contatore di obblighi.</li>
+<li>Per il complemento degli NBA non scambiare finali/non finali: la chiusura
+  esiste ma passa da una costruzione globale.</li>
+<li>Per i DBA ricorda la differenza: chiusi per unione e intersezione, non per
+  complemento.</li>
+<li>Per Muller deterministico il complemento e' facile perche' la run e' unica:
+  basta complementare la famiglia $\mathcal{F}$.</li>
+<li>Per S1S, $\exists X$ non "butta via" un vincolo: chiede che esista un modo di
+  completare la componente nascosta.</li>
+<li>Per closure LTL, il punto non e' semantico ma combinatorio: ottenere un
+  insieme finito di formule su cui costruire gli atomi.</li>
+</ul></article>
+  <div class="nav-row"><a href="index.html">← Indice</a></div>
+</div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script defer src="assets/chat.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

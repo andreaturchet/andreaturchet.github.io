@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capitolo 4 — FTS e SPL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/chat.css" />
+  
+</head>
+<body>
+
+<header class="site-header">
+  <h1>V&amp;V in AI — Appunti</h1>
+  <p class="subtitle">Settimana 2</p>
+  <div class="ornament">✦</div>
+</header>
+<div class="wrap">
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap03.html">← Precedente</a></span><span><a href="cap05.html">Successivo →</a></span></div>
+  
+<div class="chapter-opener">
+  <div class="label">Capitolo 4</div>
+  <h1>Capitolo 4 — FTS e SPL</h1>
+  <p class="focus">Modellazione di programmi reattivi; fairness debole/forte.</p>
+</div>
+
+  <article class="prose"><h1>Sistemi di transizione fair - Riassunto</h1>
+<h2>Punti chiave</h2>
+<ul>
+<li>Un <strong>sistema di transizione fair</strong> modella sistemi reattivi che non terminano e interagiscono continuamente con l'ambiente.</li>
+<li>Un FTS e' una tupla $\langle \mathcal{V},\Theta,\mathcal{T},\mathcal{J},\mathcal{C}\rangle$:</li>
+<li>$\mathcal{V}$: variabili del sistema;</li>
+<li>$\Theta$: condizione iniziale;</li>
+<li>$\mathcal{T}$: transizioni;</li>
+<li>$\mathcal{J}$: transizioni soggette a justice;</li>
+<li>$\mathcal{C}$: transizioni soggette a compassion.</li>
+<li><strong>Justice</strong>: se una transizione resta abilitata da un certo punto in poi, prima o poi deve essere presa.</li>
+<li><strong>Compassion</strong>: se una transizione e' abilitata infinite volte, deve essere presa infinite volte.</li>
+<li>Una <strong>P-computation</strong> soddisfa inizialita, consequenzialita, justice e compassion.</li>
+</ul>
+<h2>Argomento centrale</h2>
+<p>La fairness serve a escludere computazioni irrealistiche in cui un'azione abilitata viene ignorata per sempre.</p>
+<h2>Rilevanza per V&amp;V in AI</h2>
+<p>FTS e fairness sono fondamentali per verificare proprieta di liveness in agenti, protocolli e sistemi autonomi non terminanti.</p>
+<hr />
+
+<h1>Sistema di transizione fair</h1>
+<p>Un FTS e' un modello formale per sistemi reattivi, cioe' sistemi che continuano a interagire con l'ambiente e non sono pensati per terminare.</p>
+<h2>Definizione</h2>
+<p>Un FTS e' una tupla:
+$$\langle \mathcal{V},\Theta,\mathcal{T},\mathcal{J},\mathcal{C}\rangle$$</p>
+<ul>
+<li>$\mathcal{V}$: variabili;</li>
+<li>$\Theta$: condizione iniziale;</li>
+<li>$\mathcal{T}$: transizioni;</li>
+<li>$\mathcal{J}$: transizioni con justice;</li>
+<li>$\mathcal{C}$: transizioni con compassion.</li>
+</ul>
+<p>Le variabili includono variabili dati e variabili di controllo. Uno stato e' una valutazione di tutte queste variabili. Una transizione puo essere descritta da una relazione logica $\rho_\tau(\mathcal{V},\mathcal{V}')$, dove le variabili con apice indicano lo stato successivo.</p>
+<p>Una transizione e' abilitata in uno stato se esiste almeno un successore che soddisfa la relazione di transizione. L'idling transition mantiene invariati dati e controllo e serve a completare computazioni finite, ma normalmente non richiede fairness.</p>
+<h2>Fairness</h2>
+<ul>
+<li><strong>Justice</strong>: se una transizione e' abilitata continuamente da un certo punto, deve prima o poi essere presa.</li>
+<li><strong>Compassion</strong>: se una transizione e' abilitata infinite volte, deve essere presa infinite volte.</li>
+</ul>
+<h2>Computazioni</h2>
+<p>Una P-computation e' una computazione che rispetta inizialita, consequenzialita e condizioni di fairness.</p>
+<p>Una run rispetta solo inizialita e consequenzialita; una P-computation e' una run ammissibile anche rispetto a justice e compassion. Uno stato e' P-accessible se compare in almeno una P-computation.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Model checking</li>
+<li>Logica temporale lineare (LTL)</li>
+</ul>
+<hr />
+
+<h1>Linguaggio di programmazione semplice</h1>
+<p>SPL e' un linguaggio minimale usato per modellare programmi reattivi e concorrenti.</p>
+<h2>Istruzioni</h2>
+<p>Le istruzioni si dividono in quattro gruppi:</p>
+<ul>
+<li><strong>basic</strong>: <code>skip</code>, assegnamenti, <code>await</code>, <code>send/receive</code>, <code>request/release</code>;</li>
+<li><strong>schematiche</strong>: <code>noncritical</code>, <code>critical</code>, <code>produce</code>, <code>consume</code>;</li>
+<li><strong>compound</strong>: concatenazione, scelta, <code>if</code>, <code>while</code>, cooperazione/parallelo e blocchi;</li>
+<li><strong>grouped/composite</strong>: sequenze eseguite atomicamente come un solo passo.</li>
+</ul>
+<p><code>skip</code> non cambia le variabili dati ma avanza il controllo; l'idling transition, invece, non cambia né dati né controllo. <code>await c</code> è abilitata solo quando la guardia <code>c</code> è vera. <code>request r</code> richiede <code>r &gt; 0</code> e decrementa il semaforo; <code>release r</code> lo incrementa.</p>
+<h2>Semantica</h2>
+<p>Un programma SPL puo essere compilato in un Sistemi di transizione fair, usando variabili di controllo per rappresentare le posizioni del programma.</p>
+<p>Le label identificano le istruzioni e le post-location indicano dove si trova il controllo dopo l'esecuzione. Nei programmi paralleli si usa un modello a interleaving: a ogni passo viene scelta una transizione abilitata tra quelle disponibili.</p>
+<p>Nella traduzione standard, justice viene richiesta per quasi tutte le transizioni tranne idling e <code>noncritical</code>; compassion viene richiesta soprattutto per comunicazioni e <code>request</code>, dove una risorsa può diventare disponibile infinite volte.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Sistemi di transizione fair</li>
+<li>Model checking</li>
+</ul>
+<hr />
+
+<h1>Approfondimento completo settimana 2 - Fair Transition Systems, SPL e fairness</h1>
+<p>Questo documento espande il Capitolo 4 della seconda settimana di V&amp;V. Capiremo perché per i sistemi reattivi le logiche classiche non bastano, come si usa SPL per modellarli e, in maniera cruciale, perché il concetto di "Fairness" (giustizia) è fondamentale per non avere falsi negativi durante il model checking.</p>
+<hr>
+<h2>1. Il problema dei sistemi reattivi</h2>
+<p>I programmi classici (trasformazionali) si comportano come una funzione matematica: prendono un input $X$, calcolano un risultato e terminano restituendo $Y$. 
+I <strong>sistemi reattivi</strong> (come i server web, i sistemi di controllo del traffico aereo, o gli scheduler dei sistemi operativi) sono progettati per <strong>non terminare mai</strong>. Reagiscono continuamente agli input dell'ambiente.
+Per questo, l'esecuzione di un sistema reattivo non produce un output finale, ma genera una <strong>computazione infinita</strong> (una sequenza infinita di stati).</p>
+<p>Le proprietà che ci interessano per questi sistemi si dividono in:</p>
+<ul>
+<li><strong>Safety (Sicurezza):</strong> "Niente di cattivo succederà mai" (es. due treni non si troveranno mai sullo stesso binario).</li>
+<li><strong>Liveness (Vitalità):</strong> "Qualcosa di buono prima o poi succederà" (es. ogni richiesta a un server riceverà prima o poi una risposta).</li>
+</ul>
+<hr>
+<h2>2. SPL (Simple Programming Language)</h2>
+<p>Per analizzare matematicamente un sistema reattivo, serve un linguaggio di modellazione: SPL. È un linguaggio minimale che supporta la concorrenza.
+Ha costrutti familiari come assegnamenti, cicli <code>while</code>, branching, ma soprattutto:</p>
+<ul>
+<li><strong>L'istruzione <code>await c</code>:</strong> Sospende l'esecuzione del processo finché la condizione $c$ non diventa vera. È la base della sincronizzazione.</li>
+<li><strong>La composizione parallela <code>||</code>:</strong> Permette a più programmi (processi) di essere eseguiti contemporaneamente usando un modello a <em>interleaving</em> asincrono. Ovvero, il tempo avanza eseguendo un'istruzione indivisibile (atomica) di un processo, poi una di un altro, in un ordine scelto in modo non deterministico dallo scheduler.</li>
+</ul>
+<p>Il codice SPL non viene analizzato direttamente: viene "compilato" semanticamente in una struttura matematica rigorosa chiamata <strong>Fair Transition System (FTS)</strong>.</p>
+<h3>Classi di istruzioni SPL</h3>
+<p>Negli appunti delle pagine 20-40, SPL è organizzato in quattro gruppi principali. Questa classificazione è utile perché ogni gruppo genera transizioni FTS in modo leggermente diverso.</p>
+<p><strong>Istruzioni basic</strong></p>
+<ul>
+<li><code>skip</code>: non cambia le variabili dati, ma sposta il controllo dalla posizione prima dell'istruzione alla posizione dopo l'istruzione. È diverso dall'idling: <code>skip</code> avanza nel programma, l'idling non cambia nemmeno la variabile di controllo.</li>
+<li>assegnamento <code>u := e</code> o assegnamento vettoriale <code>u1,...,uk := e1,...,ek</code>: valuta simultaneamente le espressioni e aggiorna le variabili.</li>
+<li><code>await c</code>: è abilitata solo quando la guardia booleana $c$ è vera; non modifica variabili dati, ma muove il controllo.</li>
+<li><code>send/receive</code>: modellano comunicazione su canali sincroni o asincroni.</li>
+<li><code>request/release</code>: modellano semafori; <code>request r</code> richiede $r &gt; 0$ e decrementa $r$, mentre <code>release r</code> incrementa $r$.</li>
+</ul>
+<p><strong>Istruzioni schematiche</strong></p>
+<ul>
+<li><code>noncritical</code>, <code>critical</code>, <code>produce</code>, <code>consume</code>.</li>
+<li>Servono a modellare parti del programma senza descriverne tutti i dettagli interni.</li>
+<li><code>noncritical</code> è importante perché può non terminare: per questo le transizioni associate a <code>noncritical</code> sono normalmente escluse da justice.</li>
+<li><code>critical</code>, <code>produce</code> e <code>consume</code> rappresentano invece sezioni che si vuole forzare a terminare quando sono raggiunte.</li>
+</ul>
+<p><strong>Istruzioni compound</strong></p>
+<ul>
+<li>concatenazione <code>S1; S2</code>;</li>
+<li>selezione <code>S1 or ... or Sk</code>, che introduce nondeterminismo;</li>
+<li>condizionale <code>if c then S1 else S2</code>;</li>
+<li>ciclo <code>while c do S</code>;</li>
+<li>cooperazione/parallelo <code>S1 || ... || Sk</code>;</li>
+<li>blocco con variabili locali.</li>
+</ul>
+<p><strong>Istruzioni grouped/composite</strong></p>
+<ul>
+<li>La forma <code>&lt;S&gt;</code> rende atomica una sequenza di istruzioni: l'intero effetto di <code>S</code> avviene in un solo passo FTS.</li>
+<li>Questo è utile per modellare sezioni in cui non si vuole osservare l'interleaving interno.</li>
+</ul>
+<h3>Labels, post-location e controllo</h3>
+<p>In SPL le istruzioni sono etichettate. Una label identifica una posizione del programma, mentre la <strong>post-location</strong> di un'istruzione è la posizione raggiunta dopo la sua esecuzione. Per una concatenazione, ad esempio, la post-location del primo componente coincide con la posizione iniziale del secondo componente.</p>
+<p>Questa idea serve per costruire la variabile di controllo dell'FTS: lo stato non contiene solo i dati del programma, ma anche l'informazione su "dove si trova" ogni processo. In un programma parallelo, la variabile di controllo può contenere un insieme di location attive, una per ogni processo in esecuzione nel modello a interleaving.</p>
+<h3>Nondeterminismo e interleaving</h3>
+<p>SPL non assume che i processi paralleli eseguano davvero passi simultanei. Il modello usato è l'<strong>interleaving</strong>: a ogni passo lo scheduler sceglie una transizione abilitata tra quelle disponibili. La scelta può essere nondeterministica. La fairness serve proprio a evitare computazioni in cui lo scheduler continua a scegliere sempre gli stessi processi e ignora per sempre altri processi pronti.</p>
+<hr>
+<h2>3. Fair Transition Systems (FTS)</h2>
+<p>Un FTS è una quintupla $\langle \mathcal{V}, \Theta, \mathcal{T}, \mathcal{J}, \mathcal{C} \rangle$:</p>
+<ol>
+<li>$\mathcal{V}$ <strong>(Variabili di Stato):</strong> Contiene le variabili del programma e le <em>variabili di controllo</em> (che fungono da Program Counter per dire in quale riga di codice si trova un processo). Lo stato del sistema è un'assegnazione di valori a tutte queste variabili.</li>
+<li>$\Theta$ <strong>(Condizione Iniziale):</strong> Una formula logica che specifica in quali stati il sistema può iniziare. Ad esempio: <code>x = 0 AND pc1 = start</code>.</li>
+<li>$\mathcal{T}$ <strong>(Transizioni):</strong> Rappresentano gli step di esecuzione (le singole istruzioni). Sono relazioni matematiche tra lo stato attuale $s$ e i possibili stati successivi $s'$. </li>
+<li>Una transizione $\tau$ si dice <strong>abilitata</strong> in $s$ se esiste almeno un successore $s'$. Ad esempio, un <code>await x &gt; 0</code> non è abilitato se $x = 0$.</li>
+<li>Esiste sempre la transizione di <em>idling</em> (che non fa niente e mantiene lo stato invariato).</li>
+<li>$\mathcal{J}$ <strong>(Justice - Giustizia o Weak Fairness).</strong></li>
+<li>$\mathcal{C}$ <strong>(Compassion - Compassione o Strong Fairness).</strong></li>
+</ol>
+<h3>Transizioni come formule logiche</h3>
+<p>Una transizione $\tau \in \mathcal{T}$ può essere descritta da una formula di primo ordine:</p>
+<p>$$\rho_\tau(\mathcal{V}, \mathcal{V}')$$</p>
+<p>Le variabili senza apice descrivono lo stato corrente; le variabili con apice descrivono lo stato successivo. Per esempio, una transizione che incrementa $x$ può essere scritta come $x' = x + 1$ insieme alla preservazione delle altre variabili.</p>
+<p>La condizione di abilitazione di una transizione è:</p>
+<p>$$En(\tau) \equiv \exists \mathcal{V}' \; \rho_\tau(\mathcal{V}, \mathcal{V}')$$</p>
+<p>Quindi $\tau$ è abilitata in uno stato $s$ se esiste almeno uno stato successivo $s'$ che rende vera la relazione di transizione. Questo dettaglio è essenziale: justice e compassion parlano sempre di transizioni abilitate e prese.</p>
+<h3>Idling e diligent transitions</h3>
+<p>Ogni FTS include una transizione di <strong>idling</strong> $\tau_I$, definita da $\mathcal{V}' = \mathcal{V}$. Questa transizione non cambia né le variabili dati né le variabili di controllo. Serve a completare computazioni finite trasformandole in computazioni infinite, ma non richiede né justice né compassion.</p>
+<p>Le transizioni diverse dall'idling sono dette <strong>diligent transitions</strong>. In genere sono quelle che rappresentano veri passi del programma.</p>
+<h3>Run, P-computazioni e accessibilità</h3>
+<p>Una <strong>run</strong> soddisfa solo:</p>
+<ul>
+<li><strong>initiality</strong>: il primo stato soddisfa $\Theta$;</li>
+<li><strong>consequentiality</strong>: ogni coppia di stati consecutivi è giustificata da qualche transizione.</li>
+</ul>
+<p>Una <strong>P-computation</strong> è una run che soddisfa anche le condizioni di fairness. Quando negli esercizi si dice "computazione del programma", spesso si intende proprio una computazione ammissibile/fair.</p>
+<p>Uno stato è <strong>P-accessible</strong> se compare in almeno una P-computation. L'accessibilità negli FTS, quindi, non è solo raggiungibilità nel grafo grezzo: le computazioni considerate devono anche rispettare i vincoli di fairness.</p>
+<hr>
+<h2>4. Perché serve la Fairness?</h2>
+<p>Supponiamo di avere due processi paralleli: $P_1$ (che stampa "A") e $P_2$ (che stampa "B"). Vogliamo verificare la proprietà di liveness: <em>"Sia A che B verranno stampati infinite volte"</em>.
+Se modelliamo il sistema senza alcun vincolo di fairness, il Model Checker potrebbe considerare una computazione "valida" quella in cui lo scheduler sceglie <em>sempre e solo</em> di eseguire $P_1$, lasciando $P_2$ bloccato all'infinito ("starvation" totale). In quella computazione, la nostra proprietà fallisce. 
+Ma questa computazione non è realistica! Uno scheduler reale di un SO non ignorerà mai per sempre un processo pronto per essere eseguito.</p>
+<p>La fairness è il filtro che dice al Model Checker: <strong>"Ignora le computazioni in cui lo scheduler è patologicamente cattivo, e verifica le proprietà solo sulle esecuzioni realistiche"</strong>. Queste esecuzioni realistiche prendono il nome di <strong>P-computazioni</strong> (Computazioni Ammissibili).</p>
+<hr>
+<h2>5. Justice e Compassion spiegate bene</h2>
+<h3>Justice (Weak Fairness)</h3>
+<ul>
+<li><strong>Definizione:</strong> Se una transizione $\tau \in \mathcal{J}$ è <strong>continuamente abilitata</strong> da un certo stato in poi, allora deve essere eseguita prima o poi.</li>
+<li><strong>L'intuizione:</strong> "Se resto fermo davanti alla porta senza mai allontanarmi e la porta rimane sempre sbloccata, alla fine devo attraversarla."</li>
+<li><strong>Quando si usa:</strong> Per modellare processi che restano pronti a fare un passo finché non ottengono il tempo di CPU. Viene violata solo se un'azione è costantemente possibile ma viene ignorata per l'eternità.</li>
+</ul>
+<h3>Compassion (Strong Fairness)</h3>
+<ul>
+<li><strong>Definizione:</strong> Se una transizione $\tau \in \mathcal{C}$ è abilitata <strong>infinite volte</strong> (anche se in modo intermittente e non continuo), allora deve essere presa infinite volte.</li>
+<li><strong>L'intuizione:</strong> "Se la porta si apre e si chiude infinite volte a intermittenza, e io ogni volta provo a passare, prima o poi devo riuscire a passare."</li>
+<li><strong>Quando si usa:</strong> Nei casi in cui una risorsa non è sempre disponibile. Se uso solo Justice, lo scheduler potrebbe far aspettare il processo "sfortunato" nei momenti in cui la risorsa è disponibile, ed evadere l'obbligo di Justice perché l'abilitazione non è <em>continua</em> (si spegne quando la risorsa è occupata da altri). Compassion impedisce questo giochetto.</li>
+</ul>
+<p><strong>Gerarchia:</strong> Richiedere la Compassion è un requisito più forte. Una computazione che soddisfa la Compassion per un evento, garantisce automaticamente la Justice per quell'evento. Il contrario non è vero.</p>
+<h3>Quali transizioni finiscono in $\mathcal{J}$ e $\mathcal{C}$ in SPL</h3>
+<p>Nella traduzione standard da SPL a FTS:</p>
+<ul>
+<li>$\mathcal{J}$ include quasi tutte le transizioni, tranne l'idling e le transizioni associate a <code>noncritical</code>;</li>
+<li>le transizioni di <code>noncritical</code> possono essere ignorate all'infinito perché modellano una zona in cui il processo non sta chiedendo una risorsa o un progresso osservabile;</li>
+<li>$\mathcal{C}$ include le transizioni in cui la disponibilità può comparire e scomparire infinite volte, come comunicazioni <code>send/receive</code>, grouped instructions con comunicazione e <code>request</code> sui semafori;</li>
+<li><code>release</code> normalmente non richiede compassion: rilascia una risorsa e non compete per ottenerla.</li>
+</ul>
+<p>Questa distinzione spiega molti esercizi: se una transizione è sempre abilitata e non viene presa, si viola justice; se è abilitata infinite volte ma non viene presa infinite volte, si viola compassion. Se invece una transizione non è in $\mathcal{J}$ né in $\mathcal{C}$, può anche essere ignorata senza rendere la computazione non ammissibile.</p>
+<hr>
+<h2>6. Dalle P-computazioni al Model Checking</h2>
+<p>Il flusso concettuale è:</p>
+<ol>
+<li>Scrivo il programma in <strong>SPL</strong>.</li>
+<li>Lo traduco in un <strong>FTS</strong> definendo chiaramente $\mathcal{J}$ e $\mathcal{C}$.</li>
+<li>L'FTS genera un albero infinito (o un grafo) di stati possibili.</li>
+<li>Applico le regole di <strong>Fairness</strong> per tagliare i rami del grafo irrealistici, tenendo solo le P-computazioni.</li>
+<li>Su queste P-computazioni residue (viste come stringhe o percorsi infiniti) utilizzo logiche temporali come <strong>LTL o CTL</strong> (capitoli successivi!) per verificare che le specifiche di safety e liveness reggano.</li>
+</ol>
+<h3>Esempio guida: programma reattivo con <code>await</code> e <code>skip</code></h3>
+<p>Un pattern importante negli appunti è un programma con due processi:</p>
+<ul>
+<li>$P_1$ è fermo davanti a una scelta, per esempio <code>await x = 1 or skip</code>;</li>
+<li>$P_2$ gira per sempre e modifica ciclicamente il valore di $x$.</li>
+</ul>
+<p>La domanda tipica è: <strong>esiste una computazione ammissibile in cui $P_1$ non termina mai?</strong></p>
+<p>La risposta dipende da quali istruzioni restano abilitate:</p>
+<ul>
+<li>se un ramo <code>skip</code> è sempre abilitato e richiede justice, allora non è ammissibile ignorarlo per sempre;</li>
+<li>se un <code>await</code> è abilitato solo a intermittenza, justice da sola può non bastare, perché la transizione non è continuamente abilitata;</li>
+<li>se una transizione è richiesta in compassion, allora abilitarla infinite volte senza prenderla infinite volte rende la computazione non fair.</li>
+</ul>
+<p>Questo è il punto chiave degli esercizi: non basta vedere che un processo "potrebbe" fare un passo; bisogna chiedersi se quel passo è sempre abilitato, abilitato infinite volte, e se la transizione sta in $\mathcal{J}$ o in $\mathcal{C}$.</p>
+<h3>Esempio guida: mutua esclusione</h3>
+<p>Nei programmi di mutua esclusione con semaforo, come <code>MUX_SEM</code>, la variabile condivisa $y$ rappresenta la disponibilità della risorsa. Se un processo esegue <code>request y</code>, decrementa $y$ e può entrare nella sezione critica; finché non esegue <code>release y</code>, l'altro processo non può superare la propria <code>request</code>.</p>
+<p>Le proprietà da distinguere sono:</p>
+<ul>
+<li><strong>mutual exclusion</strong>: non deve esistere una computazione in cui due processi sono contemporaneamente nella sezione critica;</li>
+<li><strong>accessibility</strong>: se un processo arriva alla richiesta della risorsa, prima o poi entra nella sezione critica;</li>
+<li><strong>communal accessibility</strong>: forma più debole, richiede che prima o poi qualche processo entri nella sezione critica, non necessariamente quello specifico che aspettava.</li>
+</ul>
+<p>In <code>MUX_SEM</code>, la compassion su <code>request</code> è ciò che impedisce di abilitare infinite volte la richiesta di un processo senza concedergli mai la risorsa. In varianti con <code>when</code> o grouped instructions, invece, si può ottenere la mutua esclusione ma perdere l'accessibility forte: il sistema può restare fair pur facendo entrare ripetutamente l'altro processo.</p>
+<hr>
+<h2>7. Esempio svolto 1: tradurre un programma SPL minimo in FTS</h2>
+<p>Prendiamo un programma molto piccolo:</p>
+<pre><code class="language-text">P:
+  l0: await x = 0;
+  l1: x := 1;
+  l2: skip
+</code></pre>
+<p>Supponiamo che $x\in\lbrace 0,1\rbrace$.</p>
+<h3>Variabili</h3>
+<p>Lo stato dell'FTS deve contenere:</p>
+<ul>
+<li>la variabile dati $x$;</li>
+<li>la variabile di controllo $pc$, che indica la label corrente del processo.</li>
+</ul>
+<p>Quindi:</p>
+<p>$$\mathcal{V}=\lbrace x,pc\rbrace$$</p>
+<p>con:</p>
+<p>$$pc\in\lbrace l0,l1,l2,l3\rbrace$$</p>
+<p>dove $l3$ è la post-location finale dopo <code>skip</code>.</p>
+<h3>Condizione iniziale</h3>
+<p>Se il programma parte da $l0$ e $x=0$:</p>
+<p>$$\Theta \equiv (pc=l0 \land x=0)$$</p>
+<h3>Transizione <code>await x = 0</code></h3>
+<p><code>await</code> non cambia $x$, ma avanza il controllo solo se la guardia è vera:</p>
+<p>$$\rho_{await}\equiv pc=l0 \land x=0 \land pc'=l1 \land x'=x$$</p>
+<p>Abilitazione:</p>
+<p>$$En(\tau_{await})\equiv pc=l0\land x=0$$</p>
+<p>Se $pc=l0$ ma $x=1$, la transizione non è abilitata.</p>
+<h3>Transizione <code>x := 1</code></h3>
+<p>L'assegnamento cambia $x$ e avanza il controllo:</p>
+<p>$$\rho_{assign}\equiv pc=l1 \land x'=1 \land pc'=l2$$</p>
+<p>Se ci fossero altre variabili, dovremmo aggiungere che restano invariate.</p>
+<h3>Transizione <code>skip</code></h3>
+<p><code>skip</code> non modifica i dati, ma modifica il controllo:</p>
+<p>$$\rho_{skip}\equiv pc=l2 \land x'=x \land pc'=l3$$</p>
+<h3>Idling</h3>
+<p>L'idling è diverso da <code>skip</code>:</p>
+<p>$$\rho_I\equiv pc'=pc \land x'=x$$</p>
+<p><code>skip</code> è una istruzione del programma e consuma un passo. L'idling è il passo artificiale che lascia tutto fermo.</p>
+<h3>Insieme delle transizioni</h3>
+<p>$$\mathcal{T}=\lbrace \tau_{await},\tau_{assign},\tau_{skip},\tau_I\rbrace$$</p>
+<p>Per un programma così semplice, di solito mettiamo in justice le transizioni diligenti:</p>
+<p>$$\mathcal{J}=\lbrace \tau_{await},\tau_{assign},\tau_{skip}\rbrace$$</p>
+<p>e nessuna in compassion:</p>
+<p>$$\mathcal{C}=\emptyset$$</p>
+<p>Questa traduzione è il modo standard di passare dal codice a una struttura matematica verificabile.</p>
+<hr>
+<h2>8. Esempio svolto 2: quando una run non è fair</h2>
+<p>Considera due processi:</p>
+<pre><code class="language-text">P1:
+  l0: skip;
+  l0: skip;
+  ...
+
+P2:
+  m0: skip;
+  m0: skip;
+  ...
+</code></pre>
+<p>Entrambi hanno sempre una transizione <code>skip</code> abilitata. Nel modello a interleaving, a ogni passo lo scheduler sceglie una sola transizione.</p>
+<p>Una run possibile nel grafo grezzo è:</p>
+<pre><code class="language-text">P1, P1, P1, P1, P1, ...
+</code></pre>
+<p>cioè lo scheduler esegue sempre $P_1$ e mai $P_2$.</p>
+<h3>È una run?</h3>
+<p>Sì. Ogni passo è giustificato da una transizione valida.</p>
+<h3>È una P-computazione fair?</h3>
+<p>Dipende da $\mathcal{J}$.</p>
+<p>Se la transizione di $P_2$ è in justice, allora non è fair. Perché:</p>
+<ul>
+<li>la transizione di $P_2$ è continuamente abilitata da sempre;</li>
+<li>non viene mai presa.</li>
+</ul>
+<p>Quindi viola justice.</p>
+<h3>Perché questo importa?</h3>
+<p>Senza fairness, il model checker potrebbe dire che la proprietà:</p>
+<blockquote>
+<p>"$P_2$ prima o poi esegue un passo"</p>
+</blockquote>
+<p>è falsa.</p>
+<p>Con justice, quella computazione patologica viene eliminata. La proprietà può diventare vera sulle sole computazioni fair.</p>
+<p>Questo è il senso pratico della fairness: non cambia il grafo delle transizioni, ma cambia quali cammini infiniti sono considerati ammissibili.</p>
+<hr>
+<h2>9. Esempio svolto 3: justice non basta, serve compassion</h2>
+<p>Ora considera una risorsa condivisa $r\in\lbrace 0,1\rbrace$ e un processo $P$ con:</p>
+<pre><code class="language-text">l0: request r;
+l1: critical;
+l2: release r;
+l0: ...
+</code></pre>
+<p>La transizione <code>request r</code> è abilitata solo quando:</p>
+<p>$$r=1$$</p>
+<p>Supponi che lungo una computazione la risorsa diventi libera infinite volte:</p>
+<pre><code class="language-text">r=1, r=0, r=1, r=0, r=1, r=0, ...
+</code></pre>
+<p>ma lo scheduler non sceglie mai la <code>request</code> di $P$ proprio nei momenti in cui $r=1$.</p>
+<h3>Justice viene violata?</h3>
+<p>Non necessariamente.</p>
+<p>Justice scatta se una transizione è continuamente abilitata da un certo punto in poi. Qui <code>request r</code> è abilitata infinite volte, ma non continuamente: quando $r=0$ si disabilita.</p>
+<p>Quindi una computazione del genere può soddisfare justice e comunque far morire di fame $P$.</p>
+<h3>Compassion viene violata?</h3>
+<p>Sì, se <code>request r</code> è in $\mathcal{C}$.</p>
+<p>Compassion dice:</p>
+<blockquote>
+<p>se una transizione è abilitata infinite volte, allora deve essere presa infinite volte.</p>
+</blockquote>
+<p>Qui <code>request r</code> è abilitata infinite volte e non viene mai presa. Quindi la computazione non è fair rispetto a compassion.</p>
+<h3>Frase da orale</h3>
+<p>Justice esclude l'ingiustizia contro azioni sempre disponibili; compassion esclude l'ingiustizia contro azioni disponibili infinite volte ma a intermittenza.</p>
+<hr>
+<h2>10. Esempio svolto 4: mutua esclusione con semaforo</h2>
+<p>Considera due processi simmetrici:</p>
+<pre><code class="language-text">P1:
+  noncritical;
+  request y;
+  critical;
+  release y;
+  repeat
+
+P2:
+  noncritical;
+  request y;
+  critical;
+  release y;
+  repeat
+</code></pre>
+<p>con semaforo:</p>
+<p>$$y\in\lbrace 0,1\rbrace$$</p>
+<p>e inizialmente:</p>
+<p>$$y=1$$</p>
+<h3>Safety: mutua esclusione</h3>
+<p>La proprietà di mutua esclusione dice:</p>
+<blockquote>
+<p>non accade mai che $P_1$ e $P_2$ siano entrambi in <code>critical</code>.</p>
+</blockquote>
+<p>Perché vale?</p>
+<ul>
+<li>Per entrare in <code>critical</code>, un processo deve eseguire <code>request y</code>.</li>
+<li><code>request y</code> richiede $y&gt;0$.</li>
+<li>Quando un processo esegue <code>request y</code>, il semaforo diventa $y'=y-1$.</li>
+<li>Se $y$ era 1, dopo la request diventa 0.</li>
+<li>Con $y=0$, l'altro processo non può eseguire <code>request y</code>.</li>
+</ul>
+<p>Quindi i due processi non possono superare entrambi la request senza che qualcuno faccia prima <code>release y</code>.</p>
+<h3>Liveness: prima o poi entro?</h3>
+<p>La proprietà:</p>
+<blockquote>
+<p>se $P_i$ richiede la risorsa, prima o poi entra in <code>critical</code></p>
+</blockquote>
+<p>non dipende solo dal semaforo. Dipende anche dalla fairness.</p>
+<p>Se il semaforo viene liberato infinite volte e la <code>request</code> di $P_i$ è in compassion, allora non posso ignorare $P_i$ per sempre ogni volta che la risorsa è libera.</p>
+<p>Senza compassion, lo scheduler può scegliere sempre l'altro processo nei momenti favorevoli. La mutua esclusione resta vera, ma la starvation non viene esclusa.</p>
+<h3>Differenza tra safety e liveness nel caso MUX</h3>
+<ul>
+<li>Safety: "mai due in critical insieme". Si viola con un prefisso finito: appena vedo entrambi in critical, ho già un controesempio.</li>
+<li>Liveness: "chi chiede prima o poi entra". Non si viola con un singolo stato: si viola con una computazione infinita in cui qualcuno aspetta per sempre.</li>
+</ul>
+<p>Questa distinzione è essenziale perché fairness serve soprattutto per ragionare su liveness, non su safety pura.</p>
+<hr>
+<h2>11. Esercizi guidati da fare a mano</h2>
+<h3>Esercizio 1: abilitazione di un await</h3>
+<p>Programma:</p>
+<pre><code class="language-text">l0: await x &gt; 2;
+l1: x := x - 1
+</code></pre>
+<p>Stato:</p>
+<p>$$pc=l0,\quad x=2$$</p>
+<p>Domanda: la transizione <code>await x &gt; 2</code> è abilitata?</p>
+<p>Soluzione: no, perché la guardia $x&gt;2$ è falsa. Non esiste uno stato successivo generato da quella transizione. L'unica transizione sempre disponibile è l'idling, più eventuali transizioni di altri processi.</p>
+<h3>Esercizio 2: skip contro idling</h3>
+<p>Stato:</p>
+<p>$$pc=l2,\quad x=5$$</p>
+<p>Istruzione in $l2$:</p>
+<pre><code class="language-text">l2: skip
+</code></pre>
+<p>Effetto di <code>skip</code>:</p>
+<p>$$pc'=l3,\quad x'=5$$</p>
+<p>Effetto dell'idling:</p>
+<p>$$pc'=l2,\quad x'=5$$</p>
+<p>Quindi <code>skip</code> e idling non sono la stessa cosa. Il primo avanza il controllo; il secondo lascia fermo l'intero stato.</p>
+<h3>Esercizio 3: riconoscere una violazione di justice</h3>
+<p>Una transizione $\tau\in\mathcal{J}$ è abilitata da un certo istante $N$ in poi, ma non viene mai presa dopo $N$.</p>
+<p>La computazione è fair?</p>
+<p>Soluzione: no. Questa è esattamente la violazione di justice.</p>
+<h3>Esercizio 4: riconoscere una violazione di compassion</h3>
+<p>Una transizione $\tau\in\mathcal{C}$ è abilitata ai tempi pari:</p>
+<p>$$0,2,4,6,\ldots$$</p>
+<p>ma viene presa solo al tempo 0.</p>
+<p>La computazione è fair?</p>
+<p>Soluzione: no. La transizione è abilitata infinite volte, ma non viene presa infinite volte.</p>
+<h3>Esercizio 5: P-accessibilità</h3>
+<p>Uno stato $s$ è raggiungibile nel grafo grezzo, ma ogni cammino infinito che passa da $s$ viola justice.</p>
+<p>$s$ è P-accessible?</p>
+<p>Soluzione: no. P-accessible significa che lo stato compare in almeno una computazione fair. La raggiungibilità normale non basta.</p>
+<p>Attenzione pero' a una proprieta' degli appunti: ogni <strong>prefisso finito</strong> di
+una run e' anche prefisso di qualche computazione fair (puoi sempre "riparare"
+il futuro eseguendo le transizioni trascurate). Quindi uno stato che occorre
+in una run e' sempre P-accessible. Il caso dell'esercizio — raggiungibile ma
+non P-accessible — puo' presentarsi solo se <em>ogni</em> prosecuzione da $s$ viola
+la fairness, cosa possibile solo in sistemi dove da $s$ in poi certe
+transizioni juste restano per forza abilitate e mai eseguibili insieme.</p>
+<h3>Esercizio 6 (il classico d'orale): termina $P_1$?</h3>
+<p>Questo e' l'esempio svolto a lezione, segnalato come tipica domanda di
+apertura dell'orale (esercizi "chapter 0").</p>
+<pre><code class="language-text">local x: integer where x = 1
+
+P1 :: l0: [ l0a: await x = 1
+            or
+            l0b: skip ]
+      l1:
+
+P2 :: m0: loop forever do
+      m1:   x := -x
+</code></pre>
+<p>$P_2$ non termina mai e alterna $x$ tra $1$ e $-1$. Domanda: esiste una
+computazione ammissibile in cui $P_1$ non termina mai?</p>
+<p>L'unica candidata e' quella in cui lo scheduler esegue solo $P_2$:</p>
+<p>$$\langle\pi=\{l_0,m_0\}, x=1\rangle \to_{m_0} \langle\pi=\{l_0,m_1\}, x=1\rangle \to_{m_1} \langle\pi=\{l_0,m_0\}, x=-1\rangle \to_{m_0}\cdots$$</p>
+<p><strong>Non e' ammissibile.</strong> Davanti alla selection, il controllo e' davanti a
+<em>entrambe</em> le alternative. La justice per <code>l0a</code> (await) e' rispettata: la
+guardia $x=1$ va e viene, quindi <code>l0a</code> non e' <em>costantemente</em> abilitata. Ma
+<code>l0b</code> e' una <code>skip</code>: <strong>costantemente abilitata e mai eseguita</strong> — justice
+violata. Quindi in ogni computazione fair $P_1$ termina.</p>
+<p><strong>Variante 1</strong>: togli la <code>skip</code> (resta solo <code>l0a: await x = 1</code>). Ora la
+computazione candidata <strong>e' ammissibile</strong>: l'await non e' costantemente
+abilitata (la guardia oscilla), quindi justice e' soddisfatta anche senza mai
+eseguirla. Per forzare l'esecuzione servirebbe <strong>compassion</strong> (e' abilitata
+infinite volte). Con sola justice, $P_1$ puo' non terminare.</p>
+<p><strong>Variante 2</strong>: sostituisci la selection con</p>
+<pre><code class="language-text">l0: if x = 1 then l1: skip else l2: skip; l3:
+</code></pre>
+<p>L'<code>if</code> genera un'<strong>unica transizione sempre abilitata</strong> ($\rho^T \lor \rho^F$:
+uno dei due disgiunti vale sempre). Justice la forza prima o poi; poi il
+controllo e' davanti a una <code>skip</code> costantemente abilitata, e justice forza
+anche quella. $P_1$ termina in ogni computazione fair.</p>
+<p>La morale da dire all'orale: la terminazione dipende interamente da <strong>quali
+transizioni sono abilitate con quale persistenza</strong> e da <strong>che fairness e'
+richiesta su di esse</strong> — lo stesso programma cambia comportamento spostando
+un'istruzione da "sempre abilitata" a "abilitata a intermittenza".</p>
+<hr>
+<h2>12. Come una transizione FTS diventa una formula</h2>
+<p>Negli appunti il passaggio importante e':</p>
+<blockquote>
+<p>una transizione non e' solo una freccia del grafo; puo' essere rappresentata da
+una formula logica sulle variabili correnti e sulle variabili next.</p>
+</blockquote>
+<p>Se l'insieme delle variabili e':</p>
+<p>$$\mathcal{V}=\{x_1,\ldots,x_n\},$$</p>
+<p>si introduce una copia primata:</p>
+<p>$$\mathcal{V}'=\{x'_1,\ldots,x'_n\}.$$</p>
+<p>Le variabili non primate descrivono lo stato corrente. Le variabili primate
+descrivono il successore.</p>
+<p>Una transizione $\tau$ e' rappresentata da:</p>
+<p>$$\rho_\tau(\mathcal{V},\mathcal{V}').$$</p>
+<p>Esempio:</p>
+<p>$$x'=x+1$$</p>
+<p>descrive una transizione che incrementa $x$.</p>
+<p>Se ci sono anche variabili di controllo, la formula deve dire anche come cambia
+il program counter.</p>
+<h3>Enabling condition</h3>
+<p>La condizione di abilitazione di $\tau$ si ottiene esistenzializzando lo stato
+successivo:</p>
+<p>$$En(\tau)(\mathcal{V})=\exists \mathcal{V}'.\rho_\tau(\mathcal{V},\mathcal{V}').$$</p>
+<p>Perche'?</p>
+<p>Perche' $\tau$ e' enabled in uno stato corrente se esiste almeno un successore
+che soddisfa la relazione di transizione.</p>
+<p>Questo e' lo stesso schema che ricompare piu' avanti:</p>
+<ul>
+<li>preimmagini nel model checking;</li>
+<li><code>APPL</code> nel planning;</li>
+<li>transizioni simboliche negli OBDD.</li>
+</ul>
+<h2>13. Traduzione delle istruzioni SPL in FTS</h2>
+<p>La semantica di SPL associa alle istruzioni formule di transizione.</p>
+<p>Per capire gli esercizi bisogna ricordare la differenza tra:</p>
+<ul>
+<li>variabili dati;</li>
+<li>variabili di controllo;</li>
+<li>preservazione delle variabili non modificate.</li>
+</ul>
+<p>Indichiamo con:</p>
+<p>$$pres(Y)$$</p>
+<p>la formula che dice che tutte le variabili dati in $Y$ restano uguali.</p>
+<h3><code>skip</code></h3>
+<pre><code class="language-text">l: skip; l^
+</code></pre>
+<p>Effetto:</p>
+<ul>
+<li>il controllo passa da $l$ a $l^\wedge$;</li>
+<li>i dati restano invariati.</li>
+</ul>
+<p>Formula:</p>
+<p>$$move(l,l^\wedge)\land pres(Y).$$</p>
+<p>Quindi <code>skip</code> non e' idling: <code>skip</code> avanza il controllo, idling no.</p>
+<h3>Assegnamento</h3>
+<pre><code class="language-text">l: u := e; l^
+</code></pre>
+<p>Effetto:</p>
+<ul>
+<li>il controllo avanza;</li>
+<li>$u'$ prende il valore di $e$;</li>
+<li>le altre variabili dati sono preservate.</li>
+</ul>
+<p>Formula:</p>
+<p>$$move(l,l^\wedge)\land u'=e\land pres(Y-\{u\}).$$</p>
+<p>Per assegnamenti multipli si usa la stessa idea vettoriale:</p>
+<p>$$\bar u'=\bar e.$$</p>
+<h3><code>await c</code></h3>
+<pre><code class="language-text">l: await c; l^
+</code></pre>
+<p>Effetto:</p>
+<ul>
+<li>e' enabled solo se $c$ e' vera;</li>
+<li>se viene presa, avanza il controllo;</li>
+<li>non cambia i dati.</li>
+</ul>
+<p>Formula:</p>
+<p>$$move(l,l^\wedge)\land c\land pres(Y).$$</p>
+<p>Questo spiega perche' justice e compassion vanno ragionate sull'abilitazione:
+<code>await c</code> puo' essere enabled a intermittenza se $c$ diventa vera e falsa nel
+tempo.</p>
+<h3><code>request r</code> e <code>release r</code></h3>
+<p>Per il semaforo:</p>
+<pre><code class="language-text">l: request r; l^
+</code></pre>
+<p>Formula:</p>
+<p>$$move(l,l^\wedge)\land r&gt;0\land r'=r-1\land pres(Y-\{r\}).$$</p>
+<p><code>request</code> e' enabled solo se la risorsa e' disponibile.</p>
+<p>Per:</p>
+<pre><code class="language-text">l: release r; l^
+</code></pre>
+<p>Formula:</p>
+<p>$$move(l,l^\wedge)\land r'=r+1\land pres(Y-\{r\}).$$</p>
+<p><code>release</code> non compete per ottenere la risorsa: la libera.</p>
+<p>Per questo negli appunti compassion e' richiesta tipicamente su <code>request</code>, non
+su <code>release</code>.</p>
+<h3>Comunicazione su canali: <code>send</code> e <code>receive</code></h3>
+<p>SPL ha anche istruzioni per il message passing:</p>
+<ul>
+<li><strong>send</strong>: <code>α ⇐ e</code> — valuta $e$ e ne assegna il valore al canale $\alpha$;</li>
+<li><strong>receive</strong>: <code>α ⇒ u</code> — assegna il valore del canale alla variabile $u$.</li>
+</ul>
+<p>I canali si dichiarano in due modi, e la differenza e' sostanziale:</p>
+<ul>
+<li><strong>sincroni</strong>: <code>mode α: channel of tipo</code>. Lo scambio avviene solo se mittente
+  e destinatario sono pronti <strong>nello stesso istante</strong>;</li>
+<li><strong>asincroni</strong>: <code>mode α: channel [1..] of tipo where φ</code>, con <code>[1..]</code> buffer di
+  capacita' illimitata; $\varphi$ (opzionale) vincola il contenuto iniziale del
+  buffer, altrimenti il buffer parte vuoto.</li>
+</ul>
+<p>Nella traduzione in FTS i due casi sono molto diversi.</p>
+<p><strong>Canale asincrono</strong>: si introduce in $Y$ una variabile $\alpha$ il cui valore
+e' una <strong>lista</strong> di elementi del tipo del canale.</p>
+<p>Send asincrona (<code>l: α ⇐ e; l^</code>): accoda a destra,</p>
+<p>$$move(l,l^\wedge)\land \alpha'=\alpha\cdot e\land pres(Y-\{\alpha\}).$$</p>
+<p>Receive asincrona (<code>l: α ⇒ u; l^</code>): preleva da sinistra, ed e' enabled solo a
+canale non vuoto,</p>
+<p>$$move(l,l^\wedge)\land |\alpha|&gt;0\land \alpha = u'\cdot\alpha'\land pres(Y-\{u,\alpha\}).$$</p>
+<p><strong>Canale sincrono</strong>: non si introduce <strong>nessuna variabile</strong>. La coppia
+send/receive</p>
+<pre><code class="language-text">l: α ⇐ e; l^      (in un processo)
+m: α ⇒ u; m^      (in un altro processo)
+</code></pre>
+<p>genera un'<strong>unica transizione congiunta</strong>:</p>
+<p>$$\rho_{l,m}:\ move(\{l,m\},\{l^\wedge,m^\wedge\})\land u'=e\land pres(Y-\{u\}).$$</p>
+<p>Due osservazioni da orale:</p>
+<ul>
+<li>dal punto di vista dell'FTS la comunicazione sincrona e' solo un
+  <strong>assegnamento</strong> $u := e$ che scatta quando entrambi i processi sono pronti;
+  il canale "sparisce";</li>
+<li>e' uno dei pochi punti in cui serve davvero il <strong>controllo distribuito</strong>: la
+  transizione richiede $[l]\in\pi$ <strong>e</strong> $[m]\in\pi$ contemporaneamente, cioe'
+  un pezzo di controllo davanti alla send e uno davanti alla receive.</li>
+</ul>
+<p><strong>Vincoli sulle grouped instructions con comunicazioni</strong>:</p>
+<ul>
+<li>una grouped puo' contenere <strong>al piu' una</strong> comunicazione sincrona, nella
+  forma $\langle S_1; C; S_2\rangle$ con $S_1, S_2$ privi di altre
+  comunicazioni;</li>
+<li>una grouped non puo' contenere due o piu' comunicazioni <strong>asincrone sullo
+  stesso canale</strong> (es. $\langle\ldots\alpha\Leftarrow 1\ldots\alpha\Leftarrow 3\ldots\rangle$
+  no; su canali diversi si').</li>
+</ul>
+<p><strong>Fairness per la comunicazione</strong>: l'insieme $\mathcal{C}$ (compassion)
+include le transizioni di send/receive, le grouped che contengono
+comunicazioni, e <code>request</code>. Il motivo e' sempre lo stesso: l'abilitazione
+dipende da una risorsa condivisa (il partner pronto, il canale non vuoto,
+$r&gt;0$) che puo' andare e venire a intermittenza — justice non basterebbe a
+garantire il progresso. $\mathcal{J}$ invece include tutte le transizioni
+tranne l'idling e quelle di <code>noncritical</code>.</p>
+<h2>14. Selection, cooperation e grouped instructions</h2>
+<p>Questi tre costrutti sono facili da confondere.</p>
+<h3>Selection</h3>
+<p>Una selection:</p>
+<pre><code class="language-text">S1 or S2 or ... or Sk
+</code></pre>
+<p>introduce non determinismo di scelta.</p>
+<p>Il controllo e' davanti a piu' alternative, e lo scheduler sceglie una delle
+transizioni enabled.</p>
+<p>La semantica e' una disgiunzione:</p>
+<p>$$\rho_{S_1}\lor\rho_{S_2}\lor\cdots\lor\rho_{S_k}.$$</p>
+<p>Se una scelta non viene presa, le altre possono restare disponibili.</p>
+<h3>Cooperation / parallel composition</h3>
+<p>La composizione parallela:</p>
+<pre><code class="language-text">S1 || S2 || ... || Sk
+</code></pre>
+<p>non significa che tutti i processi eseguono un passo simultaneo.</p>
+<p>Nel corso si usa interleaving:</p>
+<blockquote>
+<p>a ogni passo viene eseguita una sola transizione enabled tra quelle dei
+processi attivi.</p>
+</blockquote>
+<p>Quindi il parallelismo produce molte interleaving possibili, non una vera
+sincronizzazione globale a ogni istante.</p>
+<h3>Grouped instructions</h3>
+<p>Una grouped instruction:</p>
+<pre><code class="language-text">&lt;S&gt;
+</code></pre>
+<p>rende atomico l'effetto complessivo di $S$.</p>
+<p>Invece di esporre tutti i passi intermedi come transizioni separate, si calcola
+una relazione di trasformazione dati:</p>
+<p>$$\delta[S](Y,Y').$$</p>
+<p>Per una concatenazione:</p>
+<pre><code class="language-text">S1; S2
+</code></pre>
+<p>la trasformazione usa variabili intermedie:</p>
+<p>$$\delta[S_1;S_2](Y,Y')=
+\exists \widetilde{Y}.(\delta[S_1](Y,\widetilde{Y})\land
+\delta[S_2](\widetilde{Y},Y')).$$</p>
+<p>Questo e' lo stesso trucco logico usato spesso nelle transizioni simboliche:
+introduco variabili intermedie e poi le elimino con quantificazione
+esistenziale.</p>
+<h3>Entry step ed exit step della cooperation</h3>
+<p>Negli appunti la cooperation dentro un programma,</p>
+<pre><code class="language-text">l: [ [l1: S1; l^1:] || ... || [lk: Sk; l^k:] ]; l^
+</code></pre>
+<p>genera due transizioni dedicate:</p>
+<ul>
+<li><strong>entry step</strong>: $\rho^E_l:\ move(l,\{l_1,\ldots,l_k\})\land pres(Y)$ — il
+  controllo si <strong>distribuisce</strong>: da una singola location si passa a un insieme
+  di $k$ location, una per processo;</li>
+<li><strong>exit step</strong>: $\rho^X_l:\ move(\{l^\wedge_1,\ldots,l^\wedge_k\},l^\wedge)\land pres(Y)$
+  — il controllo si <strong>ricompatta</strong>: serve che <em>tutti</em> i processi abbiano
+  terminato (tutte le $l^\wedge_i$ in $\pi$) per proseguire.</li>
+</ul>
+<p>E' una sincronizzazione iniziale e finale: in mezzo, puro interleaving. Il
+corpo del programma e' l'unico caso senza entry/exit step: la computazione
+parte direttamente con il controllo distribuito sui componenti.</p>
+<h3>Labels, control locations e post-locations: le regole complete</h3>
+<p>Piu' label possono denotare la <strong>stessa posizione</strong> del controllo. La
+relazione di equivalenza $\approx_L$ si genera con tre regole:</p>
+<ul>
+<li>concatenazione <code>l: [l1:S1; ...; lk:Sk]</code> $\Rightarrow$ $l \approx_L l_1$
+  (essere davanti alla sequenza = essere davanti al primo componente);</li>
+<li>selection <code>l: [l1:S1 or ... or lk:Sk]</code> $\Rightarrow$
+  $l \approx_L l_1 \approx_L \cdots \approx_L l_k$ (davanti alla selection =
+  davanti a <em>ognuna</em> delle alternative);</li>
+<li>blocco <code>l: [local declaration; l1:S1]</code> $\Rightarrow$ $l \approx_L l_1$.</li>
+</ul>
+<p>Una <strong>control location</strong> e' una classe di equivalenza $[l]$ di $\approx_L$, ed
+e' questo (non la singola label) il valore che entra in $\pi$.</p>
+<p>La <strong>post-location</strong> di un'istruzione e' la location raggiunta al termine
+della sua esecuzione. Regole:</p>
+<table>
+<thead>
+<tr>
+<th>Istruzione</th>
+<th>Post-location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>concatenazione $[l_1{:}S_1;\ldots;l_k{:}S_k]$</td>
+<td>$post(S) = post(S_k)$, e $post(S_i) = l_{i+1}$ per $i&lt;k$</td>
+</tr>
+<tr>
+<td>cooperation</td>
+<td>$post(S_i) = [l^\wedge_i]$, tutte <strong>diverse</strong> (per questo serve l'exit step)</td>
+</tr>
+<tr>
+<td>selection</td>
+<td>$post(S) = post(S_1) = \cdots = post(S_k)$ (se ne esegue una sola)</td>
+</tr>
+<tr>
+<td>conditional</td>
+<td>$post(S) = post(S_1) = post(S_2)$</td>
+</tr>
+<tr>
+<td>while $[l{:}$ while $c$ do $S']$</td>
+<td>$post(S') = [l]$: il corpo riporta davanti al while; il while stesso non ha una regola unica (dipende da $c$)</td>
+</tr>
+<tr>
+<td>blocco</td>
+<td>$post(S) = post(S')$</td>
+</tr>
+</tbody>
+</table>
+<h3>L'esempio del corso: il MCD di Euclide</h3>
+<p>Il programma SPL per il massimo comun divisore,</p>
+<pre><code class="language-text">in  a, b : integer where a &gt; 0, b &gt; 0
+local y1, y2 : integer where y1 = a, y2 = b
+out g : integer
+
+l0: [
+l1:   while y1 ≠ y2 do
+l2:     [ l3: when y1 &gt; y2 do l4: y1 := y1 - y2
+          or
+          l5: when y2 &gt; y1 do l6: y2 := y2 - y1 ]
+l7:   g := y1
+l8: ]
+</code></pre>
+<p>e' l'esempio standard per labels e locations. Le classi:</p>
+<ul>
+<li>$[l_1] = \{l_0, l_1\}$ (davanti al programma = davanti al while);</li>
+<li>$[l_2] = \{l_2, l_3, l_5, l_9, l_{10}\}$ (davanti alla selection = davanti a
+  entrambe le guardie when);</li>
+<li>$[l_4], [l_6], [l_7], [l_8]$ singoletti.</li>
+</ul>
+<p>L'FTS corrispondente: $\mathcal{V} = \{\pi, a, b, y_1, y_2, g\}$, dove il
+dominio di $\pi$ e' l'insieme delle parti di
+$\{[l_1],[l_2],[l_4],[l_6],[l_7],[l_8]\}$, e</p>
+<p>$$\theta = a&gt;0 \land b&gt;0 \land y_1=a \land y_2=b \land \pi=\{[l_1]\}.$$</p>
+<p>Qui $\pi$ resta sempre un singoletto (un solo processo); diventa un insieme
+piu' grande appena c'e' una cooperation. Post-locations:
+$post(l_1) = [l_7]$, $post(l_2) = post(l_4) = post(l_6) = [l_1]$ (si torna
+davanti al while), $post(l_7) = [l_8]$.</p>
+<h3>Ancestor, LCA e istruzioni parallele vs in conflitto</h3>
+<p>Sull'insieme delle istruzioni si definisce la relazione di <strong>antenato</strong>: $S$
+e' antenato di $S'$ se $S'$ e' una sotto-istruzione di $S$ (riflessiva e
+transitiva). Il <strong>least common ancestor</strong> (LCA) di $S_1$ e $S_2$ e' l'antenato
+comune minimo.</p>
+<p>La distinzione che ne segue:</p>
+<ul>
+<li>se il LCA di $S_i$ e $S_j$ e' una <strong>cooperation</strong> (e nessuna delle due
+  coincide con il LCA), allora $S_i$ e $S_j$ sono <strong>istruzioni parallele</strong>:
+  appartengono a processi diversi e possono essere entrambe "attive";</li>
+<li>altrimenti sono <strong>in conflitto</strong>: stanno nello stesso filo di controllo, e
+  al piu' una delle due puo' avere il controllo davanti.</li>
+</ul>
+<p>Esempio degli appunti, $[S_1; [S_2 \| S_3]; S_4] \| S_5$:</p>
+<ul>
+<li>$S_2$ e $S_3$: parallele (LCA $= S_2\|S_3$);</li>
+<li>$S_2$ e $S_4$: in conflitto (LCA = l'intera concatenazione);</li>
+<li>$S_2$ e $S_5$: parallele (LCA = l'istruzione intera, che e' una cooperation).</li>
+</ul>
+<h2>15. Mutua esclusione, accessibility e communal accessibility</h2>
+<p>Gli esempi <code>MUX_SEM</code> e <code>MUX_WHEN</code> servono per distinguere safety e liveness.</p>
+<h3>Mutual exclusion</h3>
+<p>Mutual exclusion e' una proprieta' di safety:</p>
+<blockquote>
+<p>non deve mai accadere che due processi siano contemporaneamente nella sezione
+critica.</p>
+</blockquote>
+<p>Se il semaforo $y$ vale 1 quando la risorsa e' libera, allora <code>request y</code>
+decrementa $y$ a 0. Finche' il processo non esegue <code>release y</code>, l'altro processo
+non puo' eseguire la propria <code>request</code>.</p>
+<p>Quindi la safety dipende dall'invariante sul semaforo.</p>
+<h3>Accessibility</h3>
+<p>Accessibility e' una proprieta' di progresso:</p>
+<blockquote>
+<p>se un processo arriva alla fine della regione non critica e chiede la risorsa,
+prima o poi entra nella regione critica.</p>
+</blockquote>
+<p>Qui la fairness e' decisiva.</p>
+<p>Se una <code>request</code> e' abilitata infinite volte ma non viene mai presa, justice puo'
+non bastare se l'abilitazione e' intermittente. Serve compassion.</p>
+<p>Per questo <code>MUX_SEM</code>, con compassion sulle request, puo' garantire una forma piu'
+forte di accesso.</p>
+<h3>Communal accessibility</h3>
+<p><code>MUX_WHEN</code> puo' soddisfare una proprieta' piu' debole:</p>
+<blockquote>
+<p>se un processo arriva a chiedere la risorsa, prima o poi qualche processo entra
+in sezione critica.</p>
+</blockquote>
+<p>Non necessariamente lo stesso.</p>
+<p>Questa e' communal accessibility.</p>
+<p>La distinzione e' utile all'orale: mutual exclusion dice "mai due insieme";
+accessibility dice "chi chiede entra"; communal accessibility dice "qualcuno
+entra".</p>
+<h3>La prova di accessibility di MUX_SEM, per esteso</h3>
+<p>Vale la pena saper ripetere l'argomento degli appunti. Supponiamo $P_1$
+bloccato a $l_2$ (davanti alla <code>request y</code>). Due casi:</p>
+<ol>
+<li><strong>$y$ resta costantemente $1$</strong> da un certo punto in poi (cioe' $P_2$ resta
+   per sempre nella regione non critica): allora <code>l2: request y</code> e'
+   <strong>costantemente abilitata</strong> e mai presa — viola gia' la justice (che e'
+   implicata dalla compassion). Computazione non ammissibile.</li>
+<li><strong>$y$ non resta costantemente $1$</strong>: allora $P_2$ continua a ciclare
+   (request, critical, release, noncritical, ...) e la computazione visita
+   <strong>infinite volte</strong> lo stato con $\pi = \{l_2, m_2\},\ y = 1$, in cui $l_2$
+   e' abilitata. Abilitata infinite volte, presa mai: viola la <strong>compassion</strong>
+   richiesta su <code>request</code>. Non ammissibile.</li>
+</ol>
+<p>In entrambi i casi la computazione "bloccante" non e' fair, quindi
+accessibility vale. Nota dove serve davvero compassion: nel caso 2
+l'abilitazione e' intermittente e justice da sola non basterebbe — ed e'
+esattamente cio' che succede in <code>MUX_WHEN</code>, dove su <code>when</code> si richiede solo
+justice e accessibility fallisce (resta solo communal accessibility).</p>
+<p>C'e' anche una proprieta' piu' semplice da non dimenticare: $P_1$ non puo'
+restare per sempre <strong>dentro</strong> la regione critica, perche' su <code>critical</code> e'
+richiesta justice (deve terminare).</p>
+<h3>Producer/consumer e Fair-Merge (cenni dagli appunti)</h3>
+<p>Gli appunti chiudono il capitolo con due esempi di programmi con canali:</p>
+<ul>
+<li><strong>producer/consumer con buffer limitato</strong>: due canali asincroni, <code>send</code> per
+  i dati e <code>ack</code> per i posti liberi; <code>ack</code> parte con $n$ occorrenze di $1$
+  (= $n$ posti). Il produttore puo' spedire solo se <code>ack</code> non e' vuoto (riceve
+  prima un token), il consumatore solo se <code>send</code> non e' vuoto. Il buffer
+  limitato si ottiene cosi' da due canali illimitati;</li>
+<li><strong>fair-merge</strong>: due canali locali $a_1, a_2$ vengono fusi in un canale di
+  output $b$; la fairness garantisce che nessuno dei due flussi venga ignorato
+  per sempre.</li>
+</ul>
+<p>Sono esercizi tipo del "chapter 0": saperli impostare (variabili, canali,
+fairness richiesta) e' piu' importante che ricordarli a memoria.</p>
+<h2>16. Mini-scaletta orale</h2>
+<ol>
+<li><strong>Il contesto:</strong> Differenza tra programmi trasformazionali e reattivi (le computazioni qui sono infinite).</li>
+<li><strong>Lo strumento di modellazione:</strong> SPL, con classi di istruzioni: basic, schematiche, compound e grouped.</li>
+<li><strong>Labels e controllo:</strong> Spiegare post-location e variabili di controllo, cioè come il programma diventa uno stato FTS.</li>
+<li><strong>La struttura formale (FTS):</strong> Elencare i 5 elementi $\langle \mathcal{V}, \Theta, \mathcal{T}, \mathcal{J}, \mathcal{C} \rangle$.</li>
+<li><strong>Transizioni abilitate:</strong> Dire che $\tau$ è abilitata se esiste almeno uno stato successivo che soddisfa $\rho_\tau$.</li>
+<li><strong>Il problema dello scheduler patologico:</strong> Spiegare perché serve la Fairness (evitare falsi controesempi di liveness dovuti a starvation irreale).</li>
+<li><strong>Le due forme di Fairness:</strong> Definire precisamente la differenza chiave tra <em>continuamente abilitata</em> (Justice) e <em>abilitata infinite volte</em> (Compassion).</li>
+<li><strong>Esercizi tipici:</strong> Ragionare su <code>await/skip</code>, <code>request/release</code>, mutua esclusione, accessibility e communal accessibility.</li>
+</ol>
+<hr>
+<h2>17. Quiz interattivo per l'autovalutazione</h2>
+<div id="quiz-container-4" style="background:#f9f9f9; padding:20px; border-radius:8px; border: 1px solid #ddd; margin-top:2rem;">
+  <h3 style="margin-top:0;">Quiz Settimana 2 - Capitolo 4: FTS e Fairness</h3>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>1. In un FTS, cos'è lo stato di un sistema?</strong></p>
+    <label><input type="radio" name="q4_1" value="A"> A) Esclusivamente il valore delle variabili globali, escludendo il program counter.</label><br>
+    <label><input type="radio" name="q4_1" value="B"> B) Una valutazione assegnata a tutte le variabili di sistema (dati + variabili di controllo/PC).</label><br>
+    <label><input type="radio" name="q4_1" value="C"> C) Il set delle transizioni attualmente abilitate.</label><br>
+    <button onclick="checkAnswer('q4_1', 'B', 'Esatto! Lo stato fotografa l\'intero sistema in un dato istante: sia i valori dei dati in memoria, sia il punto preciso del codice in cui si trovano i processi (variabili di controllo).', 'Sbagliato. Le variabili di controllo (Program Counter) sono fondamentali: indicano in che punto dell\'esecuzione si trova ogni processo.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q4_1-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>2. Quale delle seguenti definizioni descrive la *Compassion* (Strong Fairness)?</strong></p>
+    <label><input type="radio" name="q4_2" value="A"> A) Se una transizione è abilitata continuamente, deve essere presa prima o poi.</label><br>
+    <label><input type="radio" name="q4_2" value="B"> B) Tutte le transizioni abilitate nello stato corrente devono essere prese in parallelo.</label><br>
+    <label><input type="radio" name="q4_2" value="C"> C) Se una transizione è abilitata infinite volte, deve essere presa infinite volte.</label><br>
+    <button onclick="checkAnswer('q4_2', 'C', 'Corretto! La Strong Fairness (Compassion) scatta anche se l\'abilitazione è intermittente, purché si ripresenti infinite volte. Questa è la sua forza rispetto alla Justice.', 'No, rileggi bene. La risposta A descrive la Justice (Weak Fairness), non la Compassion.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q4_2-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+
+  <div class="quiz-question" style="margin-bottom: 20px;">
+    <p><strong>3. Perché in Model Checking applichiamo la fairness ai sistemi reattivi?</strong></p>
+    <label><input type="radio" name="q4_3" value="A"> A) Per assicurarci che il programma termini il prima possibile.</label><br>
+    <label><input type="radio" name="q4_3" value="B"> B) Per limitare l'analisi alle esecuzioni (computazioni) realistiche, escludendo gli scheduler maliziosi/patologici.</label><br>
+    <label><input type="radio" name="q4_3" value="C"> C) Perché senza fairness non possiamo modellare i cicli `while` in SPL.</label><br>
+    <button onclick="checkAnswer('q4_3', 'B', 'Ottimo! La fairness serve proprio a \"scartare\" controesempi su proprietà di liveness che nella realtà (su un computer con uno scheduler equo) non potrebbero mai verificarsi.', 'Sbagliato. I sistemi reattivi, per definizione, NON devono terminare. La fairness serve a filtrare le computazioni irrealistiche per le proprietà di liveness.')" style="margin-top:8px; padding: 5px 10px; cursor: pointer;">Verifica Risposta</button>
+    <p id="q4_3-feedback" style="display:none; font-weight:bold; margin-top:5px;"></p>
+  </div>
+</div>
+
+<script>
+function checkAnswer(qName, correctVal, correctMsg, wrongMsg) {
+  var selected = document.querySelector('input[name="' + qName + '"]:checked');
+  var feedback = document.getElementById(qName + '-feedback');
+  if (!feedback) return;
+  if (!selected) {
+    feedback.style.display = 'block';
+    feedback.style.color = '#8a5a00';
+    feedback.textContent = 'Seleziona una risposta prima di verificare.';
+    return;
+  }
+  feedback.style.display = 'block';
+  if (selected.value === correctVal) {
+    feedback.style.color = '#126b2e';
+    feedback.textContent = correctMsg;
+  } else {
+    feedback.style.color = '#9b1c1c';
+    feedback.textContent = wrongMsg;
+  }
+}
+</script>
+
+<hr>
+<h2>18. Fonti usate</h2>
+<ul>
+<li>Appunti locali: <code>raw/Riassunti si o.pdf</code>, <code>raw/notes.pdf</code>, <code>sources/Fair Transition System_Summary.md</code>, <code>concepts/Fair_Transition_System.md</code>, <code>concepts/Simple_Programming_Language_SPL.md</code>.</li>
+</ul></article>
+  <p class="section-label">Esercizi (piano di studio)</p>
+  
+<div class="exercises-block prose">
+<h2>Esercizi e domande — settimana 2</h2>
+<p><strong>Obiettivo della settimana:</strong> capire come si impara un automa e come si modellano sistemi reattivi con fairness.</p>
+<h3>Esercizi scritti essenziali</h3>
+<ol>
+<li>
+<p><strong>MAT framework.</strong> Scrivi un esempio completo di dialogo Learner/Teacher per il linguaggio:
+   $$L=\lbrace w\in\lbrace a,b\rbrace^* \mid w \text{ contiene almeno una } a\rbrace$$
+   Includi almeno 5 membership query, una equivalence query sbagliata e un controesempio.</p>
+</li>
+<li>
+<p><strong>Observation table L*.</strong> Per:
+   $$L=\lbrace w\in\lbrace a,b\rbrace^* \mid w \text{ termina con } a\rbrace$$
+   costruisci una tabella iniziale con $S=\lbrace \epsilon\rbrace$ e $T=\lbrace \epsilon\rbrace$. Espandila finche diventa chiusa e consistente. Disegna il DFA ipotesi.</p>
+</li>
+<li>
+<p><strong>Controesempio L*.</strong> Supponi che l'ipotesi per il linguaggio precedente accetti tutte le stringhe. Trova un controesempio e mostra come aggiorna la tabella.</p>
+</li>
+<li>
+<p><strong>T-complete e T-minimal.</strong> Prendi una tabella a tua scelta e verifica formalmente se e' T-complete e T-minimal. Se non lo e', indica quale riga o transizione forza l'espansione.</p>
+</li>
+<li>
+<p><strong>Hankel matrix.</strong> Costruisci una porzione della matrice di Hankel per:
+   $$L=\lbrace w\in\lbrace 0,1\rbrace^* \mid \#1(w) \text{ e' pari}\rbrace$$
+   usando prefissi e suffissi fino a lunghezza 2. Identifica quante righe distinte servono.</p>
+</li>
+<li>
+<p><strong>Confronto.</strong> Scrivi una tabella a due colonne: Myhill-Nerode vs L*. Metti: obiettivo, informazione usata, output, criterio di stop.</p>
+</li>
+<li>
+<p><strong>FTS formale.</strong> Definisci un FTS per un contatore modulo 3 con variabile $x\in\lbrace 0,1,2\rbrace$, iniziale $x=0$, transizione <code>inc</code>, e idling. Specifica $\mathcal{V},\Theta,\mathcal{T},\mathcal{J},\mathcal{C}$.</p>
+</li>
+<li>
+<p><strong>Justice vs compassion.</strong> Costruisci una computazione infinita in cui una transizione e' abilitata infinite volte ma non continuamente abilitata. Usa l'esempio per spiegare perche compassion e' piu forte di justice.</p>
+</li>
+<li>
+<p><strong>SPL -&gt; FTS.</strong> Scrivi un mini programma SPL con due processi:
+   <code>P1: await x=0; x:=1</code> e <code>P2: await x=1; x:=0</code>.
+   Modellalo come FTS con stati di controllo e transizioni.</p>
+</li>
+<li>
+<p><strong>Starvation.</strong> Descrivi una computazione unfair in cui un processo resta affamato. Poi aggiungi una condizione di fairness che la esclude.</p>
+</li>
+</ol>
+<h3>Domande orali secche</h3>
+<ol>
+<li>Perche le membership query da sole non bastano in modo efficiente?</li>
+<li>Che cosa contiene una observation table?</li>
+<li>Che rapporto c'e' tra righe della tabella e stati del DFA?</li>
+<li>Differenza tra sistema terminante e sistema reattivo.</li>
+<li>Differenza tra justice e compassion con un esempio.</li>
+</ol>
+<h3>Controllo</h3>
+<p>Hai superato la settimana se riesci a simulare a mano un giro di L* e a spiegare fairness senza confondere "sempre abilitata da un certo punto" con "abilitata infinite volte".</p>
+</div>
+
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap03.html">← Precedente</a></span><span><a href="cap05.html">Successivo →</a></span></div>
+</div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script defer src="assets/chat.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

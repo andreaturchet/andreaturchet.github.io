@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capitolo 8 — Procedure decisionali e model checking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/chat.css" />
+  
+</head>
+<body>
+
+<header class="site-header">
+  <h1>V&amp;V in AI — Appunti</h1>
+  <p class="subtitle">Settimana 4</p>
+  <div class="ornament">✦</div>
+</header>
+<div class="wrap">
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap07.html">← Precedente</a></span><span><a href="cap09.html">Successivo →</a></span></div>
+  
+<div class="chapter-opener">
+  <div class="label">Capitolo 8</div>
+  <h1>Capitolo 8 — Procedure decisionali e model checking</h1>
+  <p class="focus">Tableau LTL, behavior graph, P-SAT/P-VALID e CTL tramite punti fissi.</p>
+</div>
+
+  <article class="prose"><h1>Model checking - Riassunto</h1>
+<p><strong>Fonte</strong>: <code>raw/Model Checking.md</code></p>
+<h2>Punti chiave</h2>
+<ul>
+<li>Il model checking verifica automaticamente se un modello soddisfa una specifica temporale.</li>
+<li><strong>Model checking LTL</strong>: usa un approccio automata-theoretic; per verificare una proprieta si controlla l'assenza di computazioni che soddisfano la negazione.</li>
+<li><strong>Model checking CTL</strong>: valuta formule sugli stati di un modello di Kripke tramite labeling e punti fissi.</li>
+<li>LTL e' piu adatta a vincoli globali sui cammini; CTL e' piu adatta a proprieta di ramificazione e possibilita.</li>
+<li>La complessita del model checking LTL e' piu alta; CTL e' tipicamente polinomiale nella dimensione del modello e della formula.</li>
+</ul>
+<h2>Concetti estratti</h2>
+<ul>
+<li>Model checking</li>
+<li>Grafo dei comportamenti</li>
+<li>Modello di Kripke</li>
+</ul>
+<hr />
+
+<h1>Model checking</h1>
+<p>Il model checking verifica automaticamente se un modello formale soddisfa una specifica.</p>
+<h2>Idea centrale</h2>
+<p>Dato un modello $M$ e una formula $\varphi$, il problema e' stabilire se:
+$$M \models \varphi$$</p>
+<p>Nel caso LTL, spesso si controlla se esiste una computazione del sistema che soddisfa $\neg\varphi$. Nel caso CTL, si etichettano gli stati che soddisfano sottoformule fino alla formula completa.</p>
+<h2>Vantaggi</h2>
+<ul>
+<li>verifica esaustiva sui comportamenti del modello;</li>
+<li>generazione di controesempi;</li>
+<li>forte integrazione con logiche temporali.</li>
+</ul>
+<h2>Limite principale</h2>
+<p>Il problema dello state explosion: lo spazio degli stati puo crescere esponenzialmente con il numero di componenti concorrenti.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Logica temporale lineare (LTL)</li>
+<li>Logica ad albero computazionale (CTL)</li>
+<li>Model checking simbolico</li>
+<li>Model checking limitato</li>
+</ul>
+<hr />
+
+<h1>Grafo dei comportamenti</h1>
+<p>Un <strong>grafo dei comportamenti</strong> e' una struttura usata nel model checking LTL. Si ottiene combinando il grafo delle computazioni del programma con il tableau della formula LTL.</p>
+<p>I nodi sono coppie $(s,A)$, dove $s$ e' uno stato del programma e $A$ e' un atomo del tableau compatibile con quello stato.</p>
+<h2>Uso</h2>
+<p>Il grafo permette di cercare sottografi adeguati: sottografi che rappresentano computazioni fair e realizzanti, cioe' computazioni che soddisfano le eventualita richieste dalla formula.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Model checking</li>
+<li>Logica temporale lineare (LTL)</li>
+</ul>
+<hr />
+
+<h1>Modello di Kripke</h1>
+<p>Un modello di Kripke e' una struttura a stati usata nel model checking temporale.</p>
+<h2>Componenti</h2>
+<p>Tipicamente contiene:
+- un insieme di stati;
+- una relazione di transizione;
+- uno o piu stati iniziali;
+- una funzione di labeling che associa proposizioni vere a ciascuno stato.</p>
+<h2>Uso</h2>
+<p>Le formule CTL e LTL vengono valutate sui cammini generati dalla relazione di transizione.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Model checking</li>
+<li>Logica ad albero computazionale (CTL)</li>
+<li>Logica temporale lineare (LTL)</li>
+</ul>
+<hr />
+
+<h1>Approfondimento completo settimana 4 - Procedure decisionali e model checking</h1>
+<p>Questo capitolo spiega come si passa dalle logiche temporali alla verifica
+automatica. L'idea centrale e' sempre la stessa:</p>
+<p>$$\text{sistema} + \text{specifica} \quad \Rightarrow \quad
+\text{algoritmo che risponde vero/falso e, se falso, produce un controesempio}.$$</p>
+<p>La difficolta' e' che i sistemi reattivi non terminano: generano computazioni
+infinite. Per questo non basta controllare un output finale. Bisogna ragionare
+su tutti i cammini possibili, su proprieta' che parlano di "sempre",
+"prima o poi", "finche" e "esiste un futuro".</p>
+<p>Il capitolo usa due tecniche principali:</p>
+<ul>
+<li>per <strong>LTL</strong>, si cerca un controesempio costruendo un tableau/automaton per la
+  negazione della formula e combinandolo con il sistema;</li>
+<li>per <strong>CTL</strong>, si etichettano gli stati del modello con le sottoformule vere,
+  usando preimmagini e punti fissi.</li>
+</ul>
+<p>La differenza nasce dalla semantica: LTL parla di cammini lineari infiniti, CTL
+parla di stati dentro un albero di computazioni ramificate.</p>
+<h2>1. Il problema di model checking</h2>
+<p>Dato un modello $M$ e una formula temporale $\varphi$, il problema di model
+checking e':</p>
+<p>$$M \models \varphi?$$</p>
+<p>La formula descrive una proprieta' richiesta. Il modello descrive tutti i
+comportamenti possibili del sistema. La risposta e' vera se ogni comportamento
+rilevante del modello soddisfa la specifica.</p>
+<h3>Perche e' utile</h3>
+<p>Il model checking e' diverso da una simulazione:</p>
+<ul>
+<li>una simulazione visita alcuni comportamenti scelti;</li>
+<li>il model checking visita implicitamente tutti i comportamenti del modello;</li>
+<li>se la proprieta' fallisce, l'algoritmo puo' restituire una computazione che
+  mostra l'errore.</li>
+</ul>
+<p>Il controesempio e' fondamentale perche' rende il fallimento leggibile: non dice
+solo "la formula e' falsa", ma mostra una traccia che viola la specifica.</p>
+<h3>Perche non e' banale</h3>
+<p>Il sistema puo' avere molti stati, e i comportamenti possono essere infiniti.
+Anche un modello finito genera infiniti cammini, perche' puo' contenere cicli.</p>
+<p>Quindi il punto tecnico e':</p>
+<blockquote>
+<p>trasformare una domanda su infiniti cammini in una domanda finita su grafi,
+automi, tableau o punti fissi.</p>
+</blockquote>
+<p>Questa trasformazione e' cio' che rende decidibile e automatizzabile il model
+checking.</p>
+<h2>2. Modelli di Kripke</h2>
+<p>Il modello standard per interpretare LTL e CTL e' la struttura di Kripke:</p>
+<p>$$K=(S,S_0,R,L).$$</p>
+<p>Dove:</p>
+<ul>
+<li>$S$ e' l'insieme finito degli stati;</li>
+<li>$S_0\subseteq S$ e' l'insieme degli stati iniziali;</li>
+<li>$R\subseteq S\times S$ e' la relazione di transizione;</li>
+<li>$L:S\to 2^{AP}$ assegna a ogni stato le proposizioni atomiche vere in quello
+  stato.</li>
+</ul>
+<p>La funzione $L$ e' necessaria per collegare il modello alla formula. Se una
+formula contiene la proposizione $p$, allora $p$ e' vera nello stato $s$ quando:</p>
+<p>$$p\in L(s).$$</p>
+<h3>Perche si usa una relazione totale</h3>
+<p>Spesso si assume che ogni stato abbia almeno un successore. Questa scelta non e'
+un dettaglio tecnico casuale: LTL e CTL sono logiche per computazioni infinite.
+Se un cammino terminasse, formule come $X\varphi$, $G\varphi$ o $F\varphi$
+diventerebbero ambigue.</p>
+<p>Per evitare questo problema, uno stato terminale viene spesso completato con un
+self-loop. Questo rappresenta l'idling: il sistema resta nello stesso stato per
+sempre.</p>
+<h3>Cammini</h3>
+<p>Un cammino e' una sequenza infinita:</p>
+<p>$$\pi=s_0s_1s_2\ldots$$</p>
+<p>tale che:</p>
+<p>$$R(s_i,s_{i+1}) \quad \text{per ogni } i\ge 0.$$</p>
+<p>La traccia osservabile del cammino e':</p>
+<p>$$L(s_0),L(s_1),L(s_2),\ldots$$</p>
+<p>Le formule temporali non leggono direttamente gli stati interni, ma le
+proposizioni vere lungo questa traccia.</p>
+<h2>3. Richiamo: LTL e CTL hanno semantiche diverse</h2>
+<p>LTL e CTL usano operatori simili, ma parlano di oggetti diversi.</p>
+<h3>LTL</h3>
+<p>Una formula LTL viene valutata su un singolo cammino infinito:</p>
+<p>$$\pi,i\models \varphi.$$</p>
+<p>Gli operatori principali sono:</p>
+<ul>
+<li>$X\varphi$: $\varphi$ vale nel prossimo stato del cammino;</li>
+<li>$F\varphi$: prima o poi $\varphi$ vale;</li>
+<li>$G\varphi$: $\varphi$ vale sempre;</li>
+<li>$\varphi U \psi$: $\varphi$ vale fino al momento in cui vale $\psi$.</li>
+</ul>
+<p>Quando diciamo che un modello soddisfa una formula LTL, intendiamo di solito:</p>
+<p>$$K\models \varphi$$</p>
+<p>se tutti i cammini iniziali di $K$ soddisfano $\varphi$.</p>
+<p>Quindi LTL e' lineare: guarda ogni computazione come una parola infinita.</p>
+<h3>CTL</h3>
+<p>Una formula CTL viene valutata sugli stati:</p>
+<p>$$K,s\models \varphi.$$</p>
+<p>Gli operatori temporali sono combinati con quantificatori di cammino:</p>
+<ul>
+<li>$A$: per tutti i cammini;</li>
+<li>$E$: esiste un cammino.</li>
+</ul>
+<p>Esempi:</p>
+<ul>
+<li>$EF\ goal$: esiste un cammino che prima o poi raggiunge goal;</li>
+<li>$AF\ goal$: tutti i cammini prima o poi raggiungono goal;</li>
+<li>$EG\ safe$: esiste un cammino che resta sempre safe;</li>
+<li>$AG\ safe$: tutti i cammini restano sempre safe.</li>
+</ul>
+<p>CTL e' branching-time: ragiona sull'albero delle possibilita' che partono da uno
+stato.</p>
+<h3>Perche questa differenza cambia gli algoritmi</h3>
+<p>LTL richiede di controllare cammini infiniti. Per questo si usano automi,
+tableau e ricerca di cicli accettanti.</p>
+<p>CTL valuta formule stato per stato. Per questo si possono calcolare insiemi di
+stati che soddisfano ogni sottoformula.</p>
+<p>La differenza algoritmica deriva direttamente dalla differenza semantica.</p>
+<h2>4. Perche nel model checking LTL si controlla la negazione</h2>
+<p>Supponiamo di voler verificare:</p>
+<p>$$K\models \varphi.$$</p>
+<p>Questo significa:</p>
+<blockquote>
+<p>ogni cammino iniziale del sistema soddisfa $\varphi$.</p>
+</blockquote>
+<p>La negazione e':</p>
+<blockquote>
+<p>esiste un cammino iniziale del sistema che soddisfa $\neg\varphi$.</p>
+</blockquote>
+<p>Quindi:</p>
+<p>$$K\models \varphi
+\quad \Longleftrightarrow \quad
+\text{non esiste un cammino di }K\text{ che soddisfa }\neg\varphi.$$</p>
+<p>Questa forma e' utile perche' un controesempio e' esattamente un cammino che
+soddisfa $\neg\varphi$. L'algoritmo non deve dimostrare direttamente una
+proprieta' universale: cerca un oggetto esistenziale. Se lo trova, la proprieta'
+fallisce. Se non lo trova, la proprieta' e' valida sul modello.</p>
+<p>Questa e' la ragione teorica dietro la frase:</p>
+<blockquote>
+<p>per verificare $\varphi$, cerco una computazione che soddisfi $\neg\varphi$.</p>
+</blockquote>
+<h2>5. Tableau LTL: perche serve</h2>
+<p>Una formula LTL parla di un cammino infinito, ma un algoritmo deve lavorare con
+strutture finite. Il tableau risolve questo problema.</p>
+<p>L'idea e':</p>
+<ol>
+<li>scomporre la formula nelle sue sottoformule;</li>
+<li>descrivere cosa puo' essere vero in una singola posizione del cammino;</li>
+<li>collegare queste descrizioni tramite vincoli di "prossimo stato";</li>
+<li>cercare un ciclo che realizza tutte le eventualita'.</li>
+</ol>
+<p>Il tableau e' quindi un grafo finito che rappresenta tutte le possibili
+evoluzioni coerenti con la formula.</p>
+<h2>6. Chiusura della formula</h2>
+<p>Per costruire il tableau si parte dalla <strong>closure</strong> della formula, cioe'
+dall'insieme finito delle sottoformule necessarie per valutarla.</p>
+<p>Se la formula contiene:</p>
+<p>$$G(p\to Fq)$$</p>
+<p>la closure contiene, tra le altre:</p>
+<ul>
+<li>$G(p\to Fq)$;</li>
+<li>$p\to Fq$;</li>
+<li>$p$;</li>
+<li>$Fq$;</li>
+<li>$q$;</li>
+<li>le negazioni rilevanti.</li>
+</ul>
+<p>La closure e' finita perche' la formula e' finita. Questo e' importante:
+trasforma il problema temporale in un problema combinatorio su un insieme finito
+di pezzi.</p>
+<h2>7. Atomi del tableau</h2>
+<p>Un <strong>atomo</strong> rappresenta una descrizione completa e coerente di una singola
+posizione del cammino rispetto alla closure.</p>
+<p>In pratica, per ogni sottoformula rilevante l'atomo decide se essa vale oppure
+no, rispettando le regole logiche.</p>
+<p>Un atomo non puo' contenere contraddizioni:</p>
+<ul>
+<li>non puo' contenere sia $\varphi$ sia $\neg\varphi$;</li>
+<li>contiene $\varphi\land\psi$ se e solo se contiene $\varphi$ e $\psi$;</li>
+<li>contiene $\varphi\lor\psi$ se contiene almeno una tra $\varphi$ e $\psi$;</li>
+<li>tratta le formule temporali in modo coerente con la loro espansione.</li>
+</ul>
+<h3>Perche gli atomi sono utili</h3>
+<p>LTL valuta una formula in una posizione del cammino. Un atomo e' una possibile
+"fotografia logica" di quella posizione.</p>
+<p>Invece di ragionare direttamente su tutte le parole infinite, il tableau ragiona
+su sequenze infinite di atomi. Ogni sequenza di atomi rappresenta una possibile
+evoluzione temporale della verita' delle sottoformule.</p>
+<h2>8. Regole temporali: next e until</h2>
+<p>Gli operatori temporali creano vincoli tra posizioni successive.</p>
+<h3>Next</h3>
+<p>Se in un atomo $A$ compare $X\varphi$, allora nel prossimo atomo $B$ deve
+comparire $\varphi$:</p>
+<p>$$X\varphi\in A \quad \Rightarrow \quad \varphi\in B.$$</p>
+<p>Questo e' il caso piu' semplice: $X$ parla direttamente dello stato successivo.</p>
+<h3>Until</h3>
+<p>L'operatore until e' piu' delicato. La formula:</p>
+<p>$$\varphi U \psi$$</p>
+<p>significa che $\psi$ deve diventare vera in qualche posizione futura e, prima
+di quel momento, deve valere $\varphi$.</p>
+<p>La sua espansione ricorsiva e':</p>
+<p>$$\varphi U \psi \equiv \psi \lor (\varphi\land X(\varphi U \psi)).$$</p>
+<p>Questa equivalenza spiega perche l'until genera una promessa:</p>
+<ul>
+<li>se $\psi$ vale ora, l'obbligo e' realizzato;</li>
+<li>se $\psi$ non vale ora, allora deve valere $\varphi$ ora e l'obbligo deve
+  continuare nel prossimo stato.</li>
+</ul>
+<p>Senza un controllo globale, il tableau potrebbe rimandare l'obbligo per sempre.
+Per questo servono le condizioni di fulfilling.</p>
+<h2>9. Promesse e cammini fulfilling</h2>
+<p>Una formula eventuale, come $Fq$ o $\varphi U \psi$, promette che qualcosa
+succedera' prima o poi.</p>
+<p>Ricorda che:</p>
+<p>$$Fq \equiv true\ U\ q.$$</p>
+<p>Quindi anche $Fq$ e' una promessa: q deve comparire in una posizione futura.</p>
+<p>Un cammino infinito nel tableau e' <strong>fulfilling</strong> se ogni promessa che resta
+attiva viene prima o poi realizzata.</p>
+<h3>Perche non basta un ciclo qualsiasi</h3>
+<p>Considera:</p>
+<p>$$Fq.$$</p>
+<p>Un tableau potrebbe avere un ciclo in cui l'obbligo $Fq$ viene mantenuto per
+sempre, ma $q$ non compare mai. Quel ciclo e' localmente coerente, perche' ogni
+passo dice "q arrivera' dopo", ma globalmente e' sbagliato.</p>
+<p>Il vincolo fulfilling elimina proprio questi falsi cammini.</p>
+<p>Questa e' una delle idee piu' importanti del capitolo: la correttezza temporale
+non e' solo locale. Bisogna garantire che le eventualita' vengano davvero
+realizzate.</p>
+<h2>10. SCC, terminal SCC e MCSCS</h2>
+<p>Il tableau e' finito. Ogni cammino infinito in un grafo finito prima o poi
+ripete stati e resta dentro una componente fortemente connessa.</p>
+<p>Una <strong>SCC</strong> e' un insieme di nodi in cui ogni nodo e' raggiungibile da ogni
+altro nodo dell'insieme.</p>
+<p>Per controllare la soddisfacibilita' LTL si cercano componenti che possano
+sostenere un cammino infinito fulfilling.</p>
+<p>Negli appunti compaiono:</p>
+<ul>
+<li><strong>terminal SCC</strong>: componente fortemente connessa senza uscite rilevanti;</li>
+<li><strong>MCSCS</strong>: componente fortemente connessa massimale usata per rappresentare
+  una parte ciclica del tableau;</li>
+<li>componente <strong>fulfilling</strong>: componente in cui ogni promessa attiva puo' essere
+  realizzata.</li>
+</ul>
+<h3>Perche le SCC decidono il problema</h3>
+<p>Una computazione infinita in un grafo finito ha sempre una parte prefisso e una
+parte ciclica:</p>
+<p>$$\text{prefisso finito} + \text{ciclo ripetuto/in SCC}.$$</p>
+<p>Quindi, invece di cercare direttamente una parola infinita, basta cercare:</p>
+<ol>
+<li>un nodo iniziale coerente con la formula;</li>
+<li>un cammino finito verso una SCC;</li>
+<li>una SCC che realizza le promesse.</li>
+</ol>
+<p>Se questa struttura esiste, la formula e' soddisfacibile. Se non esiste, non c'e'
+nessun cammino infinito che soddisfa la formula.</p>
+<h2>11. Esempio: perche $G p \land F\neg p$ e' insoddisfacibile</h2>
+<p>La formula:</p>
+<p>$$G p \land F\neg p$$</p>
+<p>richiede due cose:</p>
+<ul>
+<li>$G p$: p deve valere in ogni posizione;</li>
+<li>$F\neg p$: prima o poi deve esistere una posizione in cui p e' falso.</li>
+</ul>
+<p>La prima richiesta impedisce la seconda. Nel tableau, ogni atomo raggiungibile
+che rispetta $G p$ deve contenere $p$. Ma la promessa $F\neg p$ richiede prima o
+poi un atomo con $\neg p$.</p>
+<p>Non esiste una SCC fulfilling: o mantieni sempre $p$, e allora non realizzi
+$F\neg p$, oppure realizzi $\neg p$, ma violi $G p$.</p>
+<p>Questo esempio mostra bene perche' le promesse non possono essere ignorate.</p>
+<h2>12. Dal tableau al model checking LTL</h2>
+<p>Il tableau da solo decide se una formula e' soddisfacibile in astratto. Nel
+model checking, pero', non vogliamo sapere se $\neg\varphi$ e' soddisfacibile in
+generale. Vogliamo sapere se e' soddisfacibile da una computazione concreta del
+sistema.</p>
+<p>Per questo si costruisce il <strong>behavior graph</strong>, che combina:</p>
+<ul>
+<li>il grafo delle computazioni del programma;</li>
+<li>il tableau della formula;</li>
+<li>la compatibilita' tra stati del programma e atomi logici.</li>
+</ul>
+<p>Questo e' un prodotto tra modello e formula.</p>
+<h2>13. P-SAT e P-VALID</h2>
+<p>Gli appunti distinguono due problemi.</p>
+<h3>P-SAT</h3>
+<p>$P$-SAT chiede se esiste una computazione del programma $P$ che soddisfa una
+formula $\varphi$.</p>
+<p>In forma intuitiva:</p>
+<p>$$P\models_{sat}\varphi
+\quad \text{se esiste una run di }P\text{ che soddisfa }\varphi.$$</p>
+<p>E' una domanda esistenziale.</p>
+<h3>P-VALID</h3>
+<p>$P$-VALID chiede se tutte le computazioni del programma $P$ soddisfano
+$\varphi$.</p>
+<p>In forma intuitiva:</p>
+<p>$$P\models \varphi
+\quad \text{se ogni run di }P\text{ soddisfa }\varphi.$$</p>
+<p>E' una domanda universale.</p>
+<h3>Collegamento tra P-SAT e P-VALID</h3>
+<p>Il collegamento e':</p>
+<p>$$P\models \varphi
+\quad \Longleftrightarrow \quad
+\text{non esiste una run di }P\text{ che soddisfa }\neg\varphi.$$</p>
+<p>Quindi:</p>
+<p>$$P\text{-VALID}(\varphi)
+\quad \Longleftrightarrow \quad
+\neg P\text{-SAT}(\neg\varphi).$$</p>
+<p>Questo spiega perche' l'algoritmo cerca spesso la negazione: trovare una run che
+soddisfa $\neg\varphi$ significa trovare un controesempio alla validita' di
+$\varphi$.</p>
+<h2>14. Behavior graph</h2>
+<p>Il behavior graph sincronizza il sistema con la formula.</p>
+<p>Un nodo ha forma:</p>
+<p>$$ (s,A) $$</p>
+<p>dove:</p>
+<ul>
+<li>$s$ e' uno stato del programma o della struttura di Kripke;</li>
+<li>$A$ e' un atomo del tableau;</li>
+<li>$A$ deve essere compatibile con le proposizioni vere in $s$.</li>
+</ul>
+<p>La compatibilita' significa:</p>
+<p>$$p\in A \quad \Longleftrightarrow \quad p\in L(s)$$</p>
+<p>per le proposizioni atomiche osservabili.</p>
+<p>Un arco:</p>
+<p>$$ (s,A)\to(s',A') $$</p>
+<p>esiste quando:</p>
+<ul>
+<li>$R(s,s')$ e' una transizione del sistema;</li>
+<li>$A\to A'$ e' un arco del tableau;</li>
+<li>le condizioni di next e until sono rispettate.</li>
+</ul>
+<h3>Perche il prodotto funziona</h3>
+<p>Il sistema dice quali stati possono seguire quali altri stati. Il tableau dice
+quali configurazioni logiche possono seguire quali altre configurazioni logiche.</p>
+<p>Il behavior graph tiene solo le coppie in cui queste due evoluzioni sono
+compatibili.</p>
+<p>Quindi un cammino infinito nel behavior graph corrisponde a:</p>
+<ol>
+<li>una computazione reale del sistema;</li>
+<li>una valutazione coerente della formula lungo quella computazione.</li>
+</ol>
+<p>Se il cammino e' fulfilling per la formula $\neg\varphi$, allora e' un
+controesempio reale a $\varphi$.</p>
+<h3>Mini-prodotto tracciato nodo per nodo</h3>
+<p>Esempio piccolo ma completo, da saper rifare. Programma $P$: due stati che si
+alternano per sempre,</p>
+<pre><code class="language-text">s0 (p vera)  &lt;--&gt;  s1 (p falsa)
+</code></pre>
+<p>Formula da testare su $P$: $\psi = Gp$. Chiusura:
+$\Phi_\psi = \{Gp, \neg Gp, p, \neg p, XGp, \neg XGp\}$. Gli atomi rilevanti
+(insiemi massimali consistenti, con la regola $Gp \approx p\land XGp$):</p>
+<ul>
+<li>$A_1 = \{Gp,\ p,\ XGp\}$ — "$p$ vale e varra' per sempre";</li>
+<li>$A_2 = \{\neg Gp,\ p,\ \neg XGp\}$ — "$p$ vale ora ma prima o poi cadra'"
+  (da $\neg Gp \approx \neg p \lor X\neg Gp$, con $p$ vera resta $X\neg Gp$);</li>
+<li>$A_3 = \{\neg Gp,\ \neg p,\ \neg XGp\}$ — "$p$ e' gia' falsa".</li>
+</ul>
+<p><strong>Costruzione dei nodi</strong> (compatibilita' atomo–stato sulle lettere):</p>
+<ul>
+<li>$s_0$ ha $p$ vera $\Rightarrow$ compatibile con $A_1$ e $A_2$: nodi
+  $(s_0, A_1)$, $(s_0, A_2)$;</li>
+<li>$s_1$ ha $p$ falsa $\Rightarrow$ compatibile solo con $A_3$: nodo
+  $(s_1, A_3)$.</li>
+</ul>
+<p><strong>Costruzione degli archi</strong> (serve sia $R(s,s')$ sia la coerenza dei next:
+$X\chi\in A \iff \chi\in A'$):</p>
+<ul>
+<li>$(s_0, A_1)\to(s_1, A_3)$? $R(s_0,s_1)$ ✓, ma $XGp\in A_1$ richiede
+  $Gp\in A_3$ — falso. <strong>Nessun arco</strong>: $(s_0,A_1)$ e' terminale;</li>
+<li>$(s_0, A_2)\to(s_1, A_3)$? $R$ ✓, $\neg XGp\in A_2$ e $\neg Gp\in A_3$ ✓.
+  <strong>Arco</strong>;</li>
+<li>$(s_1, A_3)\to(s_0, A_2)$? $R$ ✓, $\neg XGp\in A_3$ e $\neg Gp\in A_2$ ✓.
+  <strong>Arco</strong>. (Verso $(s_0,A_1)$ no: servirebbe $Gp\in A_1$ ✓ ma
+  $\neg XGp\in A_3$ lo vieta.)</li>
+</ul>
+<p><strong>Risultato</strong>: $(s_0,A_1)$ — l'unico nodo in cui $Gp$ e' vera — non ha
+successori e viene potato. Resta il ciclo
+$(s_0,A_2)\leftrightarrow(s_1,A_3)$. Quindi <strong>nessuna computazione di $P$
+soddisfa $Gp$</strong> (ovvio: $P$ passa per $s_1$ dove $p$ e' falsa). Il ciclo
+superstite e' invece un MSCS per $\neg Gp$: la formula promette $\neg p$
+(perche' $\neg Gp = F\neg p$) e il nodo $(s_1, A_3)$ contiene $\neg p$
+$\Rightarrow$ fulfilling. Conclusione: P-SAT$(\neg Gp)$ = si', quindi $Gp$
+non e' P-valida — con $(s_0 s_1)^\omega$ come controesempio.</p>
+<p>Il pattern del prodotto e' tutto qui: lettere $\to$ compatibilita' dei nodi,
+formule $X$ $\to$ compatibilita' degli archi, promesse $\to$ analisi dei
+cicli.</p>
+<h2>15. Adequate subgraphs</h2>
+<p>Un <strong>adequate subgraph</strong> e' un sottografo del behavior graph che garantisce
+l'esistenza di una computazione infinita valida per il controllo che stiamo
+facendo.</p>
+<p>Deve soddisfare, in sostanza:</p>
+<ul>
+<li>raggiungibilita' da uno stato iniziale;</li>
+<li>compatibilita' con le transizioni del programma;</li>
+<li>assenza di blocchi che impediscano la computazione infinita;</li>
+<li>realizzazione delle promesse temporali;</li>
+<li>eventuale rispetto delle condizioni di fairness, se il programma le prevede.</li>
+</ul>
+<p>Se esiste un adequate subgraph per $\neg\varphi$, allora esiste una computazione
+del programma che viola $\varphi$.</p>
+<p>Se non esiste nessun adequate subgraph per $\neg\varphi$, allora tutte le
+computazioni del programma soddisfano $\varphi$.</p>
+<h3>Perche non basta la raggiungibilita'</h3>
+<p>Un nodo del behavior graph potrebbe essere raggiungibile ma non dare origine a
+un cammino infinito fulfilling. Il model checking LTL non cerca solo un prefisso
+finito: cerca una computazione infinita.</p>
+<p>Per questo il controllo passa da:</p>
+<blockquote>
+<p>esiste un nodo raggiungibile?</p>
+</blockquote>
+<p>a:</p>
+<blockquote>
+<p>esiste una regione ciclica raggiungibile che realizza tutti gli obblighi?</p>
+</blockquote>
+<p>Questa e' la stessa idea dell'emptiness check per automi di Buchi: serve un
+ciclo accettante raggiungibile, non un singolo stato accettante isolato.</p>
+<h3>Le definizioni precise (quelle da dare all'orale)</h3>
+<p>Dato il behavior graph $\mathcal{B}(P,\varphi)$ e un sottografo fortemente
+connesso $S$:</p>
+<ul>
+<li>$\tau$ e' <strong>enabled</strong> su un nodo $(s, A)$ se e' enabled sullo stato $s$ del
+  programma (l'atomo non c'entra);</li>
+<li>$\tau$ e' <strong>taken</strong> in $S$ se esiste un $\tau$-arco tra due nodi di $S$;</li>
+<li>$S$ e' <strong>just</strong> se ogni $\tau\in\mathcal{J}$ e' taken in $S$ <strong>oppure</strong>
+  disabled su <strong>qualche</strong> nodo di $S$;</li>
+<li>$S$ e' <strong>compassionate</strong> se ogni $\tau\in\mathcal{C}$ e' taken in $S$
+  <strong>oppure</strong> disabled su <strong>tutti</strong> i nodi di $S$;</li>
+<li>$S$ e' <strong>fair</strong> se e' just e compassionate;</li>
+<li>$S$ e' <strong>fulfilling</strong> se ogni formula promising di $\Phi_\varphi$ e'
+  fulfilled da un atomo $A$ con $(s,A)\in S$ per qualche $s$;</li>
+<li>$S$ e' <strong>adequate</strong> se e' fair e fulfilling.</li>
+</ul>
+<p><strong>Proposizione.</strong> $P$ ha una computazione che soddisfa $\varphi$ se e solo se
+$\mathcal{B}(P,\varphi)$ contiene un sottografo fortemente connesso adequate.</p>
+<h3>Perche' i MSCS non bastano: l'asimmetria della compassion</h3>
+<p>Per $S'\subseteq S$ sottografi fortemente connessi:</p>
+<ul>
+<li>$S'$ just $\implies$ $S$ just, e $S'$ fulfilling $\implies$ $S$ fulfilling:
+  sono condizioni <strong>esistenziali</strong> ("c'e' un nodo/arco con la proprieta'"),
+  preservate passando a sottografi piu' grandi;</li>
+<li>$S'$ compassionate $\not\implies$ $S$ compassionate: la condizione "disabled
+  su <strong>tutti</strong> i nodi" e' <strong>universale</strong> e puo' rompersi aggiungendo nodi.</li>
+</ul>
+<p>Controesempio degli appunti: $\tau_2\in\mathcal{C}$ enabled su $s_2$ e
+disabled su $s_1$. Il sottografo $S' = \{(s_1, A_3)\}$ e' compassionate
+($\tau_2$ disabled ovunque); il sovragrafo $S = \{(s_1,A_3),(s_2,A_4)\}$ non
+lo e' ($\tau_2$ enabled su un nodo ma mai taken). Quindi puo' esistere un
+sottografo adequate <strong>dentro</strong> un MSCS non adequate: limitarsi ai massimali
+non basta. Regola operativa: se un MSCS fallisce justice o fulfillingness, si
+scarta (sono condizioni monotone); se fallisce <strong>solo</strong> la compassion, bisogna
+scendere nei sottografi.</p>
+<h3>L'algoritmo ADEQUATE-SUB</h3>
+<p>Notazione: $EN(\tau, S)$ = insieme dei nodi di $S$ su cui $\tau$ e' enabled.</p>
+<pre><code class="language-text">function adequate-sub(S: SCS) returns SCS
+  if S non fulfilling   then return ∅          -- fallimento definitivo
+  if S non just         then return ∅          -- fallimento definitivo
+  if S compassionate    then return S          -- successo
+  -- S fulfilling e just ma non compassionate:
+  sia T = { τ ∈ C non taken in S }             -- EN(T,S) ≠ ∅
+  U := S − EN(T, S)                            -- togli i nodi &quot;colpevoli&quot;
+  decomponi U in MSCS U1, ..., Uk
+  for i = 1..k:
+     V := adequate-sub(Ui)
+     if V ≠ ∅ then return V
+  return ∅
+</code></pre>
+<p>L'idea: i nodi in cui una transizione compassionate e' enabled ma mai taken
+non possono stare in un ciclo fair; li rimuovo, ri-decompongo in MSCS e
+ricontrollo ricorsivamente.</p>
+<h3>L'esempio LOOP+ (riassunto operativo)</h3>
+<p>Sistema LOOP+ con $\mathcal{J} = \{\tau_1,\tau_2\}$, $\mathcal{C} = \{\tau_3\}$
+($\tau_3$ porta da $s_1$ a $s_3$), formula $\psi: \Diamond\Box(x\neq 3)$.
+MSCS candidato: $S = \{(s_0,A_7),(s_1,A_7),(s_2,A_7)\}$.</p>
+<ul>
+<li><strong>fulfilling</strong>: $\psi$ promette $\Box(x\neq 3)$, e $\Box(x\neq 3)\in A_7$ ✓</li>
+<li><strong>just</strong>: $\tau_1, \tau_2$ sono taken in $S$ ✓</li>
+<li><strong>non compassionate</strong>: $\tau_3$ non e' taken in $S$ ma e' enabled su
+  $(s_1, A_7)$ ✗</li>
+</ul>
+<p>ADEQUATE-SUB rimuove $(s_1,A_7)$: resta $U = \{(s_0,A_7),(s_2,A_7)\}$, dove
+$\tau_3$ non e' enabled da nessuna parte. $U$ e' fortemente connesso,
+fulfilling e fair $\Rightarrow$ <strong>adequate</strong>: LOOP+ ha una computazione
+$(s_0 s_2)^\omega$ che soddisfa $\Diamond\Box(x\neq 3)$. Nota il contrasto con
+LOOP (senza $\tau_3$): li' il behavior graph per la stessa $\psi$ <strong>non</strong>
+aveva sottografi adequate — i cicli su $A_5/A_4$ erano fair ma non fulfilling
+($\psi$ promette $\Box(x\neq 3)$ che non sta in nessuno dei due atomi), quelli
+su $A_7$ fulfilling ma non just rispetto a $\tau$ — quindi LOOP soddisfa la
+negazione $\Box\Diamond(x=3)$.</p>
+<h2>16. Algoritmo LTL model checking</h2>
+<p>Per verificare:</p>
+<p>$$P\models\varphi$$</p>
+<p>si procede cosi':</p>
+<ol>
+<li>si costruisce la negazione $\neg\varphi$;</li>
+<li>si costruisce il tableau di $\neg\varphi$;</li>
+<li>si costruisce il behavior graph combinando programma e tableau;</li>
+<li>si cercano adequate subgraphs, cioe' SCC raggiungibili e fulfilling;</li>
+<li>se una SCC adeguata esiste, la proprieta' e' falsa e la SCC produce un
+   controesempio;</li>
+<li>se non esiste, la proprieta' e' vera per tutte le computazioni del programma.</li>
+</ol>
+<h3>Complessita' intuitiva</h3>
+<p>La parte costosa e' la formula LTL: il tableau puo' essere esponenziale nella
+dimensione della formula. Questo e' coerente con il fatto che LTL model checking
+ha complessita' piu' alta rispetto a CTL.</p>
+<p>Pero' nella dimensione del sistema, una volta fissata la formula, il controllo e'
+simile a una visita di grafo/prodotto con ricerca di SCC.</p>
+<h2>17. Model checking CTL</h2>
+<p>CTL ha un algoritmo diverso perche' le formule CTL sono formule di stato.</p>
+<p>La domanda:</p>
+<p>$$K,s\models \varphi$$</p>
+<p>si risolve calcolando l'insieme:</p>
+<p>$$Sat(\varphi)=\{s\in S \mid K,s\models\varphi\}.$$</p>
+<p>Poi il modello soddisfa $\varphi$ se:</p>
+<p>$$S_0\subseteq Sat(\varphi).$$</p>
+<h2>18. Algoritmo di labeling</h2>
+<p>Questo algoritmo e' spesso chiamato anche <strong>CTL labeling algorithm</strong>, perche'
+etichetta progressivamente ogni stato con le sottoformule CTL che risultano vere
+in quello stato.</p>
+<p>L'algoritmo CTL lavora bottom-up sulle sottoformule.</p>
+<p>Per ogni sottoformula $\psi$, calcola gli stati in cui $\psi$ e' vera. Alla
+fine controlla la formula completa.</p>
+<p>Per le proposizioni atomiche:</p>
+<p>$$Sat(p)=\{s\in S \mid p\in L(s)\}.$$</p>
+<p>Per i booleani:</p>
+<p>$$Sat(\neg\psi)=S\setminus Sat(\psi).$$</p>
+<p>$$Sat(\psi_1\land\psi_2)=Sat(\psi_1)\cap Sat(\psi_2).$$</p>
+<p>Il punto interessante sono gli operatori temporali.</p>
+<h2>19. Predecessori</h2>
+<p>Per CTL serve spesso calcolare da quali stati si puo' andare in un insieme
+target $X$.</p>
+<p>La preimmagine esistenziale e':</p>
+<p>$$Pre_E(X)=\{s\in S \mid \exists s'.\ R(s,s')\land s'\in X\}.$$</p>
+<p>La preimmagine universale e':</p>
+<p>$$Pre_A(X)=\{s\in S \mid \forall s'.\ R(s,s')\Rightarrow s'\in X\}.$$</p>
+<p>Queste definizioni spiegano gli operatori next:</p>
+<p>$$Sat(EX\varphi)=Pre_E(Sat(\varphi)).$$</p>
+<p>$$Sat(AX\varphi)=Pre_A(Sat(\varphi)).$$</p>
+<h2>20. EF come minimo punto fisso</h2>
+<p>$EF\varphi$ significa:</p>
+<blockquote>
+<p>esiste un cammino lungo cui prima o poi si raggiunge uno stato che soddisfa
+$\varphi$.</p>
+</blockquote>
+<p>Si calcola partendo dagli stati che gia' soddisfano $\varphi$ e andando
+all'indietro:</p>
+<p>$$Z_0=Sat(\varphi).$$</p>
+<p>$$Z_{i+1}=Z_i\cup Pre_E(Z_i).$$</p>
+<p>Quando $Z_{i+1}=Z_i$, abbiamo trovato tutti gli stati da cui esiste un cammino
+verso $\varphi$.</p>
+<p>Questo e' un minimo punto fisso perche' si parte dal minimo insieme necessario e
+si aggiungono stati finche' non cambia piu' nulla.</p>
+<h2>21. AF come minimo punto fisso universale</h2>
+<p>$AF\varphi$ significa:</p>
+<blockquote>
+<p>su tutti i cammini, prima o poi si raggiunge $\varphi$.</p>
+</blockquote>
+<p>Si parte ancora da:</p>
+<p>$$Z_0=Sat(\varphi).$$</p>
+<p>Poi si aggiungono gli stati da cui tutti i successori sono gia' in $Z_i$:</p>
+<p>$$Z_{i+1}=Z_i\cup Pre_A(Z_i).$$</p>
+<p>La differenza con EF e' il quantificatore:</p>
+<ul>
+<li>EF usa "esiste un successore buono";</li>
+<li>AF usa "tutti i successori sono buoni".</li>
+</ul>
+<p>Questo rispecchia esattamente la differenza tra possibilita' e garanzia.</p>
+<h2>22. EG come massimo punto fisso</h2>
+<p>$EG\varphi$ significa:</p>
+<blockquote>
+<p>esiste un cammino infinito lungo cui $\varphi$ resta sempre vera.</p>
+</blockquote>
+<p>Qui non cerchiamo un target da raggiungere. Cerchiamo una regione in cui si puo'
+restare per sempre.</p>
+<p>Si parte da tutti gli stati che soddisfano $\varphi$:</p>
+<p>$$Z_0=Sat(\varphi).$$</p>
+<p>Poi si eliminano gli stati che non hanno un successore dentro la regione:</p>
+<p>$$Z_{i+1}=Sat(\varphi)\cap Pre_E(Z_i).$$</p>
+<p>Quando il punto fisso si stabilizza, $Z$ contiene gli stati da cui esiste almeno
+un cammino infinito che rimane sempre in $\varphi$.</p>
+<p>E' un massimo punto fisso perche' si parte da una regione grande e si rimuovono
+gli stati che non possono sostenere il comportamento infinito.</p>
+<h2>23. AG come duale di EF</h2>
+<p>$AG\varphi$ significa:</p>
+<blockquote>
+<p>su tutti i cammini, $\varphi$ vale sempre.</p>
+</blockquote>
+<p>Si puo' calcolare direttamente, ma spesso e' piu' chiaro usare la dualita':</p>
+<p>$$AG\varphi \equiv \neg EF\neg\varphi.$$</p>
+<p>Perche funziona?</p>
+<p>Dire che $\varphi$ vale sempre su tutti i cammini equivale a dire che non esiste
+un cammino che prima o poi raggiunge uno stato in cui $\varphi$ e' falsa.</p>
+<p>Quindi:</p>
+<ol>
+<li>calcolo gli stati da cui e' possibile raggiungere $\neg\varphi$;</li>
+<li>prendo il complemento.</li>
+</ol>
+<h2>24. EU come minimo punto fisso</h2>
+<p>$E(\varphi U \psi)$ significa:</p>
+<blockquote>
+<p>esiste un cammino in cui $\psi$ viene raggiunta e, prima di quel momento,
+$\varphi$ resta vera.</p>
+</blockquote>
+<p>Si calcola con:</p>
+<p>$$Z_0=Sat(\psi).$$</p>
+<p>$$Z_{i+1}=Z_i\cup(Sat(\varphi)\cap Pre_E(Z_i)).$$</p>
+<p>La formula aggiunge stati che:</p>
+<ul>
+<li>soddisfano $\varphi$ ora;</li>
+<li>hanno almeno un successore gia' buono.</li>
+</ul>
+<p>Il punto fisso finale e' l'insieme degli stati da cui esiste un cammino che
+realizza l'until.</p>
+<h2>25. AU come garanzia universale</h2>
+<p>$A(\varphi U \psi)$ significa:</p>
+<blockquote>
+<p>su tutti i cammini, $\psi$ deve arrivare, e prima del suo arrivo deve valere
+$\varphi$.</p>
+</blockquote>
+<p>La forma diretta usa una preimmagine universale:</p>
+<p>$$Z_0=Sat(\psi).$$</p>
+<p>$$Z_{i+1}=Z_i\cup(Sat(\varphi)\cap Pre_A(Z_i)).$$</p>
+<p>Anche qui la differenza con EU e' il quantificatore:</p>
+<ul>
+<li>EU richiede almeno una scelta che porta avanti l'obiettivo;</li>
+<li>AU richiede che tutte le scelte possibili portino avanti l'obiettivo.</li>
+</ul>
+<h3>Gli algoritmi espliciti degli appunti: CheckEU e CheckAU</h3>
+<p>Oltre alla vista "a punti fissi sugli insiemi", gli appunti danno le procedure
+ricorsive di marcatura (stile Clarke-Emerson), che e' utile saper scrivere.</p>
+<p>Per $E(\gamma\,U\,\delta)$: si parte dagli stati che soddisfano $\delta$ e si
+propaga <strong>all'indietro</strong> lungo i predecessori che soddisfano $\gamma$.</p>
+<pre><code class="language-text">procedure CheckEU(M, w, γ, δ):        -- chiamata su ogni w con δ ∈ V(w)
+  V(w) := V(w) ∪ {E(γ U δ)}           -- marca w
+  for ogni v tale che R(v, w):        -- predecessori di w
+     if E(γ U δ) ∉ V(v) and γ ∈ V(v):
+        CheckEU(M, v, γ, δ)
+</code></pre>
+<p>Ogni stato viene marcato al piu' una volta e ogni arco visitato un numero
+costante di volte: <strong>tempo lineare</strong> in $|S| + |R|$ per sottoformula.</p>
+<p>Per $A(\gamma\,U\,\delta)$ la propagazione all'indietro non basta marcare un
+predecessore appena lo si tocca: bisogna verificare che <strong>tutti</strong> i suoi
+successori siano gia' buoni. La procedura degli appunti esplora in avanti con
+marcatura:</p>
+<pre><code class="language-text">function CheckAU(M, w, γ, δ) returns Bool:
+  if marked(w):                        -- gia' visitato
+     return (A(γ U δ) ∈ V(w))
+  mark(w)
+  if δ ∈ V(w):
+     V(w) := V(w) ∪ {A(γ U δ)}; return True
+  if γ ∉ V(w): return False
+  for ogni v tale che R(w, v):         -- tutti i successori
+     if not CheckAU(M, v, γ, δ): return False
+  V(w) := V(w) ∪ {A(γ U δ)}; return True
+</code></pre>
+<p>Se un solo successore fallisce, $A(\gamma U \delta)$ e' falsa in $w$; serve
+inoltre attenzione ai cicli (uno stato gia' in visita senza marca positiva non
+puo' garantire l'arrivo di $\delta$: e' il caso del cammino che gira per
+sempre dentro $\gamma$). Il quadro complessivo dell'algoritmo di labeling:
+si elaborano le sottoformule <strong>in ordine crescente di lunghezza</strong> (come nel
+caso modale), e alla fine si controlla se $s_0\in[\varphi]$. Complessita'
+totale: $O(|\varphi|\cdot(|S|+|R|))$ — <strong>lineare</strong> sia nella formula sia nel
+modello, il grande vantaggio pratico di CTL.</p>
+<h2>26. Esempio CTL: calcolo di EF</h2>
+<p>Supponi di avere tre stati:</p>
+<p>$$s_0\to s_1,\quad s_1\to s_2,\quad s_2\to s_2.$$</p>
+<p>e supponi che $goal$ valga solo in $s_2$.</p>
+<p>Calcoliamo $EF\ goal$.</p>
+<p>Passo iniziale:</p>
+<p>$$Z_0=\{s_2\}.$$</p>
+<p>Predecessori esistenziali:</p>
+<p>$$Pre_E(Z_0)=\{s_1,s_2\}.$$</p>
+<p>Quindi:</p>
+<p>$$Z_1=\{s_1,s_2\}.$$</p>
+<p>Altro passo:</p>
+<p>$$Pre_E(Z_1)=\{s_0,s_1,s_2\}.$$</p>
+<p>Quindi:</p>
+<p>$$Z_2=\{s_0,s_1,s_2\}.$$</p>
+<p>Il punto fisso e' raggiunto. Tutti gli stati soddisfano $EF\ goal$.</p>
+<p>Il motivo e' semplice: da ogni stato esiste un cammino che arriva a $goal$.</p>
+<h2>27. Esempio CTL: differenza tra EF e AF</h2>
+<p>Aggiungi da $s_0$ un secondo ramo verso uno stato morto $s_3$, con self-loop, in
+cui $goal$ non vale:</p>
+<p>$$s_0\to s_1,\quad s_0\to s_3,\quad s_3\to s_3.$$</p>
+<p>Allora:</p>
+<ul>
+<li>$s_0\models EF\ goal$, perche' esiste il ramo verso $s_1,s_2$;</li>
+<li>$s_0\not\models AF\ goal$, perche' esiste anche il ramo verso $s_3$ che non
+  raggiunge mai goal.</li>
+</ul>
+<p>Questo e' il punto concettuale di CTL: distingue possibilita' e inevitabilita'.</p>
+<h2>28. Esempio CTL: EG</h2>
+<p>$EG\ safe$ chiede se esiste un cammino infinito che resta sempre safe.</p>
+<p>Se una SCC contiene solo stati safe e ha almeno un ciclo interno, allora gli
+stati che possono entrare in quella SCC possono soddisfare $EG\ safe$.</p>
+<p>Il calcolo a massimo punto fisso rimuove progressivamente gli stati safe che non
+riescono a restare dentro una regione safe.</p>
+<p>Per questo EG e' legato all'idea di regione chiusa: non basta che safe valga
+adesso, deve essere possibile mantenerlo per sempre.</p>
+<h2>29. Perche CTL e' spesso piu efficiente di LTL</h2>
+<p>Nel model checking CTL, ogni sottoformula produce un insieme di stati. Gli
+operatori temporali si calcolano con visite di grafo o punti fissi.</p>
+<p>In termini intuitivi:</p>
+<p>$$\text{costo CTL} \approx |formula|\cdot |modello|.$$</p>
+<p>Nel model checking LTL, invece, bisogna costruire una struttura per la negazione
+della formula e combinarla con il sistema. La parte formula puo' crescere
+esponenzialmente.</p>
+<p>Quindi:</p>
+<ul>
+<li>CTL e' piu' locale e algoritmicamente diretto;</li>
+<li>LTL e' spesso piu' naturale per specifiche lineari di fairness e liveness;</li>
+<li>la scelta della logica influenza direttamente la forma dell'algoritmo.</li>
+</ul>
+<h2>30. Differenza tra soddisfacibilita' e model checking</h2>
+<p>La soddisfacibilita' chiede:</p>
+<blockquote>
+<p>esiste un modello o un cammino che soddisfa la formula?</p>
+</blockquote>
+<p>Il model checking chiede:</p>
+<blockquote>
+<p>il modello dato soddisfa la formula?</p>
+</blockquote>
+<p>Per LTL:</p>
+<ul>
+<li>soddisfacibilita': cerco un cammino astratto che soddisfi $\varphi$;</li>
+<li>model checking: cerco un cammino del sistema che soddisfi $\neg\varphi$.</li>
+</ul>
+<p>Per CTL:</p>
+<ul>
+<li>soddisfacibilita': esiste una struttura di Kripke con uno stato che soddisfa
+  la formula?</li>
+<li>model checking: nella struttura data, quali stati soddisfano la formula?</li>
+</ul>
+<p>Non confondere questi problemi: usano strumenti simili, ma rispondono a domande
+diverse.</p>
+<h2>31. Errori tipici</h2>
+<h3>Confondere $F$ con $EF$</h3>
+<p>$F\varphi$ e' LTL: parla di un singolo cammino.</p>
+<p>$EF\varphi$ e' CTL: parla di uno stato e dice che esiste almeno un cammino verso
+$\varphi$.</p>
+<h3>Confondere $G$ con $AG$</h3>
+<p>$G\varphi$ e' LTL: lungo il cammino corrente, $\varphi$ vale sempre.</p>
+<p>$AG\varphi$ e' CTL: da questo stato, su tutti i cammini, $\varphi$ vale sempre.</p>
+<h3>Pensare che un ciclo basti sempre</h3>
+<p>Nel tableau LTL non basta un ciclo. Serve un ciclo fulfilling, cioe' un ciclo che
+realizza le eventualita'.</p>
+<h3>Pensare che EF implichi AF</h3>
+<p>EF dice "posso arrivare". AF dice "devo arrivare qualunque cosa succeda".</p>
+<p>Sono proprieta' molto diverse nei sistemi non deterministici.</p>
+<h2>32. Mappa operativa del capitolo</h2>
+<p>Se devi ricostruire il capitolo all'orale, segui questa sequenza:</p>
+<ol>
+<li>Un sistema reattivo genera computazioni infinite.</li>
+<li>Una struttura di Kripke modella stati, transizioni e proposizioni vere.</li>
+<li>LTL valuta formule su cammini; CTL valuta formule su stati con
+   quantificatori di cammino.</li>
+<li>Per verificare una formula LTL, cerco un controesempio per la negazione.</li>
+<li>Il tableau LTL trasforma la formula in un grafo finito di atomi.</li>
+<li>Le formule until/eventually generano promesse che devono essere fulfilling.</li>
+<li>Il behavior graph combina sistema e tableau.</li>
+<li>Un adequate subgraph raggiungibile per $\neg\varphi$ e' un controesempio.</li>
+<li>CTL si calcola invece con labeling di stati.</li>
+<li>EX/AX usano preimmagini, EF/AF/EU/AU usano minimi punti fissi, EG/AG usano
+    massimi punti fissi o dualita'.</li>
+</ol>
+<h2>33. Mini-esercizi guidati</h2>
+<h3>Esercizio 1</h3>
+<p>Formula:</p>
+<p>$$G(req\to F grant).$$</p>
+<p>Spiegazione: ogni richiesta deve essere prima o poi seguita da una concessione.</p>
+<p>Per falsificarla serve una computazione in cui:</p>
+<ul>
+<li>a un certo punto vale $req$;</li>
+<li>da quel punto in poi $grant$ non arriva mai.</li>
+</ul>
+<p>Quindi il controesempio ha forma:</p>
+<p>$$\text{prefisso fino a req} + \text{ciclo senza grant}.$$</p>
+<p>Questo spiega perche' nel model checking LTL si cercano cicli.</p>
+<h3>Esercizio 2</h3>
+<p>Formula CTL:</p>
+<p>$$AG(request\to AF grant).$$</p>
+<p>Spiegazione: in ogni stato raggiungibile, se c'e' una richiesta, allora su tutti
+i cammini futuri prima o poi arrivera' grant.</p>
+<p>Questa e' piu' forte della versione esistenziale:</p>
+<p>$$AG(request\to EF grant).$$</p>
+<p>La seconda dice solo che grant resta possibile; la prima dice che grant e'
+garantito.</p>
+<h3>Esercizio 3</h3>
+<p>Formula:</p>
+<p>$$EG\ safe.$$</p>
+<p>Metodo:</p>
+<ol>
+<li>prendi tutti gli stati safe;</li>
+<li>elimina quelli che non hanno successori safe;</li>
+<li>ripeti fino al punto fisso.</li>
+</ol>
+<p>Gli stati rimasti sono quelli da cui esiste un cammino infinito sempre safe.</p>
+<h2>34. Riassunto finale</h2>
+<p>Il capitolo 8 e' il punto in cui la teoria diventa algoritmo.</p>
+<p>Per LTL, la domanda universale "tutte le computazioni soddisfano $\varphi$" si
+trasforma nella ricerca esistenziale di un controesempio per $\neg\varphi$.
+Tableau, behavior graph e adequate subgraphs servono a rendere finita questa
+ricerca su cammini infiniti.</p>
+<p>Per CTL, la semantica di stato permette un algoritmo piu' diretto: si calcolano
+insiemi di stati con labeling e punti fissi. Gli operatori esistenziali usano
+preimmagini esistenziali; quelli universali usano preimmagini universali o
+duali.</p>
+<p>La regola mentale da tenere e':</p>
+<blockquote>
+<p>LTL cerca cicli accettanti nel prodotto sistema-formula; CTL propaga insiemi
+di stati fino a un punto fisso.</p>
+</blockquote></article>
+  <p class="section-label">Esercizi (piano di studio)</p>
+  
+<div class="exercises-block prose">
+<h2>Esercizi e domande — settimana 4</h2>
+<p><strong>Obiettivo della settimana:</strong> saper tradurre requisiti temporali e calcolare model checking su strutture piccole.</p>
+<h3>Esercizi scritti essenziali</h3>
+<ol>
+<li><strong>Traduzione in LTL.</strong> Traduci:</li>
+<li>ogni richiesta viene prima o poi soddisfatta;</li>
+<li>se il sistema entra in errore, resta in errore finche viene resettato;</li>
+<li>il processo entra infinitamente spesso in sezione critica;</li>
+<li>
+<p>non esistono due grant consecutivi senza una request in mezzo.</p>
+</li>
+<li>
+<p><strong>Traduzione in CTL.</strong> Traduci:</p>
+</li>
+<li>da ogni stato e' possibile raggiungere uno stato safe;</li>
+<li>esiste un cammino lungo cui prima o poi si raggiunge goal;</li>
+<li>su tutti i cammini, se parte start allora prima o poi heat;</li>
+<li>
+<p>da ogni stato raggiungibile resta sempre possibile fare reset.</p>
+</li>
+<li>
+<p><strong>LTL vs CTL.</strong> Trova una formula CTL che esprima una possibilita strutturale non esprimibile in LTL, e una formula LTL di fairness non esprimibile in CTL puro. Spiega la differenza con parole tue.</p>
+</li>
+<li>
+<p><strong>Semantica di Until.</strong> Valuta se la parola infinita:
+   $$s_0s_1s_2\ldots$$
+   soddisfa $p U q$ nei casi:</p>
+</li>
+<li>$q$ vale in $s_3$ e $p$ vale in $s_0,s_1,s_2$;</li>
+<li>$q$ non vale mai e $p$ vale sempre;</li>
+<li>
+<p>$q$ vale in $s_0$.</p>
+</li>
+<li>
+<p><strong>Tableau LTL piccolo.</strong> Per $\varphi=G p \land F\neg p$, costruisci intuitivamente gli obblighi generati e spiega perche la formula e' insoddisfacibile.</p>
+</li>
+<li>
+<p><strong>LTL -&gt; Buchi.</strong> Per $\varphi=G(req \rightarrow F ack)$, descrivi l'automa per $\neg\varphi$ a livello di stati concettuali: quando cerca una request non seguita da ack?</p>
+</li>
+<li>
+<p><strong>CTL EF.</strong> Su una struttura con:
+   $$s_0\to s_1,\quad s_1\to s_2,\quad s_2\to s_2$$
+   e $p$ vero solo in $s_2$, calcola $EF p$ con il least fixpoint.</p>
+</li>
+<li>
+<p><strong>CTL EG.</strong> Su una struttura con:
+   $$s_0\to s_1,\quad s_1\to s_1,\quad s_1\to s_2,\quad s_2\to s_2$$
+   e $p$ vero in $s_1$ ma falso in $s_0,s_2$, calcola $EG p$ con greatest fixpoint.</p>
+</li>
+<li>
+<p><strong>CTL Until.</strong> Su una struttura a 4 stati inventata da te, calcola $E[p U q]$ usando:
+   $$\mu Z.(q \lor (p \land EX Z))$$</p>
+</li>
+<li>
+<p><strong>Prodotto model checking.</strong> Spiega con un disegno perche controllare:
+   $$Lang(S)\subseteq Lang(\varphi)$$
+   equivale a controllare:
+   $$Lang(S)\cap Lang(\neg\varphi)=\emptyset$$</p>
+</li>
+</ol>
+<h3>Domande orali secche</h3>
+<ol>
+<li>Differenza tra linear time e branching time.</li>
+<li>Perche CTL model checking e' piu locale di LTL model checking?</li>
+<li>Che cos'e' un Kripke model?</li>
+<li>Che cosa sono least e greatest fixpoint?</li>
+<li>Perche nel model checking LTL si controlla spesso la negazione della formula?</li>
+</ol>
+<h3>Controllo</h3>
+<p>Hai superato la settimana se sai tradurre requisiti naturali in LTL/CTL e calcolare EF, EG, EU a mano su grafi piccoli.</p>
+</div>
+
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap07.html">← Precedente</a></span><span><a href="cap09.html">Successivo →</a></span></div>
+</div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script defer src="assets/chat.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

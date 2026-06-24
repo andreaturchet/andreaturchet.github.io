@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capitolo 9 — Model checking avanzato</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/chat.css" />
+  
+</head>
+<body>
+
+<header class="site-header">
+  <h1>V&amp;V in AI — Appunti</h1>
+  <p class="subtitle">Settimana 5</p>
+  <div class="ornament">✦</div>
+</header>
+<div class="wrap">
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap08.html">← Precedente</a></span><span><a href="cap10.html">Successivo →</a></span></div>
+  
+<div class="chapter-opener">
+  <div class="label">Capitolo 9</div>
+  <h1>Capitolo 9 — Model checking avanzato</h1>
+  <p class="focus">State explosion, partial-order reduction, OBDD, CTL simbolico e BMC con SAT.</p>
+</div>
+
+  <article class="prose"><h1>Model checking simbolico e limitato - Riassunto</h1>
+<p><strong>Fonte</strong>: <code>raw/Symbolic MC and Bounded MC.md</code></p>
+<h2>Punti chiave</h2>
+<ul>
+<li>Lo <strong>state explosion problem</strong> rende impraticabile l'esplorazione esplicita di sistemi con moltissimi stati.</li>
+<li>Il <strong>model checking simbolico</strong> rappresenta insiemi di stati e transizioni tramite formule booleane invece di enumerarli.</li>
+<li>Gli <strong>OBDD</strong> rappresentano funzioni booleane come DAG ridotti e ordinati; sono centrali per CTL simbolico e calcolo di punti fissi.</li>
+<li>Il <strong>BMC</strong> cerca controesempi fino a un bound $k$ traducendo il problema in SAT.</li>
+<li>BMC e' molto efficace come bug finder, ma per dimostrare correttezza completa puo richiedere bound difficili da calcolare.</li>
+</ul>
+<h2>Concetti estratti</h2>
+<ul>
+<li>Model checking simbolico</li>
+<li>Diagrammi di decisione binaria ordinati (OBDD)</li>
+<li>Model checking limitato</li>
+</ul>
+<hr />
+
+<h1>Model checking simbolico</h1>
+<p>Il model checking simbolico rappresenta insiemi di stati e transizioni tramite formule o strutture simboliche, invece di enumerare ogni stato esplicitamente.</p>
+<h2>Motivazione</h2>
+<p>Serve ad affrontare lo state explosion problem, tipico dei sistemi con molte componenti concorrenti.</p>
+<h2>Tecniche</h2>
+<ul>
+<li>OBDD per rappresentare funzioni booleane;</li>
+<li>calcolo simbolico di preimmagini;</li>
+<li>punti fissi per CTL;</li>
+<li>metodi basati su SAT, come model checking limitato.</li>
+</ul>
+<h2>Collegamenti</h2>
+<ul>
+<li>Model checking</li>
+<li>Diagrammi di decisione binaria ordinati (OBDD)</li>
+<li>Model checking limitato</li>
+</ul>
+<hr />
+
+<h1>Diagrammi di decisione binaria ordinati</h1>
+<p>Gli OBDD sono grafi aciclici diretti usati per rappresentare funzioni booleane in modo compatto.</p>
+<h2>Idea</h2>
+<p>Si parte da un decision tree e si riducono ridondanze:
+- si fondono sottografi isomorfi;
+- si eliminano test inutili;
+- si usa un ordine fisso delle variabili.</p>
+<h2>Canonicita</h2>
+<p>Per una funzione booleana e un ordine fissato delle variabili, l'OBDD ridotto e' canonico. Questo rende efficiente il controllo di equivalenza tra funzioni.</p>
+<h2>Operazioni</h2>
+<p>Negazione, congiunzione, disgiunzione, restrict e quantificazione esistenziale possono essere implementate direttamente sugli OBDD.</p>
+<h2>Ruolo nel model checking</h2>
+<p>Gli OBDD rappresentano insiemi di stati, relazioni di transizione e risultati di punti fissi nel model checking simbolico.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Model checking simbolico</li>
+<li>Model checking limitato</li>
+</ul>
+<hr />
+
+<h1>Model checking limitato</h1>
+<p>Il <strong>Bounded Model Checking (BMC)</strong>, o model checking limitato, cerca controesempi a una proprieta fino a una profondita fissata $k$.</p>
+<p>Invece di esplorare tutto lo spazio degli stati, il sistema viene srotolato per $k$ passi e il problema viene codificato come formula proposizionale:</p>
+<p>$$\llbracket M \rrbracket_k \land \llbracket \neg\varphi \rrbracket_k$$</p>
+<p>Se la formula e' soddisfacibile, esiste una traccia di lunghezza limitata che viola la proprieta.</p>
+<h2>Lasso e LTL</h2>
+<p>Poiche LTL parla di cammini infiniti, BMC usa spesso cammini finiti con loopback, cioe' cammini a forma di lasso che rappresentano parole infinite ultimamente periodiche.</p>
+<h2>Punto forte e limite</h2>
+<p>BMC e' molto efficace per trovare bug; per dimostrare assenza di bug puo richiedere bound completi costosi da calcolare.</p>
+<h2>Collegamenti</h2>
+<ul>
+<li>Model checking simbolico</li>
+<li>Logica temporale lineare (LTL)</li>
+<li>Diagrammi di decisione binaria ordinati (OBDD)</li>
+</ul>
+<hr />
+
+<h1>Approfondimento completo settimana 5 - Model checking simbolico, OBDD e BMC</h1>
+<blockquote>
+<p>Questa e' la versione estesa e autocontenuta del capitolo, riscritta passo
+passo. Ogni formula viene prima motivata, poi enunciata, poi riletta in
+parole. Gli esempi sono svolti riga per riga. Nessun passaggio e' dato per
+scontato: se una sezione usa un concetto, quel concetto e' stato introdotto
+prima (o richiamato nella sezione 0).</p>
+</blockquote>
+<h2>Di cosa parla davvero questo capitolo</h2>
+<p>Il capitolo 8 ha consegnato algoritmi di model checking concettualmente
+chiari: dato un modello $K$ e una formula temporale $\varphi$, sappiamo
+decidere se $K\models\varphi$ visitando stati e transizioni. Il problema e'
+che nei sistemi reali gli stati sono troppi per essere visitati uno a uno.
+Negli appunti viene dato anche un numero: i model checker espliciti
+arrivavano a circa $10^6$ stati, mentre le tecniche di questo capitolo
+permettono di verificare sistemi con oltre $10^{20}$ stati.</p>
+<p>Il capitolo presenta tre risposte al problema, e conviene capire subito che
+non sono varianti della stessa idea:</p>
+<ul>
+<li><strong>Symbolic model checking con OBDD</strong>: non si elencano piu' gli stati; un
+  intero insieme di stati diventa una formula booleana, e le formule booleane
+  vengono manipolate con una struttura dati efficiente (gli OBDD). Serve
+  soprattutto per <em>dimostrare</em> proprieta' su tutto il modello.</li>
+<li><strong>Bounded model checking (BMC) con SAT</strong>: si rinuncia (inizialmente) a
+  dimostrare; si cerca un <em>controesempio</em> di lunghezza al massimo $k$,
+  traducendo la ricerca in un problema SAT. Serve soprattutto per <em>trovare
+  bug</em>.</li>
+<li><strong>Partial-order reduction</strong>: si attacca la causa specifica di esplosione
+  dovuta alla concorrenza, evitando di esplorare interleaving equivalenti.</li>
+</ul>
+<p>Il percorso del capitolo e' lungo, quindi ecco la mappa:</p>
+<ol>
+<li>Parte I: perche' gli stati esplodono e perche' serve cambiare
+   rappresentazione.</li>
+<li>Parte II: come si rappresentano stati, insiemi di stati e transizioni con
+   formule booleane.</li>
+<li>Parte III: la teoria dei punti fissi, cioe' il motore matematico che
+   permette di calcolare CTL su queste rappresentazioni.</li>
+<li>Parte IV: gli OBDD, la struttura dati che rende tutto questo eseguibile.</li>
+<li>Parte V: l'algoritmo CHECK, cioe' CTL simbolico completo.</li>
+<li>Parte VI: partial-order reduction.</li>
+<li>Parte VII: BMC, con l'encoding SAT completo (unrolling, lasso, bounded
+   semantics) e uno sguardo a nuXmv.</li>
+<li>Parte VIII: confronto fra le tecniche, errori tipici, esercizi e mappa per
+   l'orale.</li>
+</ol>
+<h3>0. Richiami minimi (per non dare nulla per scontato)</h3>
+<p><strong>Struttura di Kripke.</strong> Un modello $K=(S,S_0,R,L)$ dove $S$ e' l'insieme
+finito degli stati, $S_0\subseteq S$ gli stati iniziali, $R\subseteq S\times
+S$ la relazione di transizione (totale: ogni stato ha almeno un successore) e
+$L$ assegna a ogni stato le lettere proposizionali vere in esso.</p>
+<p><strong>Operatori CTL.</strong> Ogni operatore temporale e' preceduto da un quantificatore
+di cammino: $E$ = "esiste un cammino", $A$ = "per tutti i cammini". Letture in
+parole:</p>
+<table>
+<thead>
+<tr>
+<th>Formula</th>
+<th>Lettura</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$EX\,\varphi$</td>
+<td>esiste un successore in cui vale $\varphi$</td>
+</tr>
+<tr>
+<td>$AX\,\varphi$</td>
+<td>in tutti i successori vale $\varphi$</td>
+</tr>
+<tr>
+<td>$EF\,\varphi$</td>
+<td>esiste un cammino lungo il quale prima o poi vale $\varphi$</td>
+</tr>
+<tr>
+<td>$AF\,\varphi$</td>
+<td>su ogni cammino prima o poi vale $\varphi$</td>
+</tr>
+<tr>
+<td>$EG\,\varphi$</td>
+<td>esiste un cammino lungo il quale $\varphi$ vale per sempre</td>
+</tr>
+<tr>
+<td>$AG\,\varphi$</td>
+<td>su ogni cammino $\varphi$ vale per sempre</td>
+</tr>
+<tr>
+<td>$E[\varphi\,U\,\psi]$</td>
+<td>esiste un cammino che raggiunge $\psi$ mantenendo $\varphi$ fino ad allora</td>
+</tr>
+<tr>
+<td>$A[\varphi\,U\,\psi]$</td>
+<td>ogni cammino raggiunge $\psi$ mantenendo $\varphi$ fino ad allora</td>
+</tr>
+</tbody>
+</table>
+<p><strong>SAT.</strong> Data una formula proposizionale, il problema SAT chiede se esiste un
+assegnamento di verita' alle variabili che la rende vera. I SAT solver
+moderni risolvono in pratica istanze con milioni di variabili; e' questa
+efficienza che il BMC sfrutta.</p>
+<p><strong>QBF.</strong> Le formule booleane quantificate ($\exists x.\,f$, $\forall x.\,f$)
+non aggiungono potere espressivo rispetto alle formule proposizionali (ogni
+quantificatore si puo' eliminare), ma permettono di scrivere formule molto
+piu' <em>succinte</em>. Questo capitolo usa i quantificatori booleani di continuo, e
+nella sezione 36 vedremo che eliminarli su OBDD costa solo due restrict e un
+apply.</p>
+<hr>
+<h2>Parte I — Il problema: lo state explosion</h2>
+<h3>1. Lo state explosion problem</h3>
+<p>Nel model checking esplicito il modello e' un grafo $K=(S,S_0,R,L)$ e gli
+algoritmi visitano stati e archi. Una visita costa almeno tempo proporzionale
+al numero di stati. Quindi tutto funziona finche' $S$ e' piccolo. Il punto
+critico e' che $S$ non cresce "un po' alla volta" con la taglia del sistema:
+cresce <strong>esponenzialmente</strong>. Questo fenomeno si chiama <strong>state explosion
+problem</strong>.</p>
+<h3>2. Perche' i numeri esplodono: variabili e concorrenza</h3>
+<p>Ci sono due sorgenti distinte di esplosione, e conviene saperle separare.</p>
+<p><strong>Prima sorgente: le variabili.</strong> Uno stato di un sistema e' una fotografia
+dei valori di tutte le sue variabili. Con $n$ variabili booleane le
+fotografie possibili sono tutte le combinazioni di valori, cioe':</p>
+<p>$$2^n$$</p>
+<p>Per fissare le idee:</p>
+<ul>
+<li>10 variabili: $2^{10}=1024$ stati;</li>
+<li>20 variabili: $2^{20}\approx 10^6$ stati (il limite pratico del model
+  checking esplicito);</li>
+<li>40 variabili: $2^{40}\approx 10^{12}$ stati, fuori portata per qualunque
+  visita esplicita.</li>
+</ul>
+<p>Notare che 40 variabili booleane sono pochissime: bastano 5 interi a 8 bit.</p>
+<p><strong>Seconda sorgente: la concorrenza.</strong> Se il sistema e' il prodotto di
+componenti, $\mathcal{M}=\mathcal{M}_1\times\cdots\times\mathcal{M}_n$, il
+numero di stati globali e' il prodotto dei numeri di stati locali, quindi di
+nuovo esponenziale in $n$. In piu', processi concorrenti generano
+<strong>interleaving</strong>: se il processo 1 fa l'azione $a$ e il processo 2 fa
+l'azione $b$, e le due azioni sono indipendenti, il sistema globale contiene
+sia l'esecuzione $a;b$ sia l'esecuzione $b;a$ — due cammini distinti che
+spesso, dal punto di vista della proprieta' da verificare, sono
+indistinguibili. Con molti processi le permutazioni possibili diventano
+moltissime, e il grafo esplicito le contiene tutte.</p>
+<h3>3. La svolta: cambiare rappresentazione, non algoritmo di visita</h3>
+<p>Se il grafo ha $10^{12}$ nodi, sostituire DFS con BFS o ottimizzare le
+strutture dati non serve a nulla: anche solo <em>toccare</em> ogni nodo una volta e'
+troppo. L'unica via d'uscita e' non costruire affatto il grafo esplicito.</p>
+<p>L'idea del model checking simbolico e':</p>
+<blockquote>
+<p>non elencare gli stati uno per uno; rappresentare <strong>interi insiemi di
+stati</strong> con una sola formula booleana, e fare i calcoli direttamente sulle
+formule.</p>
+</blockquote>
+<p>Perche' questo possa funzionare servono tre ingredienti, che sono esattamente
+il contenuto delle prossime tre parti:</p>
+<ol>
+<li>un modo per scrivere stati, insiemi e transizioni come formule (Parte II);</li>
+<li>un modo per esprimere gli operatori CTL come calcoli su insiemi, cioe' i
+   punti fissi (Parte III);</li>
+<li>una struttura dati che renda efficienti le operazioni sulle formule, cioe'
+   gli OBDD (Parte IV).</li>
+</ol>
+<hr>
+<h2>Parte II — Stati e transizioni come formule booleane</h2>
+<h3>4. Uno stato = un assegnamento booleano</h3>
+<p>Fissiamo un vettore di variabili booleane:</p>
+<p>$$\bar{x}=x_1,\ldots,x_n.$$</p>
+<p><strong>Ogni assegnamento di valori a $\bar{x}$ rappresenta uno stato.</strong> Se gli
+stati sono $2^m$ per qualche $m$, bastano $m$ variabili: ogni stato riceve un
+codice binario.</p>
+<p>Esempio concreto con due variabili $x_1,x_2$ (quindi fino a 4 stati):</p>
+<table>
+<thead>
+<tr>
+<th>Stato</th>
+<th>$x_1$</th>
+<th>$x_2$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$s_{00}$</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$s_{01}$</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>$s_{10}$</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>$s_{11}$</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>Da qui in avanti "stato" e "assegnamento alle variabili $\bar{x}$" sono la
+stessa cosa.</p>
+<h3>5. Un insieme di stati = una formula booleana</h3>
+<p>Un insieme di stati $A\subseteq S$ viene rappresentato da una formula
+$A(\bar{x})$ tale che:</p>
+<blockquote>
+<p>uno stato appartiene ad $A$ <strong>se e solo se</strong> il suo assegnamento rende vera
+la formula $A(\bar{x})$.</p>
+</blockquote>
+<p>In altre parole, la formula e' la <strong>funzione caratteristica</strong> dell'insieme:
+vale 1 esattamente sugli elementi dell'insieme.</p>
+<p>Esempio, con il codice della sezione 4. La formula:</p>
+<p>$$x_1\land\neg x_2$$</p>
+<p>e' vera solo per l'assegnamento $x_1=1,x_2=0$: rappresenta l'insieme
+$\{s_{10}\}$, un singolo stato. Invece la formula:</p>
+<p>$$x_1$$</p>
+<p>e' vera per due assegnamenti ($s_{10}$ e $s_{11}$): rappresenta un insieme di
+due stati. Con $n$ variabili, la formula $x_1$ (una sola lettera!)
+rappresenta $2^{n-1}$ stati.</p>
+<p>Questo e' il motivo per cui la rappresentazione simbolica puo' essere
+compatta: <strong>la taglia della formula non dipende dal numero di stati
+dell'insieme, ma dalla regolarita' dell'insieme</strong>. Un insieme enorme ma
+regolare ha una formula piccola. Le operazioni insiemistiche diventano
+connettivi:</p>
+<ul>
+<li>unione $\cup$ $\to$ disgiunzione $\lor$;</li>
+<li>intersezione $\cap$ $\to$ congiunzione $\land$;</li>
+<li>complemento $\to$ negazione $\neg$;</li>
+<li>inclusione $A\subseteq B$ $\to$ validita' di $A\to B$;</li>
+<li>uguaglianza di insiemi $\to$ equivalenza logica delle formule.</li>
+</ul>
+<p>L'ultima riga e' importante: per sapere se due insiemi sono uguali bisogna
+saper decidere l'equivalenza di due formule booleane. Tenere a mente questo
+punto: e' la ragione per cui la <em>canonicita'</em> degli OBDD (sezione 32) sara'
+preziosa.</p>
+<h3>6. La relazione di transizione: $R(\bar{x},\bar{x}')$ e le variabili primate</h3>
+<p>Una transizione collega due stati: quello di partenza e quello di arrivo. Per
+parlarne in una sola formula servono <strong>due copie delle variabili</strong>:</p>
+<ul>
+<li>$\bar{x}=x_1,\ldots,x_n$ per lo stato corrente;</li>
+<li>$\bar{x}'=x_1',\ldots,x_n'$ per lo stato successivo.</li>
+</ul>
+<p>La relazione di transizione diventa una formula su entrambe le copie:</p>
+<p>$$R(\bar{x},\bar{x}').$$</p>
+<p><strong>Come leggerla:</strong> la coppia di stati $(s,s')$ e' una transizione del sistema
+se e solo se l'assegnamento che descrive $s$ sulle variabili $\bar{x}$ e
+l'assegnamento che descrive $s'$ sulle variabili $\bar{x}'$ rendono vera $R$.</p>
+<p><strong>Perche' servono le variabili primate?</strong> Se usassimo le stesse variabili per
+prima e dopo, non potremmo dire "il valore cambia". La formula:</p>
+<p>$$x'\leftrightarrow\neg x$$</p>
+<p>dice: "il prossimo valore di $x$ e' l'opposto del valore attuale". Senza la
+copia primata questa frase non e' nemmeno scrivibile.</p>
+<p><strong>Esempio completo (dagli appunti).</strong> Sistema con due variabili $x_1,x_2$ e
+tre transizioni, che descriviamo arco per arco:</p>
+<ol>
+<li>dallo stato $11$ allo stato $10$;</li>
+<li>dallo stato $10$ allo stato $11$;</li>
+<li>dallo stato $10$ a se stesso.</li>
+</ol>
+<p>Ogni arco diventa una congiunzione che fissa <em>tutte</em> le variabili correnti
+(stato di partenza) e <em>tutte</em> le primate (stato di arrivo):</p>
+<ul>
+<li>arco 1: $x_1\land x_2\land x_1'\land\neg x_2'$;</li>
+<li>arco 2: $x_1\land\neg x_2\land x_1'\land x_2'$;</li>
+<li>arco 3: $x_1\land\neg x_2\land x_1'\land\neg x_2'$.</li>
+</ul>
+<p>La relazione completa e' la disgiunzione degli archi:</p>
+<p>$$R(\bar{x},\bar{x}')=
+(x_1\land x_2\land x_1'\land\neg x_2')\lor
+(x_1\land\neg x_2\land x_1'\land x_2')\lor
+(x_1\land\neg x_2\land x_1'\land\neg x_2').$$</p>
+<p><strong>Come leggerla:</strong> "la coppia $(s,s')$ e' una transizione se e' l'arco 1,
+oppure l'arco 2, oppure l'arco 3". Questa costruzione arco-per-arco funziona
+per qualunque struttura di Kripke; nei casi reali, pero', non si elencano gli
+archi (sarebbero troppi): si scrive direttamente una formula compatta, come
+$x'\leftrightarrow\neg x$ sopra, o come le formule <code>TRANS</code> di SMV che vedremo
+nella sezione 47.</p>
+<h3>7. Etichettatura e stati iniziali</h3>
+<p>Restano da codificare gli altri due ingredienti della struttura di Kripke.</p>
+<p><strong>Stati iniziali:</strong> una formula $I(\bar{x})$, vera esattamente sugli
+assegnamenti che codificano stati iniziali.</p>
+<p><strong>Etichettatura $L$:</strong> invece di dire, stato per stato, quali lettere sono
+vere, si rovescia il punto di vista: per ogni lettera proposizionale $p$ si
+da' l'insieme degli stati in cui $p$ e' vera,</p>
+<p>$$S_p=\{s : p\in L(s)\},$$</p>
+<p>e questo insieme, come ogni insieme di stati, e' una formula $p(\bar{x})$. Il
+rovesciamento e' naturale nel mondo simbolico: "la lettera $p$" e "l'insieme
+degli stati dove vale $p$" diventano lo stesso oggetto.</p>
+<h3>8. La domanda di safety diventa una domanda di soddisfacibilita'</h3>
+<p>Supponiamo di avere (lo costruiremo nella sezione 43) l'insieme $Reach$ degli
+stati raggiungibili dagli iniziali, come formula $Reach(\bar{x})$, e
+l'insieme $Bad$ degli stati vietati, come formula $Bad(\bar{x})$.</p>
+<p>La proprieta' di safety "nessuno stato bad e' mai raggiunto" equivale a:</p>
+<p>$$Reach\cap Bad=\emptyset,$$</p>
+<p>cioe', passando alle formule: la congiunzione</p>
+<p>$$Reach(\bar{x})\land Bad(\bar{x})$$</p>
+<p>deve essere <strong>insoddisfacibile</strong>.</p>
+<p><strong>Come leggerla:</strong> se esiste un assegnamento che rende vera la congiunzione,
+quell'assegnamento <em>e'</em> uno stato raggiungibile e vietato insieme — la safety
+e' violata, e l'assegnamento stesso e' l'inizio del controesempio. Se nessun
+assegnamento la rende vera, i due insiemi sono disgiunti e la safety vale.</p>
+<p>Questo e' un primo assaggio del tema del capitolo: le domande sul sistema
+diventano domande logiche sulle formule.</p>
+<h3>9. Post-immagine e preimmagini: muoversi senza enumerare</h3>
+<p>Gli algoritmi devono "camminare" sul grafo senza vederlo. I tre movimenti
+fondamentali sono questi.</p>
+<p><strong>Post-immagine</strong> (un passo in avanti). Dato un insieme $X$, vogliamo gli
+stati raggiungibili da $X$ con una transizione:</p>
+<p>$$Post(X)(\bar{x}')=\exists\bar{x}.\ X(\bar{x})\land R(\bar{x},\bar{x}').$$</p>
+<p><strong>Come leggerla:</strong> "lo stato $\bar{x}'$ e' nella post-immagine se <em>esiste</em>
+uno stato $\bar{x}$ che sta in $X$ e da cui parte una transizione verso
+$\bar{x}'$". Il quantificatore esistenziale dice esattamente "esiste un
+predecessore in $X$"; notare che il risultato e' una formula sulle variabili
+primate (lo stato di arrivo).</p>
+<p><strong>Preimmagine esistenziale</strong> (un passo all'indietro, versione "esiste"). Dato
+un insieme target $T$, vogliamo gli stati da cui <em>si puo'</em> entrare in $T$ in
+un passo:</p>
+<p>$$Pre_E(T)(\bar{x})=\exists\bar{x}'.\ R(\bar{x},\bar{x}')\land T(\bar{x}').$$</p>
+<p><strong>Come leggerla:</strong> "lo stato $\bar{x}$ sta nella preimmagine se esiste un suo
+successore $\bar{x}'$ che sta in $T$". E' la versione simbolica
+dell'operatore $EX$: infatti $Pre_E(T)$ e' esattamente l'insieme degli stati
+che soddisfano $EX\,T$.</p>
+<p><strong>Preimmagine universale</strong> (un passo all'indietro, versione "per tutti").
+Stati i cui successori stanno <em>tutti</em> in $T$:</p>
+<p>$$Pre_A(T)(\bar{x})=\forall\bar{x}'.\ R(\bar{x},\bar{x}')\to T(\bar{x}').$$</p>
+<p><strong>Come leggerla:</strong> "comunque si scelga un successore $\bar{x}'$ di $\bar{x}$,
+quel successore sta in $T$". E' la versione simbolica di $AX$.</p>
+<p><strong>Micro-esempio svolto.</strong> Una variabile, transizione che la inverte:
+$R(x,x')\equiv(x'\leftrightarrow\neg x)$. Calcoliamo $Pre_E(T)$ per
+$T(x')=x'$ (il target e' "lo stato in cui $x$ vale 1"):</p>
+<p>$$Pre_E(T)(x)=\exists x'.\ (x'\leftrightarrow\neg x)\land x'.$$</p>
+<p>Eliminiamo il quantificatore distinguendo i due valori possibili di $x'$:</p>
+<ul>
+<li>con $x'=0$: $(0\leftrightarrow\neg x)\land 0=0$ (la congiunzione con 0 e'
+  falsa);</li>
+<li>con $x'=1$: $(1\leftrightarrow\neg x)\land 1=\neg x$ (la doppia
+  implicazione con 1 lascia $\neg x$).</li>
+</ul>
+<p>La disgiunzione dei due casi e' $0\lor\neg x=\neg x$. Quindi:</p>
+<p>$$Pre_E(x')=\neg x.$$</p>
+<p><strong>Verifica di buon senso:</strong> il sistema inverte $x$ a ogni passo; per arrivare
+in uno stato con $x=1$ bisogna partire da $x=0$. Torna.</p>
+<p><strong>Perche' la preimmagine e' centrale.</strong> Quasi tutti gli algoritmi che
+vedremo ragionano all'indietro: si parte dal target e si aggiungono, strato
+dopo strato, gli stati che possono arrivarci. L'operazione che produce ogni
+nuovo strato e' la preimmagine. La struttura "ripeti finche' non cambia
+nulla" e' un punto fisso, ed e' l'argomento della prossima parte.</p>
+<hr>
+<h2>Parte III — La teoria dei punti fissi (il motore del CTL simbolico)</h2>
+<h3>10. Perche' servono i punti fissi: $EF$ calcolato a mano</h3>
+<p>Prima la pratica, poi la teoria. Vogliamo gli stati che soddisfano
+$EF\,goal$: "esiste un cammino che prima o poi raggiunge $goal$".
+Ragioniamo:</p>
+<ul>
+<li>gli stati in cui $goal$ vale <em>adesso</em> sicuramente soddisfano $EF\,goal$;</li>
+<li>gli stati con un successore che soddisfa $EF\,goal$ lo soddisfano anche
+  loro (basta fare un passo e poi seguire il cammino del successore);</li>
+<li>nessun altro stato lo soddisfa.</li>
+</ul>
+<p>Questo suggerisce il calcolo iterativo:</p>
+<p>$$Z_0=Goal,\qquad Z_{i+1}=Z_i\cup Pre_E(Z_i).$$</p>
+<p><strong>Come leggerlo:</strong> $Z_i$ contiene gli stati da cui si raggiunge $goal$ in al
+piu' $i$ passi. A ogni iterazione aggiungiamo gli stati che arrivano in $Z_i$
+con un passo in piu'. Poiche' gli stati sono finiti e $Z_i$ puo' solo
+crescere, prima o poi $Z_{i+1}=Z_i$: aggiungere un passo non scopre piu'
+nulla. Quell'insieme stabile e' la risposta.</p>
+<p>L'insieme a cui ci si ferma ha una proprieta' precisa: applicargli ancora
+l'operazione non lo cambia. Si chiama <strong>punto fisso</strong>. La teoria che segue
+risponde a tre domande che l'esempio lascia aperte:</p>
+<ol>
+<li>il punto a cui ci si ferma e' <em>unico</em>? E' quello <em>giusto</em>?</li>
+<li>perche' la procedura termina sempre?</li>
+<li>funziona per tutti gli operatori CTL o solo per $EF$?</li>
+</ol>
+<h3>11. Il reticolo $Powerset(S)$</h3>
+<p>L'ambiente in cui si svolge tutto e' l'insieme dei sottoinsiemi di $S$,
+ordinato per inclusione. $Powerset(S)$ con l'ordine $\subseteq$ e' un
+<strong>reticolo</strong>: ogni famiglia di insiemi ha un'unione (estremo superiore) e
+un'intersezione (estremo inferiore). In particolare ha:</p>
+<ul>
+<li>un elemento minimo: $\emptyset$, che simbolicamente e' la formula
+  $false$ (nessuno stato la soddisfa);</li>
+<li>un elemento massimo: $S$, che simbolicamente e' la formula $true$ (tutti
+  gli stati la soddisfano).</li>
+</ul>
+<p>Nel resto della parte III "insieme di stati", "predicato" e "formula" sono
+sinonimi: un predicato e' identificato dall'insieme degli stati in cui e'
+vero.</p>
+<h3>12. Predicate transformer</h3>
+<p>Un <strong>predicate transformer</strong> e' una funzione che trasforma insiemi di stati
+in insiemi di stati:</p>
+<p>$$\tau:\ Powerset(S)\to Powerset(S).$$</p>
+<p>Esempio concreto, che e' anche il protagonista del capitolo: fissata una
+formula $f_1$,</p>
+<p>$$\tau(Z)=f_1\land EX\,Z$$</p>
+<p>prende un insieme $Z$ e restituisce "gli stati in cui vale $f_1$ <strong>e</strong> che
+hanno almeno un successore dentro $Z$". E' una funzione legittima da insiemi
+a insiemi: dato l'input $Z$, l'output e' determinato.</p>
+<p>Un insieme $Z$ tale che:</p>
+<p>$$\tau(Z)=Z$$</p>
+<p>si chiama <strong>punto fisso</strong> di $\tau$: applicare la trasformazione non lo
+muove. In generale $\tau$ puo' avere molti punti fissi; quelli che ci
+interessano sono il piu' piccolo (<strong>least fixpoint</strong>, scritto
+$\mu Z.\tau(Z)$) e il piu' grande (<strong>greatest fixpoint</strong>, scritto
+$\nu Z.\tau(Z)$).</p>
+<h3>13. Monotonia (con dimostrazione completa)</h3>
+<p><strong>Definizione.</strong> $\tau$ e' <strong>monotona</strong> se conserva le inclusioni:</p>
+<p>$$P\subseteq Q\ \implies\ \tau(P)\subseteq\tau(Q).$$</p>
+<p><strong>Come leggerla:</strong> se allargo l'input, l'output puo' solo allargarsi (o
+restare uguale), mai restringersi.</p>
+<p>Tutti i predicate transformer che useremo per CTL sono monotoni. Vediamo la
+dimostrazione per il caso principale, che e' anche un modello di come si
+scrivono queste prove all'orale.</p>
+<p><strong>Lemma (monotonia di $\tau(Z)=f_1\land EX\,Z$).</strong> Siano $P_1\subseteq P_2$.
+Allora $\tau(P_1)\subseteq\tau(P_2)$.</p>
+<p><strong>Dimostrazione.</strong> Per dimostrare un'inclusione tra insiemi si prende un
+elemento generico del primo e si mostra che sta nel secondo. Sia
+$s\in\tau(P_1)$, cioe' $s$ soddisfa $f_1\land EX\,P_1$. Spacchettiamo cosa
+significa:</p>
+<ol>
+<li>$s\models f_1$ (primo congiunto);</li>
+<li>$s$ ha almeno un successore in $P_1$: esiste $s'$ con $R(s,s')$ e
+   $s'\in P_1$ (secondo congiunto, per la semantica di $EX$).</li>
+</ol>
+<p>Per ipotesi $P_1\subseteq P_2$, quindi quel medesimo successore $s'$ sta
+anche in $P_2$. Allora $s$ soddisfa $f_1$ e ha un successore in $P_2$, cioe'
+$s\in f_1\land EX\,P_2=\tau(P_2)$. $\square$</p>
+<p>La struttura e' sempre questa: spacchettare l'appartenenza a $\tau(P_1)$,
+usare $P_1\subseteq P_2$ sul testimone, rimpacchettare.</p>
+<h3>14. Continuita', e perche' nel caso finito e' gratuita</h3>
+<p>Servono altre due nozioni, che enunciamo e subito ridimensioniamo (nel nostro
+caso finito si ottengono gratis).</p>
+<p><strong>Definizione.</strong> $\tau$ e' <strong>∪-continua</strong> se per ogni catena crescente
+$P_1\subseteq P_2\subseteq P_3\subseteq\cdots$ vale
+$\tau\left(\bigcup_i P_i\right)=\bigcup_i\tau(P_i)$ (la trasformazione
+"commuta" con l'unione della catena). Dualmente, e' <strong>∩-continua</strong> se per
+ogni catena decrescente commuta con l'intersezione.</p>
+<p><strong>Lemma 1.</strong> Se $\tau$ e' monotona e $S$ e' finito, allora $\tau$ e' sia
+∪-continua sia ∩-continua.</p>
+<p><strong>Perche' e' vero.</strong> Con $S$ finito, una catena crescente di sottoinsiemi non
+puo' crescere per sempre: da un certo indice $m$ in poi e' costante, e
+l'unione dell'intera catena e' semplicemente $P_m$. Allora:</p>
+<p>$$\tau\Big(\bigcup_i P_i\Big)=\tau(P_m).$$</p>
+<p>D'altra parte, per monotonia, anche la catena delle immagini
+$\tau(P_1)\subseteq\tau(P_2)\subseteq\cdots$ e' crescente e da $m$ in poi
+vale $\tau(P_m)$; quindi la sua unione e' $\tau(P_m)$. I due lati coincidono.
+L'argomento per ∩ e' identico, rovesciando le inclusioni. $\square$</p>
+<p>Morale: in fixpoint theory generale (insiemi infiniti) la continuita' e'
+un'ipotesi delicata; per noi, che lavoriamo su una struttura di Kripke
+finita, e' una conseguenza automatica della monotonia.</p>
+<p><strong>Notazione per le iterazioni.</strong> Scriviamo $\tau^i(Z)$ per "applica $\tau$
+$i$ volte a $Z$":</p>
+<p>$$\tau^0(Z)=Z,\qquad \tau^{i+1}(Z)=\tau(\tau^i(Z)).$$</p>
+<h3>15. Il teorema di Tarski, letto con calma</h3>
+<p><strong>Teorema (Tarski).</strong> Ogni predicate transformer monotono $\tau$ ha un minimo
+punto fisso e un massimo punto fisso, e valgono le caratterizzazioni:</p>
+<p>$$\mu Z.\tau(Z)=\bigcap\{Z : \tau(Z)\subseteq Z\},
+\qquad
+\nu Z.\tau(Z)=\bigcup\{Z : Z\subseteq\tau(Z)\}.$$</p>
+<p><strong>Come leggerle.</strong> Un insieme con $\tau(Z)\subseteq Z$ si chiama
+<strong>pre-punto fisso</strong>: e' un insieme "chiuso" rispetto a $\tau$
+(applicare $\tau$ non porta fuori). Il teorema dice: il minimo punto fisso e'
+l'intersezione di <em>tutti</em> gli insiemi chiusi — cioe' e' contenuto in ognuno
+di essi, ed e' quindi il piu' piccolo possibile. Dualmente, un insieme con
+$Z\subseteq\tau(Z)$ e' un <strong>post-punto fisso</strong> ("auto-sostenuto": ogni suo
+elemento e' giustificato da $\tau$), e il massimo punto fisso e' l'unione di
+tutti gli insiemi auto-sostenuti.</p>
+<p>Per noi le due conseguenze operative sono:</p>
+<ul>
+<li>se trovo un punto fisso e dimostro che e' contenuto in ogni pre-punto
+  fisso, quello e' $\mu$;</li>
+<li>se trovo un punto fisso e dimostro che contiene ogni post-punto fisso,
+  quello e' $\nu$.</li>
+</ul>
+<p>Inoltre, con la continuita' (che nel finito abbiamo gratis dal Lemma 1),
+i punti fissi si <em>calcolano</em> per iterazione:</p>
+<p>$$\mu Z.\tau(Z)=\bigcup_i\tau^i(false),
+\qquad
+\nu Z.\tau(Z)=\bigcap_i\tau^i(true).$$</p>
+<p><strong>Come leggerle:</strong> il minimo punto fisso si raggiunge partendo dal basso
+(insieme vuoto) e applicando $\tau$ ripetutamente; il massimo partendo
+dall'alto (tutti gli stati) e applicando $\tau$ ripetutamente.</p>
+<h3>16. I lemmi del caso finito: catene, stabilizzazione, convergenza</h3>
+<p>I tre lemmi seguenti trasformano le formule astratte di Tarski in un
+algoritmo con garanzia di terminazione.</p>
+<p><strong>Lemma 2 (le iterazioni formano catene).</strong> Se $\tau$ e' monotona, allora per
+ogni $i$:</p>
+<p>$$\tau^i(false)\subseteq\tau^{i+1}(false)
+\qquad\text{e}\qquad
+\tau^{i+1}(true)\subseteq\tau^i(true).$$</p>
+<p><strong>Perche' e' vero.</strong> Induzione su $i$. Base: $\tau^0(false)=\emptyset$ e'
+contenuto in qualunque cosa, in particolare in $\tau^1(false)$. Passo: se
+$\tau^i(false)\subseteq\tau^{i+1}(false)$, applichiamo $\tau$ a entrambi i
+lati; la monotonia conserva l'inclusione, e otteniamo
+$\tau^{i+1}(false)\subseteq\tau^{i+2}(false)$. Per la catena da $true$
+l'argomento e' speculare ($\tau^1(true)\subseteq S=\tau^0(true)$ per la
+base). $\square$</p>
+<p><strong>Come leggerlo:</strong> partendo dal vuoto si costruisce una successione di
+insiemi che puo' solo crescere; partendo dal tutto, una che puo' solo
+calare.</p>
+<p><strong>Lemma 3 (le catene si stabilizzano).</strong> Se $\tau$ e' monotona e $S$ e'
+finito, esiste un indice $i_0$ tale che $\tau^j(false)=\tau^{i_0}(false)$ per
+ogni $j\ge i_0$ (e dualmente esiste $j_0$ per la catena da $true$).</p>
+<p><strong>Perche' e' vero.</strong> Una catena crescente di sottoinsiemi di un insieme con
+$|S|$ elementi puo' crescere <em>strettamente</em> al massimo $|S|$ volte (ogni
+crescita stretta aggiunge almeno un elemento). Quindi a un certo punto due
+iterate consecutive coincidono: $\tau^{i_0}(false)=\tau^{i_0+1}(false)$. Da
+li' in poi non si muove piu' nulla: applicare $\tau$ a insiemi uguali da'
+insiemi uguali. $\square$</p>
+<p><strong>Lemma 4 (a cosa convergono le catene).</strong> Sotto le stesse ipotesi:</p>
+<p>$$\mu Z.\tau(Z)=\tau^{i_0}(false),
+\qquad
+\nu Z.\tau(Z)=\tau^{j_0}(true),$$</p>
+<p>e in entrambi i casi servono <strong>al piu' $|S|$ iterazioni</strong>.</p>
+<p><strong>Perche' e' vero (caso $\mu$; il caso $\nu$ e' duale).</strong> Due cose da
+verificare.</p>
+<p><em>Primo: il limite e' un punto fisso.</em> Per definizione di $i_0$:
+$\tau(\tau^{i_0}(false))=\tau^{i_0+1}(false)=\tau^{i_0}(false)$.</p>
+<p><em>Secondo: e' il minimo.</em> Sia $Z$ un punto fisso qualunque di $\tau$.
+Mostriamo per induzione che ogni iterata sta dentro $Z$:
+$\tau^0(false)=\emptyset\subseteq Z$; e se $\tau^i(false)\subseteq Z$, per
+monotonia $\tau^{i+1}(false)\subseteq\tau(Z)=Z$ (qui si usa che $Z$ e' punto
+fisso). In particolare $\tau^{i_0}(false)\subseteq Z$. Quindi il limite e'
+contenuto in ogni punto fisso: e' il minimo. $\square$</p>
+<p>Questo risponde alle tre domande della sezione 10: il punto raggiunto e'
+unico e ben caratterizzato (e' $\mu$ o $\nu$), la terminazione e' garantita
+in al piu' $|S|$ passi, e tutto vale per <em>qualunque</em> $\tau$ monotona.</p>
+<h3>17. Gli algoritmi lfp e gfp, riga per riga</h3>
+<p>I due lemmi si traducono in due cicli while speculari:</p>
+<pre><code class="language-text">function lfp(τ): predicate          function gfp(τ): predicate
+  Q := false                          Q := true
+  Q' := τ(false)                      Q' := τ(true)
+  while Q ≠ Q':                       while Q ≠ Q':
+     Q := Q'                             Q := Q'
+     Q' := τ(Q')                         Q' := τ(Q')
+  return Q                            return Q
+</code></pre>
+<p>Commento riga per riga di <code>lfp</code> (per <code>gfp</code> cambia solo il punto di
+partenza):</p>
+<ul>
+<li><code>Q := false; Q' := τ(false)</code> — inizializza la coppia con le prime due
+  iterate, $\tau^0(false)$ e $\tau^1(false)$;</li>
+<li><code>while Q ≠ Q'</code> — all'inizio della $i$-esima iterazione del ciclo vale
+  $Q=\tau^{i-1}(false)$ e $Q'=\tau^i(false)$: il ciclo confronta due iterate
+  <em>consecutive</em> e continua finche' sono diverse;</li>
+<li><code>Q := Q'; Q' := τ(Q')</code> — fa scorrere la finestra: la coppia
+  $(\tau^{i-1},\tau^i)$ diventa $(\tau^i,\tau^{i+1})$;</li>
+<li><code>return Q</code> — all'uscita $Q=Q'$, cioe' $Q=\tau(Q)$: abbiamo trovato un punto
+  fisso, e per il Lemma 4 e' proprio $\mu Z.\tau(Z)$.</li>
+</ul>
+<p>L'<strong>invariante</strong> del ciclo, utile da citare all'orale, e':</p>
+<p>$$Q'=\tau(Q)\ \ \land\ \ Q'\subseteq\mu Z.\tau(Z),$$</p>
+<p>cioe' la seconda variabile e' sempre l'immagine della prima, e non si
+"scavalca" mai il minimo punto fisso (lo si raggiunge da sotto). Il numero di
+iterazioni e' al massimo $|S|$ per il Lemma 3.</p>
+<p><strong>Il punto pratico:</strong> $\tau$ e' fatta di operazioni booleane ($\land$,
+$\lor$) e di $EX$ (= preimmagine esistenziale); il test <code>Q ≠ Q'</code> e' un
+confronto di uguaglianza tra insiemi. Tutte queste operazioni si eseguono
+direttamente sulle formule/OBDD: l'algoritmo non tocca mai un singolo stato.</p>
+<h3>18. CTL come punti fissi: le sei equazioni</h3>
+<p>Ecco le caratterizzazioni, ognuna con la sua lettura.</p>
+<table>
+<thead>
+<tr>
+<th>Modalita'</th>
+<th>Punto fisso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$EF f_1$</td>
+<td>$\mu Z.\ f_1\lor EX\,Z$</td>
+</tr>
+<tr>
+<td>$AF f_1$</td>
+<td>$\mu Z.\ f_1\lor AX\,Z$</td>
+</tr>
+<tr>
+<td>$EG f_1$</td>
+<td>$\nu Z.\ f_1\land EX\,Z$</td>
+</tr>
+<tr>
+<td>$AG f_1$</td>
+<td>$\nu Z.\ f_1\land AX\,Z$</td>
+</tr>
+<tr>
+<td>$E[f_1\,U\,f_2]$</td>
+<td>$\mu Z.\ f_2\lor(f_1\land EX\,Z)$</td>
+</tr>
+<tr>
+<td>$A[f_1\,U\,f_2]$</td>
+<td>$\mu Z.\ f_2\lor(f_1\land AX\,Z)$</td>
+</tr>
+</tbody>
+</table>
+<p>Le letture, una per una:</p>
+<ul>
+<li><strong>$EF f_1$:</strong> "raggiungo $f_1$" vale se $f_1$ vale ora, <em>oppure</em> se ho un
+  successore da cui raggiungo $f_1$. L'equazione $Z=f_1\lor EX\,Z$ e'
+  esattamente questa frase; il $\mu$ dice di prendere la soluzione <em>minima</em>,
+  cioe' solo gli stati che hanno una giustificazione concreta in un numero
+  finito di passi.</li>
+<li><strong>$AF f_1$:</strong> uguale, ma il passo e' "tutti i miei successori
+  raggiungeranno $f_1$": $AX$ al posto di $EX$.</li>
+<li><strong>$EG f_1$:</strong> "posso restare in $f_1$ per sempre" vale se $f_1$ vale ora
+  <em>e</em> ho un successore da cui posso restare in $f_1$ per sempre. Il $\nu$
+  dice di prendere la soluzione <em>massima</em>: si parte ottimisti (tutti gli
+  stati candidati) e si scartano via via gli stati che non riescono a
+  mantenere la promessa.</li>
+<li><strong>$AG f_1$:</strong> uguale con $AX$: tutti i successori devono restare nella
+  regione.</li>
+<li><strong>$E[f_1 U f_2]$:</strong> "o $f_2$ vale gia' adesso, oppure $f_1$ vale adesso e
+  ho un successore da cui l'until e' soddisfatto". Minimo punto fisso perche'
+  l'until <em>esige</em> che $f_2$ arrivi davvero, in un numero finito di passi.</li>
+<li><strong>$A[f_1 U f_2]$:</strong> uguale con $AX$.</li>
+</ul>
+<h3>19. La regola mnemonica: chi decide tra $\mu$ e $\nu$</h3>
+<p>A decidere il tipo di punto fisso e' il <strong>quantificatore temporale</strong> (quello
+sul tempo, non quello sui cammini):</p>
+<ul>
+<li>$F$ ("prima o poi") e' esistenziale sul tempo $\to$ <strong>$\mu$</strong>: si parte dal
+  basso e si <em>aggiungono testimoni</em>, perche' la proprieta' richiede un evento
+  che accade davvero;</li>
+<li>$G$ ("per sempre") e' universale sul tempo $\to$ <strong>$\nu$</strong>: si parte
+  dall'alto e si <em>eliminano i colpevoli</em>, perche' la proprieta' richiede di
+  non sbagliare mai;</li>
+<li>$U$ contiene un "prima o poi $f_2$" $\to$ sempre <strong>$\mu$</strong>.</li>
+</ul>
+<p>Il quantificatore di cammino ($E$/$A$) decide invece solo se nel corpo
+compare $EX$ oppure $AX$.</p>
+<h3>20. $EG\,f_1$ e' davvero il massimo punto fisso (i lemmi degli appunti)</h3>
+<p>Negli appunti questa parte e' sviluppata come catena di lemmi (a–d) per
+$\tau(Z)=f_1\land EX\,Z$. Diamoli con le idee delle prove: e' materiale da
+orale.</p>
+<p><strong>Lemma a (monotonia).</strong> Gia' dimostrato per intero nella sezione 13.</p>
+<p><strong>Lemma b (struttura del limite).</strong> Sia $\tau^{i_0}(true)$ il limite della
+catena decrescente $true\supseteq\tau(true)\supseteq\tau^2(true)\supseteq
+\cdots$. Allora ogni $s\in\tau^{i_0}(true)$ soddisfa $f_1$ e ha almeno un
+successore <em>ancora dentro</em> $\tau^{i_0}(true)$.</p>
+<p><strong>Perche':</strong> il limite e' un punto fisso (Lemma 4), quindi
+$\tau^{i_0}(true)=\tau(\tau^{i_0}(true))=f_1\land EX\,\tau^{i_0}(true)$:
+l'appartenenza al limite dice letteralmente "soddisfo $f_1$ e ho un
+successore nel limite".</p>
+<p><strong>Lemma c ($EG\,f_1$ e' un punto fisso di $\tau$).</strong> Doppia inclusione.</p>
+<ul>
+<li>Se $s\models EG\,f_1$, esiste un cammino infinito da $s$ con $f_1$ sempre
+  vera. Allora $s\models f_1$ (primo stato del cammino) e il secondo stato
+  del cammino soddisfa a sua volta $EG\,f_1$ (il cammino prosegue da li').
+  Quindi $s\in f_1\land EX\,(EG\,f_1)=\tau(EG\,f_1)$.</li>
+<li>Viceversa, se $s\in\tau(EG\,f_1)$: $s\models f_1$ e ha un successore $s'$
+  con $s'\models EG\,f_1$; incollando $s$ davanti al cammino di $s'$ si
+  ottiene un cammino infinito da $s$ sempre in $f_1$, cioe'
+  $s\models EG\,f_1$. $\square$</li>
+</ul>
+<p><strong>Lemma d ($EG\,f_1$ e' il <em>massimo</em> punto fisso).</strong> Per Tarski basta
+mostrare che ogni post-punto fisso e' contenuto in $EG\,f_1$. Sia
+$Z\subseteq\tau(Z)$ e sia $s_0\in Z$. Allora $s_0\in\tau(Z)$, quindi
+$s_0\models f_1$ ed esiste un successore $s_1\in Z$. Ripetendo lo stesso
+argomento su $s_1$, poi su $s_2$, eccetera, si costruisce un cammino
+infinito $s_0\to s_1\to s_2\to\cdots$ che non esce mai da $Z$, e lungo il
+quale $f_1$ vale sempre. Quindi $s_0\models EG\,f_1$. Questo vale per ogni
+post-punto fisso; siccome $EG\,f_1$ stesso e' un punto fisso (Lemma c), e'
+il massimo. $\square$</p>
+<h3>21. $E[f_1\,U\,f_2]$ e' davvero il minimo punto fisso</h3>
+<p><strong>Lemma e.</strong> $E[f_1\,U\,f_2]$ e' il minimo punto fisso di
+$\tau(Z)=f_2\lor(f_1\land EX\,Z)$.</p>
+<p><strong>Idea della prova.</strong> Che sia un punto fisso si vede come nel Lemma c
+(spacchettando la semantica dell'until: o $f_2$ vale subito, o $f_1$ vale ora
+e l'until prosegue da un successore). Che sia il <em>minimo</em>: sia $Z$ un punto
+fisso qualunque e sia $s\models E[f_1\,U\,f_2]$; allora esiste un cammino da
+$s$ con $f_2$ vera in una posizione $j$ e $f_1$ vera nelle posizioni
+precedenti. Si mostra che $s\in Z$ per induzione su $j$, partendo dal fondo:
+lo stato alla posizione $j$ soddisfa $f_2$, quindi sta in
+$\tau(Z)=Z$; lo stato alla posizione $j-1$ soddisfa $f_1$ e ha un successore
+in $Z$, quindi sta in $\tau(Z)=Z$; e cosi' via risalendo fino a $s$. Quindi
+$E[f_1\,U\,f_2]\subseteq Z$ per ogni punto fisso $Z$: e' il minimo.
+$\square$</p>
+<h3>22. Esempio svolto 1: $EG\,p$ che converge a $\emptyset$</h3>
+<p><strong>Il modello.</strong> Cinque stati in catena, con un cappio finale:</p>
+<p>$$s_0\to s_1\to s_2\to s_3\to s_4,\qquad s_4\to s_4.$$</p>
+<p>La proposizione $p$ e' vera in $\{s_1,s_2,s_3\}$ (falsa in $s_0$ e $s_4$).</p>
+<p><strong>Cosa ci aspettiamo, prima di calcolare.</strong> Ogni cammino, da qualunque stato,
+finisce inevitabilmente nel cappio su $s_4$, dove $p$ e' falsa. Quindi
+<em>nessuno</em> stato ha un cammino con $p$ vera per sempre: deve venire
+$EG\,p=\emptyset$.</p>
+<p><strong>Il calcolo.</strong> $\tau(Z)=p\land EX\,Z$, massimo punto fisso: si parte da
+$true=\{s_0,s_1,s_2,s_3,s_4\}$. Ad ogni passo servono due ingredienti:
+l'insieme dove vale $p$ (sempre $\{s_1,s_2,s_3\}$) e $EX\,Z$ = "chi ha un
+successore in $Z$".</p>
+<p><em>Iterazione 1.</em> $EX(S)$ = chi ha un successore in $S$ = tutti (la relazione
+e' totale). Quindi:</p>
+<p>$$\tau(true)=\{s_1,s_2,s_3\}\cap S=\{s_1,s_2,s_3\}.$$</p>
+<p><em>Iterazione 2.</em> $EX\{s_1,s_2,s_3\}$ = chi ha un successore tra $s_1,s_2,s_3$
+= $\{s_0,s_1,s_2\}$ (perche' $s_0\to s_1$, $s_1\to s_2$, $s_2\to s_3$; invece
+$s_3\to s_4$ e $s_4\to s_4$ escono dall'insieme). Quindi:</p>
+<p>$$\tau^2(true)=\{s_1,s_2,s_3\}\cap\{s_0,s_1,s_2\}=\{s_1,s_2\}.$$</p>
+<p><em>Iterazione 3.</em> $EX\{s_1,s_2\}=\{s_0,s_1\}$. Quindi:</p>
+<p>$$\tau^3(true)=\{s_1,s_2,s_3\}\cap\{s_0,s_1\}=\{s_1\}.$$</p>
+<p><em>Iterazione 4.</em> $EX\{s_1\}=\{s_0\}$. Quindi:</p>
+<p>$$\tau^4(true)=\{s_1,s_2,s_3\}\cap\{s_0\}=\emptyset.$$</p>
+<p><em>Iterazione 5.</em> $\tau(\emptyset)=\emptyset$: punto fisso raggiunto.</p>
+<p><strong>Risultato:</strong> $EG\,p=\emptyset$, come previsto. Si vede bene il movimento
+del massimo punto fisso: a ogni giro vengono <strong>erosi</strong> gli stati che non
+possono mantenere la promessa (prima $s_0$ e $s_4$ dove $p$ e' falsa, poi
+$s_3$ che e' costretto a entrare in $s_4$, poi $s_2$, poi $s_1$).</p>
+<h3>23. Esempio svolto 2: $E[p\,U\,q]$</h3>
+<p><strong>Il modello.</strong> Quattro stati:</p>
+<p>$$s_0\to s_1\to s_2\to s_3,\qquad s_3\to s_2,$$</p>
+<p>con $p$ vera in $\{s_0,s_1\}$ e $q$ vera in $\{s_2\}$.</p>
+<p><strong>Cosa ci aspettiamo.</strong> Da $s_0$: cammino $s_0 s_1 s_2$, con $p$ vera in
+$s_0,s_1$ e poi $q$ in $s_2$: l'until e' soddisfatto. Da $s_1$: idem,
+piu' corto. $s_2$: $q$ vale subito, soddisfatto banalmente. $s_3$: $q$ non
+vale e nemmeno $p$, quindi no. Risultato atteso: $\{s_0,s_1,s_2\}$.</p>
+<p><strong>Il calcolo.</strong> $\tau(Z)=q\lor(p\land EX\,Z)$, minimo punto fisso: si parte
+da $false=\emptyset$. Ricordare: $\lor=\cup$, $\land=\cap$.</p>
+<p><em>Iterazione 1.</em> $EX\,\emptyset=\emptyset$ (nessuno ha successori nel vuoto):</p>
+<p>$$\tau(false)=\{s_2\}\cup(\{s_0,s_1\}\cap\emptyset)=\{s_2\}.$$</p>
+<p>Sono gli stati dove l'until e' soddisfatto "a costo zero": $q$ vale gia'.</p>
+<p><em>Iterazione 2.</em> $EX\{s_2\}$ = chi ha un successore in $\{s_2\}$ =
+$\{s_1,s_3\}$ (perche' $s_1\to s_2$ e $s_3\to s_2$):</p>
+<p>$$\tau^2(false)=\{s_2\}\cup(\{s_0,s_1\}\cap\{s_1,s_3\})
+=\{s_2\}\cup\{s_1\}=\{s_1,s_2\}.$$</p>
+<p>Nota come $s_3$ viene scartato dall'intersezione con $p$: ha un successore
+buono ma non soddisfa $p$ adesso, quindi l'until non vale.</p>
+<p><em>Iterazione 3.</em> $EX\{s_1,s_2\}$ = chi ha un successore in $\{s_1,s_2\}$ =
+$\{s_0,s_1,s_3\}$ ($s_0\to s_1$, $s_1\to s_2$, $s_3\to s_2$):</p>
+<p>$$\tau^3(false)=\{s_2\}\cup(\{s_0,s_1\}\cap\{s_0,s_1,s_3\})
+=\{s_2\}\cup\{s_0,s_1\}=\{s_0,s_1,s_2\}.$$</p>
+<p><em>Iterazione 4.</em> $EX\{s_0,s_1,s_2\}=\{s_0,s_1,s_3\}$ (come prima: $s_2\to s_3$
+esce dall'insieme):</p>
+<p>$$\tau^4(false)=\{s_2\}\cup(\{s_0,s_1\}\cap\{s_0,s_1,s_3\})=\{s_0,s_1,s_2\}
+=\tau^3(false)\ \Rightarrow\ \text{stop}.$$</p>
+<p><strong>Risultato:</strong> $E[p\,U\,q]=\{s_0,s_1,s_2\}$, come previsto. Qui il movimento
+e' quello del minimo punto fisso: si <strong>propaga all'indietro</strong> la bonta',
+prima gli stati dove $q$ vale gia', poi chi li raggiunge in un passo restando
+in $p$, poi in due passi, eccetera.</p>
+<h3>24. $\mu$ e $\nu$: i due movimenti, in sintesi</h3>
+<ul>
+<li><strong>$\mu$ (minimo):</strong> parto da $\emptyset$, <em>aggiungo</em> a ogni giro gli stati
+  che hanno appena acquisito una giustificazione concreta. Adatto a
+  proprieta' che chiedono che qualcosa <strong>accada</strong> ($F$, $U$): nulla entra
+  nell'insieme senza un testimone finito.</li>
+<li><strong>$\nu$ (massimo):</strong> parto da $S$, <em>tolgo</em> a ogni giro gli stati che si
+  scoprono incapaci di mantenere la promessa. Adatto a proprieta' che
+  chiedono che qualcosa <strong>non si rompa mai</strong> ($G$): si resta nell'insieme
+  finche' si riesce a sopravvivere un altro passo.</li>
+</ul>
+<p>Tutto il calcolo, in entrambi i casi, usa solo: $\cup$, $\cap$, e $EX$
+(preimmagine esistenziale). Resta da capire come eseguire queste operazioni
+su formule booleane in modo efficiente. Entrano in scena gli OBDD.</p>
+<hr>
+<h2>Parte IV — OBDD: la struttura dati per le funzioni booleane</h2>
+<h3>25. Il punto di partenza: alberi di decisione</h3>
+<p>L'esempio guida degli appunti e' il <strong>comparatore a due bit</strong>:</p>
+<p>$$f(a_1,a_2,b_1,b_2)=(a_1\leftrightarrow b_1)\land(a_2\leftrightarrow b_2).$$</p>
+<p><strong>Come leggerla:</strong> $f$ vale 1 quando la coppia $a_1a_2$ e la coppia $b_1b_2$
+sono uguali bit a bit.</p>
+<p>Una funzione booleana si puo' sempre rappresentare con un <strong>albero di
+decisione</strong>: ogni nodo interno $v$ e' etichettato da una variabile $var(v)$ e
+ha due figli, $low(v)$ (da seguire quando la variabile vale 0) e $high(v)$
+(quando vale 1); le foglie sono etichettate 0 o 1. Per valutare la funzione
+su un assegnamento si parte dalla radice, a ogni nodo si guarda il valore
+della variabile testata e si scende nel figlio corrispondente: la foglia
+raggiunta e' il valore della funzione.</p>
+<p>Il problema: l'albero completo su $n$ variabili ha $2^n$ foglie. Per il
+comparatore a due bit (4 variabili) sono 16 foglie e 31 nodi totali. Quindi
+l'albero di decisione, da solo, non risolve nulla: e' grande quanto la
+tabella di verita'. Pero' e' pieno di <strong>ridondanza</strong>: interi sottoalberi sono
+identici tra loro, e molti test non cambiano il risultato. L'idea degli OBDD
+e' spremere via tutta questa ridondanza.</p>
+<h3>26. La funzione calcolata da un nodo</h3>
+<p>Diamo la definizione formale, perche' tutto il resto ci si appoggia. Ogni
+nodo $v$ di un diagramma di decisione definisce una funzione booleana $f_v$:</p>
+<ol>
+<li>se $v$ e' una foglia con etichetta 1, allora $f_v=1$ (costante vero); se
+   ha etichetta 0, allora $f_v=0$;</li>
+<li>se $v$ e' un nodo interno con $var(v)=x_i$, allora:</li>
+</ol>
+<p>$$f_v=(\neg x_i\land f_{low(v)})\lor(x_i\land f_{high(v)}).$$</p>
+<p><strong>Come leggerla:</strong> "se $x_i=0$ il valore e' quello del ramo low; se $x_i=1$
+e' quello del ramo high". I due casi sono esclusivi, e la formula li incolla
+in una disgiunzione.</p>
+<h3>27. L'espansione di Shannon</h3>
+<p>La definizione appena data e' un caso particolare di un'identita' generale.
+Per qualunque funzione booleana $f$ e qualunque variabile $x$:</p>
+<p>$$f=(\neg x\land f|_{x=0})\lor(x\land f|_{x=1})$$</p>
+<p>dove $f|_{x=b}$ e' la funzione $f$ con $x$ fissata al valore $b$. Questa e'
+l'<strong>espansione di Shannon</strong>.</p>
+<p><strong>Perche' e' vera:</strong> dato un assegnamento qualunque, $x$ vale 0 oppure 1. Se
+vale 0, il secondo disgiunto e' falso e il primo si riduce a $f|_{x=0}$, che
+su quell'assegnamento coincide con $f$. Se vale 1, simmetricamente. In
+entrambi i casi i due lati coincidono. $\square$</p>
+<p><strong>Perche' ci interessa:</strong> dice che ogni funzione si puo' <em>scomporre</em> in due
+funzioni piu' semplici (una variabile in meno), distinguendo i casi sulla
+prossima variabile. Un BDD e' esattamente la forma a grafo di questa
+ricorsione, con i sottoproblemi uguali <strong>condivisi</strong> invece che duplicati.
+Anche l'algoritmo APPLY (sezione 34) e la quantificazione (sezione 36) sono
+applicazioni dirette di Shannon.</p>
+<h3>28. Da BDD a OBDD: l'ordine delle variabili</h3>
+<p>Un <strong>BDD</strong> (binary decision diagram) e' un DAG — non piu' un albero: i
+sottografi possono essere condivisi — con nodi interni etichettati da
+variabili e foglie 0/1, come sopra.</p>
+<p>Un <strong>OBDD</strong> (<em>ordered</em> BDD) e' un BDD in cui e' fissato un ordine totale
+sulle variabili, ad esempio $x_1&lt;x_2&lt;\cdots&lt;x_n$, e lungo <strong>ogni</strong> cammino
+dalla radice alle foglie le variabili compaiono solo in quell'ordine (non
+necessariamente tutte, ma mai in ordine diverso e mai ripetute).</p>
+<p>Due fatti vanno ricordati subito (sono i due "important points" degli
+appunti):</p>
+<ol>
+<li><strong>l'ordine influenza la taglia</strong> dell'OBDD, anche in modo drammatico
+   (sezione 31);</li>
+<li>per <strong>confrontare</strong> due funzioni tramite i loro OBDD bisogna usare lo
+   <strong>stesso ordine</strong> in entrambi: la forma canonica e' canonica <em>a parita'
+   di ordine</em>.</li>
+</ol>
+<h3>29. Le tre regole di riduzione</h3>
+<p>Per passare dall'albero (o da un BDD qualunque) alla forma compatta si
+applicano ripetutamente, finche' possibile, tre regole. Per ognuna diamo la
+regola e il motivo per cui non cambia la funzione rappresentata.</p>
+<p><strong>Regola 1: rimuovi i terminali duplicati.</strong> Se ci sono piu' foglie con la
+stessa etichetta (es. tante foglie 0), se ne tiene una sola e tutti gli archi
+entranti nelle altre vengono ridiretti su quella.</p>
+<p><em>Perche' e' corretta:</em> il valore di un cammino dipende dall'etichetta della
+foglia raggiunta, non da <em>quale</em> foglia fisicamente sia. Dopo la regola, ogni
+OBDD ha al massimo due foglie: una 0 e una 1.</p>
+<p><strong>Regola 2: rimuovi i nodi interni duplicati.</strong> Se due nodi interni distinti
+$u$ e $v$ testano la stessa variabile ($var(u)=var(v)$) e hanno gli stessi
+figli ($low(u)=low(v)$ e $high(u)=high(v)$), se ne elimina uno e gli archi
+entranti vengono ridiretti sull'altro.</p>
+<p><em>Perche' e' corretta:</em> per la definizione della sezione 26, $f_u$ e $f_v$
+sono determinate da (variabile, figlio low, figlio high); se questi tre dati
+coincidono, $f_u=f_v$: i due nodi rappresentano la stessa funzione e uno e'
+superfluo.</p>
+<p><strong>Regola 3: rimuovi i test ridondanti.</strong> Se un nodo interno $v$ ha
+$low(v)=high(v)$, il nodo si elimina e gli archi entranti vengono ridiretti
+direttamente sul figlio (unico).</p>
+<p><em>Perche' e' corretta:</em> per Shannon, $f_v=(\neg x\land f_w)\lor(x\land
+f_w)=f_w$ dove $w$ e' il figlio comune: il valore della variabile testata non
+influenza il risultato, quindi il test non serve.</p>
+<p>Un OBDD su cui nessuna regola e' piu' applicabile si dice <strong>ridotto</strong>
+(ROBDD). Quando si dice "OBDD" in questo capitolo si intende quasi sempre la
+forma ridotta.</p>
+<h3>30. L'esempio completo: da 31 nodi a 8</h3>
+<p>Per il comparatore a due bit, con l'ordine <strong>interleaved</strong>
+$a_1&lt;b_1&lt;a_2&lt;b_2$ (le variabili da confrontare stanno vicine), l'albero da 31
+nodi si riduce a un OBDD con <strong>8 nodi</strong>. Vale la pena descriverlo
+esplicitamente, livello per livello:</p>
+<ul>
+<li>radice $a_1$;</li>
+<li>due nodi $b_1$ (uno per ramo di $a_1$): quello raggiunto con $a_1=0$ manda
+  $b_1=0$ avanti e $b_1=1$ alla foglia 0; quello raggiunto con $a_1=1$ fa il
+  viceversa. In altre parole: se $a_1\ne b_1$ la funzione e' gia' decisa
+  (vale 0), altrimenti il confronto continua;</li>
+<li><strong>un solo</strong> nodo $a_2$: i due rami "sopravvissuti" ($a_1=b_1=0$ e
+  $a_1=b_1=1$) confluiscono qui, perche' da questo punto in poi la funzione
+  e' la stessa ($a_2\leftrightarrow b_2$) — questa e' la condivisione tipica
+  del DAG, impossibile in un albero;</li>
+<li>due nodi $b_2$, simmetrici ai $b_1$;</li>
+<li>le due foglie 0 e 1.</li>
+</ul>
+<p>Totale: $1+2+1+2+2=8$ nodi. Ogni cammino verso la foglia 1 legge una coppia
+uguale ($a_1=b_1$), poi un'altra coppia uguale ($a_2=b_2$): esattamente la
+semantica del comparatore.</p>
+<h3>31. Quanto conta l'ordine: da lineare a esponenziale</h3>
+<p>Con l'ordine "sbagliato" $a_1&lt;a_2&lt;b_1&lt;b_2$ (prima tutte le $a$, poi tutte le
+$b$) lo stesso comparatore richiede <strong>11 nodi</strong> invece di 8. Sembra poco, ma
+il fenomeno scala malissimo. Per il comparatore a $n$ bit:</p>
+<ul>
+<li>ordine interleaved $a_1&lt;b_1&lt;a_2&lt;b_2&lt;\cdots$: $3n+2$ nodi (<strong>lineare</strong> in
+  $n$);</li>
+<li>ordine separato $a_1&lt;\cdots&lt;a_n&lt;b_1&lt;\cdots&lt;b_n$: $3\cdot 2^n-1$ nodi
+  (<strong>esponenziale</strong> in $n$).</li>
+</ul>
+<p><strong>Perche' succede:</strong> con l'ordine separato, dopo aver letto tutte le $a_i$
+l'OBDD deve <em>ricordare</em> l'intera sequenza letta (per poterla confrontare con
+le $b_i$ che arrivano dopo): servono $2^n$ rami distinti, uno per ogni valore
+possibile della prima meta'. Con l'ordine interleaved, invece, ogni confronto
+$a_i$ vs $b_i$ si chiude subito e la memoria necessaria e' costante
+("finora uguali" oppure "gia' deciso 0").</p>
+<p>La regola pratica: <strong>tenere vicine nell'ordine le variabili che interagiscono
+nella formula</strong>. Due avvertenze importanti:</p>
+<ul>
+<li>trovare l'ordine ottimo (e perfino verificare che un ordine sia ottimo) e'
+  un problema <strong>NP-completo</strong>: nella pratica si usano euristiche e
+  riordinamento dinamico;</li>
+<li>esistono funzioni <em>intrinsecamente</em> difficili, che hanno OBDD esponenziale
+  per <strong>qualunque</strong> ordine (esempio classico: il bit centrale della
+  moltiplicazione binaria). Gli OBDD garantiscono canonicita', non
+  compattezza.</li>
+</ul>
+<h3>32. Canonicita': cosa garantisce e a cosa serve</h3>
+<p><strong>Teorema (canonicita').</strong> Fissato l'ordine delle variabili, l'OBDD ridotto
+di una funzione booleana e' <strong>unico</strong> (a meno di isomorfismo). Quindi due
+formule definiscono la stessa funzione se e solo se i loro OBDD ridotti,
+costruiti con lo stesso ordine, sono lo stesso grafo.</p>
+<p>Le conseguenze pratiche sono enormi:</p>
+<ul>
+<li><strong>test di equivalenza:</strong> "le due formule sono equivalenti?" non richiede
+  piu' un ragionamento logico (che in generale costa quanto SAT/validita'):
+  basta confrontare i due grafi. Nelle implementazioni reali, dove tutti gli
+  OBDD vivono in una tabella condivisa (<em>unique table</em>) che impedisce
+  fisicamente i duplicati, il confronto e' addirittura un <strong>confronto di
+  puntatori</strong>: stessa radice = stessa funzione, in tempo costante;</li>
+<li><strong>test di soddisfacibilita' e validita':</strong> $f$ e' insoddisfacibile se e
+  solo se il suo OBDD ridotto e' la sola foglia 0; e' valida se e solo se e'
+  la sola foglia 1;</li>
+<li><strong>test di terminazione dei punti fissi:</strong> gli algoritmi lfp/gfp devono
+  controllare a ogni giro se $Z_{i+1}=Z_i$, cioe' se due insiemi (due
+  funzioni booleane) coincidono. Con OBDD canonici questo test, ripetuto
+  migliaia di volte, e' immediato. Questa e' la ragione profonda per cui gli
+  OBDD e il model checking simbolico stanno cosi' bene insieme.</li>
+</ul>
+<h3>33. RESTRICT: fissare una variabile</h3>
+<p><strong>Definizione.</strong> Data $f$ e un valore $b\in\{0,1\}$, la funzione ristretta
+$f|_{x_i\leftarrow b}$ e' definita da:</p>
+<p>$$f|_{x_i\leftarrow b}(x_1,\ldots,x_n)=f(x_1,\ldots,x_{i-1},b,x_{i+1},
+\ldots,x_n).$$</p>
+<p><strong>Come leggerla:</strong> e' la funzione $f$ in cui l'argomento $x_i$ non e' piu'
+libero ma inchiodato al valore $b$. E' esattamente l'oggetto che compare
+nell'espansione di Shannon.</p>
+<p><strong>Come si calcola sull'OBDD (regola generale):</strong> per ogni nodo $v$ che ha un
+puntatore verso un nodo $w$ con $var(w)=x_i$, si ridirige quel puntatore su
+$low(w)$ se $b=0$, su $high(w)$ se $b=1$. In parole: i test su $x_i$ vengono
+<em>scavalcati</em>, seguendo d'ufficio il ramo corrispondente a $b$.</p>
+<p><strong>Esempio svolto (dagli appunti):</strong> comparatore a due bit, OBDD a 8 nodi
+della sezione 30, restrizione $b_1\leftarrow 0$. Scavalchiamo i due nodi
+$b_1$ seguendo il loro ramo low:</p>
+<ul>
+<li>il nodo $b_1$ di sinistra (raggiunto con $a_1=0$) ha $low$ = il nodo
+  $a_2$: la radice $a_1$ ora punta, per $a_1=0$, direttamente ad $a_2$;</li>
+<li>il nodo $b_1$ di destra (raggiunto con $a_1=1$) ha $low$ = la foglia 0
+  (perche' $a_1=1\ne 0=b_1$): la radice ora punta, per $a_1=1$, direttamente
+  alla foglia 0.</li>
+</ul>
+<p>Risultato: radice $a_1$, un nodo $a_2$, due nodi $b_2$, due foglie — <strong>6
+nodi</strong>, che rappresentano la funzione $\neg a_1\land(a_2\leftrightarrow
+b_2)$. Verifica di buon senso: se $b_1=0$, il comparatore puo' accettare solo
+se $a_1=0$, e resta da confrontare il secondo bit. Torna.</p>
+<p><strong>Avvertenza:</strong> il grafo prodotto dalla regola puo' non essere ridotto; in
+generale dopo un restrict bisogna ripassare le regole di riduzione (nel
+nostro esempio non serviva).</p>
+<h3>34. APPLY: combinare due OBDD con un connettivo</h3>
+<p>Le operazioni binarie sulle funzioni booleane sono $2^4=16$ (per ognuna delle
+4 righe della tabella di verita' su due argomenti si sceglie 0 o 1):
+congiunzione, disgiunzione, implicazione, xor, eccetera. L'algoritmo
+<strong>APPLY</strong> le calcola tutte con lo stesso schema: dato un connettivo $*$ e gli
+OBDD di $f$ e $f'$, produce l'OBDD di $f*f'$.</p>
+<p>L'idea e' ancora Shannon: per calcolare $f*f'$ distinguo i casi sulla
+prossima variabile dell'ordine, e su ciascun caso il problema si riduce a
+combinare funzioni piu' semplici, perche' il connettivo commuta con la
+distinzione di casi:</p>
+<p>$$f*f'=\big(\neg x\land(f|_{x\leftarrow 0}*f'|_{x\leftarrow 0})\big)
+\lor\big(x\land(f|_{x\leftarrow 1}*f'|_{x\leftarrow 1})\big).$$</p>
+<p>Siano $v,v'$ le radici dei due OBDD, $x=var(v)$, $x'=var(v')$. I casi:</p>
+<ol>
+<li><strong>$v$ e $v'$ entrambi foglie:</strong> il risultato e' la costante
+   $value(v)*value(v')$ (es. per $\land$: $1*1=1$, altrimenti 0).</li>
+<li><strong>$x=x'$ (stessa variabile in testa):</strong> si crea un nodo per $x$ il cui
+   ramo low e' APPLY sui due rami low, e il ramo high e' APPLY sui due rami
+   high. (Le restrizioni di $f$ rispetto a $x$ sono esattamente i suoi
+   figli.)</li>
+<li><strong>$x&lt;x'$ nell'ordine:</strong> la variabile $x$ non compare in testa a $f'$, e
+   per via dell'ordinamento non compare affatto in $f'$ (sotto $v'$ possono
+   esserci solo variabili maggiori di $x'$, quindi maggiori di $x$). Allora
+   $f'|_{x\leftarrow 0}=f'|_{x\leftarrow 1}=f'$: si crea il nodo per $x$ con
+   ramo low = APPLY su ($low(v)$, $f'$ <em>intero</em>) e ramo high = APPLY su
+   ($high(v)$, $f'$ intero).</li>
+<li><strong>$x'&lt;x$:</strong> simmetrico al caso 3.</li>
+</ol>
+<p>Alla fine si riduce il risultato con le tre regole.</p>
+<p><strong>Il punto della complessita'.</strong> Applicata ciecamente, la ricorsione
+raddoppia i sottoproblemi a ogni livello: rischio esponenziale. Ma ogni
+sottoproblema e' identificato da una <strong>coppia di nodi</strong> (un sottografo di
+$f$, uno di $f'$), e di coppie distinte ce ne sono al massimo
+$|f|\cdot|f'|$ (prodotto delle taglie dei due OBDD). Con una <strong>cache</strong> (hash
+table) che memorizza i sottoproblemi gia' risolti — da consultare <em>prima</em> di
+risolverne uno "nuovo" — ogni coppia si risolve una sola volta, e il costo
+totale e' $O(|f|\cdot|f'|)$: polinomiale, non esponenziale. Questa
+memoizzazione e' essenziale, non un'ottimizzazione facoltativa.</p>
+<h3>35. La negazione</h3>
+<p>La negazione e' un caso speciale, piu' semplice: l'OBDD di $\neg f$ si
+ottiene da quello di $f$ <strong>scambiando le etichette delle foglie</strong> (0 diventa
+1 e viceversa).</p>
+<p><strong>Perche':</strong> ogni assegnamento segue nel grafo lo stesso cammino di prima;
+deve solo arrivare al risultato opposto. Le implementazioni reali usano i
+<em>complemented edges</em> per farlo in tempo costante senza nemmeno copiare il
+grafo.</p>
+<h3>36. Quantificare su OBDD: il ritorno di QBF</h3>
+<p>I quantificatori booleani si riducono a restrict piu' un connettivo:</p>
+<p>$$\exists x.\,f=f|_{x\leftarrow 0}\lor f|_{x\leftarrow 1},
+\qquad
+\forall x.\,f=f|_{x\leftarrow 0}\land f|_{x\leftarrow 1}.$$</p>
+<p><strong>Perche' (caso $\exists$):</strong> "esiste un valore di $x$ che rende vera $f$"
+significa esattamente "$f$ e' vera con $x=0$ <em>oppure</em> con $x=1$": i valori
+possibili sono solo due, e il quantificatore e' la disgiunzione dei due casi.
+Il $\forall$ e' la congiunzione, per lo stesso motivo.</p>
+<p>Operativamente: due restrict e un APPLY. Per quantificare un <strong>vettore</strong> di
+variabili ($\exists\bar{x}'$) si elimina una variabile alla volta. Questo
+conferma quanto richiamato nella sezione 0: QBF non aggiunge potere
+espressivo (ogni quantificatore si elimina), ma la versione quantificata e'
+piu' succinta — e sugli OBDD l'eliminazione e' meccanica.</p>
+<h3>37. Renaming e relational product</h3>
+<p><strong>Renaming.</strong> Nel model checking simbolico si lavora con $\bar{x}$ (correnti)
+e $\bar{x}'$ (next). La preimmagine $Pre_E(T)$ produce una formula su
+$\bar{x}$ a partire da una $T$ su $\bar{x}'$; ma il $T$ che abbiamo in mano
+di solito e' scritto su $\bar{x}$. Serve quindi rinominare $\bar{x}$ in
+$\bar{x}'$ (o viceversa) prima/dopo l'operazione. Il renaming non cambia
+l'insieme rappresentato, solo il nome delle variabili; sugli OBDD e' una
+sostituzione di etichette (facile quando le variabili primate sono adiacenti
+alle originali nell'ordine — un altro motivo per usare ordini interleaved
+$x_1&lt;x_1'&lt;x_2&lt;x_2'&lt;\cdots$).</p>
+<p><strong>Relational product.</strong> La preimmagine esistenziale:</p>
+<p>$$Pre_E(T)(\bar{x})=\exists\bar{x}'.\ R(\bar{x},\bar{x}')\land T(\bar{x}')$$</p>
+<p>combina in un colpo solo una congiunzione (APPLY) e una quantificazione di un
+intero vettore (catena di restrict+APPLY). Questa combinazione si chiama
+<strong>relational product</strong> ed e' l'operazione singola piu' importante — e piu'
+costosa — del symbolic model checking: il prodotto intermedio
+$R\land T$ puo' crescere molto prima che le quantificazioni lo sgonfino. Le
+implementazioni serie la calcolano come primitiva unica (quantificando "al
+volo" durante la congiunzione) e ne controllano il costo con: buoni ordini di
+variabili, partizionamento della relazione $R$ (congiunzioni/disgiunzioni di
+pezzi piccoli invece di un blocco monolitico), scelta dell'ordine di
+eliminazione delle variabili, caching.</p>
+<hr>
+<h2>Parte V — Tutto insieme: CTL simbolico</h2>
+<h3>38. L'algoritmo CHECK: la struttura</h3>
+<p>Ora abbiamo tutti i pezzi: insiemi = OBDD, operazioni booleane = APPLY,
+$EX$ = relational product, punti fissi = cicli lfp/gfp con test di
+uguaglianza canonico. L'algoritmo <strong>CHECK</strong> li assembla.</p>
+<p>CHECK prende una formula CTL $\varphi$ (e la struttura di Kripke, codificata
+come OBDD per $I$, $R$ e per ogni lettera $p$) e restituisce <strong>l'OBDD
+dell'insieme degli stati dove $\varphi$ e' vera</strong>. E' definito per induzione
+sulla struttura della formula:</p>
+<ul>
+<li>$\varphi=p$ (lettera proposizionale): si restituisce l'OBDD di $S_p$, che
+  fa parte della codifica del modello;</li>
+<li>$\varphi=\neg f_1$: negazione (scambio foglie) di $CHECK(f_1)$;</li>
+<li>$\varphi=f_1\land f_2$: $APPLY(\land,CHECK(f_1),CHECK(f_2))$, e
+  analogamente per gli altri connettivi booleani;</li>
+<li>$\varphi=EX f_1$: $CheckEX(CHECK(f_1))$;</li>
+<li>$\varphi=E[f_1\,U\,f_2]$: $CheckEU(CHECK(f_1),CHECK(f_2))$;</li>
+<li>$\varphi=EG f_1$: $CheckEG(CHECK(f_1))$.</li>
+</ul>
+<p><strong>Perche' bastano $EX$, $EU$, $EG$:</strong> sono un insieme <em>adeguato</em> di
+modalita'. Tutte le altre si riducono a queste tramite equivalenze, ognuna
+con la sua giustificazione semantica:</p>
+<ul>
+<li>$EF f_1\equiv E[true\,U\,f_1]$ — "prima o poi $f_1$" e' un until con
+  condizione di attesa banale (aspettare non costa nulla);</li>
+<li>$AX f_1\equiv\neg EX\neg f_1$ — "tutti i successori soddisfano $f_1$"
+  equivale a "non esiste un successore che la viola";</li>
+<li>$AG f_1\equiv\neg EF\neg f_1$ — "su ogni cammino sempre $f_1$" equivale a
+  "non esiste un cammino che raggiunge una violazione";</li>
+<li>$AF f_1\equiv\neg EG\neg f_1$ — "su ogni cammino prima o poi $f_1$"
+  fallisce esattamente se esiste un cammino che resta per sempre in
+  $\neg f_1$;</li>
+<li>$A[f_1\,U\,f_2]$ si riduce con una formula piu' articolata (oppure si
+  calcola direttamente col suo punto fisso, usando $Pre_A$ al posto di
+  $Pre_E$).</li>
+</ul>
+<p>A ogni passo dell'induzione l'algoritmo manipola <strong>solo OBDD</strong>: mai un
+singolo stato. Vediamo le tre procedure.</p>
+<h3>39. CheckEX</h3>
+<p>$$CheckEX(f_1(\bar{x}))=\exists\bar{x}'.\ R(\bar{x},\bar{x}')\land
+f_1(\bar{x}').$$</p>
+<p><strong>Come leggerla, pezzo per pezzo:</strong> $f_1(\bar{x}')$ e' l'OBDD di $f_1$
+rinominato sulle variabili next (renaming); $R(\bar{x},\bar{x}')\land\cdot$
+e' un APPLY; $\exists\bar{x}'$ e' la catena di quantificazioni
+restrict+APPLY. Cioe': CheckEX <strong>e'</strong> il relational product della sezione 37.
+La formula risultante e' su $\bar{x}$ e rappresenta "gli stati con almeno un
+successore in $f_1$" — esattamente la semantica di $EX$.</p>
+<p><strong>Esempio svolto.</strong> Una variabile, $R(x,x')=(x'\leftrightarrow\neg x)$ (il
+sistema che inverte $x$). Calcoliamo $CHECK(EX\,x)$:</p>
+<p>$$\exists x'.\ (x'\leftrightarrow\neg x)\land x'.$$</p>
+<p>E' lo stesso calcolo della sezione 9, svolto la' passo per passo:
+restringendo $x'\leftarrow 0$ si ottiene $0$, restringendo $x'\leftarrow 1$
+si ottiene $\neg x$, la disgiunzione e' $\neg x$. Quindi:</p>
+<p>$$CHECK(EX\,x)=\neg x:$$</p>
+<p>dagli stati con $x=0$ (e solo da quelli) il prossimo stato puo' avere $x$
+vero. L'intero calcolo e' avvenuto su formule.</p>
+<h3>40. CheckEU</h3>
+<p>$CheckEU(f_1,f_2)$ calcola $E[f_1\,U\,f_2]$ instanziando l'algoritmo <code>lfp</code>
+sul predicate transformer $\tau(Z)=f_2\lor(f_1\land EX\,Z)$ (sezioni 18 e
+21):</p>
+<p>$$Z_0=false,\qquad
+Z_{i+1}=f_2\lor\big(f_1\land CheckEX(Z_i)\big),$$</p>
+<p>fermandosi quando $Z_{i+1}=Z_i$.</p>
+<p>La corrispondenza tra il calcolo insiemistico e le operazioni OBDD e' uno a
+uno: $\lor$ e $\land$ sono APPLY, $EX$ e' il relational product, e il test di
+arresto $Z_{i+1}=Z_i$ e' il confronto canonico (puntatori). L'esempio della
+sezione 23 <em>e'</em> un'esecuzione di CheckEU, scritta con gli insiemi al posto
+degli OBDD.</p>
+<h3>41. CheckEG</h3>
+<p>$CheckEG(f_1)$ calcola $EG\,f_1$ instanziando <code>gfp</code> su
+$\tau(Z)=f_1\land EX\,Z$ (sezioni 18 e 20):</p>
+<p>$$Z_0=f_1,\qquad
+Z_{i+1}=f_1\land CheckEX(Z_i),$$</p>
+<p>fermandosi quando $Z_{i+1}=Z_i$. (Partire da $f_1$ o da $true$ e'
+equivalente: la prima iterazione da $true$ produce comunque
+$f_1\land EX\,true=f_1$.)</p>
+<p>L'esempio della sezione 22 e' un'esecuzione di CheckEG. La lettura operativa
+del massimo punto fisso: a ogni giro sopravvivono solo gli stati di $f_1$ con
+almeno un successore ancora sopravvissuto — l'analogo simbolico della ricerca
+di un ciclo (una SCC) tutto dentro la regione $f_1$.</p>
+<h3>42. Raggiungibilita' e safety, simbolicamente</h3>
+<p>Con gli stessi ingredienti si calcola l'insieme degli stati raggiungibili,
+stavolta in avanti con la post-immagine:</p>
+<p>$$Z_0=I,\qquad Z_{i+1}=Z_i\lor Post(Z_i),$$</p>
+<p>fino a $Z_{i+1}=Z_i$. <strong>Perche' funziona:</strong> $Z_i$ e' l'insieme degli stati
+raggiungibili in al piu' $i$ passi (induzione immediata), la catena e'
+crescente, il modello e' finito, quindi si stabilizza, e il limite e'
+$Reach$.</p>
+<p>A quel punto la safety "mai $Bad$" si decide come nella sezione 8:
+$Reach\land Bad$ insoddisfacibile (OBDD = foglia 0) significa proprieta'
+verificata; altrimenti ogni assegnamento che la soddisfa e' uno stato bad
+raggiungibile, e una traccia di errore si ricostruisce a ritroso
+intersecando, livello per livello, i $Z_i$ con le preimmagini dello stato
+bad trovato.</p>
+<hr>
+<h2>Parte VI — Partial-order reduction</h2>
+<h3>43. L'idea: non esplorare interleaving equivalenti</h3>
+<p>La partial-order reduction (POR) e' la terza arma contro lo state explosion,
+e attacca specificamente l'esplosione da <strong>concorrenza</strong> (sezione 2). Si usa
+nel model checking <em>esplicito</em> (tipicamente in strumenti come SPIN), spesso
+in combinazione con le tecniche simboliche nel panorama generale.</p>
+<p>Due azioni $a$ e $b$ di processi diversi si dicono <strong>indipendenti</strong> quando:</p>
+<ul>
+<li>eseguire $a$ non abilita ne' disabilita $b$, e viceversa (non interferiscono
+  sul controllo);</li>
+<li>da uno stesso stato, eseguire $a;b$ oppure $b;a$ porta <strong>allo stesso stato
+  finale</strong> (commutano sui dati).</li>
+</ul>
+<p>Se inoltre la proprieta' da verificare <strong>non osserva</strong> l'ordine relativo di
+$a$ e $b$ (non distingue gli stati intermedi), allora i due interleaving
+$a;b$ e $b;a$ sono indistinguibili ai fini della verifica, ed esplorarli
+entrambi e' lavoro sprecato.</p>
+<p><strong>Esempio.</strong> Il processo 1 incrementa la variabile locale $x$, il processo 2
+incrementa la variabile locale $y$. Variabili diverse, nessuna interferenza:
+$inc_x;inc_y$ e $inc_y;inc_x$ portano allo stesso stato. Se la proprieta'
+riguarda solo lo stato finale (es. "entrambi terminano"), basta esplorare
+<strong>un rappresentante</strong> delle due sequenze. Con $n$ processi che fanno $k$ passi
+indipendenti l'una, gli interleaving sono un numero combinatorio gigantesco,
+ma le classi di equivalenza possono essere pochissime: la POR esplora un
+rappresentante per classe, riducendo il grafo anche di ordini di grandezza.</p>
+<p><strong>Il punto delicato:</strong> la riduzione e' corretta solo rispetto a proprieta'
+che davvero non osservano l'ordine scartato. Se la formula temporale
+distingue gli stati intermedi (es. parla di $x$ <em>e</em> di $y$ in momenti
+precisi), certe permutazioni non si possono potare. Gli algoritmi reali
+(ample sets e simili) calcolano, stato per stato, un sottoinsieme di azioni
+sufficiente a preservare la verita' della proprieta'.</p>
+<hr>
+<h2>Parte VII — Bounded Model Checking</h2>
+<h3>44. Cambio di prospettiva: da dimostrare a cercare bug</h3>
+<p>Il model checking LTL chiede $\mathcal{M},s\models\psi$. Come visto nel
+capitolo 8, conviene lavorare sulla negazione: $\psi$ e' violata se e solo se
+esiste un cammino che soddisfa $\varphi:=\neg\psi$, cioe' se il problema
+esistenziale $\mathcal{M},s\models E\varphi$ ha risposta si' (in termini di
+automi: se $\mathcal{M}\times\mathcal{A}_{\neg\psi}$ ha linguaggio non
+vuoto — ma il BMC questo prodotto non lo costruira' mai esplicitamente).</p>
+<p>Il <strong>bounded model checking</strong> affronta il problema esistenziale cosi':</p>
+<ol>
+<li>si parte con $k=0$;</li>
+<li>si chiede: "esiste un'esecuzione di $\mathcal{M}$ di lunghezza $k$ che
+   soddisfa $\varphi$?" — e si <strong>codifica questa domanda come istanza SAT</strong>,
+   da dare a un SAT solver;</li>
+<li>se il solver risponde SAT, abbiamo trovato un controesempio a $\psi$ (e
+   l'assegnamento del solver <em>e'</em> la traccia, leggibile stato per stato);
+   se risponde UNSAT, si incrementa $k$ e si riprova.</li>
+</ol>
+<p>Il guadagno di efficienza sta tutto nel punto 2: i SAT solver moderni sono
+straordinariamente ottimizzati, e cercare una traccia di lunghezza bounded e'
+un problema che si scrive in modo naturale come formula proposizionale.</p>
+<h3>45. Sistemi di transizione simbolici</h3>
+<p>L'encoding parte dalla stessa idea della Parte II, che qui rivediamo nella
+notazione usata per il BMC. Data $\mathcal{M}=(S,I,T,L)$ esplicita, la sua
+codifica booleana e':</p>
+<ul>
+<li>$\bar{s}$: un vettore di variabili booleane di stato; uno <strong>stato</strong> e' un
+  assegnamento a tutte le variabili di $\bar{s}$ (con $n$ variabili, $2^n$
+  stati possibili);</li>
+<li>$f_I(\bar{s})$: un assegnamento $m$ soddisfa $f_I$ se e solo se $m$ e' uno
+  stato iniziale;</li>
+<li>$f_T(\bar{s},\bar{s}')$: la coppia di assegnamenti $(m,m')$ soddisfa $f_T$
+  se e solo se $(m,m')$ e' una transizione;</li>
+<li>$f_p(\bar{s})$ per ogni etichetta $p$: $m$ soddisfa $f_p$ se e solo se $p$
+  e' vera nello stato $m$.</li>
+</ul>
+<p>Un <strong>cammino</strong> (o traccia) e' una successione infinita di assegnamenti
+$\pi=m_0,m_1,m_2,\ldots$ tale che $m_0$ soddisfa $I$ e ogni coppia
+consecutiva $(m_i,m_{i+1})$ soddisfa $T$.</p>
+<h3>46. SMV: scrivere il modello direttamente come formule</h3>
+<p>Nella pratica nessuno scrive $f_I$ e $f_T$ a mano arco per arco: si usano
+linguaggi di modellazione simbolici. <strong>SMV</strong> (e il suo erede nuXmv) e'
+l'esempio del corso: un file SMV <em>e'</em> la rappresentazione simbolica di una
+struttura di Kripke. Tre parole chiave:</p>
+<ul>
+<li><code>VAR</code>: dichiara le variabili di stato;</li>
+<li><code>INIT</code>: una formula booleana sulle variabili di stato = gli stati iniziali;</li>
+<li><code>TRANS</code>: una formula booleana su variabili correnti e <code>next(...)</code> = la
+  relazione di transizione.</li>
+</ul>
+<p><strong>Esempio 1: il flip-flop.</strong></p>
+<pre><code class="language-text">MODULE main
+VAR
+    s0 : boolean;
+INIT
+    !s0;
+TRANS
+    next(s0) &lt;-&gt; !s0;
+</code></pre>
+<p>Lettura riga per riga: una sola variabile booleana <code>s0</code>, quindi due stati;
+si parte dallo stato con <code>s0</code> falso (<code>INIT !s0</code>); a ogni passo il prossimo
+valore di <code>s0</code> e' l'opposto di quello attuale (<code>TRANS</code>). E' esattamente il
+sistema "inverti $x$" usato negli esempi delle sezioni 9 e 39, scritto in
+sintassi concreta.</p>
+<p><strong>Esempio 2: il contatore modulo 4.</strong></p>
+<pre><code class="language-text">MODULE main
+VAR
+    s0 : boolean;
+    s1 : boolean;
+INIT
+    !s0 &amp; !s1;
+TRANS
+    (next(s0) &lt;-&gt; !s0)
+  &amp; (next(s1) &lt;-&gt; ((s0 &amp; !s1) | (!s0 &amp; s1)));
+</code></pre>
+<p>Qui gli stati sono 4 e servono due variabili: <code>s0</code> e' il bit meno
+significativo, <code>s1</code> il piu' significativo. <code>INIT</code> fissa il valore 00. La
+prima riga di <code>TRANS</code> dice che il bit basso si inverte a ogni passo (come in
+ogni incremento binario); la seconda dice che il bit alto al passo successivo
+vale "s0 xor s1" (riporto dell'incremento). Il sistema cicla:</p>
+<p>$$00\to 01\to 10\to 11\to 00\to\cdots$$</p>
+<p>cioe' conta modulo 4. Da notare: la transizione e' data <strong>come formula</strong> su
+variabili correnti e next, mai come elenco di archi.</p>
+<h3>47. Unrolling: la formula $[\![M]\!]_k$</h3>
+<p>Primo ingrediente dell'encoding SAT: una formula i cui modelli sono <strong>tutti e
+soli i cammini di lunghezza $k$</strong> del sistema. Si introducono $k+1$ copie
+delle variabili di stato, $\bar{s}_0,\bar{s}_1,\ldots,\bar{s}_k$ (la copia
+$\bar{s}_i$ rappresenta lo stato al tempo $i$), e si scrive:</p>
+<p>$$[\![M]\!]_k\ :=\ I(\bar{s}_0)\ \land\
+\bigwedge_{i=0}^{k-1}T(\bar{s}_i,\bar{s}_{i+1}).$$</p>
+<p><strong>Come leggerla:</strong> "l'assegnamento alla copia 0 e' uno stato iniziale, e ogni
+coppia di copie consecutive e' una transizione". Un assegnamento che
+soddisfa questa formula assegna valori a tutte le copie, cioe' descrive una
+sequenza di $k+1$ stati che parte bene e si muove legalmente: un prefisso di
+esecuzione di lunghezza $k$. Questa costruzione si chiama <strong>unrolling</strong>
+(srotolamento) della relazione di transizione.</p>
+<h3>48. Il problema dei cammini infiniti e la soluzione del lasso</h3>
+<p>C'e' un ostacolo concettuale: le formule LTL sono definite su cammini
+<strong>infiniti</strong>, ma il BMC maneggia prefissi <strong>finiti</strong>. Come si decide, su un
+oggetto finito, una proprieta' che parla dell'infinito?</p>
+<p>L'osservazione cruciale: un prefisso finito puo' rappresentare un cammino
+infinito <strong>se contiene un loop-back</strong>, cioe' una transizione dall'ultimo
+stato a uno stato gia' visitato.</p>
+<p><strong>Definizione ((k,l)-loop).</strong> Un cammino $\pi$ e' un $(k,l)$-loop, con
+$l\le k$, se $T(\pi(k),\pi(l))$ vale e:</p>
+<p>$$\pi=u\cdot v^\omega,\qquad
+u=\pi(0)\cdots\pi(l-1),\quad v=\pi(l)\cdots\pi(k).$$</p>
+<p><strong>Come leggerla:</strong> il cammino e' fatto di un prefisso $u$ (gli stati prima
+del punto di rientro) seguito dal ciclo $v$ ripetuto per sempre. La forma
+grafica e' quella di un <strong>lasso</strong>. Diciamo che $\pi$ e' un $k$-loop se e' un
+$(k,l)$-loop per qualche $l\le k$.</p>
+<p><strong>Perche' basta:</strong> e' lo stesso argomento degli automi di Buchi: in un
+sistema a stati finiti, ogni cammino infinito prima o poi ripete uno stato,
+quindi se esiste un controesempio infinito ne esiste uno <em>ultimamente
+periodico</em>, cioe' a forma di lasso. Cercare lassi non fa perdere
+controesempi (pur di far crescere $k$ abbastanza).</p>
+<p>Il BMC quindi distingue due casi per ogni traccia bounded:</p>
+<ul>
+<li>la traccia <strong>ha un loop-back</strong>: rappresenta un vero cammino infinito, e si
+  puo' valutare $\varphi$ con la semantica LTL standard;</li>
+<li>la traccia <strong>non ha loop-back</strong>: e' solo un prefisso finito, e serve una
+  semantica apposita e <em>prudente</em> (la bounded semantics, sezione 51).</li>
+</ul>
+<h3>49. Codificare il loop: ${}_lL_k$, $L_k$ e $succ$</h3>
+<p>Anche "la traccia ha un loop-back" deve diventare una formula booleana.</p>
+<p>$${}_lL_k\ :=\ T(\bar{s}_k,\bar{s}_l)$$</p>
+<p><strong>Come leggerla:</strong> "dall'ultimo stato (copia $k$) c'e' una transizione che
+rientra nella copia $l$": la traccia e' un $(k,l)$-loop.</p>
+<p>$$L_k\ :=\ \bigvee_{l=0}^{k}\ {}_lL_k$$</p>
+<p><strong>Come leggerla:</strong> "esiste un punto di rientro": la traccia e' un $k$-loop
+per qualche $l$. Il quantificatore "esiste $l$" diventa una disgiunzione
+finita, perche' i candidati sono solo $k+1$.</p>
+<p>Per dare la semantica dentro un $(k,l)$-loop serve sapere chi e' il
+"prossimo" di ogni posizione:</p>
+<p>$$succ(i)=\begin{cases}i+1 &amp; \text{se } i&lt;k\\ l &amp; \text{se } i=k\end{cases}$$</p>
+<p>cioe' si avanza normalmente lungo il prefisso, e dall'ultima posizione si
+rientra nel punto $l$ del ciclo.</p>
+<h3>50. Encoding di $\varphi$ nel caso con loop</h3>
+<p>Per una traccia che e' un $(k,l)$-loop, la formula LTL si traduce
+ricorsivamente in una formula booleana ${}_l[\![\varphi]\!]_k^i$ ("$\varphi$
+vale alla posizione $i$"):</p>
+<ul>
+<li>${}_l[\![p]\!]_k^i:=p(\bar{s}_i)$ — il caso base, e il piu' importante: "la
+  lettera $p$ vale al tempo $i$" diventa la formula booleana di $p$ valutata
+  sulla copia $i$-esima delle variabili;</li>
+<li>${}_l[\![\neg p]\!]_k^i:=\neg p(\bar{s}_i)$;</li>
+<li>congiunzioni e disgiunzioni si traducono per induzione sui due argomenti;</li>
+<li>${}_l[\![X\varphi]\!]_k^i:={}_l[\![\varphi]\!]_k^{succ(i)}$ — "next" salta
+  alla posizione successiva, che grazie a $succ$ esiste sempre (da $k$ si
+  rientra in $l$);</li>
+<li>${}_l[\![G\varphi]\!]_k^i:=\bigwedge_{j=\min(i,l)}^{k}
+  {}_l[\![\varphi]\!]_k^j$ — "per sempre" diventa una congiunzione su tutte
+  le posizioni che il cammino visitera' da $i$ in poi: quelle del ciclo e
+  quelle del suffisso del prefisso (l'indice parte da $\min(i,l)$ proprio per
+  coprire l'intero ciclo);</li>
+<li>${}_l[\![F\varphi]\!]_k^i:=\bigvee_{j=\min(i,l)}^{k}
+  {}_l[\![\varphi]\!]_k^j$ — "prima o poi" e' la disgiunzione sulle stesse
+  posizioni;</li>
+<li>$\varphi\,U\,\psi$ segue la semantica: esiste una posizione futura
+  (eventualmente raggiunta rientrando nel ciclo) dove vale $\psi$, e
+  $\varphi$ vale in tutte le posizioni attraversate prima.</li>
+</ul>
+<p>Il punto da capire e' uno solo: su un lasso le posizioni "future" sono un
+insieme <strong>finito</strong> e noto (prefisso + ciclo), quindi ogni quantificazione
+temporale diventa una congiunzione o disgiunzione finita. La semantica LTL
+standard si applica <em>per intero</em>: nessuna approssimazione.</p>
+<h3>51. Bounded semantics nel caso senza loop: le tre trappole</h3>
+<p>Se la traccia non ha loop-back, e' solo un prefisso: del futuro oltre $k$ non
+sappiamo nulla. La <strong>bounded semantics</strong> $\pi\models_k^i\varphi$ e' definita
+per essere <em>prudente</em>: dichiara vera una formula solo se il prefisso basta a
+garantirla, comunque continui il cammino.</p>
+<ul>
+<li>proposizioni e connettivi booleani: come sempre ($p$ vale se sta
+  nell'etichetta dello stato $i$; induzione per $\lor$ e $\land$);</li>
+<li><strong>trappola 1 — Next:</strong> $\pi\models_k^i X\varphi$ se e solo se $i&lt;k$ <strong>e</strong>
+  $\pi\models_k^{i+1}\varphi$. La condizione $i&lt;k$ non e' pignoleria: serve a
+  garantire che la posizione $i+1$ <em>esista nel prefisso</em>; all'ultima
+  posizione, $X\varphi$ e' falsa perche' non possiamo verificarla;</li>
+<li><strong>trappola 2 — Globally:</strong> $\pi\models_k^i G\varphi$ e' <strong>sempre falsa</strong>.
+  Sembra brutale, ma e' inevitabile: "per sempre" parla di infinite
+  posizioni, e un prefisso finito non puo' certificarle tutte. Nessun
+  prefisso senza loop dimostra un $G$;</li>
+<li><strong>trappola 3 — Eventually:</strong> $\pi\models_k^i F\varphi$ richiede un
+  testimone <strong>entro il bound</strong>: esiste $j$ con $i\le j\le k$ e
+  $\pi\models_k^j\varphi$. "Prima o poi, ma entro $k$";</li>
+<li><strong>Until:</strong> $\pi\models_k^i\varphi\,U\,\psi$ se esiste $j$ con $i\le j\le k$
+  tale che $\psi$ vale in $j$ e $\varphi$ vale in tutte le posizioni $n$ con
+  $i\le n&lt;j$ — come la semantica standard, ma col testimone confinato nel
+  prefisso.</li>
+</ul>
+<p>La proprieta' che giustifica tutto (la <strong>conservativita'</strong>): se $\varphi$ e'
+vera su un prefisso sotto bounded semantics, allora e' vera, sotto semantica
+standard, su <strong>ogni</strong> estensione infinita di quel prefisso. Quindi un
+controesempio trovato con la bounded semantics e' un controesempio vero:
+niente falsi allarmi.</p>
+<p>In forma di encoding (con la convenzione che oltre il bound tutto e' falso):</p>
+<p>$$[\![\varphi]\!]_k^{k+1}:=\bot,\qquad
+[\![X\varphi]\!]_k^i:=[\![\varphi]\!]_k^{i+1},\qquad
+[\![F\varphi]\!]_k^i:=\bigvee_{j=i}^{k}[\![\varphi]\!]_k^j,$$</p>
+<p>$$[\![\varphi\,U\,\psi]\!]_k^i:=\bigvee_{j=i}^{k}\Big([\![\psi]\!]_k^j\land
+\bigwedge_{n=i}^{j-1}[\![\varphi]\!]_k^n\Big),$$</p>
+<p>e $G\varphi$ risulta falso automaticamente (la sua espansione arriva sempre a
+toccare la posizione $k+1$, dove vale $\bot$).</p>
+<h3>52. La formula complessiva e il teorema di soundness</h3>
+<p>Mettendo insieme i pezzi, la formula che il BMC consegna al SAT solver
+all'iterazione $k$ e':</p>
+<p>$$[\![M,\varphi]\!]_k\ :=\ [\![M]\!]_k\ \land\
+\Big(\big(\neg L_k\land[\![\varphi]\!]_k^0\big)\ \lor\
+\bigvee_{l=0}^{k}\big({}_lL_k\land{}_l[\![\varphi]\!]_k^0\big)\Big).$$</p>
+<p><strong>Come leggerla, da sinistra a destra:</strong> "la sequenza di assegnamenti e' una
+vera esecuzione lunga $k$ ($[\![M]\!]_k$), <strong>e</strong>: o non c'e' alcun loop-back
+($\neg L_k$) e allora $\varphi$ vale alla posizione 0 secondo la bounded
+semantics, oppure c'e' un rientro in $l$ (${}_lL_k$) e allora $\varphi$ vale
+alla posizione 0 secondo la semantica standard sul lasso".</p>
+<p><strong>Teorema (soundness).</strong> $[\![M,\varphi]\!]_k$ e' soddisfacibile se e solo se
+$\mathcal{M}\models_k E\varphi$, cioe' se esiste una traccia bounded da $k$
+passi che soddisfa $\varphi$.</p>
+<p>Conseguenze operative: se il solver dice SAT, l'assegnamento trovato contiene
+i valori di tutte le copie $\bar{s}_0,\ldots,\bar{s}_k$, cioe' il
+controesempio leggibile stato per stato. Se dice UNSAT, sappiamo che <strong>non
+esiste un controesempio di lunghezza $\le k$</strong> — e nient'altro: potrebbe
+esisterne uno piu' lungo.</p>
+<h3>53. Completezza: cosa succede se il bug non c'e'</h3>
+<p>Qui sta il limite strutturale del BMC. L'algoritmo e':</p>
+<ol>
+<li>$k:=0$;</li>
+<li>chiama il SAT solver su $[\![M,\varphi]\!]_k$;</li>
+<li>se SAT: stop, controesempio trovato; altrimenti $k:=k+1$ e torna al
+   punto 2.</li>
+</ol>
+<p>Se il sistema <strong>soddisfa</strong> la proprieta' (cioe' il controesempio non esiste),
+questo ciclo <strong>non termina mai</strong> da solo: ogni UNSAT dice solo "non a questa
+lunghezza". Per fermarsi legittimamente bisogna sapere a priori un bound
+$k^*$ con la garanzia:</p>
+<blockquote>
+<p>se esiste un controesempio, ne esiste uno di lunghezza al massimo $k^*$.</p>
+</blockquote>
+<p>Bound del genere esistono — il <strong>diametro</strong> del grafo degli stati per
+raggiungibilita', il <strong>recurrence diameter</strong> (il piu' lungo cammino senza
+stati ripetuti) per le proprieta' generali, il <em>completeness threshold</em> — ma
+calcolarli e' molto costoso, spesso quanto il problema originale. Per questo
+nella pratica:</p>
+<blockquote>
+<p>il BMC si usa come <strong>bug finder</strong>, non come prover: SAT = bug trovato (con
+traccia); una serie di UNSAT per $k$ piccoli = "nessun bug corto", che
+aumenta la fiducia ma non e' una dimostrazione di correttezza.</p>
+</blockquote>
+<h3>54. BMC incrementale</h3>
+<p>Un dettaglio pratico importante: passando da $k$ a $k+1$ la formula cambia
+pochissimo — si aggiunge una copia di variabili $\bar{s}_{k+1}$, un congiunto
+$T(\bar{s}_k,\bar{s}_{k+1})$, e si aggiorna la parte sulla violazione. I SAT
+solver moderni supportano l'<strong>incremental solving</strong>: riusano tra una
+chiamata e l'altra le clausole apprese e lo stato interno, invece di
+ripartire da zero. Il ciclo del BMC e' fatto apposta per sfruttarlo.</p>
+<h3>55. Uno sguardo a nuXmv</h3>
+<p><strong>nuXmv</strong> e' il model checker simbolico che chiude il capitolo: erede di
+NuSMV, analizza sistemi a stati finiti <strong>e</strong> infiniti:</p>
+<ul>
+<li>per il caso finito offre sia il motore <strong>BDD-based</strong> (i punti fissi della
+  Parte V) sia un motore <strong>SAT-based</strong> moderno (il BMC della Parte VII): le
+  due meta' del capitolo convivono nello stesso strumento;</li>
+<li>per il caso infinito usa tecniche SMT, tramite l'integrazione con MathSAT5.</li>
+</ul>
+<p>Il linguaggio di modellazione e' quello visto nella sezione 46 (<code>VAR</code>,
+<code>INIT</code>, <code>TRANS</code>, piu' le <code>IVAR</code> per gli input controllati dall'ambiente e lo
+stile alternativo <code>ASSIGN init(v)/next(v)</code>). Le proprieta' si dichiarano nel
+file, ad esempio per LTL:</p>
+<pre><code class="language-text">LTLSPEC G !(bad);
+</code></pre>
+<p>con la sintassi $X,F,G,U,R$. E' il punto in cui tutta la teoria del capitolo
+(encoding booleano, unrolling, loopback) diventa un comando concreto da
+eseguire.</p>
+<hr>
+<h2>Parte VIII — Quadro finale</h2>
+<h3>56. OBDD contro SAT/BMC: quando usare cosa</h3>
+<p>Le due tecniche simboliche non sono in competizione: rispondono a domande
+diverse.</p>
+<p><strong>Symbolic model checking con OBDD.</strong> Punti forti: dimostra proprieta' su
+tutto il modello (punti fissi = quantificazione su <em>tutti</em> i cammini);
+rappresenta insiemi enormi in modo compatto quando l'ordine e' buono; e' la
+tecnica naturale per CTL e per la raggiungibilita' completa. Limiti: la
+taglia degli OBDD dipende criticamente dall'ordine delle variabili (e
+trovare quello ottimo e' NP-completo); alcune funzioni sono grandi per
+qualunque ordine; il relational product puo' esplodere nei passaggi
+intermedi.</p>
+<p><strong>SAT-based BMC.</strong> Punti forti: eccellente nel <em>trovare</em> controesempi, anche
+profondi, sfruttando SAT solver modernissimi; non costruisce mai l'insieme
+degli stati raggiungibili; la formula cresce in modo controllato con $k$.
+Limiti: UNSAT a bound basso non dimostra nulla; la completezza richiede bound
+(diametri) costosi da calcolare; le proprieta' di liveness richiedono la
+macchineria dei lassi.</p>
+<p>Regola di scelta: per <strong>dimostrare</strong> una proprieta' su tutto il modello,
+OBDD/punti fissi; per <strong>cercare rapidamente un bug</strong>, BMC; se l'esplosione
+nasce da molte interleaving indipendenti, la <strong>POR</strong> riduce il grafo prima o
+durante l'esplorazione. Nella pratica industriale le tecniche si combinano.</p>
+<h3>57. Collegamento con i capitoli 8 e 10</h3>
+<p><strong>Indietro (capitolo 8).</strong> Il capitolo 9 non cambia la teoria logica: cambia
+la <strong>rappresentazione</strong>. Dove il capitolo 8 scriveva $Sat(\varphi)\subseteq
+S$ come insieme esplicito, ora c'e' la formula $CHECK(\varphi)(\bar{x})$;
+dove calcolava $Pre(X)$ visitando archi, ora c'e'
+$\exists\bar{x}'.R(\bar{x},\bar{x}')\land X(\bar{x}')$. Gli algoritmi sono
+gli stessi, tradotti in operazioni su formule.</p>
+<p><strong>Avanti (capitolo 10).</strong> La sintesi e' piu' difficile del model checking:
+non verifica un sistema dato, deve costruirlo. Le idee di questo capitolo
+ricompaiono identiche: rappresentare insiemi di posizioni, calcolare regioni
+vincenti con punti fissi, evitare enumerazioni esplicite.</p>
+<h3>58. Errori tipici</h3>
+<ul>
+<li><strong>Pensare che "simbolico" significhi "approssimato".</strong> No: il model
+  checking simbolico e' esatto. Cambia la rappresentazione degli insiemi, non
+  la semantica della logica.</li>
+<li><strong>Confondere OBDD e SAT.</strong> Un OBDD <em>rappresenta</em> una funzione booleana come
+  DAG canonico (e rende facili equivalenza e quantificazione); un SAT solver
+  <em>cerca un assegnamento</em> che soddisfa una formula. Strumenti diversi, usati
+  da tecniche diverse (punti fissi vs BMC).</li>
+<li><strong>Credere che BMC dimostri correttezza.</strong> UNSAT al bound $k$ esclude solo i
+  controesempi di lunghezza $\le k$. Per una dimostrazione serve un
+  completeness threshold (costoso) o un'altra tecnica.</li>
+<li><strong>Dimenticare le variabili primate.</strong> Senza $\bar{x}'$ non si puo' nemmeno
+  scrivere "il valore cambia": la relazione di transizione vive su due copie
+  delle variabili.</li>
+<li><strong>Scambiare $Pre_E$ e $Pre_A$.</strong> "Esiste un successore buono" ($EX$) e
+  "tutti i successori sono buoni" ($AX$) sono proprieta' opposte: scambiarle
+  ribalta il significato delle formule CTL.</li>
+<li><strong>Dimenticare che la canonicita' e' relativa all'ordine.</strong> Due OBDD si
+  confrontano solo se costruiti con lo stesso ordine di variabili.</li>
+<li><strong>Nel BMC, dimenticare il caso senza loop.</strong> $G\varphi$ su un prefisso
+  senza loop-back e' <em>sempre falso</em>: un prefisso finito non certifica un
+  "per sempre".</li>
+</ul>
+<h3>59. Mini-esercizi svolti</h3>
+<p><strong>Esercizio 1 (preimmagine).</strong> $R(x,x')=(x'\leftrightarrow\neg x)$.
+Calcolare $Pre_E(x')$.</p>
+<p><em>Svolgimento:</em> $\exists x'.(x'\leftrightarrow\neg x)\land x'$. Caso $x'=0$:
+$(0\leftrightarrow\neg x)\land 0=0$. Caso $x'=1$:
+$(1\leftrightarrow\neg x)\land 1=\neg x$. Disgiunzione: $\neg x$.
+<em>Risultato:</em> $Pre_E(x')=\neg x$ (per finire in $x=1$ col sistema che inverte,
+bisogna partire da $x=0$).</p>
+<p><strong>Esercizio 2 (punto fisso EF).</strong> Dato $Goal(\bar{x})$, scrivere il calcolo
+simbolico di $EF\,goal$ e spiegarlo.</p>
+<p><em>Svolgimento:</em> $Z_0=Goal$, $Z_{i+1}=Z_i\lor Pre_E(Z_i)$, stop quando
+$Z_{i+1}=Z_i$. A ogni iterazione si aggiungono gli stati che raggiungono in
+un passo una regione gia' buona; $Z_i$ = "raggiungo $goal$ in $\le i$ passi";
+la catena cresce, il modello e' finito, quindi si stabilizza sul minimo punto
+fisso, che e' $EF\,goal$.</p>
+<p><strong>Esercizio 3 (riduzione OBDD).</strong> Ridurre l'OBDD di
+$f=(x\land y)\lor(x\land\neg y)$ con ordine $x&lt;y$.</p>
+<p><em>Svolgimento:</em> algebricamente $f=x\land(y\lor\neg y)=x$. Sul grafo: il nodo
+$y$ raggiunto con $x=1$ ha entrambi i figli sulla foglia... attenzione, va
+costruito: con $x=0$ entrambi i rami portano a 0; con $x=1$, $y=0$ da' 1 e
+$y=1$ da' 1, quindi il nodo $y$ ha $low=high=1$ e cade per la regola 3 (test
+ridondante). Resta il solo test su $x$: $x=0\to 0$, $x=1\to 1$.
+<em>Risultato:</em> l'OBDD ridotto e' il singolo nodo $x$ con le due foglie.</p>
+<p><strong>Esercizio 4 (BMC safety, $k=2$).</strong> Scrivere l'encoding per cercare una
+violazione di $G\,\neg bad$ entro 2 passi.</p>
+<p><em>Svolgimento:</em> la negazione della proprieta' e' $F\,bad$; su un prefisso la
+bounded semantics richiede un testimone entro il bound, quindi:</p>
+<p>$$I(\bar{s}_0)\land T(\bar{s}_0,\bar{s}_1)\land T(\bar{s}_1,\bar{s}_2)
+\land\big(bad(\bar{s}_0)\lor bad(\bar{s}_1)\lor bad(\bar{s}_2)\big).$$</p>
+<p>Se SAT: l'assegnamento e' una traccia di al piu' 2 passi che tocca uno stato
+bad (per una violazione di safety non serve il lasso: il prefisso basta, per
+conservativita'). Se UNSAT: nessuna violazione entro 2 passi — il che non
+prova che $bad$ sia irraggiungibile in assoluto.</p>
+<h3>60. Mappa per l'orale</h3>
+<p>Sequenza con cui ricostruire il capitolo a voce:</p>
+<ol>
+<li><strong>Problema:</strong> state explosion ($2^n$ con $n$ variabili; prodotto e
+   interleaving con la concorrenza); esplicito $\approx 10^6$ stati, serve
+   cambiare rappresentazione.</li>
+<li><strong>Mondo simbolico:</strong> stato = assegnamento a $\bar{x}$; insieme di stati =
+   formula (funzione caratteristica); transizione = $R(\bar{x},\bar{x}')$
+   con variabili primate; operazioni insiemistiche = connettivi.</li>
+<li><strong>Movimenti:</strong> $Post$, $Pre_E$, $Pre_A$ con i quantificatori booleani;
+   $Pre_E=EX$, $Pre_A=AX$.</li>
+<li><strong>Punti fissi:</strong> reticolo $Powerset(S)$, predicate transformer, monotonia
+   (saperne dimostrare una!), Tarski ($\mu$ = intersezione dei pre-punti
+   fissi, $\nu$ = unione dei post-punti fissi), i 4 lemmi del caso finito,
+   algoritmi lfp/gfp con invariante e bound $|S|$.</li>
+<li><strong>CTL come punti fissi:</strong> le sei equazioni; regola mnemonica (F da' $\mu$,
+   G da' $\nu$, U sempre $\mu$); saper tracciare $EG\,p$ e $E[p\,U\,q]$ sugli
+   esempi.</li>
+<li><strong>OBDD:</strong> decision tree (comparatore), funzione di un nodo, Shannon, le
+   <em>tre</em> regole di riduzione, ordine (3n+2 vs $3\cdot 2^n-1$;
+   NP-completezza), canonicita' e sue conseguenze.</li>
+<li><strong>Operazioni:</strong> restrict (regola dei puntatori), apply (4 casi +
+   memoizzazione $O(|f||f'|)$), negazione (scambio foglie), quantificazione
+   ($\exists x f=f|_0\lor f|_1$), relational product.</li>
+<li><strong>CHECK:</strong> induttivo; bastano EX/EU/EG (dualita'); CheckEX = relational
+   product; CheckEU = lfp; CheckEG = gfp.</li>
+<li><strong>POR:</strong> azioni indipendenti, un rappresentante per classe di
+   interleaving, cautela con proprieta' che osservano l'ordine.</li>
+<li><strong>BMC:</strong> riduzione a $E\varphi$ con $\varphi=\neg\psi$; unrolling
+    $[\![M]\!]_k$; lasso/(k,l)-loop e $succ$; bounded semantics (X con
+    $i&lt;k$, G sempre falso, F entro il bound); formula complessiva; soundness;
+    completezza via recurrence diameter (costoso) $\Rightarrow$ bug finder;
+    incrementale; nuXmv.</li>
+<li><strong>Confronto finale:</strong> OBDD per dimostrare, BMC per cercare bug, POR per
+    la concorrenza.</li>
+</ol>
+<h3>61. Riassunto finale</h3>
+<p>Il capitolo 9 rende eseguibili su sistemi reali gli algoritmi del capitolo 8.</p>
+<p>Il <strong>model checking simbolico</strong> non enumera stati: codifica insiemi di stati
+e transizioni come funzioni booleane, esegue le operazioni insiemistiche come
+operazioni logiche, e calcola gli operatori CTL come punti fissi di predicate
+transformer monotoni — con la garanzia di Tarski sull'esistenza e con
+convergenza in al piu' $|S|$ iterazioni. Gli <strong>OBDD</strong> sono la struttura dati
+che rende tutto questo efficiente: canonici (equivalenza in tempo costante,
+test di arresto dei punti fissi immediato), spesso compatti con un buon
+ordine delle variabili, e dotati di tutte le operazioni necessarie (restrict,
+apply, quantificazione, relational product).</p>
+<p>Il <strong>BMC</strong> segue la strada opposta: non costruisce l'insieme degli stati
+raggiungibili, ma cerca un controesempio di lunghezza $\le k$ traducendo
+unrolling + violazione in una formula SAT; i cammini infiniti sono catturati
+dai lassi, i prefissi senza loop da una semantica prudente. E' eccellente per
+trovare bug; per dimostrare correttezza servirebbe un bound di completezza
+costoso.</p>
+<p>La regola mentale conclusiva:</p>
+<blockquote>
+<p>OBDD e punti fissi servono a <strong>ragionare globalmente</strong> su insiemi di
+stati; BMC e SAT servono a <strong>cercare rapidamente</strong> tracce di errore entro
+un limite; la POR toglie di mezzo la ridondanza creata dalla concorrenza.</p>
+</blockquote></article>
+  <p class="section-label">Esercizi (piano di studio)</p>
+  
+<div class="exercises-block prose">
+<h2>Esercizi e domande — settimana 5</h2>
+<p><strong>Obiettivo della settimana:</strong> capire come si supera lo state explosion e avviare la parte su Church/Buchi-Landweber.</p>
+<h3>Esercizi scritti essenziali</h3>
+<ol>
+<li>
+<p><strong>State encoding.</strong> Codifica 8 stati con 3 variabili booleane. Scrivi la formula che rappresenta il set:
+   $$\lbrace 001,011,101,111\rbrace$$
+   e semplificala.</p>
+</li>
+<li>
+<p><strong>Preimmagine simbolica.</strong> Data:
+   $$R(x,x')=(x_1\rightarrow x_1')\land(x_2\leftrightarrow x_2')$$
+   e target $T(x')=x_1'\land \neg x_2'$, calcola:
+   $$Pre(T)=\exists x'(R(x,x')\land T(x'))$$</p>
+</li>
+<li>
+<p><strong>OBDD base.</strong> Disegna e riduci l'OBDD di:
+   $$f(x_1,x_2,x_3)=(x_1\land x_2)\lor x_3$$
+   con ordine $x_1&lt;x_2&lt;x_3$.</p>
+</li>
+<li>
+<p><strong>Ordine variabili.</strong> Disegna intuitivamente l'OBDD del comparatore:
+   $$(a_1\leftrightarrow b_1)\land(a_2\leftrightarrow b_2)$$
+   con ordine buono $a_1,b_1,a_2,b_2$ e ordine meno buono $a_1,a_2,b_1,b_2$. Spiega perche l'ordine conta.</p>
+</li>
+<li>
+<p><strong>Restrict e Shannon.</strong> Calcola:
+   $$f|_{x_1=0},\quad f|_{x_1=1}$$
+   per $f=(x_1\land x_2)\lor(\neg x_1\land x_3)$ e ricostruisci $f$ con Shannon expansion.</p>
+</li>
+<li>
+<p><strong>CheckEX.</strong> Scrivi la formula simbolica per $EX p$ usando $R(\bar{x},\bar{x}')$ e $p(\bar{x}')$. Poi spiega perche serve la quantificazione esistenziale sulle variabili next.</p>
+</li>
+<li>
+<p><strong>CheckEU.</strong> Esegui 3 iterazioni di:
+   $$Z_{i+1}=q\lor(p\land EX Z_i),\quad Z_0=\emptyset$$
+   su un grafo piccolo inventato da te.</p>
+</li>
+<li>
+<p><strong>BMC k=1.</strong> Formula l'encoding SAT per cercare un controesempio a:
+   $$G\neg p$$
+   con bound $k=1$, iniziale $I(s_0)$, transizione $T(s_0,s_1)$ e violazione $p(s_i)$.</p>
+</li>
+<li>
+<p><strong>Lasso.</strong> Disegna una path di lunghezza 3 con loopback a posizione 1. Scrivi la parola infinita rappresentata come $u\cdot v^\omega$.</p>
+</li>
+<li>
+<p><strong>NuSMV mentale.</strong> Scrivi un mini modello SMV di un contatore modulo 4 con due bit e una proprieta LTL falsa. Indica quale controesempio ti aspetti.</p>
+</li>
+<li>
+<p><strong>Church's problem.</strong> Formalizza in parole:
+   "se input e' 1 allora output e' 1; non ci sono due output 0 consecutivi; se input ha infiniti 0 allora output ha infiniti 0".
+   Disegna un Mealy automaton a due stati che realizza la strategia.</p>
+</li>
+<li>
+<p><strong>Pipeline di sintesi.</strong> Disegna lo schema:
+   S1S specification -&gt; deterministic Muller automaton -&gt; Muller game -&gt; parity game -&gt; Mealy automaton.
+   Per ogni freccia scrivi una riga: cosa cambia e perche serve.</p>
+</li>
+</ol>
+<h3>Domande orali secche</h3>
+<ol>
+<li>Che cos'e' lo state explosion problem?</li>
+<li>Perche gli OBDD sono canonici solo fissato l'ordine delle variabili?</li>
+<li>Differenza tra symbolic model checking e bounded model checking.</li>
+<li>Perche BMC trova bene bug ma non sempre prova facilmente correttezza?</li>
+<li>Che cosa chiede Church's problem?</li>
+</ol>
+<h3>Controllo</h3>
+<p>Hai superato la settimana se sai calcolare una preimmagine simbolica semplice, spiegare un OBDD e raccontare la differenza tra model checking e sintesi.</p>
+</div>
+
+  <div class="nav-row"><span><a href="index.html">Indice</a></span><span><a href="cap08.html">← Precedente</a></span><span><a href="cap10.html">Successivo →</a></span></div>
+</div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+  <script defer src="assets/chat.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false
+      });
+    });
+  </script>
+</body>
+</html>

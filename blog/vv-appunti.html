@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <title>V&amp;V in AI - Appunti — Andrea Turchet</title>
+    <meta name="title" content="V&amp;V in AI - Appunti">
+    <meta name="description" content="Indice pubblico degli appunti di Verifica e Validazione in AI: capitoli, dimostrazioni, glossario e guide di studio." />
+    <meta name="Copyright" content="Copyright © Andrea Turchet 2026. All Rights Reserved.">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/img/favicon-red.ico"/>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <link rel="stylesheet" href="../css/reset.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/style-project-red.css" />
+    <link rel="stylesheet" href="../css/blog.css" />
+    <style>
+        :root {
+            --vv-notes-bg: #f7f2e9;
+            --vv-notes-bg-elevated: #faf7f0;
+            --vv-notes-rule: #d6d3d1;
+        }
+
+        html,
+        body.home,
+        body.home .project-red {
+            background: var(--vv-notes-bg);
+        }
+
+        body.home > header {
+            background: var(--vv-notes-bg-elevated);
+            border-bottom: 1px solid var(--vv-notes-rule);
+        }
+
+        body.home .article-card:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        body.home .asterisk {
+            background: var(--vv-notes-bg);
+        }
+    </style>
+    <meta property="og:title" content="V&amp;V in AI - Appunti" />
+    <meta property="og:description" content="Indice degli appunti di Verifica e Validazione in AI." />
+    <meta property="og:url" content="https://andreaturchet.github.io/blog/vv-appunti.html" />
+    <meta property="og:image" content="../assets/images/img/bio.png" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.category-filter span').click(function() {
+                var category = $(this).text().toLowerCase();
+
+                $('.category-filter span').removeClass('active');
+                $(this).addClass('active');
+
+                if (category === 'all') {
+                    $('.article-card').show();
+                } else {
+                    $('.article-card').each(function() {
+                        var articleCategory = $(this).data('category');
+                        if (articleCategory && articleCategory.toLowerCase().includes(category)) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+<body class="home">
+    <header class="clearafter">
+        <div class="col-md-12 col-sm-100"><div class="bio"><a href="index.html" style="color: #000;">&larr; BACK TO BLOG</a></div></div>
+        <div class="col-md-6 col-sm-100"><a href="../index.html"><img class="logo" src="../assets/images/img/x.gif" alt="Andrea Turchet"></a></div>
+    </header>
+    <div class="project-red">
+        <div class="blog-index-header">
+            <h1 class="blog-main-title">V&amp;V<br>NOTES</h1>
+            <p class="blog-subtitle">Appunti di Verifica e Validazione in AI: capitoli del corso, guide rapide, glossario, dimostrazioni e mappe per ripassare automi, logiche temporali, model checking, sintesi e planning.</p>
+        </div>
+        <div class="category-filter">
+            <span class="active">ALL</span>
+            <span>CAPITOLI</span>
+            <span>APPROFONDIMENTI</span>
+            <span>DIMOSTRAZIONI</span>
+            <span>ORALE</span>
+        </div>
+        <div class="article-list">
+            <a href="vv/cap01.html" class="article-card" data-category="capitoli">
+                <div class="article-number">01</div>
+                <div class="article-info">
+                    <div class="article-meta">SETTIMANA 1 — LOGICA / SISTEMI</div>
+                    <h2 class="article-title">Capitolo 1 — Introduzione a logica e sistemi</h2>
+                    <p class="article-excerpt">Logica proposizionale, QBF, logica del primo ordine, tableaux, giochi di Ehrenfeucht-Fraisse e formule di Hintikka.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/cap02.html" class="article-card" data-category="capitoli">
+                <div class="article-number">02</div>
+                <div class="article-info">
+                    <div class="article-meta">SETTIMANA 1 — AUTOMI FINITI</div>
+                    <h2 class="article-title">Capitolo 2 — Automi su parole finite</h2>
+                    <p class="article-excerpt">DFA, NFA, epsilon-mosse, espressioni regolari, proprieta di chiusura e teorema di Myhill-Nerode.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/cap03.html" class="article-card" data-category="capitoli">
+                <div class="article-number">03</div>
+                <div class="article-info">
+                    <div class="article-meta">SETTIMANA 2 — APPRENDIMENTO DI AUTOMI</div>
+                    <h2 class="article-title">Capitolo 3 — Apprendimento di automi</h2>
+                    <p class="article-excerpt">Algoritmo L* di Angluin, MAT, membership query, equivalence query e matrici di Hankel.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/cap04.html" class="article-card" data-category="capitoli">
+                <div class="article-number">04</div>
+                <div class="article-info">
+                    <div class="article-meta">SETTIMANA 2 — FTS / SPL</div>
+                    <h2 class="article-title">Capitolo 4 — FTS e SPL</h2>
+                    <p class="article-excerpt">Modellazione di sistemi reattivi, Fair Transition System, Simple Programming Language, fairness debole e forte.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/cap05.html" class="article-card" data-category="capitoli">
+                <div class="article-number">05</div>
+                <div class="article-info">
+                    <div class="article-meta">SETTIMANA 3 — OMEGA-LINGUAGGI</div>
+                    <h2 class="article-title">Capitolo 5 — Automi su parole infinite</h2>
+                    <p class="article-excerpt">Omega-linguaggi, automi di Buchi, GNBA, automi di Muller, chiusure e decidibilita.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/cap06.html" class="article-card" data-category="capitoli">
+                <div class="article-number">06</div>
+                <div class="article-info">
+                    <div class="article-meta">SETTIMANA 3 — MSO</div>
+                    <h2 class="article-title">Capitolo 6 — Logica monadica del secondo ordine</h2>
+                    <p class="article-excerpt">S1S, WS1S, secondo teorema di Buchi, automi su alberi e connessione tra logica e automi.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/cap07.html" class="article-card" data-category="capitoli">
+                <div class="article-number">07</div>
+                <div class="article-info">
+                    <div class="article-meta">SETTIMANA 4 — LOGICHE TEMPORALI</div>
+                    <h2 class="article-title">Capitolo 7 — Logiche temporali</h2>
+                    <p class="article-excerpt">LTL, CTL, CTL*, semantiche sui cammini e incomparabilita espressiva.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/cap08.html" class="article-card" data-category="capitoli">
+                <div class="article-number">08</div>
+                <div class="article-info">
+                    <div class="article-meta">SETTIMANA 4 — PROCEDURE DECISIONALI</div>
+                    <h2 class="article-title">Capitolo 8 — Procedure decisionali e model checking</h2>
+                    <p class="article-excerpt">Tableau LTL, behavior graph, P-SAT, P-VALID, model checking CTL e punti fissi.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/cap09.html" class="article-card" data-category="capitoli">
+                <div class="article-number">09</div>
+                <div class="article-info">
+                    <div class="article-meta">SETTIMANA 5 — MODEL CHECKING AVANZATO</div>
+                    <h2 class="article-title">Capitolo 9 — Model checking avanzato</h2>
+                    <p class="article-excerpt">State explosion, partial-order reduction, OBDD, symbolic model checking e bounded model checking con SAT.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/cap10.html" class="article-card" data-category="capitoli">
+                <div class="article-number">10</div>
+                <div class="article-info">
+                    <div class="article-meta">SETTIMANA 5 — SINTESI</div>
+                    <h2 class="article-title">Capitolo 10 — Il problema della sintesi</h2>
+                    <p class="article-excerpt">Church's problem, giochi di Muller e parita, Buchi-Landweber, LAR e strategie di Mealy.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/cap11.html" class="article-card" data-category="capitoli">
+                <div class="article-number">11</div>
+                <div class="article-info">
+                    <div class="article-meta">SETTIMANA 6 — PLANNING</div>
+                    <h2 class="article-title">Capitolo 11 — Pianificazione non deterministica</h2>
+                    <p class="article-excerpt">Weak, strong e strong-cyclic planning tramite model checking simbolico, preimmagini e linguaggio AR.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/orale-vv.html" class="article-card" data-category="orale">
+                <div class="article-number">12</div>
+                <div class="article-info">
+                    <div class="article-meta">ORALE — MAPPA GENERALE</div>
+                    <h2 class="article-title">Orale V&V — Tematiche principali</h2>
+                    <p class="article-excerpt">Mappa sintetica degli argomenti principali, con collegamenti ai capitoli e risposte brevi per orientare il ripasso.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/glossario-orale.html" class="article-card" data-category="orale">
+                <div class="article-number">13</div>
+                <div class="article-info">
+                    <div class="article-meta">ORALE — GLOSSARIO</div>
+                    <h2 class="article-title">Glossario orale V&V</h2>
+                    <p class="article-excerpt">Definizioni corte da usare come lingua comune nelle lezioni e nelle risposte orali.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/automi-lezione.html" class="article-card" data-category="approfondimenti">
+                <div class="article-number">14</div>
+                <div class="article-info">
+                    <div class="article-meta">APPROFONDIMENTI — AUTOMI</div>
+                    <h2 class="article-title">Guida agli automi visti a lezione</h2>
+                    <p class="article-excerpt">Definizioni, prove essenziali, usi e criteri di scelta per confrontare le famiglie di automi del corso.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/closure-dimostrazioni.html" class="article-card" data-category="dimostrazioni approfondimenti">
+                <div class="article-number">15</div>
+                <div class="article-info">
+                    <div class="article-meta">DIMOSTRAZIONI — CHIUSURE</div>
+                    <h2 class="article-title">Chiusure e closure</h2>
+                    <p class="article-excerpt">Dimostrazioni complete delle chiusure presenti negli appunti, organizzate come riferimento di studio.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+
+            <a href="vv/dimostrazioni.html" class="article-card" data-category="dimostrazioni">
+                <div class="article-number">16</div>
+                <div class="article-info">
+                    <div class="article-meta">DIMOSTRAZIONI — FORMALI</div>
+                    <h2 class="article-title">Dimostrazioni formali complete</h2>
+                    <p class="article-excerpt">Versioni estese dei passaggi dimostrativi degli appunti, pensate come supporto per studio e ripasso.</p>
+                    <span class="read-more">Open Notes &rarr;</span>
+                </div>
+            </a>
+        </div>
+        <div class="asterisk clearafter"><div class="col-md-6 col-sm-100 text-center">*Copyright 2024 Andrea Turchet</div></div>
+    </div>
+</body>
+</html>
