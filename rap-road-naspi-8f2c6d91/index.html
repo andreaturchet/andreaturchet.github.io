@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+  <meta name="theme-color" content="#81d8d0">
+  <meta name="description" content="Rap and the road to NaSPI — a graduation side quest.">
+  <title>Rap and the road to NaSPI</title>
+  <link rel="icon" href="../assets/images/img/favicon-red.ico">
+  <link rel="stylesheet" href="game.css?v=3">
+</head>
+<body>
+  <main class="game-shell" aria-label="Rap and the road to NaSPI">
+    <header class="hud" aria-hidden="true">
+      <span class="hud-label">OFFERTE SCHIVATE</span>
+      <strong id="score">0</strong>
+    </header>
+
+    <canvas id="game" aria-label="Gioco in stile Flappy Bird: evita le offerte di lavoro"></canvas>
+
+    <section class="screen start-screen is-visible" id="startScreen" aria-labelledby="gameTitle">
+      <div class="sticker">A GRADUATION SIDE QUEST</div>
+      <div class="portrait-wrap" aria-hidden="true">
+        <img src="andrea-player.png" alt="">
+        <span>READY?</span>
+      </div>
+      <h1 id="gameTitle">
+        <span>Rap and the</span>
+        <strong>road to NaSPI</strong>
+      </h1>
+      <p class="intro">Schiva le offerte di lavoro e resta eroicamente sulla strada della disoccupazione.</p>
+      <button class="primary-button" id="startButton" type="button">INIZIA IL VIAGGIO</button>
+      <p class="instructions"><span>TOCCA</span> lo schermo, fai <span>CLICK</span> o premi <span>SPAZIO</span></p>
+    </section>
+
+    <section class="screen game-over-screen" id="gameOverScreen" aria-labelledby="gameOverTitle" hidden>
+      <div class="stamp">DOMANDA RESPINTA</div>
+      <h2 id="gameOverTitle">Game over</h2>
+      <p class="result-message" id="resultMessage">La RAL era “commisurata all’esperienza”.</p>
+      <div class="results">
+        <div>
+          <span>OFFERTE SCHIVATE</span>
+          <strong id="finalScore">0</strong>
+        </div>
+        <div>
+          <span>RECORD</span>
+          <strong id="bestScore">0</strong>
+        </div>
+      </div>
+      <button class="primary-button" id="restartButton" type="button">RIPROVA</button>
+    </section>
+
+    <p class="sr-only" id="status" aria-live="polite"></p>
+  </main>
+
+  <script src="game.js?v=4"></script>
+</body>
+</html>
