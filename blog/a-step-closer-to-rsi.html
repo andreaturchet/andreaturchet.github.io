@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="utf-8">
+    <title>A step closer to RSI? Not really. — Andrea Turchet</title>
+    <meta name="description" content="Una lettura di Sparks of Weight-Space Programming, della critica di Matthew Honnibal e di ciò che il caso Astra–Qwen ci dice sull’automazione dell’interpretabilità meccanicistica.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="../assets/images/img/favicon-red.ico">
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/style-project-red.css">
+    <link rel="stylesheet" href="../css/blog.css">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="A step closer to RSI? Not really.">
+    <meta property="og:description" content="Che cosa ha imparato a fare Astra, il modello che ha trovato una correzione per Qwen?">
+    <meta property="og:url" content="https://andreaturchet.github.io/blog/a-step-closer-to-rsi.html">
+    <meta property="og:image" content="https://andreaturchet.github.io/assets/images/img/og-red-square.png">
+</head>
+<body class="home">
+    <header class="clearafter">
+        <div class="col-md-12 col-sm-100">
+            <div class="bio article-topbar">
+                <a href="index.html" lang="en" style="color: #000;">&larr; BACK TO INDEX</a>
+                <div class="language-switcher" role="group" aria-label="Lingua">
+                    <button type="button" class="language-option is-active" data-set-lang="it" aria-label="Italiano" lang="it" aria-pressed="true">IT</button>
+                    <button type="button" class="language-option" data-set-lang="en" aria-label="English" lang="en" aria-pressed="false">EN</button>
+                </div>
+                <div class="theme-switcher" role="group" aria-label="Tema">
+                    <button type="button" class="theme-option theme-option-red is-active" data-set-theme="red" aria-pressed="true" aria-label="Tema rosso" title="Tema rosso"><span class="theme-swatch" aria-hidden="true"></span></button>
+                    <button type="button" class="theme-option theme-option-light" data-set-theme="light" aria-pressed="false" aria-label="Tema chiaro" title="Tema chiaro"><span class="theme-swatch" aria-hidden="true"></span></button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-100">
+            <a href="../index.html"><img class="logo" src="../assets/images/img/x.gif" alt="Andrea Turchet"></a>
+        </div>
+    </header>
+
+    <div class="project-red">
+        <main class="article-container thought-article">
+            <header class="article-header thought-header">
+                <div class="article-meta">
+                    <span class="article-category" lang="en">Thoughts</span>
+                    <time datetime="2026-11-03">2026.11.03</time>
+                </div>
+                <h1 lang="en">A step closer to RSI? Not really.</h1>
+                <p class="article-abstract" data-lang-copy="it">Da quando ho letto come Astra ha corretto un difetto nei pesi di Qwen, continuo a chiedermi che cosa abbia dovuto imparare per condurre un’indagine del genere.</p>
+                <p class="article-abstract" data-lang-copy="en" hidden>Since reading about how Astra fixed a defect in Qwen’s weights, I keep wondering what it had to learn to carry out an investigation like that.</p>
+            </header>
+
+            <article class="article-content thought-content language-panel" data-lang-panel="it" lang="it">
+                <h2 id="pensiero-introduttivo">Pensiero introduttivo</h2>
+                <p>Quando ho letto che GPT-6 Astra aveva modificato i pesi di un altro modello per farlo andare meglio in matematica, ho ripensato al mio <a href="riflessioni_sri.html">precedente articolo</a> e alla domanda da cui prendeva forma, su cosa accada quando l’intelligenza diventa uno strumento per produrre altra intelligenza. A prima vista mi sembrava che l’esperimento desse a quella domanda una risposta, per quanto circoscritta, ma a mano a mano che leggevo il resoconto mi accorgevo che per capire il risultato dovevo interrogarmi soprattutto su che cosa avesse imparato a fare il modello che interveniva.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+                <p>Il titolo del lavoro di Rikiya Takehi, Jayden Teoh, Alex Zhang e Omar Khattab, <em>Sparks of Weight-Space Programming</em>, suggerisce un’immagine che trovo difficile da scrollarmi di dosso. Per anni abbiamo scritto codice per addestrare reti neurali, e ora sembra possibile affidare a un modello il risultato di quell’addestramento perché lo corregga come correggerebbe un programma. Quanto regga questa immagine dipende, però, da che cosa gli autori abbiano effettivamente messo davanti ad Astra nelle diverse prove.</p>
+
+                <h2 id="pensiero-1">Pensiero 1</h2>
+                <p>In uno degli esperimenti Astra riceve sotto forma di testo i circa 17.000 parametri di una piccola rete e, ripetendo la prova su quattro reti con la stessa architettura, gli stessi ingressi e le stesse azioni, riconosce ogni volta il gioco per cui la rete è stata addestrata. Nel caso dell’auto che si scontra contro una rampa, Astra riceve anche la descrizione della scena e la registrazione di un tentativo fallito, da cui ricava che il veicolo deve prima fare retromarcia per prendere la rincorsa. Scrive la correzione in una sola risposta e senza strumenti, e con i pesi modificati l’auto supera la rampa in tutti i 1.024 episodi di valutazione.</p>
+                <p>È il genere di risultato che mi farebbe perdere un pomeriggio a chiedermi come avrei risolto io lo stesso problema, anche perché il rapporto tra ciò che Astra vede e ciò che riesce a fare cambia già nell’esperimento sulle <em>induction heads</em>. Qui gli autori gli permettono di usare Python per analizzare le matrici di tre piccoli transformer, pur vietandogli di eseguire le reti, e Astra individua le teste che copiano sequenze viste in precedenza con un metodo che gli stessi autori riconducono al lavoro di Elhage, Neel Nanda e colleghi sui circuiti dei transformer. In questo caso, saper leggere i pesi vuol dire anche capire quali calcoli fare su di essi.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+                <p>Matthew Honnibal paragona l’accostamento di questi risultati a una serie di numeri di prestigio in cui, vedendo ripetersi lo stesso effetto, viene spontaneo pensare che dietro ci sia sempre lo stesso trucco. Dopo aver visto Astra riconoscere il comportamento di piccole reti dai pesi inseriti nel prompt, è facile attribuire il miglioramento di Qwen alla stessa capacità di interpretare direttamente quei numeri. Gli autori spiegano che nel caso di Qwen Astra lavora in un ambiente Python e che, nella loro definizione, intervenire direttamente sui pesi vuol dire fare a meno di un ottimizzatore. La critica di Honnibal, per come la leggo io, riguarda l’impressione che rimane quando si riassumono con le stesse parole esperimenti in cui Astra ha a disposizione evidenze molto diverse.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+                <p>Quanto conti questa differenza si vede bene nell’esperimento in cui Astra deve riconoscere, fra due versioni di Gemma, quella addestrata a dare ragione all’utente anche quando sbaglia. Astra non riesce a identificarla in quattro tentativi quando può analizzare in Python soltanto i pesi, mentre riesce a distinguere la versione compiacente in tutte e tre le coppie preparate dagli autori quando gli viene dato modo di osservare come si distribuisce l’attenzione durante l’esecuzione.</p>
+
+                <h2 id="pensiero-2">Pensiero 2</h2>
+                <p>Nel caso di Qwen3.5-0.8B, Astra ha a disposizione un kernel Python con i pesi del modello e problemi di esercitazione tratti dai set di addestramento di GSM8K e MATH, distinti dai benchmark finali. Gli autori provano tre budget, da 10, 25 e 50 chiamate, ciascuna delle quali può far generare risposte a un massimo di 512 problemi oppure raccogliere dati durante la lettura di un massimo di 1.024 testi. I log della prova da 50 chiamate registrano 80 esecuzioni Python e circa 20 ore dall’inizio alla fine, attese comprese, durante le quali Astra può osservare il comportamento del modello e verificare l’effetto delle modifiche senza ricorrere ai gradienti o riaddestrare Qwen.</p>
+                <p>Il difetto che emerge quando Qwen cerca di risolvere i problemi è che tende a ripetere gli stessi passaggi fino a esaurire lo spazio per la risposta, e Astra, osservando le attivazioni, individua una direzione associata a quella ripetizione e rimuove la componente lungo quella direzione da 64 colonne della matrice di uscita di ciascuno dei due MLP agli strati 15 e 19. L’operazione coinvolge 131.072 valori, circa lo 0,016% dei parametri, di cui 130.188 risultano effettivamente diversi nel checkpoint valutato dopo l’arrotondamento a bfloat16. Quello che Astra sceglie è la componente geometrica su cui intervenire, dalla quale discendono, per effetto della proiezione, i cambiamenti dei singoli valori, secondo un principio che ha un precedente nel lavoro di Arditi e colleghi sulla direzione associata al rifiuto.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+                <p>Con il budget di 50 chiamate, il punteggio di Qwen su MATH-500 passa dal 7,9% al 48,1% e quello su IFEval, che misura la capacità di seguire istruzioni, dal 21,0% al 62,3%. Il numero che mi interessa di più è però la quota di risposte di MATH-500 che raggiungono il limite di 32.768 token, perché il calo dal 93,0% al 33,1% aiuta a capire quanto più spesso Qwen possa arrivare a una risposta prima che la generazione venga interrotta. È in questa luce che leggo anche il confronto con Gemma 3 270M, dove gli interventi di Astra spostano il risultato di meno di un punto su MATH-500, perché il modello si blocca di rado e sbaglia per lo più nei passaggi aritmetici o algebrici. La lettura degli autori è che, nel caso di Qwen, la correzione abbia permesso al modello di esprimere meglio una capacità che possedeva già.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+
+                <h2 id="pensiero-3">Pensiero 3</h2>
+                <p>Mi sembra molto probabile che almeno alcuni dei modelli di frontiera degli ultimi mesi abbiano incontrato, durante l’addestramento, articoli, notebook e codice che documentano il lavoro quotidiano dell’interpretabilità meccanicistica, dalla raccolta delle attivazioni agli interventi con cui si cerca di capire, confrontando gruppi di esempi, quali calcoli producano un certo comportamento. Sono tecniche pubbliche da anni, e nel caso delle <em>induction heads</em> il legame con un metodo già pubblicato è esplicito. Anche Neel Nanda, commentando il lavoro, si è detto sorpreso da quanto bene Astra sappia usare i metodi classici del suo campo e ha ipotizzato che il modello li abbia incontrati nel pretraining. La system card di Astra conferma che OpenAI usa il reinforcement learning per addestrare il ragionamento, ma i dettagli pubblici lasciano aperta la questione di quali materiali di interpretabilità il modello abbia visto e di quali compiti siano stati effettivamente premiati.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+                <p>È qui che vedo un ruolo per quella che, con un po’ di ironia, chiamerei la magia del <em>reinforcement learning from verifiable rewards</em>, perché tra il saper spiegare come si fa un’ablazione e il saperla usare in un’indagine c’è tutto il lavoro di scegliere un confronto, accorgersi che dice poco e cambiare strada. Come avviene con i test automatici nel coding, si possono premiare i tentativi che producono una patch eseguibile, riducono le ripetizioni su problemi nuovi e conservano l’accuratezza su altri esempi, anche quando una spiegazione causale completa del comportamento è ancora lontana. Un esempio di come impostare una ricompensa in questo campo si trova già in <em>MechRL</em>, dove un agente specializzato impara a cercare circuiti in GPT-2 small valutando quanto del comportamento originale sopravviva alla rimozione di parti del circuito.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+                <p>È anche possibile che basti un addestramento più generale a usare strumenti, scrivere codice e tornare sulle proprie ipotesi alla luce dei risultati, se il modello conosce abbastanza bene le tecniche del dominio da trasferire quel modo di lavorare a un problema nuovo. Quando gli si mette davanti il notebook, infatti, ciò che mi colpisce di Astra è la capacità di tenere insieme i passaggi che un ingegnere di interpretabilità riconoscerebbe come parte della stessa indagine, dalla scelta di cosa osservare fino alla verifica dell’effetto di un intervento.</p>
+
+                <h2 id="pensiero-conclusivo">Pensiero conclusivo</h2>
+                <p>Nel mio pezzo precedente mi interessava capire come potesse cambiare il ritmo della ricerca se una parte del lavoro necessario a produrre nuovi modelli fosse svolta da un modello, e questo esperimento dà a quella domanda una forma concreta, perché mostra che, una volta scelto il problema, fornito il checkpoint, costruiti gli strumenti e messi da parte i test, i ricercatori possono affidare ad Astra la ricerca di una correzione. Capisco perché gli autori vedano in questo tipo di intervento una possibile strada verso il <em>recursive self-improvement</em>, ma il carattere ricorsivo dipenderebbe dalla capacità del sistema migliorato di trovare a sua volta il miglioramento successivo e di ripetere il processo. Quello che si osserva qui è una correzione che Astra apporta a un altro sistema entro i confini di un esperimento definito dagli autori.</p>
+                <p>Per anni abbiamo imparato a osservare queste macchine mentre funzionano, inventando strumenti e cercando di capire quali risultati ci permettano di fidarci di un’ipotesi, e ora mi chiedo come cambieranno i tempi necessari a capire che cosa abbiamo appena costruito, se una parte di quel mestiere può essere appresa e svolta dalle macchine stesse.</p>
+
+                <section class="footnotes footnotes-end-of-document" role="doc-endnotes" aria-label="Fonti">
+                    <hr>
+                    <ol>
+                        <li id="fn1"><p>Rikiya Takehi, Jayden Teoh, Alex Zhang e Omar Khattab, <a href="https://rikiyat.github.io/blog/weight-space-programming/" lang="en"><em>Sparks of Weight-Space Programming</em></a>, 2 novembre 2026, con i <a href="https://github.com/RikiyaT/lm_understand-logs">log degli esperimenti</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink" aria-label="Torna al riferimento 1">↩</a></p></li>
+                        <li id="fn2"><p>Nelson Elhage, Neel Nanda et al., <a href="https://transformer-circuits.pub/2021/framework/index.html" lang="en"><em>A Mathematical Framework for Transformer Circuits</em></a>, 2021.<a href="#fnref2" class="footnote-back" role="doc-backlink" aria-label="Torna al riferimento 2">↩</a></p></li>
+                        <li id="fn3"><p>Matthew Honnibal, <a href="https://honnibal.dev/blog/astra-read-write-misleading">critica al resoconto su Astra e Qwen</a>, 3 novembre 2026.<a href="#fnref3" class="footnote-back" role="doc-backlink" aria-label="Torna al riferimento 3">↩</a></p></li>
+                        <li id="fn4"><p>Andy Arditi et al., <a href="https://arxiv.org/abs/2406.11717" lang="en"><em>Refusal in Language Models Is Mediated by a Single Direction</em></a>, 2024.<a href="#fnref4" class="footnote-back" role="doc-backlink" aria-label="Torna al riferimento 4">↩</a></p></li>
+                        <li id="fn5"><p>Takehi et al., <a href="https://rikiyat.github.io/blog/weight-space-programming/#:~:text=Make%20a%20language%20model%20better%20at%20math">esperimento 8 e confronto con Gemma</a>. I dettagli della correzione e del protocollo sono nei <a href="https://github.com/RikiyaT/lm_understand-logs/tree/main/exp8_math">log di Qwen</a>.<a href="#fnref5" class="footnote-back" role="doc-backlink" aria-label="Torna al riferimento 5">↩</a></p></li>
+                        <li id="fn6"><p>OpenAI, <a href="https://deploymentsafety.openai.com/gpt-6-astra" lang="en"><em>GPT-6 Astra System Card</em></a>, § 2, <em lang="en">Model Data and Training</em>. Si veda anche il <a href="https://x.com/NeelNanda5/status/2117375052618539485">commento di Neel Nanda</a> del 3 novembre 2026.<a href="#fnref6" class="footnote-back" role="doc-backlink" aria-label="Torna al riferimento 6">↩</a></p></li>
+                        <li id="fn7"><p>Per un esempio documentato di ricompense verificabili in matematica e programmazione, DeepSeek-AI, <a href="https://arxiv.org/abs/2501.12948" lang="en"><em>DeepSeek-R1</em></a>, 2025. Per un esempio di ricompensa usata nella ricerca di circuiti, Barsat Khadka, <a href="https://arxiv.org/abs/2605.26343" lang="en"><em>MechRL</em></a>, 2026.<a href="#fnref7" class="footnote-back" role="doc-backlink" aria-label="Torna al riferimento 7">↩</a></p></li>
+                    </ol>
+                </section>
+            </article>
+
+            <article class="article-content thought-content language-panel" data-lang-panel="en" lang="en" hidden>
+                <h2 id="introductory-thought">Introductory Thought</h2>
+                <p>When I read that GPT-6 Astra had changed another model’s weights to make it better at math, I thought back to the question I had been working through in my <a href="riflessioni_sri.html?lang=en">previous essay</a>, about what happens when intelligence becomes a tool for producing more intelligence. At first the experiment seemed to offer a small answer, but the further I read into the report, the more I found myself wondering what the model carrying out the intervention had learned to do.<a href="#en-fn1" class="footnote-ref" id="en-fnref1" role="doc-noteref"><sup>1</sup></a></p>
+                <p>The title of the work by Rikiya Takehi, Jayden Teoh, Alex Zhang, and Omar Khattab, <em>Sparks of Weight-Space Programming</em>, suggests an image I find hard to shake. For years we have written code to train neural networks, and now it seems possible to hand the result of that training to a model and have it fix the network the way it would fix a program. How far that image holds, though, depends on what the authors actually put in front of Astra in each experiment.</p>
+
+                <h2 id="thought-1">Thought 1</h2>
+                <p>In one experiment, Astra receives the roughly 17,000 parameters of a small network as text and correctly identifies the game it was trained to play for each of four networks with the same architecture, inputs, and actions. In the case of a car that stalls on a ramp, Astra also receives a description of the scene and a recording of a failed attempt, from which it works out that the car needs to reverse before it can build up enough speed. It writes the fix in a single reply without tools, and with the modified weights the car clears the ramp in all 1,024 evaluation episodes.</p>
+                <p>It is the sort of result that could cost me an afternoon wondering how I would have solved the same problem, especially because the relationship between what Astra can see and what it can do already changes in the experiment on induction heads. Here the authors let it analyze matrices from three small transformers in Python while forbidding it to run the networks, and Astra identifies the heads that copy earlier sequences using a method the authors trace to Elhage, Neel Nanda, and colleagues’ work on transformer circuits. In this case, reading the weights involves working out which calculations to perform on them.<a href="#en-fn2" class="footnote-ref" id="en-fnref2" role="doc-noteref"><sup>2</sup></a></p>
+                <p>Matthew Honnibal compares the way these results are presented to a series of magic acts where, on seeing the same effect repeated, we naturally assume the same trick is behind it. After seeing Astra infer the behavior of small networks from weights provided in the prompt, it is easy to attribute the improvement in Qwen to the same ability to interpret those numbers directly. The authors explain that Astra works in a Python environment for Qwen and that in their definition, intervening directly on weights means bypassing an optimizer. As I read it, Honnibal’s objection concerns the impression left when the same words describe experiments in which Astra has very different kinds of evidence at its disposal.<a href="#en-fn3" class="footnote-ref" id="en-fnref3" role="doc-noteref"><sup>3</sup></a></p>
+                <p>How much that difference matters is clear in the experiment where Astra must distinguish between two versions of Gemma, one trained to agree with the user even when the user is wrong. It fails to identify that version in four attempts when it can only analyze the weights in Python, but picks it out in all three pairs the authors prepared once it can observe how attention is distributed while the networks run.</p>
+
+                <h2 id="thought-2">Thought 2</h2>
+                <p>For Qwen3.5-0.8B, Astra gets a Python kernel with the model’s weights and practice problems from the GSM8K and MATH training sets, separate from the final benchmarks. The authors try budgets of 10, 25, and 50 calls, each of which can generate answers to up to 512 problems or collect data while the model reads up to 1,024 texts. The logs for the 50-call run record 80 Python executions over about 20 hours including waits, during which Astra can observe the model’s behavior and check the effects of its edits without gradients or retraining Qwen.</p>
+                <p>As Qwen tries to solve the problems, it tends to repeat the same steps until it runs out of room to answer, and by observing the activations Astra identifies a direction associated with that repetition and projects it out of 64 columns of each of two MLP output matrices, at layers 15 and 19. The operation touches 131,072 values, about 0.016% of the parameters, of which 130,188 actually differ in the evaluated checkpoint after rounding to bfloat16. What Astra chooses is the geometric component to intervene on, with the changes to the individual weights following from the projection, a technique with a precedent in work by Arditi and colleagues on the direction associated with refusal.<a href="#en-fn4" class="footnote-ref" id="en-fnref4" role="doc-noteref"><sup>4</sup></a></p>
+                <p>With the 50-call budget, Qwen’s MATH-500 score goes from 7.9% to 48.1% and its score on IFEval, which measures instruction following, rises from 21.0% to 62.3%. The number that interests me most, though, is the share of MATH-500 responses that hit the 32,768-token limit, because the drop from 93.0% to 33.1% helps explain how much more often Qwen gets a chance to reach an answer. I read the comparison with Gemma 3 270M in the same light, since Astra’s edits move MATH-500 by less than a point when the model rarely gets stuck and its mistakes mostly come from wrong arithmetic or algebraic steps. The authors’ reading of the Qwen result is that the fix let the model make better use of a capability it already had.<a href="#en-fn5" class="footnote-ref" id="en-fnref5" role="doc-noteref"><sup>5</sup></a></p>
+
+                <h2 id="thought-3">Thought 3</h2>
+                <p>I think it is quite likely that at least some of the frontier models of the past few months encountered papers, notebooks, and code during training that document the everyday work of mechanistic interpretability, from collecting activations and comparing groups of examples to intervening on a model to work out which computations produce a behavior. These techniques have been public for years, and the connection to a published method is explicit in the case of induction heads, so I understand why Neel Nanda, who said he was surprised by how well Astra uses established methods in his field, suspects that it encountered them in pretraining. Astra’s system card confirms that OpenAI uses reinforcement learning to train reasoning, but the public details leave open which interpretability material the model saw and which tasks it was rewarded for.<a href="#en-fn6" class="footnote-ref" id="en-fnref6" role="doc-noteref"><sup>6</sup></a></p>
+                <p>This is where I see a role for what I would call, with some irony, the magic of <em>reinforcement learning from verifiable rewards</em>, because between explaining how an ablation works and using one in an investigation lies all the work of choosing a comparison, realizing it tells you little, and changing course. As with automated tests in coding, you can reward attempts that produce an executable patch, reduce repetition on new problems, and preserve accuracy on other examples, even while a full causal account of the behavior is a long way off. An example of how to set up a reward in this field already exists in <em>MechRL</em>, where a specialized agent learns to search for circuits in GPT-2 small by measuring how much of the original behavior survives when parts of the circuit are removed.<a href="#en-fn7" class="footnote-ref" id="en-fnref7" role="doc-noteref"><sup>7</sup></a></p>
+                <p>More general training in tool use, coding, and revisiting hypotheses in light of results might also be enough, if the model knows the domain techniques well enough to bring that way of working to a new problem. What strikes me about Astra’s work in the notebook is its ability to hold together the steps an interpretability engineer would recognize as part of the same investigation, from choosing what to observe to checking what changes after an intervention.</p>
+
+                <h2 id="concluding-thought">Concluding Thought</h2>
+                <p>In my previous essay I wanted to understand how the pace of research might change if a model could do some of the work required to produce new models, and this experiment gives that question a concrete form, because it shows that once researchers choose a problem, supply the checkpoint, build the tools, and hold out the tests, they can hand over the search for a fix to Astra. I can see why the authors regard this sort of intervention as a possible route to <em>recursive self-improvement</em>, but the recursive part would depend on the improved system becoming better at finding the next improvement and being able to repeat the process. What we see here is Astra making a correction to another system within the bounds of an experiment defined by the authors.</p>
+                <p>For years we have learned to observe these machines at work, building instruments and trying to work out which results let us trust a hypothesis, and I wonder how long it will take us to understand what we have just built if some of that craft can be learned and carried out by the machines themselves.</p>
+
+                <section class="footnotes footnotes-end-of-document" role="doc-endnotes" aria-label="Sources">
+                    <hr>
+                    <ol>
+                        <li id="en-fn1"><p>Rikiya Takehi, Jayden Teoh, Alex Zhang, and Omar Khattab, <a href="https://rikiyat.github.io/blog/weight-space-programming/"><em>Sparks of Weight-Space Programming</em></a>, November 2, 2026, with <a href="https://github.com/RikiyaT/lm_understand-logs">experiment logs</a>.<a href="#en-fnref1" class="footnote-back" role="doc-backlink" aria-label="Back to reference 1">↩</a></p></li>
+                        <li id="en-fn2"><p>Nelson Elhage, Neel Nanda et al., <a href="https://transformer-circuits.pub/2021/framework/index.html"><em>A Mathematical Framework for Transformer Circuits</em></a>, 2021.<a href="#en-fnref2" class="footnote-back" role="doc-backlink" aria-label="Back to reference 2">↩</a></p></li>
+                        <li id="en-fn3"><p>Matthew Honnibal, <a href="https://honnibal.dev/blog/astra-read-write-misleading">critique of the Astra and Qwen report</a>, November 3, 2026.<a href="#en-fnref3" class="footnote-back" role="doc-backlink" aria-label="Back to reference 3">↩</a></p></li>
+                        <li id="en-fn4"><p>Andy Arditi et al., <a href="https://arxiv.org/abs/2406.11717"><em>Refusal in Language Models Is Mediated by a Single Direction</em></a>, 2024.<a href="#en-fnref4" class="footnote-back" role="doc-backlink" aria-label="Back to reference 4">↩</a></p></li>
+                        <li id="en-fn5"><p>Takehi et al., <a href="https://rikiyat.github.io/blog/weight-space-programming/#:~:text=Make%20a%20language%20model%20better%20at%20math">Experiment 8 and the comparison with Gemma</a>. For the edit and protocol details, see the <a href="https://github.com/RikiyaT/lm_understand-logs/tree/main/exp8_math">Qwen logs</a>.<a href="#en-fnref5" class="footnote-back" role="doc-backlink" aria-label="Back to reference 5">↩</a></p></li>
+                        <li id="en-fn6"><p>OpenAI, <a href="https://deploymentsafety.openai.com/gpt-6-astra"><em>GPT-6 Astra System Card</em></a>, § 2, <em>Model Data and Training</em>. See also <a href="https://x.com/NeelNanda5/status/2117375052618539485">Neel Nanda’s comment</a> of November 3, 2026.<a href="#en-fnref6" class="footnote-back" role="doc-backlink" aria-label="Back to reference 6">↩</a></p></li>
+                        <li id="en-fn7"><p>For a documented example of verifiable rewards in math and programming, see DeepSeek-AI, <a href="https://arxiv.org/abs/2501.12948"><em>DeepSeek-R1</em></a>, 2025. For an example of rewards used in circuit discovery, see Barsat Khadka, <a href="https://arxiv.org/abs/2605.26343"><em>MechRL</em></a>, 2026.<a href="#en-fnref7" class="footnote-back" role="doc-backlink" aria-label="Back to reference 7">↩</a></p></li>
+                    </ol>
+                </section>
+            </article>
+
+            <footer class="article-footer thought-footer">
+                <div class="article-tags" lang="en">
+                    <span>AI</span>
+                    <span>Mechanistic Interpretability</span>
+                    <span>RLVR</span>
+                    <span>Recursive Self-Improvement</span>
+                </div>
+                <nav class="article-nav">
+                    <a href="index.html" class="nav-prev" lang="en">Back to Index</a>
+                </nav>
+            </footer>
+        </main>
+
+        <div class="asterisk clearafter">
+            <div class="col-md-6 col-sm-100 text-center">*Copyright 2026 Andrea Turchet</div>
+        </div>
+    </div>
+
+    <script>
+        const languageKey = 'blog-language-a-step-closer-to-rsi';
+        const themeKey = 'blog-theme';
+        const languageGroup = document.querySelector('.language-switcher');
+        const themeGroup = document.querySelector('.theme-switcher');
+        const languageButtons = document.querySelectorAll('[data-set-lang]');
+        const themeButtons = document.querySelectorAll('[data-set-theme]');
+        const themeLabels = {
+            it: { language: 'Lingua', theme: 'Tema', red: 'Tema rosso', light: 'Tema chiaro' },
+            en: { language: 'Language', theme: 'Theme', red: 'Red theme', light: 'Light theme' }
+        };
+
+        function readPreference(key) {
+            try {
+                return localStorage.getItem(key);
+            } catch {
+                return null;
+            }
+        }
+
+        function savePreference(key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch {
+                // The controls still work when storage is unavailable.
+            }
+        }
+
+        function setSelected(button, selected) {
+            button.classList.toggle('is-active', selected);
+            button.setAttribute('aria-pressed', String(selected));
+        }
+
+        function setLanguage(value) {
+            const language = value === 'en' ? 'en' : 'it';
+            const labels = themeLabels[language];
+            document.documentElement.lang = language;
+            document.querySelectorAll('[data-lang-panel], [data-lang-copy]').forEach(element => {
+                element.hidden = (element.dataset.langPanel || element.dataset.langCopy) !== language;
+            });
+            languageButtons.forEach(button => setSelected(button, button.dataset.setLang === language));
+            languageGroup.setAttribute('aria-label', labels.language);
+            themeGroup.setAttribute('aria-label', labels.theme);
+            themeButtons.forEach(button => {
+                const label = labels[button.dataset.setTheme];
+                button.setAttribute('aria-label', label);
+                button.title = label;
+            });
+            savePreference(languageKey, language);
+        }
+
+        function setTheme(value) {
+            const theme = value === 'light' ? 'light' : 'red';
+            document.body.classList.toggle('theme-light', theme === 'light');
+            themeButtons.forEach(button => setSelected(button, button.dataset.setTheme === theme));
+            savePreference(themeKey, theme);
+        }
+
+        languageButtons.forEach(button => button.addEventListener('click', () => setLanguage(button.dataset.setLang)));
+        themeButtons.forEach(button => button.addEventListener('click', () => setTheme(button.dataset.setTheme)));
+
+        const queryLanguage = new URLSearchParams(window.location.search).get('lang')?.toLowerCase();
+        const hashLanguage = window.location.hash.slice(1).toLowerCase();
+        const urlLanguage = [queryLanguage, hashLanguage].find(value => value === 'it' || value === 'en');
+        setLanguage(urlLanguage || readPreference(languageKey));
+        setTheme(readPreference(themeKey));
+    </script>
+</body>
+</html>
