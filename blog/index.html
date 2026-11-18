@@ -13,10 +13,11 @@
     <meta property="og:url" content="https://andreaturchet.github.io/blog/">
     <meta property="og:image" content="https://andreaturchet.github.io/assets/images/blog/the-vault-crt.webp">
     <meta property="og:image:alt" content="A vintage CRT monitor on a chrome cart against a red wall.">
+    <script>if (window.WebGLRenderingContext) document.documentElement.classList.add('has-board');</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,800&amp;family=Courier+Prime:wght@400;700&amp;family=Instrument+Serif:ital@1&amp;display=swap">
-    <link rel="stylesheet" href="../css/blog-index.css">
+    <link rel="stylesheet" href="../css/blog-index.css?v=20261118">
 </head>
 <body>
     <header class="vault-header">
@@ -34,47 +35,50 @@
             </div>
         </section>
 
-        <div class="vault-posts">
-            <article class="featured-essay" aria-labelledby="featured-title">
-                <p class="featured-meta metadata"><span>Latest essay</span><time datetime="2026-11-03">03 Nov 2026</time></p>
-                <h2 id="featured-title">A step closer to RSI? <span>Not really.</span></h2>
-                <div class="featured-excerpt">
-                    <img class="featured-film" src="../assets/images/blog/rsi-film.webp" alt="A faded photograph of an analog patch panel on a strip of 35 mm film." width="520" height="260" decoding="async">
-                    <p lang="it">Cosa ci dice il modo in cui Astra ha corretto i pesi di Qwen sulla capacità dei modelli di fare il lavoro di chi ne studia il funzionamento?</p>
-                </div>
-                <a class="featured-link metadata" href="a-step-closer-to-rsi.html">Read the essay <span aria-hidden="true">↗</span></a>
-            </article>
+        <!-- Drawn by assets/js/vault-board.js from the index below. -->
+        <div class="vault-board" aria-hidden="true">
+            <canvas></canvas>
+            <div class="board-labels"></div>
+        </div>
 
-            <section class="vault-archive" id="archive" aria-labelledby="archive-title">
-                <header class="archive-heading">
-                    <h2 id="archive-title">Archive<span>.</span></h2>
-                    <p class="metadata">3 articles</p>
-                </header>
-                <ul class="archive-list">
+        <div class="vault-posts">
+            <section class="vault-index" id="archive" aria-labelledby="index-title">
+                <header class="index-heading metadata"><h2 id="index-title">Index</h2><span>4 articles</span></header>
+                <!-- data-board: crt | books | globe | shelf. data-square: "x,z" on the board,
+                     centred on half-units; dark squares have floor(x) + floor(z) even. -->
+                <ul class="index-list">
                     <li>
-                        <a class="archive-row" href="vv-appunti.html">
-                            <div class="archive-meta metadata"><time datetime="2026-06-24">24 Jun 2026</time><span>Notes</span></div>
+                        <a href="a-step-closer-to-rsi.html" data-board="crt" data-square=".5,.5" data-kind="Latest essay" data-label="A step closer to RSI?">
+                            <time class="metadata" datetime="2026-11-03">03 Nov 2026</time>
+                            <h3>A step closer to RSI? <span>Not really.</span></h3>
+                            <span class="metadata index-kind">Essay</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="vv-appunti.html" data-board="books" data-square="-1.5,2.5">
+                            <time class="metadata" datetime="2026-06-24">24 Jun 2026</time>
                             <h3 lang="it">V&amp;V in AI — Appunti</h3>
-                            <span class="archive-arrow" aria-hidden="true"></span>
+                            <span class="metadata index-kind">Notes</span>
                         </a>
                     </li>
                     <li>
-                        <a class="archive-row" href="riflessioni_sri.html">
-                            <div class="archive-meta metadata"><time datetime="2026-06-07">07 Jun 2026</time><span>Thoughts</span></div>
+                        <a href="riflessioni_sri.html" data-board="globe" data-square=".5,-1.5">
+                            <time class="metadata" datetime="2026-06-07">07 Jun 2026</time>
                             <h3 lang="it">Riflessioni per il futuro</h3>
-                            <span class="archive-arrow" aria-hidden="true"></span>
+                            <span class="metadata index-kind">Thoughts</span>
                         </a>
                     </li>
                     <li>
-                        <a class="archive-row" href="lecture-ml-lifecycle.html">
-                            <div class="archive-meta metadata"><time datetime="2025-12-18">18 Dec 2025</time><span>Notes</span></div>
+                        <a href="lecture-ml-lifecycle.html" data-board="shelf" data-square="-1.5,.5" data-label="Understanding ML Lifecycle">
+                            <time class="metadata" datetime="2025-12-18">18 Dec 2025</time>
                             <h3>Understanding Machine Learning Lifecycle</h3>
-                            <span class="archive-arrow" aria-hidden="true"></span>
+                            <span class="metadata index-kind">Notes</span>
                         </a>
                     </li>
                 </ul>
             </section>
         </div>
     </main>
+    <script type="module" src="../assets/js/vault-board.js?v=20261118"></script>
 </body>
 </html>
