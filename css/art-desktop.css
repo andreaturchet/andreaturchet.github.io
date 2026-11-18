@@ -1,0 +1,137 @@
+/* c:/art-store — the art page as a working Windows 98 desktop.
+   Window chrome comes from 98.css (assets/vendor/98.css, MIT); this file adds
+   the desktop, wallpapers, icons, windows, taskbar and Start menu.
+   Wallpapers are rooms generated with Codex (assets/images/art/desktop/). */
+
+:root { --taskbar: 30px; --red: #e3120a; --cream: #f8edd9; }
+* { box-sizing: border-box; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+html, body { height: 100%; margin: 0; overflow: hidden; background: #f00; }
+body { font-size: 11px; }
+
+/* desktop + wallpapers */
+.desktop {
+    position: fixed; inset: 0 0 var(--taskbar) 0; overflow: hidden;
+    background: #008080 center / cover no-repeat;
+}
+.desktop[data-wall="red-checker"] { background: url(../assets/images/art/desktop/wall-red-checker.jpg) 70% 100% / cover no-repeat, #f00; }
+.desktop[data-wall="red-black"] { background: url(../assets/images/art/desktop/wall-red-black.jpg) 70% 100% / cover no-repeat, linear-gradient(#f00 0 78%, #0a0a0a 78%); }
+.desktop[data-wall="home"] { background: #f00; }
+.desktop[data-wall="blue"] { background: url(../assets/images/art/desktop/wall-blue.jpg) 70% 100% / cover no-repeat, linear-gradient(#1f3fc4 0 78%, #d9cbb4 78%); }
+.desktop[data-wall="vault"] { background-image: url(../assets/images/blog/the-vault-crt.webp); background-position: right 62%; }
+
+/* the path on the wall, in the Windows 98 system font, with a DOS cursor */
+.desk-text { position: absolute; right: 4vw; top: 6vh; margin: 0; pointer-events: none; color: #000; }
+.prompt { margin: 0; white-space: nowrap; font: 700 clamp(34px, 5.4vw, 92px)/1 "Pixelated MS Sans Serif", monospace; }
+.cursor { display: inline-block; width: .5em; height: .08em; margin-left: .06em; background: currentColor; vertical-align: .05em; animation: blink 1.06s steps(1) infinite; }
+@keyframes blink { 50% { visibility: hidden; } }
+@media (prefers-reduced-motion: reduce) { .cursor { animation: none; } }
+.desktop[data-wall="blue"] .desk-text, .desktop[data-wall="teal"] .desk-text { color: var(--cream); }
+.desktop[data-wall="vault"] .desk-text { color: #211814; }
+
+/* desktop icons */
+.icons {
+    position: absolute; top: 8px; left: 8px; bottom: 8px; margin: 0; padding: 0; list-style: none;
+    display: grid; grid-auto-flow: column; grid-template-rows: repeat(auto-fill, 86px); gap: 2px 6px;
+}
+.icon {
+    all: unset; box-sizing: border-box; width: 78px; padding: 4px 2px; cursor: default;
+    display: grid; justify-items: center; gap: 4px; text-align: center;
+    color: #fff; font: 11px/1.2 "Pixelated MS Sans Serif", Arial, sans-serif; text-shadow: 1px 1px 0 #000;
+}
+.icon .glyph { width: 34px; height: 34px; display: grid; place-items: center; }
+.icon .glyph img { width: 34px; height: 34px; object-fit: cover; image-rendering: pixelated; border: 1px solid #000; box-shadow: 1px 1px 0 #fff8; }
+.icon span { padding: 0 2px; word-break: break-word; }
+.icon:focus span { background: #000080; outline: 1px dotted #fff; }
+.icon:focus .glyph { filter: sepia(1) hue-rotate(190deg) saturate(4) brightness(.8); }
+
+/* windows */
+.app { position: absolute; display: flex; flex-direction: column; min-width: 220px; max-width: 100%; }
+.app.is-max { inset: 0 !important; width: auto !important; height: auto !important; }
+.app.is-min { display: none; }
+.app:not(.is-active) .title-bar { background: linear-gradient(90deg, #808080, #b5b5b5); }
+.app .title-bar { cursor: default; touch-action: none; user-select: none; }
+.app .title-bar-text { display: flex; align-items: center; gap: 4px; }
+.app .title-bar-text img { width: 16px; height: 16px; object-fit: cover; }
+.app .window-body { flex: 1; display: flex; flex-direction: column; gap: 6px; min-height: 0; margin: 6px; }
+.menubar { display: flex; gap: 12px; padding: 0 2px 4px; border-bottom: 1px solid #808080; box-shadow: 0 1px #fff; }
+.toolbar { display: flex; gap: 4px; flex-wrap: wrap; }
+
+/* explorer (c:/art-store, recycle bin) */
+.explorer .sunken-panel { flex: 1; min-height: 140px; background: #fff; overflow: auto; }
+.grid-view { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px; }
+.grid-view .icon { color: #000; text-shadow: none; width: 92px; }
+.grid-view .icon .glyph, .grid-view .icon .glyph img { width: 56px; height: 56px; }
+.grid-view .icon:focus span { color: #fff; }
+.explorer table { width: 100%; }
+.explorer td img { width: 14px; height: 14px; object-fit: cover; vertical-align: -3px; margin-right: 4px; }
+
+/* image viewer */
+.viewer .frame {
+    flex: 1; min-height: 0; display: flex; padding: 8px; background: #3a3a3a; overflow: hidden;
+    box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+}
+.viewer .frame img { display: block; width: 100%; height: 100%; object-fit: contain; }
+
+/* properties / dialogs */
+.props .field { display: grid; grid-template-columns: 70px 1fr; gap: 6px; padding: 3px 0; }
+.props .head { display: flex; gap: 10px; align-items: center; padding-bottom: 8px; margin-bottom: 6px; border-bottom: 1px solid #808080; box-shadow: 0 1px #fff; }
+.props .head img { width: 40px; height: 40px; object-fit: cover; border: 1px solid #000; }
+.dialog-row { display: flex; gap: 12px; align-items: flex-start; padding: 6px 4px 10px; }
+.dialog-row img { width: 48px; height: 48px; object-fit: cover; border: 1px solid #000; flex: none; }
+.dialog-row p { margin: 0; }
+.buttons { display: flex; justify-content: flex-end; gap: 6px; margin-top: auto; }
+.buttons a.button { display: inline-flex; align-items: center; justify-content: center; min-width: 75px; min-height: 23px; padding: 0 12px; color: #000; text-decoration: none;
+    background: silver; box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px grey, inset 2px 2px #dfdfdf; }
+.buttons a.button:active { box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px grey; }
+.buttons a.button:focus-visible { outline: 1px dotted #000; outline-offset: -4px; }
+.notepad textarea { flex: 1; width: 100%; resize: none; font-family: "Courier New", monospace; font-size: 12px; }
+
+/* taskbar + start menu */
+.taskbar {
+    position: fixed; inset: auto 0 0 0; height: var(--taskbar); z-index: 9000;
+    display: flex; align-items: center; gap: 3px; padding: 2px; background: silver;
+    box-shadow: inset 0 1px #dfdfdf, inset 0 2px #fff;
+}
+.taskbar button { min-width: 0; height: 24px; }
+.start-btn { display: flex; align-items: center; gap: 4px; padding: 0 6px; font-weight: bold; }
+.start-btn img { width: 16px; height: 16px; }
+.start-btn[aria-expanded="true"] { box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px grey; }
+.tasks { flex: 1; display: flex; gap: 3px; min-width: 0; }
+.tasks button { flex: 0 1 160px; display: flex; align-items: center; gap: 4px; justify-content: flex-start; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.tasks button img { width: 16px; height: 16px; object-fit: cover; flex: none; }
+.tasks button.is-active { font-weight: bold; box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px grey; background: repeating-conic-gradient(silver 0 25%, #fff 0 50%) 0 0 / 2px 2px; }
+.tray { padding: 3px 8px; box-shadow: inset -1px -1px #fff, inset 1px 1px grey; }
+.start-menu {
+    position: fixed; left: 2px; bottom: calc(var(--taskbar) - 2px); z-index: 9001; display: flex; width: 220px;
+    background: silver; box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #dfdfdf, inset -2px -2px grey, inset 2px 2px #fff; padding: 3px;
+}
+.start-menu[hidden] { display: none; }
+.start-banner {
+    width: 22px; background: linear-gradient(0deg, #000080, #1084d0); color: #fff;
+    writing-mode: vertical-rl; transform: rotate(180deg); padding: 6px 0; font: 800 16px/22px "Bricolage Grotesque", sans-serif; letter-spacing: -.02em;
+}
+.start-banner em { color: var(--red); font-style: normal; }
+.start-menu ul { flex: 1; margin: 0; padding: 0; list-style: none; }
+.start-menu li button, .start-menu li a {
+    all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; gap: 8px; padding: 5px 6px; cursor: default; color: #000;
+}
+.start-menu li button:hover, .start-menu li a:hover, .start-menu li button:focus, .start-menu li a:focus { background: #000080; color: #fff; }
+.start-menu li img { width: 22px; height: 22px; object-fit: cover; }
+.start-menu hr { border: 0; border-top: 1px solid grey; border-bottom: 1px solid #fff; margin: 3px 2px; }
+
+.shutdown {
+    position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; background: #000; color: #ff8a00;
+    font: 28px/1.3 "Pixelated MS Sans Serif", Arial, sans-serif; text-align: center; cursor: pointer;
+}
+.shutdown[hidden] { display: none; }
+.shutdown small { display: block; margin-top: 18px; font-size: 12px; color: #888; }
+
+/* phones: the path is the home-screen title, icons below; apps open full screen */
+@media (max-width: 700px) {
+    .desk-text { left: 14px; right: auto; top: 14px; }
+    .prompt { font-size: 30px; }
+    .desktop[data-wall] { background-position: 93% 100%, 0 0; } /* keep the beige PC in frame */
+    .icons { top: 58px; right: 8px; grid-auto-flow: row; grid-template-columns: repeat(auto-fill, 80px); grid-template-rows: none; align-content: start; }
+    .tasks button { flex-basis: 110px; }
+}

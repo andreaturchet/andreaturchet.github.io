@@ -1,63 +1,38 @@
-<title>WELCOME IN MY WORLD</title>
-
-	<meta name="title" content="WELCOME IN MY WORLD">
-    <link rel="shortcut icon" type="image/png" href="../../images/img/favicon-green.ico"/>
-<!--	<meta name="viewport" content="width=device-width, initial-scale=1.0 minimal-ui" />-->
-    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
-	<link rel="stylesheet" href="../../../css/art.css" />
-
-
-
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>c:/art-store — Andrea Turchet</title>
+    <meta name="description" content="Andrea Turchet's art, on a Windows 98 desktop: generative works, mostly red.">
+    <link rel="icon" href="../../images/img/favicon-red.ico">
+    <link rel="stylesheet" href="../../vendor/98.css/98.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&amp;display=swap">
+    <link rel="stylesheet" href="../../../css/art-desktop.css?v=20261118">
 </head>
+<body>
+    <main class="desktop" data-wall="red-checker" aria-label="art-store desktop">
+        <h1 class="sr-only">c:/art-store — Andrea Turchet</h1>
+        <div class="desk-text" aria-hidden="true"><p class="prompt">c:/art-store<span class="cursor"></span></p></div>
+        <ul class="icons" aria-label="Desktop icons"></ul>
+        <noscript><p style="margin:80px 16px;font-size:16px">This desktop needs JavaScript. <a href="../../../index.html">Back to the website</a>.</p></noscript>
+    </main>
 
-<body class="body">
-         <div class="windows-box" style="background-color: rgb(255,0,0)">
-            <div class="window-icons clearafter"><img src="../../../assets/images/img/icon-close.jpg" onclick="$('.windows-box').hide();" style="cursor:pointer;"><img onclick="$('.windows-box').toggleClass('resize'); $('.windows-box').removeClass('iconize');" src="../../../assets/images/img/icon-resize.jpg" onclick=""><img onclick="$('.windows-box').toggleClass('iconize'); $('.windows-box').removeClass('resize');" src="../../../assets/images/img/icon-iconize.jpg"></div>
-            <a class="prod-link-gallery" target="_blank">
-                <div class="window-content"></div>
-                <img class="store-button" src="https://d3uqg2ap1kpnl9.cloudfront.net/wp-content/uploads/2019/12/20200208/art-store.png">
-            </a>
-        </div>
-        
-        
-        <div class="canary-box">
-            <div class="window-icons clearafter"><img src="../../../assets/images/img/icon-close.jpg" onclick="$('.windows-box').hide();" style="cursor:pointer;"><img onclick="$('.windows-box').toggleClass('resize'); $('.windows-box').removeClass('iconize');" src="../../../assets/images/img/icon-resize.jpg" onclick=""><img onclick="$('.windows-box').toggleClass('iconize'); $('.windows-box').removeClass('resize');" src="../../../assets/images/img/icon-iconize.jpg"></div>
-            <div class="canary-title">Homage To Fibonacci</div>
-            <a class="" href="" target="_blank">
-                <div class="window-content"><img src="../../../assets/images/art/fib.png"></div>
-            </a>
-         </div>
-         
-
-        <div class="art-box">
-            <div class="window-icons clearafter"><img src="../../../assets/images/img/icon-close.jpg" onclick="$('.windows-box').hide();" style="cursor:pointer;"><img onclick="$('.windows-box').toggleClass('resize'); $('.windows-box').removeClass('iconize');" src="../../../assets/images/img/icon-resize.jpg" onclick=""><img onclick="$('.windows-box').toggleClass('iconize'); $('.windows-box').removeClass('resize');" src="../../../assets/images/img/icon-iconize.jpg"></div>
-            <div class="art-title">Homage To Vera Molnar</div>
-                <div class="window-content"><img src="../../../assets/images/art/vera.png"></div>
-            </a>
-        </div>
-        
-    
-        <div class="dog">
-           <div class="window-icons clearafter"><img src="../../../assets/images/img/icon-close.jpg" onclick="$('.windows-box').hide();" style="cursor:pointer;"><img onclick="$('.windows-box').toggleClass('resize'); $('.windows-box').removeClass('iconize');" src="../../../assets/images/img/icon-resize.jpg" onclick=""><img onclick="$('.windows-box').toggleClass('iconize'); $('.windows-box').removeClass('resize');" src="../../../assets/images/img/icon-iconize.jpg"></div>
-           <div class="content-title">SkyEye</div>
-            <div class="window-content"><img src="../../../assets/images/art/k.png"></div>
-         </div>
-        
-
-        <div class="fashion-box">
-           <div class="window-icons clearafter"><img src="../../../assets/images/img/icon-close.jpg" onclick="$('.windows-box').hide();" style="cursor:pointer;"><img onclick="$('.windows-box').toggleClass('resize'); $('.windows-box').removeClass('iconize');" src="../../../assets/images/img/icon-resize.jpg" onclick=""><img onclick="$('.windows-box').toggleClass('iconize'); $('.windows-box').removeClass('resize');" src="../../../assets/images/img/icon-iconize.jpg"></div>
-           <div class="content-title">u can't escape your demons</div>
-            <div class="window-content"><img src="../../../assets/images/art/lbc.png"></div>
-         </div>
-         
-       <div class="fashion-nox">
-           <div class="window-icons clearafter"><img src="../../../assets/images/img/icon-close.jpg" onclick="$('.windows-box').hide();" style="cursor:pointer;"><img onclick="$('.windows-box').toggleClass('resize'); $('.windows-box').removeClass('iconize');" src="../../../assets/images/img/icon-resize.jpg" onclick=""><img onclick="$('.windows-box').toggleClass('iconize'); $('.windows-box').removeClass('resize');" src="../../../assets/images/img/icon-iconize.jpg"></div>
-           <div class="content-title">Postmodern Dr.Strangelove</div>
-            <div class="window-content"><img src="../../../assets/images/art/sl.png"></div>
-         </div>
-
-        
+    <div class="start-menu" id="start-menu" hidden>
+        <div class="start-banner" aria-hidden="true">TURCHET<em>■</em>98</div>
+        <ul></ul>
     </div>
 
+    <footer class="taskbar">
+        <button class="start-btn" aria-expanded="false" aria-controls="start-menu"><img src="../../images/img/favicon-red.ico" alt="">Start</button>
+        <div class="tasks" role="toolbar" aria-label="Open windows"></div>
+        <div class="tray"><time></time></div>
+    </footer>
+
+    <div class="shutdown" hidden>It's now safe to turn off<br>your computer.<small>click anywhere to start again</small></div>
+
+    <script type="module" src="../../js/art-desktop.js?v=20261118"></script>
 </body>
-      </html>
+</html>
