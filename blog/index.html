@@ -1,145 +1,80 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>ANDREA TURCHET - BLOG</title>
-    <meta name="title" content="Andrea Turchet - Blog">
-    <meta name="description" content="Lecture notes, research, and thoughts on AI, technology, and art." />
-    <meta name="Copyright" content="Copyright © Andrea Turchet 2024. All Rights Reserved.">
-    <link rel="shortcut icon" type="image/png" href="../assets/images/img/favicon-red.ico"/>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-    <link rel="stylesheet" href="../css/reset.css" />
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/style-project-red.css" />
-    <link rel="stylesheet" href="../css/blog.css" />
-    <meta property="og:title" content="Andrea Turchet - Blog" />
-    <meta property="og:url" content="https://andreaturchet.github.io/blog"/>
-    <meta property="og:image" content="../assets/images/bio.png"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('.category-filter span').click(function() {
-                var category = $(this).text().toLowerCase();
-                $('.category-filter span').removeClass('active');
-                $(this).addClass('active');
-                if (category === 'all') {
-                    $('.article-card').show();
-                } else {
-                    $('.article-card').each(function() {
-                        var articleCategory = $(this).data('category');
-                        if (articleCategory && articleCategory.toLowerCase().includes(category)) {
-                            $(this).show();
-                        } else {
-                            $(this).hide();
-                        }
-                    });
-                }
-            });
-        });
-    </script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Vault — Andrea Turchet</title>
+    <meta name="description" content="Essays and research notes by Andrea Turchet on AI, technology, and everything in between.">
+    <link rel="canonical" href="https://andreaturchet.github.io/blog/">
+    <link rel="icon" href="../assets/images/img/favicon-red.ico">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="The Vault — Andrea Turchet">
+    <meta property="og:description" content="Essays and research notes on AI, technology, and everything in between.">
+    <meta property="og:url" content="https://andreaturchet.github.io/blog/">
+    <meta property="og:image" content="https://andreaturchet.github.io/assets/images/blog/the-vault-crt.webp">
+    <meta property="og:image:alt" content="A vintage CRT monitor on a chrome cart against a red wall.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,800&amp;family=Courier+Prime:wght@400;700&amp;family=Instrument+Serif:ital@1&amp;display=swap">
+    <link rel="stylesheet" href="../css/blog-index.css">
 </head>
-<body class="home">
-    <header class="clearafter">
-        <div class="col-md-12 col-sm-100"><div class="bio"><a href="../index.html" style="color: #000;">&larr; BACK TO HOME</a></div></div>
-        <div class="col-md-6 col-sm-100"><a href="../index.html"><img class="logo" src="../assets/images/img/x.gif" alt="Andrea Turchet"></a></div>
+<body>
+    <header class="vault-header">
+        <nav class="vault-nav" aria-label="Blog navigation">
+            <a class="portfolio-link" href="../"><span aria-hidden="true">←</span> Andrea Turchet</a>
+            <a class="archive-link" href="#archive">Archive <span aria-hidden="true">↓</span></a>
+        </nav>
     </header>
-    <div class="project-red">
-        <!-- Blog Header -->
-        <div class="blog-index-header">
-            <h1 class="blog-main-title">THE<br>VAULT</h1>
-            <p class="blog-subtitle">
-                A space for my thoughts, research notes, and articles about artificial intelligence,
-                technology, cybersecurity, and everything in between. Knowledge should be shared.
-            </p>
-        </div>
-
-        <!-- Category Filter -->
-        <div class="category-filter">
-            <span class="active">ALL</span>
-            <span>THOUGHTS</span>
-            <span>NOTES</span>
-        </div>
-
-        <!-- Article List -->
-        <div class="article-list">
-
-            <!-- Article 4 -->
-            <a href="a-step-closer-to-rsi.html" class="article-card" data-category="thoughts">
-                <div class="article-number">04</div>
-                <div class="article-info">
-                    <div class="article-meta">2026.11.03 — AI / INTERPRETABILITY</div>
-                    <h2 class="article-title" lang="en">A step closer to RSI? Not really.</h2>
-                    <p class="article-excerpt" lang="it">
-                        Cosa ci dice il modo in cui Astra ha corretto i pesi di Qwen sulla capacità dei modelli di fare il lavoro di chi ne studia il funzionamento?
-                    </p>
-                    <span class="read-more">Read Thoughts &rarr;</span>
-                </div>
-            </a>
-
-            <!-- Article 3 -->
-            <a href="vv-appunti.html" class="article-card" data-category="notes">
-                <div class="article-number">03</div>
-                <div class="article-info">
-                    <div class="article-meta">2026.06.24 — NOTES / V&amp;V IN AI</div>
-                    <h2 class="article-title">V&amp;V in AI — Appunti</h2>
-                    <p class="article-excerpt">
-                        Indice pubblico degli appunti di Verifica e Validazione in AI: capitoli del corso, guide di studio, glossario e dimostrazioni formali, con esclusione delle pagine specifiche richieste.
-                    </p>
-                    <span class="read-more">Read Notes &rarr;</span>
-                </div>
-            </a>
-
-            <!-- Article 2 -->
-            <a href="riflessioni_sri.html" class="article-card" data-category="thoughts">
-                <div class="article-number">02</div>
-                <div class="article-info">
-                    <div class="article-meta">2026.06.07 — AI / PHILOSOPHY</div>
-                    <h2 class="article-title">Riflessioni per il futuro</h2>
-                    <p class="article-excerpt">
-                        Un saggio personale sul recursive self-improvement, sul tempo umano e sulla possibilità che l'intelligenza artificiale acceleri più rapidamente della biologia, delle istituzioni, della cultura e del lavoro.
-                    </p>
-                    <span class="read-more">Read Thoughts &rarr;</span>
-                </div>
-            </a>
-
-            <!-- Article 1 -->
-            <a href="lecture-ml-lifecycle.html" class="article-card" data-category="notes">
-                <div class="article-number">01</div>
-                <div class="article-info">
-                    <div class="article-meta">2025.12.18 — MLOPS / MACHINE LEARNING</div>
-                    <h2 class="article-title">Understanding Machine Learning Lifecycle</h2>
-                    <p class="article-excerpt">
-                        Building ML systems isn't like building regular software and trying to force traditional development methodologies onto ML projects
-                        is a recipe for frustration. Traditional Software Development Lifecycle (SDLC) practices are often too rigid for the messy, experimental
-                        reality of machine learning work.
-                        Here's the thing: ML is fundamentally iterative. You don't just write code, test it, and ship it. You experiment,
-                        learn from data, tweak your approach, and repeat often many times.
-                    </p>
-                    <span class="read-more">Read Notes &rarr;</span>
-                </div>
-            </a>
-        </div>
-
-        <!-- Footer -->
-        <div class="project-red" style="margin-top: 80px;">
-            <div class="ph"><img src="../assets/images/img/bio.png" alt="Andrea Turchet portrait"></div>
-        </div>
-
-        <div class="brands">
-            <div class="claimbrands text-center clearafter">
-                <div class="col-md-6 ">
-                    <a href="https://github.com/andreaturchet" target="_blank" class="underline-mouseover">GITHUB</a><br><br>
-                    <a href="https://www.instagram.com/ciwrl/" target="_blank" class="underline-mouseover">INSTAGRAM</a><br>
-                </div>
-                <div class="col-md-6 ">
-                    <a href="https://www.linkedin.com/in/andrea-turchet-90a303229/" target="_blank" class="underline-mouseover">LINKEDIN</a><br><br>
-                    <a href="https://mobile.twitter.com/ciwrl99" target="_blank" class="underline-mouseover">TWITTER</a><br>
-                </div>
+    <main>
+        <section class="vault-cover" aria-labelledby="vault-title">
+            <img class="cover-photo" src="../assets/images/blog/the-vault-crt.webp" alt="" width="1536" height="1024" fetchpriority="high">
+            <div class="cover-copy">
+                <h1 id="vault-title"><strong>THE</strong> <em>Vault<span>.</span></em></h1>
+                <p>Essays and research notes on AI,<br class="cover-break"> technology, and everything in between.</p>
             </div>
-        </div>
+        </section>
 
-        <div class="asterisk clearafter">
-            <div class="col-md-6 col-sm-100 text-center">*Copyright 2024 Andrea Turchet</div>
+        <div class="vault-posts">
+            <article class="featured-essay" aria-labelledby="featured-title">
+                <p class="featured-meta metadata"><span>Latest essay</span><time datetime="2026-11-03">03 Nov 2026</time></p>
+                <h2 id="featured-title">A step closer to RSI? <span>Not really.</span></h2>
+                <div class="featured-excerpt">
+                    <img class="featured-film" src="../assets/images/blog/rsi-film.webp" alt="A faded photograph of an analog patch panel on a strip of 35 mm film." width="520" height="260" decoding="async">
+                    <p lang="it">Cosa ci dice il modo in cui Astra ha corretto i pesi di Qwen sulla capacità dei modelli di fare il lavoro di chi ne studia il funzionamento?</p>
+                </div>
+                <a class="featured-link metadata" href="a-step-closer-to-rsi.html">Read the essay <span aria-hidden="true">↗</span></a>
+            </article>
+
+            <section class="vault-archive" id="archive" aria-labelledby="archive-title">
+                <header class="archive-heading">
+                    <h2 id="archive-title">Archive<span>.</span></h2>
+                    <p class="metadata">3 articles</p>
+                </header>
+                <ul class="archive-list">
+                    <li>
+                        <a class="archive-row" href="vv-appunti.html">
+                            <div class="archive-meta metadata"><time datetime="2026-06-24">24 Jun 2026</time><span>Notes</span></div>
+                            <h3 lang="it">V&amp;V in AI — Appunti</h3>
+                            <span class="archive-arrow" aria-hidden="true"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="archive-row" href="riflessioni_sri.html">
+                            <div class="archive-meta metadata"><time datetime="2026-06-07">07 Jun 2026</time><span>Thoughts</span></div>
+                            <h3 lang="it">Riflessioni per il futuro</h3>
+                            <span class="archive-arrow" aria-hidden="true"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="archive-row" href="lecture-ml-lifecycle.html">
+                            <div class="archive-meta metadata"><time datetime="2025-12-18">18 Dec 2025</time><span>Notes</span></div>
+                            <h3>Understanding Machine Learning Lifecycle</h3>
+                            <span class="archive-arrow" aria-hidden="true"></span>
+                        </a>
+                    </li>
+                </ul>
+            </section>
         </div>
-    </div>
+    </main>
 </body>
 </html>
