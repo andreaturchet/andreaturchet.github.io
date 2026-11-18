@@ -11,7 +11,7 @@
     <meta property="og:title" content="Andrea Turchet">
     <meta property="og:url" content="https://andreaturchet.github.io">
     <meta property="og:image" content="https://andreaturchet.github.io/assets/images/img/bio.png">
-    <link rel="stylesheet" href="css/home.css?v=20261118">
+    <link rel="stylesheet" href="css/home.css?v=20261118c">
 </head>
 <body>
 
@@ -20,20 +20,28 @@
             <p class="topline"><span>Born in Latisana, Italy</span> <span>1999</span> <span>MSc Artificial Intelligence &amp; Cybersecurity</span> <span>PhD student @ Universität Klagenfurt</span></p>
             <img class="name-gif" src="assets/images/img/x.gif" alt="Andrea Turchet" width="500" height="500">
             <div class="collage" aria-hidden="true">
-                <p class="piece select">
-                    <span>It has become appallingly obvious</span>
-                    <span class="sel">that our technology has exceeded</span>
-                    <span>our humanity. ----&gt;A.Einstein<i class="caret"></i></span>
-                </p>
+                <div class="piece notepad">
+                    <div class="win98-bar"><span>einstein.txt - Notepad</span><span class="win98-btns"><i class="min"></i><i class="max"></i><i class="close"></i></span></div>
+                    <div class="win98-menu"><span><u>F</u>ile</span> <span><u>E</u>dit</span> <span><u>S</u>earch</span> <span><u>H</u>elp</span></div>
+                    <div class="notepad-body">
+                        <p class="select">
+                            <span>It has become appallingly obvious</span>
+                            <span class="sel">that our technology has exceeded</span>
+                            <span>our humanity. ----&gt;A.Einstein<i class="caret"></i></span>
+                        </p>
+                    </div>
+                </div>
                 <figure class="piece paper">
+                    <div class="paper-head"><span>fig. 3 — automated reasoning</span><span>ASP / CP</span></div>
                     <img src="assets/images/home/fig-solver-chart.jpg" alt="" width="1200" height="720">
-                    <figcaption>fig. 3 — Clingo vs MiniZinc, seats in room</figcaption>
+                    <figcaption>Clingo vs MiniZinc — seats in room</figcaption>
                 </figure>
                 <figure class="piece photo">
                     <img src="assets/images/home/fig-segmentation-masks.jpg" alt="" width="982" height="736">
                     <figcaption>one-shot segmentation, SegGPT</figcaption>
                 </figure>
                 <figure class="piece portrait"><img src="assets/images/img/bio.png" alt="" width="300" height="300"></figure>
+                <figure class="piece specimen"><img src="assets/images/home/specimen-moth.webp" alt="" width="960" height="617"></figure>
             </div>
             <div class="hero-copy">
                 <h1 id="welcome">Welcome in my world</h1>
@@ -46,21 +54,8 @@
         </section>
 
         <section class="grid-section" id="work" aria-labelledby="work-title">
-            <header class="grid-head"><h2 id="work-title">Work</h2><p class="meta">3 projects</p></header>
+            <header class="grid-head"><h2 id="work-title">Work</h2><p class="meta">4 projects</p></header>
             <ul class="grid">
-                <li><a class="card" href="website/index.html">
-                    <div class="card-img">
-                        <div class="win98 browser" role="img" aria-label="Papel&#x27;s website in a Windows 98 browser window">
-                            <div class="win98-bar"><span>Papel</span><span class="win98-btns" aria-hidden="true"><i class="min"></i><i class="max"></i><i class="close"></i></span></div>
-                            <div class="win98-menu" aria-hidden="true"><span><u>F</u>ile</span> <span><u>E</u>dit</span> <span><u>V</u>iew</span> <span><u>F</u>avorites</span> <span><u>H</u>elp</span></div>
-                            <div class="win98-address" aria-hidden="true"><span>Address</span><b>http://andreaturchet.github.io/website/</b></div>
-                            <div class="win98-view"><img src="assets/images/home/win-papel.webp" alt="" loading="lazy"></div>
-                        </div>
-                    </div>
-                    <h3>Papel — the social network for researchers</h3>
-                    <p class="excerpt">Papel is an AI-assisted social network concept for academic reading and researcher interaction. The project explores on-device summarization, quiz generation, and privacy-preserving paper discovery, with the product architecture centered on local inference rather than server-side processing of reading behavior.</p>
-                    <p class="meta">Independent AI product · On-device AI</p>
-                </a></li>
                 <li><a class="card" href="blog/">
                     <div class="card-img">
                         <div class="win98 browser" role="img" aria-label="The Vault blog in a Windows 98 browser window">
@@ -73,6 +68,32 @@
                     <h3>The Vault — blog</h3>
                     <p class="excerpt">A personal space for technical notes, research reflections, and essays at the intersection of artificial intelligence, technology, art, and society.</p>
                     <p class="meta">Independent writing · Research notes</p>
+                </a></li>
+                <li><a class="card" href="https://onconews.xyz" target="_blank">
+                    <div class="card-img">
+                        <div class="win98 browser" role="img" aria-label="OncoNews website in a Windows 98 browser window">
+                            <div class="win98-bar"><span>OncoNews | Oncology, in context</span><span class="win98-btns" aria-hidden="true"><i class="min"></i><i class="max"></i><i class="close"></i></span></div>
+                            <div class="win98-menu" aria-hidden="true"><span><u>F</u>ile</span> <span><u>E</u>dit</span> <span><u>V</u>iew</span> <span><u>F</u>avorites</span> <span><u>H</u>elp</span></div>
+                            <div class="win98-address" aria-hidden="true"><span>Address</span><b>https://onconews.xyz/</b></div>
+                            <div class="win98-view"><img src="assets/images/home/win-onconews.webp" alt="" loading="lazy"></div>
+                        </div>
+                    </div>
+                    <h3>OncoNews — oncology, in context</h3>
+                    <p class="excerpt">OncoNews brings together oncology research, clinical trial results, and regulatory updates alongside interactive cancer statistics from NCI SEER and NORDCAN, keeping original sources, biomarkers, and historical evidence in context.</p>
+                    <p class="meta">Independent web product · Oncology data</p>
+                </a></li>
+                <li><a class="card" href="website/index.html">
+                    <div class="card-img">
+                        <div class="win98 browser" role="img" aria-label="Papel&#x27;s website in a Windows 98 browser window">
+                            <div class="win98-bar"><span>Papel</span><span class="win98-btns" aria-hidden="true"><i class="min"></i><i class="max"></i><i class="close"></i></span></div>
+                            <div class="win98-menu" aria-hidden="true"><span><u>F</u>ile</span> <span><u>E</u>dit</span> <span><u>V</u>iew</span> <span><u>F</u>avorites</span> <span><u>H</u>elp</span></div>
+                            <div class="win98-address" aria-hidden="true"><span>Address</span><b>http://andreaturchet.github.io/website/</b></div>
+                            <div class="win98-view"><img src="assets/images/home/win-papel.webp" alt="" loading="lazy"></div>
+                        </div>
+                    </div>
+                    <h3>Papel — the social network for researchers</h3>
+                    <p class="excerpt">Papel is an AI-assisted social network concept for academic reading and researcher interaction. The project explores on-device summarization, quiz generation, and privacy-preserving paper discovery, with the product architecture centered on local inference rather than server-side processing of reading behavior.</p>
+                    <p class="meta">Independent AI product · On-device AI</p>
                 </a></li>
                 <li><a class="card" href="assets/crypto/c.html">
                     <div class="card-img">
@@ -219,8 +240,9 @@
                 <li><a href="https://mobile.twitter.com/ciwrl99" target="_blank">Twitter ↗</a></li>
             </ul></div>
             <div><h3>Work</h3><ul>
-                <li><a href="website/index.html">Papel</a></li>
                 <li><a href="blog/">The Vault</a></li>
+                <li><a href="https://onconews.xyz" target="_blank">OncoNews ↗</a></li>
+                <li><a href="website/index.html">Papel</a></li>
                 <li><a href="assets/crypto/c.html">c:/art-store</a></li>
             </ul></div>
             <div><h3>Research</h3><ul>
